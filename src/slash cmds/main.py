@@ -324,7 +324,7 @@ class Vulpo(commands.Bot):
                         fehler += 1
                         print(f'❌ cogs.{filename[:-3]} konnte nicht geladen werden', file=sys.stderr)
                         traceback.print_exc()		
-                        print('\n\n---------------------------------------------\n\n')
+                        print('\n\n--------------------------------------------\n\n')
      
             print(f"✅ {geladen}/{geladen + fehler} Cogs geladen")
         except Exception as e:
