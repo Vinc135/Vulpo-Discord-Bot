@@ -41,7 +41,8 @@ __👤 User Befehle__
 
 __⚙️ Team Befehle__
 `/stats blacklist` Setze Kanäle auf die Blacklist für Nachrichten.
-`/stats reset` Setze alle Stats auf 0 zurück."""
+`/stats reset` Setze alle Stats auf 0 zurück.
+`/statschannel` Richte einen Stats-Kanal ein."""
             embed = discord.Embed(colour=discord.Colour.green(), description=anzeige)
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://cdn.discordapp.com/avatars/925799559576322078/a2f839c85ee1dd3ef9a1b1fa511e332b.png?size=1024")
             return await interaction.response.edit_message(embed=embed)
