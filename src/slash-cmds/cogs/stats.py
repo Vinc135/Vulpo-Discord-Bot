@@ -12,13 +12,13 @@ class StatsKanal(discord.ui.Modal, title="Stats Kanal"):
         super().__init__(custom_id="wjfkbuhqefgihgerifuzgqeiufgzu")
         self.kanal = kanal
         self.bot = bot
-        self.add_item(discord.ui.TextInput(label="Nachricht", style=discord.TextStyle.paragraph, required=True, placeholder="%usercount | %membercount | %botcount | %online | %dnd | %idle | %offline", default=self.alte_nachricht))
+        self.add_item(discord.ui.TextInput(label="Nachricht", style=discord.TextStyle.paragraph, required=True, placeholder="%usercount | %membercount | %botcount | %online | %dnd | %idle | %offline"))
 
     async def on_submit(self, interaction: discord.Interaction):
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 if self.kanal == None:
-                    new_channel = await interaction.guild.create_text_channel(name="[erstellen] circa 10 Minuten")
+                    new_channel = await interaction.guild.create_voice_channel(name="[erstellen] circa 10 Minuten")
                     await cursor.execute("INSERT INTO upstats (guildID, channelID, text) VALUES (%s, %s, %s)", (interaction.guild.id, new_channel.id, self.children[0].value))
                     return await interaction.response.send_message("**✅ Der Stats Kanal wird nun erstellt. Es dauert bis zu 10 Minuten, bis der Kanal zum ersten Male geupdated wird.**")
                 if self.kanal != None:
@@ -453,17 +453,17 @@ async def update_all(self):
             for ergebnis in result:
                 guild = self.bot.get_guild(int(ergebnis[0]))
                 if guild == None:
-                    return False
+                    continue
                 kanal = guild.get_channel(int(ergebnis[1]))
                 if kanal == None:
-                    return False
+                    continue
 
                 online = 0
                 offline = 0
                 dnd = 0
                 idle = 0
                 bots = 0
-                for user in guild:
+                for user in guild.members:
                     if str(user.status.name) == "online":
                         online += 1
                     if str(user.status.name) == "dnd":
@@ -544,6 +544,7 @@ class Stats(commands.Cog):
 
     @tasks.loop(minutes=10)
     async def channel_update(self):
+        print("Hallo Welt!")
         try:
             await update_all(self)
         except:
@@ -923,7 +924,7 @@ class Stats(commands.Cog):
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def statschannel(self, interaction: discord.Interaction, argument: typing.Literal["Einrichten","Anzeigen","Ausschalten"], kanal: discord.abc.GuildChannel=None):
-        """Stelle die Willkommensnachricht ein."""
+        """Richte einen Stats Kanal ein."""
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 if argument == "Ausschalten":
@@ -942,20 +943,20 @@ class Stats(commands.Cog):
 
                     await interaction.response.send_modal(StatsKanal(self.bot, kanal))
                 if argument == "Anzeigen":
-                    await cursor.execute(f"SELECT channelID, text FROM upstats WHERE guildID = {interaction.guild.id}")
+                    await cursor.execute(f"SELECT guildID, channelID, text FROM upstats WHERE guildID = {interaction.guild.id}")
                     wel = await cursor.fetchall()
                     if wel == []:
                         return await interaction.response.send_message("**❌ Auf diesem Server ist kein Stats-Kanal eingerichtet.**", ephemeral=True)
 
                     embed = discord.Embed(title="Stats Kanäle", description=f"Die aktuellen Stats Kanäle:", color=discord.Color.orange())
-                    for ergebnis in result:
+                    for ergebnis in wel:
                         g = self.bot.get_guild(int(ergebnis[0]))
                         if g == None:
-                            return False
+                            return
                         k = g.get_channel(int(ergebnis[1]))
                         if k == None:
-                            return False
-                        embed.add_field(name=ergebnis[1] if len(ergebnis[1]) > 7 else f"{str(ergebnis[1])[:7]}...", value=k.mention, inline=False)
+                            return
+                        embed.add_field(name=ergebnis[2] if len(ergebnis[2]) > 7 else f"{str(ergebnis[2])[:7]}...", value=k.mention, inline=False)
                         await interaction.response.send_message(embed=embed)
 
                     
