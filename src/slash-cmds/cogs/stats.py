@@ -7,6 +7,24 @@ import datetime
 import matplotlib.pyplot as plt
 import os
 
+class StatsKanal(discord.ui.Modal, title="Stats Kanal"):
+    def __init__(self, bot, kanal=None):
+        super().__init__(custom_id="wjfkbuhqefgihgerifuzgqeiufgzu")
+        self.kanal = kanal
+        self.bot = bot
+        self.add_item(discord.ui.TextInput(label="Nachricht", style=discord.TextStyle.paragraph, required=True, placeholder="%usercount | %membercount | %botcount | %online | %dnd | %idle | %offline", default=self.alte_nachricht))
+
+    async def on_submit(self, interaction: discord.Interaction):
+        async with self.bot.pool.acquire() as conn:
+            async with conn.cursor() as cursor:
+                if self.kanal == None:
+                    new_channel = await interaction.guild.create_text_channel(name="[erstellen] circa 10 Minuten")
+                    await cursor.execute("INSERT INTO upstats (guildID, channelID, text) VALUES (%s, %s, %s)", (interaction.guild.id, new_channel.id, self.children[0].value))
+                    return await interaction.response.send_message("**✅ Der Stats Kanal wird nun erstellt. Es dauert bis zu 10 Minuten, bis der Kanal zum ersten Male geupdated wird.**")
+                if self.kanal != None:
+                    await cursor.execute("INSERT INTO upstats (guildID, channelID, text) VALUES (%s, %s, %s)", (interaction.guild.id, self.kanal.id, self.children[0].value))
+                    return await interaction.response.send_message("**✅ Der Stats Kanal wird nun bearbeitet. Es dauert bis zu 10 Minuten, bis der Kanal zum ersten Male geupdated wird.**")
+
 async def getuserstats(self, art, member, guild):
     async with self.bot.pool.acquire() as conn:
         async with conn.cursor() as cursor:
@@ -423,7 +441,42 @@ async def getservervoicestats(self, art, guild):
                     s_l = sorted(leaderboard.items(), key=lambda kv: kv[1], reverse=True)
                     return s_l
                 return None
-            
+
+async def update_all(self):
+    async with self.bot.pool.acquire() as conn:
+        async with conn.cursor() as cursor:
+            #await cursor.execute("CREATE TABLE IF NOT EXISTS upstats(guildID TEXT, channelID TEXT, text TEXT)")
+            await cursor.execute("SELECT guildID, channelID, text FROM upstats")
+            result = await cursor.fetchall()
+            if result == []:
+                return False
+            for ergebnis in result:
+                guild = self.bot.get_guild(int(ergebnis[0]))
+                if guild == None:
+                    return False
+                kanal = guild.get_channel(int(ergebnis[1]))
+                if kanal == None:
+                    return False
+
+                online = 0
+                offline = 0
+                dnd = 0
+                idle = 0
+                bots = 0
+                for user in guild:
+                    if str(user.status.name) == "online":
+                        online += 1
+                    if str(user.status.name) == "dnd":
+                        dnd += 1
+                    if str(user.status.name) == "idle":
+                        idle += 1
+                    if str(user.status.name) == "offline":
+                        offline += 1
+                    if user.bot:
+                        bots += 1
+                finaltext = ergebnis[2].replace("%usercount", str(guild.member_count)).replace("%membercount", str(int(guild.member_count) - bots)).replace("%botcount", str(bots)).replace("%online", str(online)).replace("%dnd", str(dnd)).replace("%idle", str(idle)).replace("%offline", str(offline))
+                await kanal.edit(name=finaltext)
+
 class Stats(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -431,9 +484,11 @@ class Stats(commands.Cog):
     
     def cog_load(self):
         self.myLoop.start()
+        self.channel_update.start()
 
     def cog_unload(self):
         self.myLoop.cancel()
+        self.channel_update.cancel()
 
     #Voice Stats#
     
@@ -486,8 +541,14 @@ class Stats(commands.Cog):
                         await cursor.execute("UPDATE voice SET anzahl = (%s) WHERE guildID = (%s) AND userID = (%s) AND zeit = (%s) AND channelID = (%s)", (result[0] + 1, guild.id, user.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), channel.id))
         except:
             pass
-    
-    
+
+    @tasks.loop(minutes=10)
+    async def channel_update(self):
+        try:
+            await update_all(self)
+        except:
+            pass
+
     #Nachrichten Stats#
     
     @commands.Cog.listener()
@@ -857,6 +918,45 @@ class Stats(commands.Cog):
                     file = discord.File("stats.png", filename="stats.png")
                     os.remove("stats.png")
                     return await interaction.channel.send(file=file, embed=embed)
+
+    @app_commands.command()
+    @app_commands.checks.has_permissions(administrator=True)
+    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
+    async def statschannel(self, interaction: discord.Interaction, argument: typing.Literal["Einrichten","Anzeigen","Ausschalten"], kanal: discord.abc.GuildChannel=None):
+        """Stelle die Willkommensnachricht ein."""
+        async with self.bot.pool.acquire() as conn:
+            async with conn.cursor() as cursor:
+                if argument == "Ausschalten":
+                    await cursor.execute(f"SELECT channelID, text FROM upstats WHERE guildID = {interaction.guild.id}")
+                    result = await cursor.fetchone()
+                    if result == None:
+                        return await interaction.response.send_message("**❌ Auf diesem Server ist kein Stats-Kanal eingerichtet.**", ephemeral=True)
+                    await cursor.execute("DELETE FROM upstats WHERE guildID = (%s)", (interaction.guild.id))
+                    return await interaction.response.send_message("**✅ Die Stats-Kanäle wurden ausgeschaltet.**")
+                if argument == "Einrichten":
+                    if kanal:
+                        await cursor.execute("SELECT text FROM upstats WHERE guildID = (%s) AND channelID = (%s)", (interaction.guild.id, kanal.id))
+                        result = await cursor.fetchone()
+                        if result:
+                            return await interaction.response.send_message("**❌ Der Kanal ist bereits ein Stats-Kanal.**", ephemeral=True)
+
+                    await interaction.response.send_modal(StatsKanal(self.bot, kanal))
+                if argument == "Anzeigen":
+                    await cursor.execute(f"SELECT channelID, text FROM upstats WHERE guildID = {interaction.guild.id}")
+                    wel = await cursor.fetchall()
+                    if wel == []:
+                        return await interaction.response.send_message("**❌ Auf diesem Server ist kein Stats-Kanal eingerichtet.**", ephemeral=True)
+
+                    embed = discord.Embed(title="Stats Kanäle", description=f"Die aktuellen Stats Kanäle:", color=discord.Color.orange())
+                    for ergebnis in result:
+                        g = self.bot.get_guild(int(ergebnis[0]))
+                        if g == None:
+                            return False
+                        k = g.get_channel(int(ergebnis[1]))
+                        if k == None:
+                            return False
+                        embed.add_field(name=ergebnis[1] if len(ergebnis[1]) > 7 else f"{str(ergebnis[1])[:7]}...", value=k.mention, inline=False)
+                        await interaction.response.send_message(embed=embed)
 
                     
 async def setup(bot):
