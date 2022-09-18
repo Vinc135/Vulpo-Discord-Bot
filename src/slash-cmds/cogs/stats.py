@@ -12,7 +12,7 @@ class StatsKanal(discord.ui.Modal, title="Stats Kanal"):
         super().__init__(custom_id="wjfkbuhqefgihgerifuzgqeiufgzu")
         self.kanal = kanal
         self.bot = bot
-        self.add_item(discord.ui.TextInput(label="Nachricht", style=discord.TextStyle.paragraph, required=True, placeholder="%usercount | %membercount | %botcount | %online | %dnd | %idle | %offline"))
+        self.add_item(discord.ui.TextInput(label="Nachricht", style=discord.TextStyle.paragraph, required=True, placeholder="%usercount | %notoffline | %membercount | %botcount | %online | %dnd | %idle | %offline"))
 
     async def on_submit(self, interaction: discord.Interaction):
         async with self.bot.pool.acquire() as conn:
@@ -474,7 +474,7 @@ async def update_all(self):
                         offline += 1
                     if user.bot:
                         bots += 1
-                finaltext = ergebnis[2].replace("%usercount", str(guild.member_count)).replace("%membercount", str(int(guild.member_count) - bots)).replace("%botcount", str(bots)).replace("%online", str(online)).replace("%dnd", str(dnd)).replace("%idle", str(idle)).replace("%offline", str(offline))
+                finaltext = ergebnis[2].replace("%usercount", str(guild.member_count)).replace("%notoffline", str(int(guild.member_count) - offline)).replace("%membercount", str(int(guild.member_count) - bots)).replace("%botcount", str(bots)).replace("%online", str(online)).replace("%dnd", str(dnd)).replace("%idle", str(idle)).replace("%offline", str(offline))
                 await kanal.edit(name=finaltext)
 
 class Stats(commands.Cog):
@@ -544,7 +544,6 @@ class Stats(commands.Cog):
 
     @tasks.loop(minutes=10)
     async def channel_update(self):
-        print("Hallo Welt!")
         try:
             await update_all(self)
         except:
