@@ -433,4 +433,4 @@ async def sync(ctx, serverid: int=None):
         if guild is None:
             await ctx.send(f"❌ Der Server mit der ID `{serverid}` wurde nicht gefunden.")
 
-bot.run("OTI1Nzk5NTU5NTc2MzIyMDc4.G1pfSR.RNwGXR2kWHPhVs2d6MLFbjL33Q9lHYT7GcnRVU", reconnect=True, log_handler=None)
+bot.run("TOKEN", reconnect=True, log_handler=None)
