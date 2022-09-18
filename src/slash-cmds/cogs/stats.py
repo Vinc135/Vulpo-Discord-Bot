@@ -956,7 +956,7 @@ class Stats(commands.Cog):
                         if k == None:
                             return
                         embed.add_field(name=ergebnis[2] if len(ergebnis[2]) > 7 else f"{str(ergebnis[2])[:7]}...", value=k.mention, inline=False)
-                        await interaction.response.send_message(embed=embed)
+                    await interaction.response.send_message(embed=embed)
 
                     
 async def setup(bot):
