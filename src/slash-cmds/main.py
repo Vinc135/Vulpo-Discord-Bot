@@ -314,7 +314,7 @@ class Vulpo(commands.Bot):
             fehler = 0
             await bot.load_extension("jishaku")
             
-            for filename in os.listdir("./cogs"):
+            for filename in os.listdir("src/slash-cmds/cogs"):
                 if filename.endswith(".py"):
                     try:
                         await bot.load_extension(f"cogs.{filename[:-3]}")
