@@ -92,6 +92,9 @@ class rps(discord.ui.View):
 
     @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="ljhgdfiugegrfwiuegrfiu", emoji="✌️")
     async def schere(self, interaction: discord.Interaction, button: discord.ui.Button):
+        print(f"""
+        Userchoice: ✌️
+        Botchoice: {self.botchoice}""")
         await interaction.response.defer(thinking=False, ephemeral=True)
         botchoice = self.botchoice
         userchoice = button.emoji
@@ -134,6 +137,9 @@ class rps(discord.ui.View):
 
     @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="flwehrbfvwejrhgfvweurhfk", emoji="✊")
     async def stein(self, interaction: discord.Interaction, button: discord.ui.Button):
+        print(f"""
+        Userchoice: ✊
+        Botchoice: {self.botchoice}""")
         await interaction.response.defer(thinking=False, ephemeral=True)
         botchoice = self.botchoice
         userchoice = button.emoji
@@ -176,6 +182,9 @@ class rps(discord.ui.View):
 
     @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="ebwkfuzgqewriufgiwuezrgfiu", emoji="✋")
     async def papier(self, interaction: discord.Interaction, button: discord.ui.Button):
+        print(f"""
+        Userchoice: ✋
+        Botchoice: {self.botchoice}""")
         await interaction.response.defer(thinking=False, ephemeral=True)
         botchoice = self.botchoice
         userchoice = button.emoji
@@ -677,6 +686,7 @@ class economy(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def rps(self, interaction: discord.Interaction, betrag: int):
         """Game, Schere Stein Papier. Deine Reaktion ist deine Entscheidung."""
+        return await interaction.response.send_message("**❌ Der Befehl ist zurzeit nicht verfügbar.**", ephemeral=True)
         # überprüfen ob er geld hat
         acc = await open_acc(self, interaction.user)
         rucksack = int(acc[0])
