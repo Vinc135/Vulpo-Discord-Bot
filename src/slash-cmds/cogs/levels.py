@@ -146,17 +146,19 @@ class levelsystem(commands.Cog):
                 async with conn.cursor() as cursor:
                     await cursor.execute(f"SELECT role_id FROM lb_rollen WHERE guild_id = {guild.id}")
                     lb_rollen = await cursor.fetchall()
-                    for r_id in lb_rollen:
-                        rolle = guild.get_role(int(r_id[0]))
-                        if rolle:
-                            if rolle in user.roles:
-                                continue
+                    if lb_rollen != []:
+                        for r_id in lb_rollen:
+                            rolle = guild.get_role(int(r_id[0]))
+                            if rolle:
+                                if rolle in user.roles:
+                                    continue
                     
                     await cursor.execute(f"SELECT channel_id FROM lb_channel WHERE guild_id = {guild.id}")
                     lb_channel = await cursor.fetchall()
-                    for c_id in lb_channel:
-                        if int(c_id[0]) == int(channel.id):
-                            continue
+                    if lb_channel != []:
+                        for c_id in lb_channel:
+                            if int(c_id[0]) == int(channel.id):
+                                continue
 
                     await cursor.execute("SELECT user_xp, user_level FROM levelsystem WHERE client_id = (%s) AND guild_id = (%s)", (user.id, guild.id))
                     userdata = await cursor.fetchone()
@@ -172,8 +174,6 @@ class levelsystem(commands.Cog):
                 
                     await cursor.execute("SELECT status FROM xpboost WHERE guildID = (%s)", (user.guild.id))
                     xpboost = await cursor.fetchone()
-                    if xpboost == None:
-                        continue
                     if xpboost != None:
                         if xpboost[0] == 1:
                             newxp += newxp * 2
@@ -202,7 +202,7 @@ class levelsystem(commands.Cog):
                                 await user.send(nachricht)
                                 continue
                             if result[0] == None or result[0] == "Normal":
-                                continue
+                                pass
                             if result[0] != None and result[0] != "Normal":
                                 channel_objct = guild.get_channel(int(result[0]))
                                 if channel_objct:

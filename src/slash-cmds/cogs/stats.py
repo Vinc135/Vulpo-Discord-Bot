@@ -500,7 +500,7 @@ class Stats(commands.Cog):
             async with conn.cursor() as cursor:
                 await cursor.execute("SELECT channelID FROM stats_blacklist WHERE guildID = (%s)", (member.guild.id))
                 blacklist = await cursor.fetchall()
-                if blacklist != None or str(blacklist) != "()":
+                if blacklist != ():
                     for id in blacklist:
                         if before.channel:
                             if before.channel.id == int(id[0]):
