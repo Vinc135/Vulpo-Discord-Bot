@@ -399,7 +399,7 @@ class economy(commands.Cog):
     @cookies.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def abheben(self, interaction: discord.Interaction, betrag: int):
-        """Hebe Geld von deiner Bank ab."""
+        """Bekomme Geld von der Bank."""
         acc = await open_acc(self, interaction.user)
         rucksack = int(acc[0])
         bank = int(acc[1])

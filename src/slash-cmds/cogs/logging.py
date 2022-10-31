@@ -372,13 +372,40 @@ class logging(commands.Cog):
                         chan = before.guild.get_channel(int(result[0]))
                         if chan is None:
                             return
+                        if len(before.roles) > len(after.roles):
+                            role = next(role for role in before.roles if role not in after.roles)
+
+                            async for entry in after.guild.audit_logs(action=discord.AuditLogAction.member_role_update, limit=1):
+
+                                embed = discord.Embed(title="Member Update", description=f"Rolle entfernt von {entry.user.mention}",
+                                                    colour=discord.Colour.blue(), timestamp=discord.utils.utcnow())
+
+                                fields = [("Member", before.mention, True),
+                                        ("Entfernte Rolle", role.mention, True)]
+
+                                for name, value, inline in fields:
+                                    embed.add_field(name=name, value=value, inline=inline)
+                                await chan.send(embed=embed)
+
+                    if len(after.roles) > len(before.roles):
+                        role = next(role for role in after.roles if role not in before.roles)
+                        async for entry in after.guild.audit_logs(action=discord.AuditLogAction.member_role_update, limit=1):
+
+                            embed = discord.Embed(title="Member Update", description=f"Rolle hinzugefügt zu {entry.user.mention}",
+                                                colour=discord.Colour.blue(), timestamp=discord.utils.utcnow())
+
+                            fields = [("Member", before.mention, True),
+                                    ("Hinzugefügte Rolle", role.mention, True)]
+
+                            for name, value, inline in fields:
+                                embed.add_field(name=name, value=value, inline=inline)
+                            await chan.send(embed=embed)
                         else:
                             if before.nick != after.nick:
                                 if after.nick is None:
                                     embed = discord.Embed(description=f"**Nickname**\n{before} hat seinen Spitznamen zurückgesetzt.", color=discord.Color.green(), timestamp=datetime.utcnow())
 
                                     await chan.send(embed=embed)
-                                    return
                                 else:
                                     embed = discord.Embed(description=f"**Nickname**\n{before} hat seinen Nicknamen zu {after.nick} geändert.", color=discord.Color.gold(), timestamp=datetime.utcnow())
 

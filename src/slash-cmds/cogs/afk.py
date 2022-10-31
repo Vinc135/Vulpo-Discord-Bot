@@ -49,6 +49,8 @@ Ich habe deinen AFK-Status entfernt. AFK gegangen {discord_timestamp(t2, 'R')}."
                             for ping in result2:
                                 author = msg.guild.get_member(int(ping[0]))
                                 channel = msg.guild.get_channel(int(ping[2]))
+                                if channel == None:
+                                    return
                                 msg2 = await channel.fetch_message(int(ping[1]))
                                 if author == None or channel == None or msg2 == None:
                                     pass
@@ -118,6 +120,8 @@ Ich habe deinen AFK-Status entfernt. AFK gegangen {discord_timestamp(t2, 'R')}."
                         for ping in result2:
                             author = interaction.guild.get_member(int(ping[0]))
                             channel = interaction.guild.get_channel(int(ping[2]))
+                            if channel == None:
+                                    return
                             msg2 = await channel.fetch_message(int(ping[1]))
                             if author == None or channel == None or msg2 == None:
                                 pass

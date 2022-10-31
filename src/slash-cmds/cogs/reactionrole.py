@@ -38,7 +38,7 @@ class fertig(discord.ui.Modal, title="Erstelle ein Embed"):
         self.bot = bot
         super().__init__(custom_id="cgqeifzkwvrefhil")
         self.add_item(discord.ui.TextInput(label="Embed Titel", style=discord.TextStyle.short, required=True))
-        self.add_item(discord.ui.TextInput(label="Embed Beschreibung", style=discord.TextStyle.short, required=True))
+        self.add_item(discord.ui.TextInput(label="Embed Beschreibung", style=discord.TextStyle.long, required=True))
         self.add_item(discord.ui.TextInput(label="Embed Thumbnail", style=discord.TextStyle.short, required=False))
         self.add_item(discord.ui.TextInput(label="Embed Image", style=discord.TextStyle.short, required=False))
 
@@ -168,7 +168,7 @@ class fertig2(discord.ui.Modal, title="Erstelle ein Embed"):
         self.bot = bot
         super().__init__(custom_id="gwtgwgte4wg34f")
         self.add_item(discord.ui.TextInput(label="Embed Titel", style=discord.TextStyle.short, required=True))
-        self.add_item(discord.ui.TextInput(label="Embed Beschreibung", style=discord.TextStyle.short, required=True))
+        self.add_item(discord.ui.TextInput(label="Embed Beschreibung", style=discord.TextStyle.long, required=True))
         self.add_item(discord.ui.TextInput(label="Embed Thumbnail", style=discord.TextStyle.short, required=False))
         self.add_item(discord.ui.TextInput(label="Embed Image", style=discord.TextStyle.short, required=False))
 

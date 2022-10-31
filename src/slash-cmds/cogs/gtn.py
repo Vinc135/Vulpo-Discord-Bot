@@ -54,11 +54,14 @@ async def check_number(self, msg: discord.Message):
             result = await cursor.fetchone()
             if result is None:
                 return False
-            if int(result[0]) == int(msg.content):
-                await cursor.execute("DELETE FROM gtncurrent WHERE guildID = (%s)", (msg.guild.id))
-                return True
-            elif int(result[0]) != int(msg.content):
-                return False
+            try:
+                if int(result[0]) == int(msg.content):
+                    await cursor.execute("DELETE FROM gtncurrent WHERE guildID = (%s)", (msg.guild.id))
+                    return True
+                elif int(result[0]) != int(msg.content):
+                    return False
+            except:
+                pass
                 
 async def answer_correct(self, msg):
     await msg.channel.send(f"{msg.author.mention} hat die gesuchte Zahl erraten. (+10 🍪)")
