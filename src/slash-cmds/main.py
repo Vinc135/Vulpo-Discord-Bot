@@ -8,7 +8,7 @@ import sys
 from info import giveaway_end, vote_reminder, send_error, random_color, reminder_end
 import topgg
 import math
-from discord.app_commands import AppCommandError
+from discord.app_commands import AppCommandError, CommandTree
 from discord import app_commands
 import aiomysql
 from googletrans import Translator
@@ -16,9 +16,73 @@ from info import discord_timestamp
 
 dbl_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjkyNTc5OTU1OTU3NjMyMjA3OCIsImJvdCI6dHJ1ZSwiaWF0IjoxNjQyODc4ODc1fQ.PJVIOEUe25WxuUbD1E68UF7bXpRZR_k4XXwr8ukue-c"
 
+class reportmsg(discord.ui.View):
+    def __init__(self, message=None, bot=None):
+        super().__init__(timeout=None)
+        self.message = message
+        self.bot = bot
+
+    @discord.ui.button(label='Gemeldeten Nutzer verwarnen', style=discord.ButtonStyle.red, custom_id="fbiuwerzgfiuwzevfizuk", emoji="🔨")
+    async def warn(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.message.edit(content=f"**🔒 Dieser Nutzer wurde von {interaction.user.mention} verwarnt.**", embed=interaction.message.embeds[0], view=None)
+        user = self.message.author
+        grund = "Unangemessene Nachricht"
+
+        #warn + automod anfang
+        async with self.bot.pool.acquire() as conn:
+            async with conn.cursor() as cursor:
+                warnID = 1
+                await cursor.execute("SELECT warnID FROM warns WHERE userID = (%s) AND guildID = (%s)", (user.id, interaction.guild.id))
+                result = await cursor.fetchall()
+                if result is None:
+                    await cursor.execute("INSERT INTO warns(guildID, userID, grund, warnID) VALUES(%s, %s, %s, %s)", (interaction.guild.id, user.id, grund + f"\n`Verwarnung erstellt am {discord.utils.utcnow().__format__('%d.%m.%Y')}`", 1))
+                    
+                    warnID += 1
+                    return
+                if result != None:
+                    for warn in result:
+                        warnID += 1
+                    await cursor.execute("INSERT INTO warns(guildID, userID, grund, warnID) VALUES(%s, %s, %s, %s)", (interaction.guild.id, user.id, grund + f"\n`Verwarnung erstellt am {discord.utils.utcnow().__format__('%d.%m.%Y')}`", warnID))
+
+                await cursor.execute("SELECT aktion FROM automod WHERE guildID = (%s) AND warnanzahl = (%s)", (interaction.guild.id, warnID))
+                result2 = await cursor.fetchone()
+                if result2:
+                    if result2[0] == "Timeout":
+                        time_end = discord.utils.utcnow()
+                        dt = time_end + datetime.timedelta(days=1)
+                        await user.timeout(dt ,reason="Automod wurde ausgelöst")
+                        await interaction.channel.send(f"🚨 **Der Benutzer {user.mention} wurde getimeoutet.** 🚨\nGrund: Automod wurde ausgelöst ({warnID} Verwarnungen).")
+                    if result2[0] == "Kick":
+                        await user.kick(reason="Automod wurde ausgelöst")
+                        await interaction.channel.send(f"🚨 **Der Benutzer {user.mention} wurde gekickt.** 🚨\nGrund: Automod wurde ausgelöst ({warnID} Verwarnungen).")
+                    if result2[0] == "Ban":
+                        await user.ban(reason="Automod wurde ausgelöst")
+                        await interaction.channel.send(f"🚨 **Der Benutzer {user.mention} wurde gebannt.** 🚨\nGrund: Automod wurde ausgelöst ({warnID} Verwarnungen).")
+        #warn + automod ende
+
+
+        await interaction.response.send_message("**✅ Nutzer wurde verwarnt.**", ephemeral=True)
+
+class MyTree(CommandTree):
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        user = interaction.user
+        guild = bot.get_guild(925729625580113951)
+        banned_users = [ban async for ban in guild.bans()]
+        for entry in banned_users:
+            banned_user = entry.user
+            if int(user.id) == int(banned_user.id):
+                embed = discord.Embed(title="<a:banned:964850005833814076> Du bist gebannt", description=f"""
+> <:vielleicht:964850836884819969> Mit einem Bann hast du keinen Zugang mehr zu Vulpo's Befehlen. Außerdem hast du keinen Zutritt zum Supportserver "Vulpo's Wald".
+<:orangerpfeil:1000823380607516772> Grund: {entry.reason}
+<:orangerpfeil:1000823380607516772> Falls du denkst, dass du dich geändert hast, oder du zu unrecht bestraft wurdest, kannst du einen [Entbannungsantrag](https://forms.gle/NH1Jb1gVNEPuTLA58) stellen.
+""", colour=0xac0000)
+                await interaction.response.send_message(embed=embed, ephemeral=True)
+                return False
+        return True
+
 class Vulpo(commands.Bot):
     def __init__(self):
-        super().__init__(command_prefix="vulpo!", help_command=None, case_insensitive=True, intents=discord.Intents.all())
+        super().__init__(command_prefix="vulpo!", help_command=None, case_insensitive=True, intents=discord.Intents.all(), tree_cls=MyTree)
         self.giveaways = False
         self.votes = False
         self.reminder = False
@@ -249,7 +313,7 @@ class Vulpo(commands.Bot):
     async def setup_hook(self):
         try:
             loop = asyncio.get_event_loop()
-            pool = await aiomysql.create_pool(host='142.132.233.69', port=3306, user='u64287_BGWSJv8tMk', password='FIuqyfN+Qbl^c3422vps7Xci', db='s64287_Vulpo', loop=loop, autocommit=True, maxsize=25)
+            pool = await aiomysql.create_pool(host='142.132.233.69', port=3306, user='u64287_IF3HQ8wHRH', password='3oKMMVfuEqv^Xcvf@i!3bzw^', db='s64287_VulpoDB', loop=loop, autocommit=True, maxsize=25)
             bot.pool = pool
             print(f"✅ Pool erstellt")
         except:
@@ -314,7 +378,7 @@ class Vulpo(commands.Bot):
             fehler = 0
             await bot.load_extension("jishaku")
             
-            for filename in os.listdir("src/slash-cmds/cogs"):
+            for filename in os.listdir("cogs"):
                 if filename.endswith(".py"):
                     try:
                         await bot.load_extension(f"cogs.{filename[:-3]}")
@@ -337,10 +401,12 @@ class Vulpo(commands.Bot):
         
     async def on_ready(self):
         try:
-            await bot.change_presence(status=discord.Status.online,activity=discord.Activity(type=discord.ActivityType.playing, name="mit Slash-Commands"))
+            await bot.change_presence(status=discord.Status.online,activity=discord.Activity(type=discord.ActivityType.playing, name="mit /reportlog"))
             print("✅ Status bereit")
         except:
             print("❌ Status nicht bereit")
+        bot.add_view(view=reportmsg(None, bot))
+        print("✅ Alle System sind nun bereit.")
 
 bot = Vulpo()
 
@@ -433,4 +499,30 @@ async def sync(ctx, serverid: int=None):
         if guild is None:
             await ctx.send(f"❌ Der Server mit der ID `{serverid}` wurde nicht gefunden.")
 
-bot.run("TOKEN", reconnect=True, log_handler=None)
+@bot.tree.context_menu(name="Nachricht melden")
+async def nachricht_melden(interaction: discord.Interaction, message: discord.Message):
+    async with bot.pool.acquire() as conn:
+        async with conn.cursor() as cursor:
+            await cursor.execute(f"SELECT channelID FROM reportlog WHERE guildID = {interaction.guild.id}")
+            result = await cursor.fetchone()
+            if result == None:
+                return await interaction.response.send_message("**❌ Diese Funktion ist hier nicht aktiviert.**", ephemeral=True)
+            try:
+                channel = interaction.guild.get_channel(int(result[0]))
+                if channel == None:
+                    return await interaction.response.send_message("**❌ Der Kanal des Reportlogs existiert nicht mehr. Bitte melde dies dem lokalen Serverteam.**", ephemeral=True)
+                else:
+                    embed = discord.Embed(title="Nachricht Meldung", description=f"""
+Der User {interaction.user.mention} hat eine Nachricht von {message.author.mention} gemeldet.
+
+`Nachricht`: {message.content}
+""", color=discord.Color.red())
+                    embed.set_thumbnail(url=interaction.guild.icon)
+                    embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                    await channel.send(embed=embed, view=reportmsg(message, bot))
+                    await interaction.response.send_message(f"`Das Mitglied` {interaction.user.mention} `hat eine Nachricht von` {message.author.mention} `gemeldet.`")
+            except:
+                return await interaction.response.send_message("**❌ Der Kanal des Reportlogs existiert nicht mehr. Bitte melde dies dem lokalen Serverteam.**", ephemeral=True)
+
+
+bot.run("OTI1Nzk5NTU5NTc2MzIyMDc4.GyWCpe.S8URCDJm8wlKVztJRYf_Njjy8NsfUU7iIK5nXk", reconnect=True, log_handler=None)

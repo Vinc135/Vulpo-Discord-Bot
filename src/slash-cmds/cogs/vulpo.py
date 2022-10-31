@@ -105,6 +105,7 @@ __⚙️ Team Befehle__
 `/tag add` Erstelle einen Tag.
 `/tag delete` Entferne einen Tag.
 `/tag liste` Lass dir alle Tags anzeigen.
+`/reportlog` Lege einen Kanal fest für gemeldete Nachrichten von Usern.
 
 Außerdem:
 Jeder Nutzer kann die Custom Befehle des Tags System nutzen. Wenn erstmal ein Tag erstellt wurde kann jeder User ihn mit `!tag tagname` ausführen.

@@ -47,43 +47,20 @@ async def getuserstats(self, art, member, guild):
                         if f".{discord.utils.utcnow().__format__('%m')}." in str(datum[1]):
                             monat1 += int(datum[0])
                         #wochen stats
-                        if int(discord.utils.utcnow().__format__('%d')) != 1:
-                            if f"{int(discord.utils.utcnow().__format__('%d')) - 1}." in str(datum[1]):
-                                woche1 += int(datum[0])
-                                
-                            if f"{int(discord.utils.utcnow().__format__('%d')) - 2}." in str(datum[1]):
-                                woche1 += int(datum[0])
-                        
-                            if f"{int(discord.utils.utcnow().__format__('%d')) - 3}." in str(datum[1]):
-                                woche1 += int(datum[0])
-                            
-                            if f"{int(discord.utils.utcnow().__format__('%d')) - 4}." in str(datum[1]):
-                                woche1 += int(datum[0])
-                            
-                            if f"{int(discord.utils.utcnow().__format__('%d')) - 5}." in str(datum[1]):
-                                woche1 += int(datum[0])
-                            
-                            if f"{int(discord.utils.utcnow().__format__('%d')) - 6}." in str(datum[1]):
-                                woche1 += int(datum[0])
-                        else:
-                            if "31." in str(datum[1]):
-                                woche1 += int(datum[0])
-                                
-                            if "30." in str(datum[1]):
-                                woche1 += int(datum[0])
-                        
-                            if "29." in str(datum[1]):
-                                woche1 += int(datum[0])
-                            
-                            if "28." in str(datum[1]):
-                                woche1 += int(datum[0])
-                            
-                            if "27." in str(datum[1]):
-                                woche1 += int(datum[0])
-                            
-                            if "26." in str(datum[1]):
-                                woche1 += int(datum[0])
-
+                        i = 0
+                        while True:
+                            i += 1
+                            if i >= 8:
+                                break
+                            tag = int(discord.utils.utcnow().__format__('%d')) - i
+                            if tag >= 1:
+                                if f"{tag}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
+                                    woche1 += int(datum[0])
+                            else:
+                                if int(discord.utils.utcnow().__format__('%d')) <= 0:
+                                    letzter_monat = 31 - i
+                                    if f"{letzter_monat}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}." in str(datum[1]):
+                                        woche1 += int(datum[0])
                         #tages stats
                         if f"{discord.utils.utcnow().__format__('%d')}." in str(datum[1]):
                             tag1 += int(datum[0])
@@ -112,43 +89,20 @@ async def getuserstats(self, art, member, guild):
                         if f".{discord.utils.utcnow().__format__('%m')}." in str(datum[1]):
                             monat1 += int(datum[0])
                         #wochen stats
-                        if int(discord.utils.utcnow().__format__('%d')) != 1:
-                            if f"{int(discord.utils.utcnow().__format__('%d')) - 1}." in str(datum[1]):
-                                woche1 += int(datum[0])
-                                
-                            if f"{int(discord.utils.utcnow().__format__('%d')) - 2}." in str(datum[1]):
-                                woche1 += int(datum[0])
-                        
-                            if f"{int(discord.utils.utcnow().__format__('%d')) - 3}." in str(datum[1]):
-                                woche1 += int(datum[0])
-                            
-                            if f"{int(discord.utils.utcnow().__format__('%d')) - 4}." in str(datum[1]):
-                                woche1 += int(datum[0])
-                            
-                            if f"{int(discord.utils.utcnow().__format__('%d')) - 5}." in str(datum[1]):
-                                woche1 += int(datum[0])
-                            
-                            if f"{int(discord.utils.utcnow().__format__('%d')) - 6}." in str(datum[1]):
-                                woche1 += int(datum[0])
-                        else:
-                            if "31." in str(datum[1]):
-                                woche1 += int(datum[0])
-                                
-                            if "30." in str(datum[1]):
-                                woche1 += int(datum[0])
-                        
-                            if "29." in str(datum[1]):
-                                woche1 += int(datum[0])
-                            
-                            if "28." in str(datum[1]):
-                                woche1 += int(datum[0])
-                            
-                            if "27." in str(datum[1]):
-                                woche1 += int(datum[0])
-                            
-                            if "26." in str(datum[1]):
-                                woche1 += int(datum[0])
-
+                        i = 0
+                        while True:
+                            i += 1
+                            if i >= 8:
+                                break
+                            tag = int(discord.utils.utcnow().__format__('%d')) - i
+                            if tag >= 1:
+                                if f"{tag}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
+                                    woche1 += int(datum[0])
+                            else:
+                                if int(discord.utils.utcnow().__format__('%d')) <= 0:
+                                    letzter_monat = 31 - i
+                                    if f"{letzter_monat}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}." in str(datum[1]):
+                                        woche1 += int(datum[0])
                         #tages stats
                         if f"{discord.utils.utcnow().__format__('%d')}." in str(datum[1]):
                             tag1 += int(datum[0])
@@ -204,7 +158,6 @@ async def getchannelstats(self, art, channel, guild):
                 woche1 = 0
                 tag1 = 0
                 await cursor.execute("SELECT anzahl, zeit FROM nachrichten WHERE guildID = (%s) AND channelID = (%s)", (guild.id, channel.id))
-                r1 = await cursor.fetchall()
                 if str(r1) != "()":
                     for datum in r1:
                         #für nachrichten
@@ -216,46 +169,20 @@ async def getchannelstats(self, art, channel, guild):
                         if f".{discord.utils.utcnow().__format__('%m')}." in str(datum[1]):
                             monat1 += int(datum[0])
                         #wochen stats
-                        if f"{discord.utils.utcnow().__format__('%d')}." in str(datum[1]):
-                            woche1 += int(datum[0])
-                        
-                        if int(discord.utils.utcnow().__format__('%d')) != 1:
-                            if f"{int(discord.utils.utcnow().__format__('%d')) - 1}." in str(datum[1]):
-                                woche1 += int(datum[0])
-                                
-                            if f"{int(discord.utils.utcnow().__format__('%d')) - 2}." in str(datum[1]):
-                                woche1 += int(datum[0])
-                        
-                            if f"{int(discord.utils.utcnow().__format__('%d')) - 3}." in str(datum[1]):
-                                woche1 += int(datum[0])
-                            
-                            if f"{int(discord.utils.utcnow().__format__('%d')) - 4}." in str(datum[1]):
-                                woche1 += int(datum[0])
-                            
-                            if f"{int(discord.utils.utcnow().__format__('%d')) - 5}." in str(datum[1]):
-                                woche1 += int(datum[0])
-                            
-                            if f"{int(discord.utils.utcnow().__format__('%d')) - 6}." in str(datum[1]):
-                                woche1 += int(datum[0])
-                        else:
-                            if "31." in str(datum[1]):
-                                woche1 += int(datum[0])
-                                
-                            if "30." in str(datum[1]):
-                                woche1 += int(datum[0])
-                        
-                            if "29." in str(datum[1]):
-                                woche1 += int(datum[0])
-                            
-                            if "28." in str(datum[1]):
-                                woche1 += int(datum[0])
-                            
-                            if "27." in str(datum[1]):
-                                woche1 += int(datum[0])
-                            
-                            if "26." in str(datum[1]):
-                                woche1 += int(datum[0])
-
+                        i = 0
+                        while True:
+                            i += 1
+                            if i >= 8:
+                                break
+                            tag = int(discord.utils.utcnow().__format__('%d')) - i
+                            if tag >= 1:
+                                if f"{tag}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
+                                    woche1 += int(datum[0])
+                            else:
+                                if int(discord.utils.utcnow().__format__('%d')) <= 0:
+                                    letzter_monat = 31 - i
+                                    if f"{letzter_monat}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}." in str(datum[1]):
+                                        woche1 += int(datum[0])
                         #tages stats
                         if f"{discord.utils.utcnow().__format__('%d')}." in str(datum[1]):
                             tag1 += int(datum[0])
@@ -284,47 +211,20 @@ async def getchannelstats(self, art, channel, guild):
                         if f".{discord.utils.utcnow().__format__('%m')}." in str(datum[1]):
                             monat1 += int(datum[0])
                         #wochen stats
-                        if f"{discord.utils.utcnow().__format__('%d')}." in str(datum[1]):
-                            woche1 += int(datum[0])
-                            
-                        if int(discord.utils.utcnow().__format__('%d')) != 1:
-                            if f"{int(discord.utils.utcnow().__format__('%d')) - 1}." in str(datum[1]):
-                                woche1 += int(datum[0])
-                                
-                            if f"{int(discord.utils.utcnow().__format__('%d')) - 2}." in str(datum[1]):
-                                woche1 += int(datum[0])
-                        
-                            if f"{int(discord.utils.utcnow().__format__('%d')) - 3}." in str(datum[1]):
-                                woche1 += int(datum[0])
-                            
-                            if f"{int(discord.utils.utcnow().__format__('%d')) - 4}." in str(datum[1]):
-                                woche1 += int(datum[0])
-                            
-                            if f"{int(discord.utils.utcnow().__format__('%d')) - 5}." in str(datum[1]):
-                                woche1 += int(datum[0])
-                            
-                            if f"{int(discord.utils.utcnow().__format__('%d')) - 6}." in str(datum[1]):
-                                woche1 += int(datum[0])
-                        else:
-                            if "31." in str(datum[1]):
-                                woche1 += int(datum[0])
-                                
-                            if "30." in str(datum[1]):
-                                woche1 += int(datum[0])
-                        
-                            if "29." in str(datum[1]):
-                                woche1 += int(datum[0])
-                            
-                            if "28." in str(datum[1]):
-                                woche1 += int(datum[0])
-                            
-                            if "27." in str(datum[1]):
-                                woche1 += int(datum[0])
-                            
-                            if "26." in str(datum[1]):
-                                woche1 += int(datum[0])
-                            
-
+                        i = 0
+                        while True:
+                            i += 1
+                            if i >= 8:
+                                break
+                            tag = int(discord.utils.utcnow().__format__('%d')) - i
+                            if tag >= 1:
+                                if f"{tag}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
+                                    woche1 += int(datum[0])
+                            else:
+                                if int(discord.utils.utcnow().__format__('%d')) <= 0:
+                                    letzter_monat = 31 - i
+                                    if f"{letzter_monat}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}." in str(datum[1]):
+                                        woche1 += int(datum[0])
                         #tages stats
                         if f"{discord.utils.utcnow().__format__('%d')}." in str(datum[1]):
                             tag1 += int(datum[0])
@@ -448,34 +348,32 @@ async def update_all(self):
             #await cursor.execute("CREATE TABLE IF NOT EXISTS upstats(guildID TEXT, channelID TEXT, text TEXT)")
             await cursor.execute("SELECT guildID, channelID, text FROM upstats")
             result = await cursor.fetchall()
-            if result == []:
-                return False
             for ergebnis in result:
-                guild = self.bot.get_guild(int(ergebnis[0]))
-                if guild == None:
+                try:
+                    guild = self.bot.get_guild(int(ergebnis[0]))
+                    if guild:
+                        kanal = guild.get_channel(int(ergebnis[1]))
+                        if kanal:
+                            online = 0
+                            offline = 0
+                            dnd = 0
+                            idle = 0
+                            bots = 0
+                            for user in guild.members:
+                                if str(user.status.name) == "online":
+                                    online += 1
+                                if str(user.status.name) == "dnd":
+                                    dnd += 1
+                                if str(user.status.name) == "idle":
+                                    idle += 1
+                                if str(user.status.name) == "offline":
+                                    offline += 1
+                                if user.bot:
+                                    bots += 1
+                            finaltext = ergebnis[2].replace("%usercount", str(guild.member_count)).replace("%notoffline", str(int(guild.member_count) - offline)).replace("%membercount", str(int(guild.member_count) - bots)).replace("%botcount", str(bots)).replace("%online", str(online)).replace("%dnd", str(dnd)).replace("%idle", str(idle)).replace("%offline", str(offline))
+                            await kanal.edit(name=finaltext)
+                except:
                     continue
-                kanal = guild.get_channel(int(ergebnis[1]))
-                if kanal == None:
-                    continue
-
-                online = 0
-                offline = 0
-                dnd = 0
-                idle = 0
-                bots = 0
-                for user in guild.members:
-                    if str(user.status.name) == "online":
-                        online += 1
-                    if str(user.status.name) == "dnd":
-                        dnd += 1
-                    if str(user.status.name) == "idle":
-                        idle += 1
-                    if str(user.status.name) == "offline":
-                        offline += 1
-                    if user.bot:
-                        bots += 1
-                finaltext = ergebnis[2].replace("%usercount", str(guild.member_count)).replace("%notoffline", str(int(guild.member_count) - offline)).replace("%membercount", str(int(guild.member_count) - bots)).replace("%botcount", str(bots)).replace("%online", str(online)).replace("%dnd", str(dnd)).replace("%idle", str(idle)).replace("%offline", str(offline))
-                await kanal.edit(name=finaltext)
 
 class Stats(commands.Cog):
     def __init__(self, bot):
@@ -544,10 +442,7 @@ class Stats(commands.Cog):
 
     @tasks.loop(minutes=10)
     async def channel_update(self):
-        try:
-            await update_all(self)
-        except:
-            pass
+        await update_all(self)
 
     #Nachrichten Stats#
     
