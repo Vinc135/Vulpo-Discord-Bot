@@ -128,7 +128,7 @@ class meta(commands.Cog):
                 return await interaction.response.send_message("**❌ Du kannst nur maximal neun Antwortmöglichkeiten geben.**", ephemeral=True)
             desc += f":{c}: - {answer}\n"
         embed = discord.Embed(color=discord.Color.orange(), title=frage, description=desc)
-        embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/925799559576322078/a2f839c85ee1dd3ef9a1b1fa511e332b.png?size=1024")
+        embed.set_thumbnail(url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
         embed.set_footer(text="Entscheide dich nur für eins!")
         message = await interaction.channel.send("**Neue Umfrage!**", embed=embed)
         if a == 1:
@@ -200,7 +200,7 @@ class meta(commands.Cog):
             t2 = datetime.datetime.fromtimestamp(int(t1))
             embed = discord.Embed(colour=discord.Color.green())
             embed.add_field(name=f"🆔 ID", value=f"{channel.id}", inline=False)
-            embed.add_field(name="⚙️ Erstellt", value=f"Der Kanal wurde {discord_timestamp(t2, 'R')} erstellt.",
+            embed.add_field(name="<:v_einstellungen:1037067521049759865> Erstellt", value=f"Der Kanal wurde {discord_timestamp(t2, 'R')} erstellt.",
                             inline=False)
             if channel.category:
                 embed.add_field(name="🗂 Kategorie",
@@ -252,27 +252,27 @@ class meta(commands.Cog):
             for flag in member.public_flags:
                 if flag[1] == True:
                     if flag[0] == "staff":
-                        flags += "<:discord_staff:997778830200680508> "
+                        flags += "<:v_discordstaff:1037069155008000042> "
                     if flag[0] == "partner":
-                        flags += "<:partner:964850471137312818> "
+                        flags += "<:v_discordpartner:1037069463532601404> "
                     if flag[0] == "bug_hunter":
-                        flags += "<:bug_hunter:997779009201000500> "
+                        flags += "<:v_bughunter:1037069367483060244> "
                     if flag[0] == "hypesquad_bravery":
-                        flags += "<:bravery:997779063403970561> "
+                        flags += "<:v_bravery:1037069608127037500> "
                     if flag[0] == "hypesquad_brilliance":
-                        flags += "<:brilliance:997779127870443591> "
+                        flags += "<:brilliance:1037069659708600435> "
                     if flag[0] == "hypesquad_balance":
-                        flags += "<:balance:997779583111790622> "
+                        flags += "<:v_balance:1037069709318819950> "
                     if flag[0] == "early_supporter":
-                        flags += "<:supporter:997779634664001577> "
+                        flags += "<:v_supporter:1037069787043483678> "
                     if flag[0] == "bug_hunter_level_2":
-                        flags += "<:bughunter_level2:997779682219008041> "
+                        flags += "<:v_bughuntergold:1037069871286059058> "
                     if flag[0] == "verified_bot":
-                        flags += "<:verified_bot:964846989487529995> "
+                        flags += "<:v_verifiedbot:1037069972226179182> "
                     if flag[0] == "verified_bot_developer":
-                        flags += "<:verified_bot_developer:997779774422388746> "
+                        flags += "<:v_verifiedbotdeveloper:1037070049539788851>"
                     if flag[0] == "discord_certified_moderator":
-                        flags += "<:mod:997779886687137862> "
+                        flags += "<:v_mod:1037070124164857867> "
             if flags != "":
                 embed.add_field(name="🎖 Abzeichen", value=flags, inline=False)
 
@@ -308,12 +308,12 @@ class meta(commands.Cog):
         for member in interaction.guild.members:
             if member.status.name == "online":
                 online += 1
-        embed.add_field(name="Mitglieder", value=f"<:status_online:944569387900346378> {online} Online **|** <:offline:964852293700841513> {interaction.guild.member_count} Mitglieder", inline=False)
-        embed.add_field(name="Kanäle", value=f"<:textchannel:997093466473508874> {len(interaction.guild.text_channels)} Textkanäle **|** <:voicechannel:997093527391580200> {len(interaction.guild.voice_channels)} Sprachkanäle", inline=False)
+        embed.add_field(name="Mitglieder", value=f"<:v_statusonline:1037071233902182491> {online} Online **|** <:v_statusoffline:1037071732474921080> {interaction.guild.member_count} Mitglieder", inline=False)
+        embed.add_field(name="Kanäle", value=f"<:v_chat:1037065910567055370> {len(interaction.guild.text_channels)} Textkanäle **|** <:v_mikrofon:1037065919282810910> {len(interaction.guild.voice_channels)} Sprachkanäle", inline=False)
         
         bans = [ban async for ban in interaction.guild.bans()]
-        embed.add_field(name="Gebannte User", value=f"<a:banned:964850005833814076> {len(bans)}", inline=False)
-        embed.add_field(name="Boost Status", value=f"<a:nitro:964851833094963200> {interaction.guild.premium_subscription_count if interaction.guild.premium_subscription_count else 'Keine'} Booster (Level {interaction.guild.premium_tier})", inline=False)
+        embed.add_field(name="Gebannte User", value=f"<:v_mod:1037065920704696420> {len(bans)}", inline=False)
+        embed.add_field(name="Boost Status", value=f"<:v_bild:1037065909317148712> {interaction.guild.premium_subscription_count if interaction.guild.premium_subscription_count else 'Keine'} Booster (Level {interaction.guild.premium_tier})", inline=False)
         if interaction.guild.features:
             funktionen = ""
             for funktion in interaction.guild.features:

@@ -44,23 +44,24 @@ async def getuserstats(self, art, member, guild):
                         if f".{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
                             jahr1 += int(datum[0])
                         #monats stats
-                        if f".{discord.utils.utcnow().__format__('%m')}." in str(datum[1]):
+                        if f".{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
                             monat1 += int(datum[0])
                         #wochen stats
                         i = 0
+                        a = 0
                         while True:
                             i += 1
                             if i >= 8:
                                 break
                             tag = int(discord.utils.utcnow().__format__('%d')) - i
-                            if tag >= 1:
+                            if int(tag) >= 1:
                                 if f"{tag}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
                                     woche1 += int(datum[0])
                             else:
-                                if int(discord.utils.utcnow().__format__('%d')) <= 0:
-                                    letzter_monat = 31 - i
-                                    if f"{letzter_monat}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}." in str(datum[1]):
-                                        woche1 += int(datum[0])
+                                letzter_monat = 31 - a
+                                a += 1
+                                if f"{letzter_monat}.{int(discord.utils.utcnow().__format__('%m')) - 1}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
+                                    woche1 += int(datum[0])
                         #tages stats
                         if f"{discord.utils.utcnow().__format__('%d')}." in str(datum[1]):
                             tag1 += int(datum[0])
@@ -86,23 +87,24 @@ async def getuserstats(self, art, member, guild):
                         if f".{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
                             jahr1 += int(datum[0])
                         #monats stats
-                        if f".{discord.utils.utcnow().__format__('%m')}." in str(datum[1]):
+                        if f".{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
                             monat1 += int(datum[0])
                         #wochen stats
                         i = 0
+                        a = 0
                         while True:
                             i += 1
                             if i >= 8:
                                 break
                             tag = int(discord.utils.utcnow().__format__('%d')) - i
-                            if tag >= 1:
+                            if int(tag) >= 1:
                                 if f"{tag}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
                                     woche1 += int(datum[0])
                             else:
-                                if int(discord.utils.utcnow().__format__('%d')) <= 0:
-                                    letzter_monat = 31 - i
-                                    if f"{letzter_monat}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}." in str(datum[1]):
-                                        woche1 += int(datum[0])
+                                letzter_monat = 31 - a
+                                a += 1
+                                if f"{letzter_monat}.{int(discord.utils.utcnow().__format__('%m')) - 1}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
+                                    woche1 += int(datum[0])
                         #tages stats
                         if f"{discord.utils.utcnow().__format__('%d')}." in str(datum[1]):
                             tag1 += int(datum[0])
@@ -158,6 +160,7 @@ async def getchannelstats(self, art, channel, guild):
                 woche1 = 0
                 tag1 = 0
                 await cursor.execute("SELECT anzahl, zeit FROM nachrichten WHERE guildID = (%s) AND channelID = (%s)", (guild.id, channel.id))
+                r1 = await cursor.fetchall()
                 if str(r1) != "()":
                     for datum in r1:
                         #für nachrichten
@@ -166,23 +169,24 @@ async def getchannelstats(self, art, channel, guild):
                         if f".{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
                             jahr1 += int(datum[0])
                         #monats stats
-                        if f".{discord.utils.utcnow().__format__('%m')}." in str(datum[1]):
+                        if f".{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
                             monat1 += int(datum[0])
                         #wochen stats
                         i = 0
+                        a = 0
                         while True:
                             i += 1
                             if i >= 8:
                                 break
                             tag = int(discord.utils.utcnow().__format__('%d')) - i
-                            if tag >= 1:
+                            if int(tag) >= 1:
                                 if f"{tag}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
                                     woche1 += int(datum[0])
                             else:
-                                if int(discord.utils.utcnow().__format__('%d')) <= 0:
-                                    letzter_monat = 31 - i
-                                    if f"{letzter_monat}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}." in str(datum[1]):
-                                        woche1 += int(datum[0])
+                                letzter_monat = 31 - a
+                                a += 1
+                                if f"{letzter_monat}.{int(discord.utils.utcnow().__format__('%m')) - 1}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
+                                    woche1 += int(datum[0])
                         #tages stats
                         if f"{discord.utils.utcnow().__format__('%d')}." in str(datum[1]):
                             tag1 += int(datum[0])
@@ -208,23 +212,24 @@ async def getchannelstats(self, art, channel, guild):
                         if f".{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
                             jahr1 += int(datum[0])
                         #monats stats
-                        if f".{discord.utils.utcnow().__format__('%m')}." in str(datum[1]):
+                        if f".{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
                             monat1 += int(datum[0])
                         #wochen stats
                         i = 0
+                        a = 0
                         while True:
                             i += 1
                             if i >= 8:
                                 break
                             tag = int(discord.utils.utcnow().__format__('%d')) - i
-                            if tag >= 1:
+                            if int(tag) >= 1:
                                 if f"{tag}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
                                     woche1 += int(datum[0])
                             else:
-                                if int(discord.utils.utcnow().__format__('%d')) <= 0:
-                                    letzter_monat = 31 - i
-                                    if f"{letzter_monat}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}." in str(datum[1]):
-                                        woche1 += int(datum[0])
+                                letzter_monat = 31 - a
+                                a += 1
+                                if f"{letzter_monat}.{int(discord.utils.utcnow().__format__('%m')) - 1}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
+                                    woche1 += int(datum[0])
                         #tages stats
                         if f"{discord.utils.utcnow().__format__('%d')}." in str(datum[1]):
                             tag1 += int(datum[0])
@@ -423,7 +428,7 @@ class Stats(commands.Cog):
                         channelid += int(voicechannel.id)
                 channel = guild.get_channel(channelid)
                 if channel is None:
-                    pass
+                    continue
                 async with self.bot.pool.acquire() as conn:
                     async with conn.cursor() as cursor:
                         await cursor.execute("SELECT channelID FROM stats_blacklist WHERE guildID = (%s)", (guild.id))
@@ -431,11 +436,12 @@ class Stats(commands.Cog):
                         if blacklist != None or str(blacklist) != "()":
                             for id in blacklist:
                                 if channel.id == int(id[0]):
-                                    return
+                                    continue
                         await cursor.execute("SELECT anzahl FROM voice WHERE guildID = (%s) AND userID = (%s) AND zeit = (%s) AND channelID = (%s)", (guild.id, user.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), channel.id))
                         result = await cursor.fetchone()
                         if result is None:
-                            return await cursor.execute("INSERT INTO voice(userID, guildID, zeit, anzahl, channelID) VALUES(%s, %s, %s, %s, %s)", (user.id, guild.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), 1, channel.id))
+                            await cursor.execute("INSERT INTO voice(userID, guildID, zeit, anzahl, channelID) VALUES(%s, %s, %s, %s, %s)", (user.id, guild.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), 1, channel.id))
+                            continue
                         await cursor.execute("UPDATE voice SET anzahl = (%s) WHERE guildID = (%s) AND userID = (%s) AND zeit = (%s) AND channelID = (%s)", (result[0] + 1, guild.id, user.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), channel.id))
         except:
             pass
@@ -515,26 +521,26 @@ class Stats(commands.Cog):
                     except:
                         text2 += "Keine Daten"
                     
-                    embed = discord.Embed(colour=member.color, title=f"<:stats:944569387615125545> Statistiken von {member.name}", description=f"""
-<:textchannel:997093466473508874> **Nachrichten Stats:**
+                    embed = discord.Embed(colour=member.color, title=f"<:v_stats:1037065930284474398> Statistiken von {member.name}", description=f"""
+<:v_chat:1037065910567055370> **Nachrichten Stats:**
 > Insgesammt: {stats1[0]} Nachrichten
 > Jahr {discord.utils.utcnow().__format__('%Y')}: {stats1[1]} Nachrichten
 > Monat {monat}: {stats1[2]} Nachrichten
 > Letzten 7 Tage: {stats1[3]} Nachrichten
 > Tag: {stats1[4]} Nachrichten
 
-<:textchannel:997093466473508874> **Aktivste Kanäle des Nutzers:**
+<:v_chat:1037065910567055370> **Aktivste Kanäle des Nutzers:**
 {text1}
 
 
-<:voicechannel:997093527391580200> **Sprachkanal Stats:**
+<:v_mikrofon:1037065919282810910> **Sprachkanal Stats:**
 > Insgesammt: {stats2[0]} Minuten
 > Jahr: {stats2[1]} Minuten
 > Monat: {stats2[2]} Minuten
 > Letzten 7 Tage: {stats2[3]} Minuten
 > Tag: {stats2[4]} Minuten
 
-<:voicechannel:997093527391580200> **Aktivste Sprachkanäle des Nutzers:**
+<:v_mikrofon:1037065919282810910> **Aktivste Sprachkanäle des Nutzers:**
 {text2}""")
                     embed.set_thumbnail(url=member.avatar)
                     return await interaction.response.send_message(embed=embed)
@@ -556,15 +562,15 @@ class Stats(commands.Cog):
                         text += "Keine Daten"
                         
                     stats = await getchannelstats(self, "Textkanal", textkanal, interaction.guild)
-                    embed = discord.Embed(colour=discord.Colour.green(), title=f"<:stats:944569387615125545> Statistiken von {textkanal.name}", description=f"""
-<:textchannel:997093466473508874> **Nachrichten Stats:**
+                    embed = discord.Embed(colour=discord.Colour.green(), title=f"<:v_stats:1037065930284474398> Statistiken von {textkanal.name}", description=f"""
+<:v_chat:1037065910567055370> **Nachrichten Stats:**
 > Insgesammt: {stats[0]} Nachrichten
 > Jahr {discord.utils.utcnow().__format__('%Y')}: {stats[1]} Nachrichten
 > Monat {monat}: {stats[2]} Nachrichten
 > Letzten 7 Tage: {stats[3]} Nachrichten
 > Tag: {stats[4]} Nachrichten
 
-<:textchannel:997093466473508874> **Aktivste Nutzer des Kanals:**
+<:v_chat:1037065910567055370> **Aktivste Nutzer des Kanals:**
 {text}""")
                     embed.set_thumbnail(url=interaction.guild.icon)
                     return await interaction.response.send_message(embed=embed)
@@ -585,15 +591,15 @@ class Stats(commands.Cog):
                         text += "Keine Daten"
                         
                     stats = await getchannelstats(self, "Sprachkanal", sprachkanal, interaction.guild)
-                    embed = discord.Embed(colour=discord.Colour.green(), title=f"<:stats:944569387615125545> Statistiken von {sprachkanal.name}", description=f"""
-<:voicechannel:997093527391580200> **Aktivität im Sprachkanal:**
+                    embed = discord.Embed(colour=discord.Colour.green(), title=f"<:v_stats:1037065930284474398> Statistiken von {sprachkanal.name}", description=f"""
+<:v_mikrofon:1037065919282810910> **Aktivität im Sprachkanal:**
 > Insgesammt: {stats[0]} Minuten
 > Jahr {discord.utils.utcnow().__format__('%Y')}: {stats[1]} Minuten
 > Monat {monat}: {stats[2]} Minuten
 > Letzten 7 Tage: {stats[3]} Minuten
 > Tag: {stats[4]} Minuten
 
-<:voicechannel:997093527391580200> **Aktivste Nutzer des Kanals:**
+<:v_mikrofon:1037065919282810910> **Aktivste Nutzer des Kanals:**
 {text}""")
                     embed.set_thumbnail(url=interaction.guild.icon)
                     return await interaction.response.send_message(embed=embed)        
@@ -627,7 +633,7 @@ class Stats(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def top(self, interaction: discord.Interaction, art: typing.Literal["Mitglieder", "Kanäle"]):
         """Lass dir die besten Stats dieses Servers anzeigen."""
-        await interaction.response.send_message("**⚙️ Ich generiere die Embeds und die Graphen. Einen kleinen Moment bitte.**", ephemeral=True)
+        await interaction.response.send_message("**<:v_einstellungen:1037067521049759865> Ich generiere die Embeds und die Graphen. Einen kleinen Moment bitte.**", ephemeral=True)
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 if art == "Mitglieder":
@@ -709,11 +715,11 @@ class Stats(commands.Cog):
                     plt.xticks(rotation=45)
                     plt.savefig("stats.png")
                     plt.close()
-                    embed = discord.Embed(colour=discord.Colour.green(), title=f"<:stats:944569387615125545> Statistiken der aktivsten {art}", description=f"""
-<:textchannel:997093466473508874> **Aktivste Nutzer in Textkanälen:**
+                    embed = discord.Embed(colour=discord.Colour.green(), title=f"<:v_stats:1037065930284474398> Statistiken der aktivsten {art}", description=f"""
+<:v_chat:1037065910567055370> **Aktivste Nutzer in Textkanälen:**
 {text}
 
-<:voicechannel:997093527391580200> **Aktivste Nutzer in Sprachkanälen:**
+<:v_mikrofon:1037065919282810910> **Aktivste Nutzer in Sprachkanälen:**
 {text2}""")
                     embed.set_thumbnail(url=interaction.guild.icon)
                     embed.set_image(url="attachment://stats.png")
@@ -800,11 +806,11 @@ class Stats(commands.Cog):
                     plt.xticks(rotation=45)
                     plt.savefig("stats.png")
                     plt.close()
-                    embed = discord.Embed(colour=discord.Colour.green(), title=f"<:stats:944569387615125545> Statistiken der aktivsten {art}", description=f"""
-<:textchannel:997093466473508874> **Aktivste Textkanäle:**
+                    embed = discord.Embed(colour=discord.Colour.green(), title=f"<:v_stats:1037065930284474398> Statistiken der aktivsten {art}", description=f"""
+<:v_chat:1037065910567055370> **Aktivste Textkanäle:**
 {text}
 
-<:voicechannel:997093527391580200> **Aktivste Sprachkanäle:**
+<:v_mikrofon:1037065919282810910> **Aktivste Sprachkanäle:**
 {text2}""")
                     embed.set_thumbnail(url=interaction.guild.icon)
                     embed.set_image(url="attachment://stats.png")

@@ -18,11 +18,11 @@ class Dropdown(discord.ui.Select):
             if str(item) in self.values:
                 if rolle not in interaction.user.roles:
                     await interaction.user.add_roles(rolle)
-                    text += f"\n<:orangerpfeil:1000823380607516772> Du hast die Rolle {rolle.mention} erhalten."
+                    text += f"\n<:v_play:1037065922134945853> Du hast die Rolle {rolle.mention} erhalten."
             else:
                 if rolle in interaction.user.roles:
                     await interaction.user.remove_roles(rolle)
-                    text += f"\n<:orangerpfeil:1000823380607516772> Dir wurde die Rolle {rolle.mention} entzogen."
+                    text += f"\n<:v_play:1037065922134945853> Dir wurde die Rolle {rolle.mention} entzogen."
 
         if text != "":
             return await interaction.response.send_message(text, ephemeral=True)
@@ -214,11 +214,11 @@ class CounterButton(discord.ui.Button):
         rolle = interaction.guild.get_role(int(self.role))
         if rolle not in interaction.user.roles:
             await interaction.user.add_roles(rolle)
-            return await interaction.response.send_message(f"<:orangerpfeil:1000823380607516772> Du hast die Rolle {rolle.mention} erhalten.", ephemeral=True)
+            return await interaction.response.send_message(f"<:v_play:1037065922134945853> Du hast die Rolle {rolle.mention} erhalten.", ephemeral=True)
 
         if rolle in interaction.user.roles:
             await interaction.user.remove_roles(rolle)
-            await interaction.response.send_message(f"<:orangerpfeil:1000823380607516772> Dir wurde die Rolle {rolle.mention} entzogen", ephemeral=True)
+            await interaction.response.send_message(f"<:v_play:1037065922134945853> Dir wurde die Rolle {rolle.mention} entzogen", ephemeral=True)
                 
 class view_for_buttons(discord.ui.View):
     def __init__(self):

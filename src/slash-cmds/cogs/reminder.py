@@ -42,8 +42,8 @@ class Reminder(commands.Cog):
                 await cursor.execute("INSERT INTO erinnerungen(userID, endtime, beschreibung, id) VALUES(%s, %s, %s, %s)", (interaction.user.id, t1, beschreibung, id))
                 
                 embed = discord.Embed(color=discord.Colour.green(), title=f"Erinnerung gestellt (ID {id})", description=f"""
-<a:information:1000822286577844395> Erinnerung gesetzt auf {discord_timestamp(t2, 'f')}
-<:orangerpfeil:1000823380607516772> {beschreibung}""")
+<:v_info:1037065915113676891> Erinnerung gesetzt auf {discord_timestamp(t2, 'f')}
+<:v_play:1037065922134945853> {beschreibung}""")
                 asyncio.create_task(reminder_end(t2, self.bot, interaction.user.id, id), name=f"Erinnerung - {id}")
                 await interaction.response.send_message(embed=embed)
         
@@ -81,7 +81,7 @@ class Reminder(commands.Cog):
                 embed.set_thumbnail(url=interaction.user.avatar)
                 for er in result:
                     t2 = datetime.datetime.fromtimestamp(int(er[2]))
-                    embed.add_field(name=f"ID {er[1]}", value=f"<:orangerpfeil:1000823380607516772> {er[0]}\n<a:information:1000822286577844395> Ende: {discord_timestamp(t2, 'f')}", inline=False)
+                    embed.add_field(name=f"ID {er[1]}", value=f"<:v_play:1037065922134945853> {er[0]}\n<:v_info:1037065915113676891> Ende: {discord_timestamp(t2, 'f')}", inline=False)
                 await interaction.response.send_message(embed=embed)
 
 async def setup(bot):

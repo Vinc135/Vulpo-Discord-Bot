@@ -17,7 +17,7 @@ async def teilnahme_angenommen(self, interaction, result):
 """)
     embed.set_thumbnail(url=interaction.guild.icon)
     embed.set_image(url="https://media.discordapp.net/attachments/965302660871884840/1011704490598076416/GW_Pannel_31.png")
-    await interaction.user.send("<a:teilnehmen:1000813245357105202> Deine Teilnahme an einem Gewinnspiel war **erfolgreich**.", embed=embed)
+    await interaction.user.send("<:v_spa:1037065926929027122> Deine Teilnahme an einem Gewinnspiel war **erfolgreich**.", embed=embed)
     
     async with self.bot.pool.acquire() as conn:
         async with conn.cursor() as cursor:
@@ -26,23 +26,23 @@ async def teilnahme_angenommen(self, interaction, result):
             embed = discord.Embed(title=f"🏆 {result[6]}", description=f"""
 `🤖` · [Lade den Bot hier ein](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands)
                                       
-<a:information:1000822286577844395> › __**Informationen**__
-<:orangerpfeil:1000823380607516772> Erstellt von {interaction.guild.get_member(int(result[0])).mention}
-<:orangerpfeil:1000823380607516772> **{result[2]}** Gewinner
-<:orangerpfeil:1000823380607516772> Endet {discord_timestamp(t2, "R")}
-<:orangerpfeil:1000823380607516772> **{len(teilnehmer)}** Teilnehmer
+<:v_info:1037065915113676891> › __**Informationen**__
+<:v_play:1037065922134945853> Erstellt von {interaction.guild.get_member(int(result[0])).mention}
+<:v_play:1037065922134945853> **{result[2]}** Gewinner
+<:v_play:1037065922134945853> Endet {discord_timestamp(t2, "R")}
+<:v_play:1037065922134945853> **{len(teilnehmer)}** Teilnehmer
 
-<a:anforderungen:1000822478119120906> › __**Anforderungen**__
-<:orangerpfeil:1000823380607516772> **Drücke** unten auf **den Button**, um teilzunehmen.""", color=discord.Color.orange())
+<:v_einstellungen:1037067521049759865> › __**Anforderungen**__
+<:v_play:1037065922134945853> **Drücke** unten auf **den Button**, um teilzunehmen.""", color=discord.Color.orange())
             
             requirements = ""
             if "Du benötigst die" in interaction.message.embeds[0].description:
                 rolle = interaction.guild.get_role(int(result[5]))
-                requirements += f"\n<:orangerpfeil:1000823380607516772> Du benötigst die **Rolle {rolle.mention}**."
+                requirements += f"\n<:v_play:1037065922134945853> Du benötigst die **Rolle {rolle.mention}**."
             if "Du musst mindestens" in interaction.message.embeds[0].description:
-                requirements += f"\n<:orangerpfeil:1000823380607516772> Du musst mindestens **{result[3]} neue Nachrichten** schreiben."
+                requirements += f"\n<:v_play:1037065922134945853> Du musst mindestens **{result[3]} neue Nachrichten** schreiben."
             if "bei Vulpo's Levelsystem sein" in interaction.message.embeds[0].description:
-                requirements += f"\n<:orangerpfeil:1000823380607516772> Du musst mindestens **Level {result[4]}** bei Vulpo's Levelsystem sein."
+                requirements += f"\n<:v_play:1037065922134945853> Du musst mindestens **Level {result[4]}** bei Vulpo's Levelsystem sein."
                 
             if requirements != "":
                 embed.description += requirements
@@ -64,7 +64,7 @@ async def teilnahme_abgelehnt(self, interaction, grund, result):
 """)
     embed.set_thumbnail(url=interaction.guild.icon)
     embed.set_image(url="https://media.discordapp.net/attachments/965302660871884840/1009692136142286898/GW_Pannel_3.png")
-    await interaction.user.send("<a:teilnehmen_fehlgeschlagen:1000814100001079348> Deine Teilnahme an einem Gewinnspiel war **nicht erfolgreich**.", embed=embed)
+    await interaction.user.send("<:v_spa:1037065926929027122> Deine Teilnahme an einem Gewinnspiel war **nicht erfolgreich**.", embed=embed)
 
     async with self.bot.pool.acquire() as conn:
         async with conn.cursor() as cursor:
@@ -73,22 +73,22 @@ async def teilnahme_abgelehnt(self, interaction, grund, result):
             embed = discord.Embed(title=f"🏆 {result[6]}", description=f"""
 `🤖` · [Lade den Bot hier ein](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands)
                                       
-<a:information:1000822286577844395> › __**Informationen**__
-<:orangerpfeil:1000823380607516772> Erstellt von {interaction.guild.get_member(int(result[0])).mention}
-<:orangerpfeil:1000823380607516772> **{result[2]}** Gewinner
-<:orangerpfeil:1000823380607516772> Endet {discord_timestamp(t2, "R")}
-<:orangerpfeil:1000823380607516772> **{len(teilnehmer)}** Teilnehmer
+<:v_info:1037065915113676891> › __**Informationen**__
+<:v_play:1037065922134945853> Erstellt von {interaction.guild.get_member(int(result[0])).mention}
+<:v_play:1037065922134945853> **{result[2]}** Gewinner
+<:v_play:1037065922134945853> Endet {discord_timestamp(t2, "R")}
+<:v_play:1037065922134945853> **{len(teilnehmer)}** Teilnehmer
 
-<a:anforderungen:1000822478119120906> › __**Anforderungen**__
-<:orangerpfeil:1000823380607516772> **Drücke** unten auf **den Button**, um teilzunehmen.""", color=discord.Color.orange())            
+<:v_einstellungen:1037067521049759865> › __**Anforderungen**__
+<:v_play:1037065922134945853> **Drücke** unten auf **den Button**, um teilzunehmen.""", color=discord.Color.orange())            
             requirements = ""
             if "Du benötigst die" in interaction.message.embeds[0].description:
                 rolle = interaction.guild.get_role(int(result[5]))
-                requirements += f"\n<:orangerpfeil:1000823380607516772> Du benötigst die **Rolle {rolle.mention}**."
+                requirements += f"\n<:v_play:1037065922134945853> Du benötigst die **Rolle {rolle.mention}**."
             if "Du musst mindestens" in interaction.message.embeds[0].description:
-                requirements += f"\n<:orangerpfeil:1000823380607516772> Du musst mindestens **{result[3]} neue Nachrichten** schreiben."
+                requirements += f"\n<:v_play:1037065922134945853> Du musst mindestens **{result[3]} neue Nachrichten** schreiben."
             if "bei Vulpo's Levelsystem sein" in interaction.message.embeds[0].description:
-                requirements += f"\n<:orangerpfeil:1000823380607516772> Du musst mindestens **Level {result[4]}** bei Vulpo's Levelsystem sein."
+                requirements += f"\n<:v_play:1037065922134945853> Du musst mindestens **Level {result[4]}** bei Vulpo's Levelsystem sein."
                 
             if requirements != "":
                 embed.description += requirements
@@ -251,22 +251,22 @@ class giveaway(commands.Cog):
                 #requirementsliste
                 requirements = ""
                 if rolle:
-                    requirements += f"\n<:orangerpfeil:1000823380607516772> Du benötigst die **Rolle {rolle.mention}**."
+                    requirements += f"\n<:v_play:1037065922134945853> Du benötigst die **Rolle {rolle.mention}**."
                 if nachrichtenanzahl:
-                    requirements += f"\n<:orangerpfeil:1000823380607516772> Du musst mindestens **{nachrichtenanzahl} neue Nachrichten** schreiben."
+                    requirements += f"\n<:v_play:1037065922134945853> Du musst mindestens **{nachrichtenanzahl} neue Nachrichten** schreiben."
                 if mindestlevel:
-                    requirements += f"\n<:orangerpfeil:1000823380607516772> Du musst mindestens **Level {mindestlevel}** bei Vulpo's Levelsystem sein."
+                    requirements += f"\n<:v_play:1037065922134945853> Du musst mindestens **Level {mindestlevel}** bei Vulpo's Levelsystem sein."
                 embed = discord.Embed(title=f"🏆 {preis}", description=f"""
 `🤖` · [Lade den Bot hier ein](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands)
                                       
-<a:information:1000822286577844395> › __**Informationen**__
-<:orangerpfeil:1000823380607516772> Erstellt von {interaction.user.mention}
-<:orangerpfeil:1000823380607516772> **{gewinneranzahl}** Gewinner
-<:orangerpfeil:1000823380607516772> Endet {discord_timestamp(t2, "R")}
-<:orangerpfeil:1000823380607516772> **0** Teilnehmer
+<:v_info:1037065915113676891> › __**Informationen**__
+<:v_play:1037065922134945853> Erstellt von {interaction.user.mention}
+<:v_play:1037065922134945853> **{gewinneranzahl}** Gewinner
+<:v_play:1037065922134945853> Endet {discord_timestamp(t2, "R")}
+<:v_play:1037065922134945853> **0** Teilnehmer
 
-<a:anforderungen:1000822478119120906> › __**Anforderungen**__
-<:orangerpfeil:1000823380607516772> **Drücke** unten auf **den Button**, um teilzunehmen.""", color=discord.Color.orange())
+<:v_einstellungen:1037067521049759865> › __**Anforderungen**__
+<:v_play:1037065922134945853> **Drücke** unten auf **den Button**, um teilzunehmen.""", color=discord.Color.orange())
                 if requirements != "":
                     embed.description += requirements
                 embed.set_footer(text="🍀 Mit dem Drücken des Buttons stimmst du einer Direktnachricht zu.")
