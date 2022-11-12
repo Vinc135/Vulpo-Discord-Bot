@@ -60,7 +60,7 @@ async def reminder_end(when: datetime.datetime, bot, user_id, id):
                 await cursor.execute("SELECT beschreibung FROM erinnerungen WHERE userID = (%s) AND id = (%s)", (user_id, id))
                 result = await cursor.fetchone()
                 await cursor.execute("DELETE FROM erinnerungen WHERE userID = (%s) AND id = (%s)", (user_id, id))
-                embed = discord.Embed(title="<a:information:1000822286577844395> Timer abgelaufen", description=result[0], color=discord.Color.green())
+                embed = discord.Embed(title="<:v_zeit:1037065936643047516> Timer abgelaufen", description=result[0], color=discord.Color.green())
                 try:
                     await user.send(embed=embed)
                 except:
@@ -81,7 +81,7 @@ async def vote_reminder(when: datetime.datetime, bot, user_id):
                 if int(user.id) == 732993370305069116:
                     return
                 embed = discord.Embed(title="Du kannst voten", url="https://top.gg/bot/925799559576322078/vote", description="""
-<a:information:1000822286577844395> Der Vote-Cooldown von 12 Stunden ist abgelaufen. Es wäre sehr schön, wenn du wieder für mich votest.
+<:v_zeit:1037065936643047516> Der Vote-Cooldown von 12 Stunden ist abgelaufen. Es wäre sehr schön, wenn du wieder für mich votest.
 
 <:herz:941398727501955113> Als Belohnung für einen weiteren Vote bekommst du **300 🍪 im Economy System** und eine besondere **Rolle in [Vulpos Wald](https://discord.gg/49jD3VXksp)**""", colour=discord.Colour.green())
                 embed.set_footer(text="Danke für deine Unterstützung", icon_url="https://media.discordapp.net/attachments/965302660871884840/965315155816767548/Vulpo_neu.png?width=1572&height=1572")
@@ -133,10 +133,10 @@ async def giveaway_end(when: datetime.datetime, bot, msgID, status=None):
                     embed = discord.Embed(title=f"🏆 {result[6]}", description=f"""
     `🤖` · [Lade den Bot hier ein](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands)
                 
-    <a:gewinnspiel:1000812987428392990> › __**Wer hat gewonnen?**__
-    <:orangerpfeil:1000823380607516772> Niemand hat gewonnen.
-    <:orangerpfeil:1000823380607516772> Das Gewinnspiel endete {discord_timestamp(t2, 'R')}
-    <:orangerpfeil:1000823380607516772> Es gab 0 Teilnehmer.""", color=discord.Color.red())
+    <:v_geschenk:1037065913981218818> › __**Wer hat gewonnen?**__
+    <:v_play:1037065922134945853> Niemand hat gewonnen.
+    <:v_play:1037065922134945853> Das Gewinnspiel endete {discord_timestamp(t2, 'R')}
+    <:v_play:1037065922134945853> Es gab 0 Teilnehmer.""", color=discord.Color.red())
                     embed.set_thumbnail(url=msg.guild.icon)
                     return await msg.edit(content="**⛔️ Gewinnspiel beendet ⛔️**", embed=embed, view=None)
 
@@ -152,20 +152,20 @@ async def giveaway_end(when: datetime.datetime, bot, msgID, status=None):
     `⏰` · Das Gewinnspiel endete {discord_timestamp(t2, 'R')}
     """)
                     embed.set_thumbnail(url=guild.icon)
-                    await member.send("<a:gewinnspiel:1000812987428392990> Du hast ein Gewinnspiel **gewonnen**!", embed=embed)
+                    await member.send("<:v_geschenk:1037065913981218818> Du hast ein Gewinnspiel **gewonnen**!", embed=embed)
                     if winners == "":
                         winners += f"{member.mention}"
                     else:
                         winners += f", {member.mention}"
                         
-                await msg.reply(f"<a:gewinnspiel:1000812987428392990> {winners} {'hat' if len(winner) == 1 else 'haben'} {result[6]} gewonnen.")
+                await msg.reply(f"<:v_geschenk:1037065913981218818> {winners} {'hat' if len(winner) == 1 else 'haben'} {result[6]} gewonnen.")
                 embed = discord.Embed(title=f"🏆 {result[6]}", description=f"""
     `🤖` · [Lade den Bot hier ein](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands)
                 
-    <a:gewinnspiel:1000812987428392990> › __**Wer hat gewonnen?**__
-    <:orangerpfeil:1000823380607516772> {winners} {'hat' if len(winner) == 1 else 'haben'} {result[6]} gewonnen.
-    <:orangerpfeil:1000823380607516772> Das Gewinnspiel endete {discord_timestamp(t2, 'R')}
-    <:orangerpfeil:1000823380607516772> Es gab {len(result2)} Teilnehmer.""", color=discord.Color.red())
+    <:v_geschenk:1037065913981218818> › __**Wer hat gewonnen?**__
+    <:v_play:1037065922134945853> {winners} {'hat' if len(winner) == 1 else 'haben'} {result[6]} gewonnen.
+    <:v_play:1037065922134945853> Das Gewinnspiel endete {discord_timestamp(t2, 'R')}
+    <:v_play:1037065922134945853> Es gab {len(result2)} Teilnehmer.""", color=discord.Color.red())
                 embed.set_footer(text=f"🍀 Die Wahrscheinlichkeit zu gewinnen lag bei {round((int(result[2]) / len(result2)) * 100)}%")
                 embed.set_thumbnail(url=msg.guild.icon)
                 await msg.edit(content="**⛔️ Gewinnspiel beendet ⛔️**", embed=embed, view=None)

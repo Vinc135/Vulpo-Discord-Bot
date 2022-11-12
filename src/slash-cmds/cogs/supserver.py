@@ -27,7 +27,7 @@ class Supserver(commands.Cog):
     async def on_member_join(self, member):
         if member.guild.id == 925729625580113951:
             channel = member.guild.get_channel(926224205639467108)
-            message = await channel.send(f"<a:winken:964852677945204786> Hallo {member.mention}, wähle hier deine Rollen aus!")
+            message = await channel.send(f"<:v_info:1037065915113676891> Hallo {member.mention}, wähle hier deine Rollen aus!")
             await asyncio.sleep(60)
             await message.delete()
 

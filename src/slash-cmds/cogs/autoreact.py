@@ -38,7 +38,7 @@ class Autoreact(commands.Cog):
             await interaction.response.defer()
             emoj = discord.PartialEmoji.from_str(emoji)
             if emoj is None:
-                return await interaction.response.send_message("**❌ Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+                return await interaction.followup.send("**❌ Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
             msg = await interaction.channel.send("**⚡️ Ich überprüfe die Verfügbarkeit des Emojis.**")
             await msg.add_reaction(emoj)
             await msg.delete()
@@ -48,7 +48,7 @@ class Autoreact(commands.Cog):
                     await interaction.followup.send(content=f"**✅ Eintrag erstellt. Jede Nachricht aus dem Kanal {kanal.mention} erhält das Emoji {emoj}.**")
         except:
             await msg.delete()
-            return await interaction.response.send_message(content="**❌ Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+            return await interaction.followup.send(content="**❌ Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
 
     @autoreact.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))

@@ -170,7 +170,7 @@ class moderation(commands.Cog):
         """Löscht eine bestimmte Anzahl von Nachrichten."""
         if anzahl > 100:
             return await interaction.response.send_message("**❌ Das Limit liegt bei 100 Nachrichten.**", ephemeral=True)
-        await interaction.response.send_message(f"**<a:loading:980383680168083456> Ich lösche jetzt {anzahl} {'Nachrichten' if anzahl >= 2 else 'Nachricht'} in {kanal.mention}. Einen Moment.**", ephemeral=True)
+        await interaction.response.send_message(f"**<:v_info:1037065915113676891> Ich lösche jetzt {anzahl} {'Nachrichten' if anzahl >= 2 else 'Nachricht'} in {kanal.mention}. Einen Moment.**", ephemeral=True)
         deleted = await kanal.purge(limit=anzahl)
         await interaction.edit_original_response(content=f"**✅ Ich habe {len(deleted)} {'Nachrichten' if len(deleted) >= 2 else 'Nachricht'} in {kanal.mention} gelöscht.**")
 
@@ -190,7 +190,7 @@ class moderation(commands.Cog):
         if message1 == None or message2 == None:
             await interaction.response.send_message(f"**❌ Ups, da ging etwas schief. Bitte stelle sicher, dass es sich bei deinem Input um Nachrichten ID's gehandelt hat.**", ephemeral=True)
             return
-        await interaction.response.send_message(f"**<a:loading:980383680168083456> Ich lösche jetzt die Nachrichten in {kanal.mention} zwischen [dieser]({message1.jump_url}) und [dieser]({message2.jump_url}) Nachricht. Einen Moment.**")
+        await interaction.response.send_message(f"**<:v_info:1037065915113676891> Ich lösche jetzt die Nachrichten in {kanal.mention} zwischen [dieser]({message1.jump_url}) und [dieser]({message2.jump_url}) Nachricht. Einen Moment.**")
         deleted = await kanal.purge(before=discord.Object(erste_nachricht), after=discord.Object(zweite_nachricht))
         if len(deleted) == 0:
             await interaction.edit_original_response(content=f"**❌ Ups, da ging etwas schief. Bitte stelle sicher, dass es sich bei deinem Input um Nachrichten ID's gehandelt hat.**")

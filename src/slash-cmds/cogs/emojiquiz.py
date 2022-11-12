@@ -42,7 +42,7 @@ class Emojiquiz_Vorschlag_abgeben(discord.ui.Modal, title="Vorschlag für's Emoj
                 cembed.add_field(name="Gesuchter Begriff", value=self.children[0].value, inline=False)
                 cembed.add_field(name="Tipp", value=self.children[1].value, inline=False)
                 cembed.add_field(name="Lösung", value=self.children[2].value, inline=False)
-                cembed.set_author(name=interaction.user, icon_url=interaction.user.avatar if interaction.user.avatar else "https://cdn.discordapp.com/avatars/925799559576322078/a2f839c85ee1dd3ef9a1b1fa511e332b.png?size=1024")
+                cembed.set_author(name=interaction.user, icon_url=interaction.user.avatar if interaction.user.avatar else "https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
                 guild = self.bot.get_guild(925729625580113951)
                 channel = guild.get_channel(959846011545739374)
                 await channel.send(embed=cembed, view=database(self.bot))

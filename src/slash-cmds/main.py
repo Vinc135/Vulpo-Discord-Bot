@@ -71,10 +71,10 @@ class MyTree(CommandTree):
         for entry in banned_users:
             banned_user = entry.user
             if int(user.id) == int(banned_user.id):
-                embed = discord.Embed(title="<a:banned:964850005833814076> Du bist gebannt", description=f"""
-> <:vielleicht:964850836884819969> Mit einem Bann hast du keinen Zugang mehr zu Vulpo's Befehlen. Außerdem hast du keinen Zutritt zum Supportserver "Vulpo's Wald".
-<:orangerpfeil:1000823380607516772> Grund: {entry.reason}
-<:orangerpfeil:1000823380607516772> Falls du denkst, dass du dich geändert hast, oder du zu unrecht bestraft wurdest, kannst du einen [Entbannungsantrag](https://forms.gle/NH1Jb1gVNEPuTLA58) stellen.
+                embed = discord.Embed(title="<:v_mod:1037065920704696420> Du bist gebannt", description=f"""
+> <:v_info:1037065915113676891> Mit einem Bann hast du keinen Zugang mehr zu Vulpo's Befehlen. Außerdem hast du keinen Zutritt zum Supportserver "Vulpo's Wald".
+<:v_play:1037065922134945853> Grund: {entry.reason}
+<:v_play:1037065922134945853> Falls du denkst, dass du dich geändert hast, oder du zu unrecht bestraft wurdest, kannst du einen [Entbannungsantrag](https://forms.gle/NH1Jb1gVNEPuTLA58) stellen.
 """, colour=0xac0000)
                 await interaction.response.send_message(embed=embed, ephemeral=True)
                 return False
@@ -127,7 +127,7 @@ class Vulpo(commands.Bot):
             embed = discord.Embed(colour=discord.Colour.blurple(), title=f"✨ Vulpo ✨", description=f"Hallo, ich bin Vulpo, hier um diesen Server fantastisch zu machen! Ich bin jetzt in **{len(bot.guilds)}** Servern!")
             embed.add_field(name="Erster Schritt", value=f"`/help`", inline=False)
             embed.add_field(name="Links", value="**[Support server](https://discord.gg/49jD3VXksp) | [Invite](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commandst)** | **[Vote](https://top.gg/bot/925799559576322078/vote)**", inline=False)
-            embed.set_footer(text=guild.name, icon_url=guild.icon if guild.icon else 'https://cdn.discordapp.com/avatars/925799559576322078/a2f839c85ee1dd3ef9a1b1fa511e332b.png?size=1024')
+            embed.set_footer(text=guild.name, icon_url=guild.icon if guild.icon else 'https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549')
             embed.set_author(name="Vielen Dank für die Einladung!", icon_url="https://cdn.discordapp.com/emojis/823981604752982077.gif")
             for channel in guild.text_channels:
                 await channel.send(embed=embed)
@@ -149,7 +149,7 @@ class Vulpo(commands.Bot):
             embed.add_field(name="Erstellt", value=discord_timestamp(t2, 'R'), inline=False)
             embed.add_field(name="User count", value=guild.member_count, inline=False)
             embed.add_field(name="Owner", value=guild.owner, inline=False)
-            embed.set_thumbnail(url=guild.icon if guild.icon else 'https://cdn.discordapp.com/avatars/925799559576322078/a2f839c85ee1dd3ef9a1b1fa511e332b.png?size=1024')
+            embed.set_thumbnail(url=guild.icon if guild.icon else 'https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549')
             await channels.send(embed=embed)
         except:
             pass
@@ -160,7 +160,7 @@ class Vulpo(commands.Bot):
             Wenn Sie etwas sagen möchten, antworten Sie innerhalb der nächsten 15 Minuten auf diese DM!
 
             ~Vinc (Entwickler)""")
-            embed.set_thumbnail(url=guild.icon if guild.icon else 'https://cdn.discordapp.com/avatars/925799559576322078/a2f839c85ee1dd3ef9a1b1fa511e332b.png?size=1024')
+            embed.set_thumbnail(url=guild.icon if guild.icon else 'https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549')
             await guild.owner.send(embed=embed)
 
             def check(m):

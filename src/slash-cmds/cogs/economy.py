@@ -619,7 +619,7 @@ class economy(commands.Cog):
         embed1 = discord.Embed(colour=discord.Colour.blurple(),
                                description="🎰 Slots")
         embed1.add_field(name=f"Slots:",
-                         value=f"[<a:spin:942112865391882361> <a:spin:942112865391882361> <a:spin:942112865391882361>]",
+                         value=f"[<a:slot:1037066744105291918> <a:slot:1037066744105291918> <a:slot:1037066744105291918>]",
                          inline=False)
         embed1.add_field(name="💰 Einsatz", value=f"{betrag} 🍪", inline=False)
         embed1.set_author(name=interaction.user, icon_url=interaction.user.avatar)
@@ -627,7 +627,7 @@ class economy(commands.Cog):
         # embed2
         embed2 = discord.Embed(colour=discord.Colour.blurple(),
                                description="🎰 Slots")
-        embed2.add_field(name=f"Slots", value=f"[{e1} <a:spin:942112865391882361> <a:spin:942112865391882361>]",
+        embed2.add_field(name=f"Slots", value=f"[{e1} <a:slot:1037066744105291918> <a:slot:1037066744105291918>]",
                          inline=False)
         embed2.add_field(name="💰 Einsatz", value=f"{betrag} 🍪", inline=False)
         embed2.set_author(name=interaction.user, icon_url=interaction.user.avatar)
@@ -635,7 +635,7 @@ class economy(commands.Cog):
         # embed3
         embed3 = discord.Embed(colour=discord.Colour.blurple(),
                                description="🎰 Slots")
-        embed3.add_field(name=f"Slots", value=f"[{e1} {e2} <a:spin:942112865391882361>]", inline=False)
+        embed3.add_field(name=f"Slots", value=f"[{e1} {e2} <a:slot:1037066744105291918>]", inline=False)
         embed3.add_field(name="💰 Einsatz", value=f"{betrag} 🍪", inline=False)
         embed3.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         # ergebnisse überprüfen

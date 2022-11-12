@@ -37,7 +37,7 @@ class afk(commands.Cog):
                         await cursor.execute("SELECT authorID, msgID, channelID, time FROM afk_nachrichten WHERE userID = (%s) AND guildID = (%s)", (member.id, msg.guild.id))
                         result2 = await cursor.fetchall()
                         
-                        embed = discord.Embed(title=f"<:status_online:944569387900346378> **{member.name}, willkommen zurück**", color=discord.Colour.green(), description=f"""
+                        embed = discord.Embed(title=f"<:v_afk:1037073922849517618> **{member.name}, willkommen zurück**", color=discord.Colour.green(), description=f"""
 Ich habe deinen AFK-Status entfernt. AFK gegangen {discord_timestamp(t2, 'R')}.""")
                         
                         if result2 == ():
@@ -71,7 +71,7 @@ Ich habe deinen AFK-Status entfernt. AFK gegangen {discord_timestamp(t2, 'R')}."
                                 t2 = datetime.datetime.fromtimestamp(int(r[2]))
                                 t1 = math.floor(datetime.datetime.utcnow().timestamp())
                                 await cursor.execute("INSERT INTO afk_nachrichten(userID, guildID, authorID, msgID, channelID, time) VALUES(%s, %s, %s, %s, %s, %s)", (member.id, msg.guild.id, msg.author.id, msg.id, msg.channel.id, t1))
-                                embed = discord.Embed(title=f"<:status_dnd:944569387489316895> **{mention.name}, ist AFK**", color=discord.Colour.red(), description=f"""
+                                embed = discord.Embed(title=f"<:v_afk:1037073922849517618> **{mention.name}, ist AFK**", color=discord.Colour.red(), description=f"""
 *Grund: {r[1]}*
 AFK gegangen {discord_timestamp(t2, 'R')}.""")
                                 await msg.reply(embed=embed)
@@ -93,7 +93,7 @@ AFK gegangen {discord_timestamp(t2, 'R')}.""")
                     except:
                         pass
                     
-                    embed = discord.Embed(title=f"<:status_dnd:944569387489316895> **{interaction.user.name}, du bist jetzt AFK**", color=discord.Colour.red(), description=f"""
+                    embed = discord.Embed(title=f"<:v_afk:1037073922849517618> **{interaction.user.name}, du bist jetzt AFK**", color=discord.Colour.red(), description=f"""
 *Grund: {grund}* 
 AFK gegangen {discord_timestamp(t2, 'R')}.
 Wenn du wiederkommst, zeige ich dir alle Nachrichten, in denen du gepingt wurdest.""")
@@ -109,7 +109,7 @@ Wenn du wiederkommst, zeige ich dir alle Nachrichten, in denen du gepingt wurdes
                     await cursor.execute("SELECT authorID, msgID, channelID, time FROM afk_nachrichten WHERE userID = (%s) AND guildID = (%s)", (interaction.user.id, interaction.guild.id))
                     result2 = await cursor.fetchall()
                     
-                    embed = discord.Embed(title=f"<:status_online:944569387900346378> **{interaction.user.name}, willkommen zurück**", color=discord.Colour.green(), description=f"""
+                    embed = discord.Embed(title=f"<:v_afk:1037073922849517618> **{interaction.user.name}, willkommen zurück**", color=discord.Colour.green(), description=f"""
 Ich habe deinen AFK-Status entfernt. AFK gegangen {discord_timestamp(t2, 'R')}.""")
                     
                     if result2 == ():
