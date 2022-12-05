@@ -206,16 +206,14 @@ class Vulpo(commands.Bot):
                     
                     times = int(result[0]) + 1
 
-                rolle = guild.get_role(1041046601394815127)
-                member = guild.get_member(int(userid))
-                if member:
-                    if rolle in member.roles:
-                        time_to_convert = math.floor(datetime.datetime.utcnow().timestamp() + 43200)
-                        time_converted = datetime.datetime.fromtimestamp(int(time_to_convert))
-                        asyncio.create_task(vote_reminder(time_converted, bot, userid))
-                        await cursor.execute("INSERT INTO vote(userid, endtime) VALUES(%s, %s)", (userid, time_to_convert))
+                time_to_convert = math.floor(datetime.datetime.utcnow().timestamp() + 43200)
+                time_converted = datetime.datetime.fromtimestamp(int(time_to_convert))
+                asyncio.create_task(vote_reminder(time_converted, bot, userid))
+                await cursor.execute("INSERT INTO vote(userid, endtime) VALUES(%s, %s)", (userid, time_to_convert))
 
                 user = await bot.fetch_user(userid)
+                rolle = guild.get_role(1041046601394815127)
+                member = guild.get_member(int(userid))
                 if user:
                     embed = discord.Embed(title=f"Danke vielmals {user}!", description=f"{user.mention} hat insgesammt {times} Mal gevotet.", colour=discord.Colour.orange())
                     embed.set_thumbnail(url=user.avatar)

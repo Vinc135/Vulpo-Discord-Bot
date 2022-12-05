@@ -73,29 +73,28 @@ async def vote_reminder(when: datetime.datetime, bot, user_id):
     await discord.utils.sleep_until(when=when)
     async with bot.pool.acquire() as conn:
         async with conn.cursor() as cursor:
+            guild = bot.get_guild(925729625580113951)
+            rolle = guild.get_role(1041046601394815127)
+            member = guild.get_member(int(user_id))
             await cursor.execute(f"DELETE FROM vote WHERE userid = {user_id}")
             
             
             user = await bot.fetch_user(user_id)
-            if user:
-                if int(user.id) == 732993370305069116:
-                    return
-                embed = discord.Embed(title="Du kannst voten", url="https://top.gg/bot/925799559576322078/vote", description="""
-<:v_zeit:1037065936643047516> Der Vote-Cooldown von 12 Stunden ist abgelaufen. Es wäre sehr schön, wenn du wieder für mich votest.
+            if member:
+                if rolle in member.roles:
+                    embed = discord.Embed(title="Du kannst voten", url="https://top.gg/bot/925799559576322078/vote", description="""
+    <:v_zeit:1037065936643047516> Der Vote-Cooldown von 12 Stunden ist abgelaufen. Es wäre sehr schön, wenn du wieder für mich votest.
 
-<:herz:941398727501955113> Als Belohnung für einen weiteren Vote bekommst du **300 🍪 im Economy System** und eine besondere **Rolle in [Vulpos Wald](https://discord.gg/49jD3VXksp)**""", colour=discord.Colour.green())
-                embed.set_footer(text="Danke für deine Unterstützung", icon_url="https://media.discordapp.net/attachments/965302660871884840/965315155816767548/Vulpo_neu.png?width=1572&height=1572")
-                try:
-                    await user.send(embed=embed)
-                except:
+    <:herz:941398727501955113> Als Belohnung für einen weiteren Vote bekommst du **300 🍪 im Economy System** und eine besondere **Rolle in [Vulpos Wald](https://discord.gg/49jD3VXksp)**""", colour=discord.Colour.green())
+                    embed.set_footer(text="Danke für deine Unterstützung", icon_url="https://media.discordapp.net/attachments/965302660871884840/965315155816767548/Vulpo_neu.png?width=1572&height=1572")
+                    voter = guild.get_role(962753309997932554)
+                    await member.remove_roles(voter)
+                    try:
+                        await user.send(embed=embed)
+                    except:
+                        pass
+                else:
                     pass
-            else:
-                pass
-            guild = bot.get_guild(925729625580113951)
-            member = guild.get_member(int(user_id))
-            if member is not None:
-                voter = guild.get_role(962753309997932554)
-                await member.remove_roles(voter)
 
 async def giveaway_end(when: datetime.datetime, bot, msgID, status=None):
     try:
