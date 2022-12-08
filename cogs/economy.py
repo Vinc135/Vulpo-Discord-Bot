@@ -17,20 +17,20 @@ class joblist(discord.ui.View):
     async def zurück(self, interaction: discord.Interaction, button: discord.ui.Button):
         page = int(str(interaction.message.embeds[0].footer.text)[6])
         new_page = page - 1
-        if (page - 1) < 0:
-            new_page = 6
+        if new_page <= 0:
+            new_page = 11
         embed = discord.Embed(title=':dividers: Jobliste', description=f"Hier siehst du alle verfügbaren Jobs.\nDu kannst dich für einen Job bewerben mit `/job apply <job>`\n\n" + await job_list(self.s, interaction, new_page),
-                            colour=discord.Colour.green()).set_footer(text=f'Seite {new_page} von 6')
+                            colour=discord.Colour.green()).set_footer(text=f'Seite {new_page} von 11')
         await interaction.response.edit_message(embed=embed, content="")
     
     @discord.ui.button(label='Weiter', style=discord.ButtonStyle.green, custom_id="fewgwrgwrtgtg", emoji="➡️")
     async def vor(self, interaction: discord.Interaction, button: discord.ui.Button):
         page = int(str(interaction.message.embeds[0].footer.text)[6])
         new_page = page + 1
-        if (page + 1) > 6:
+        if new_page > 11:
             new_page = 1
         embed = discord.Embed(title=':dividers: Jobliste', description=f"Hier siehst du alle verfügbaren Jobs.\nDu kannst dich für einen Job bewerben mit `/job apply <job>`\n\n" + await job_list(self.s, interaction, new_page),
-                            colour=discord.Colour.green()).set_footer(text=f'Seite {new_page} von 6')
+                            colour=discord.Colour.green()).set_footer(text=f'Seite {new_page} von 11')
         await interaction.response.edit_message(embed=embed, content="")
 
 ##########
@@ -53,23 +53,40 @@ jobs = [{"name": "Küchenhilfe", "req": 0, "amt": [20, 30]},
         {"name": "Polizist", "req": 120, "amt": [260, 280]},
         {"name": "Programmierer", "req": 140, "amt": [280, 300]},
         {"name": "Chirurg", "req": 160, "amt": [300, 320]},
-        {"name": "Chefarzt", "req": 180, "amt": [340, 360]},
-        {"name": "Anwalt", "req": 200, "amt": [360, 380]},
-        {"name": "CEO", "req": 220, "amt": [380, 400]},
-        {"name": "Richter", "req": 240, "amt": [400, 420]},
-        {"name": "Marketing Manager", "req": 260, "amt": [420, 440]},
-        {"name": "Analyst", "req": 280, "amt": [440, 460]},
-        {"name": "Wirtschaftsingenieur", "req": 300, "amt": [460, 480]},
-        {"name": "Mediaplaner", "req": 320, "amt": [480, 500]},
-        {"name": "Pressesprecher", "req": 340, "amt": [500, 520]},
-        {"name": "Qualitätsmanager", "req": 360, "amt": [520, 540]},
-        {"name": "Fachinformatiker", "req": 380, "amt": [540, 560]},
-        {"name": "Referent", "req": 400, "amt": [580, 600]},
-        {"name": "Consultant", "req": 420, "amt": [600, 620]},
-        {"name": "Bauleiter", "req": 440, "amt": [620, 640]},
-        {"name": "Mediaplaner", "req": 460, "amt": [660, 680]},
-        {"name": "App Developer", "req": 480, "amt": [680, 700]},
-        {"name": "Volljurist", "req": 500, "amt": [700, 720]}]
+        {"name": "Arzthelfer", "req": 180, "amt": [320, 340]},
+        {"name": "Chefarzt", "req": 200, "amt": [340, 360]},
+        {"name": "Anwalt", "req": 220, "amt": [360, 380]},
+        {"name": "CEO", "req": 240, "amt": [380, 400]},
+        {"name": "Richter", "req": 260, "amt": [400, 420]},
+        {"name": "Marketing Manager", "req": 280, "amt": [420, 440]},
+        {"name": "Analyst", "req": 300, "amt": [440, 460]},
+        {"name": "Wirtschaftsingenieur", "req": 320, "amt": [460, 480]},
+        {"name": "Mediaplaner", "req": 340, "amt": [480, 500]},
+        {"name": "Pressesprecher", "req": 360, "amt": [500, 520]},
+        {"name": "Qualitätsmanager", "req": 380, "amt": [520, 540]},
+        {"name": "Informatiker", "req": 400, "amt": [540, 560]},
+        {"name": "Fachinformatiker", "req": 420, "amt": [560, 580]},
+        {"name": "Referent", "req": 440, "amt": [580, 600]},
+        {"name": "Consultant", "req": 460, "amt": [600, 620]},
+        {"name": "Bauleiter", "req": 480, "amt": [620, 640]},
+        {"name": "Tiefbau-Ingenieur", "req": 500, "amt": [640, 660]},
+        {"name": "Mediaplaner", "req": 550, "amt": [660, 680]},
+        {"name": "App Developer", "req": 600, "amt": [680, 700]},
+        {"name": "Volljurist", "req": 650, "amt": [700, 720]},
+        {"name": "Harvard Professor", "req": 700, "amt": [720, 740]},
+        {"name": "Pilot", "req": 750, "amt": [740, 760]},
+        {"name": "Corporate Finance Manager", "req": 800, "amt": [760, 780]},
+        {"name": "Trader", "req": 850, "amt": [780, 800]},
+        {"name": "Marktkettenführer", "req": 900, "amt": [800, 820]},
+        {"name": "Lufthansa Chef", "req": 950, "amt": [820, 840]},
+        {"name": "Wirtschaftsprüfer", "req": 1000, "amt": [840, 860]},
+        {"name": "Fußballer", "req": 1050, "amt": [860, 880]},
+        {"name": "Fußball Trainer", "req": 1100, "amt": [880, 900]},
+        {"name": "Nasa", "req": 1150, "amt": [900, 920]},
+        {"name": "Präsident", "req": 1200, "amt": [920, 940]},
+        {"name": "Chef Anwaltskanzlei", "req": 1250, "amt": [940, 960]},
+        {"name": "Medical Advisor", "req": 1300, "amt": [960, 980]},
+        {"name": "Astronaut", "req": 1350, "amt": [980, 1000]}]
 
 ##########
 
@@ -255,10 +272,10 @@ class rps(discord.ui.View):
 #####
 async def job_list(self, interaction, page):
     page = page - 1
-    amt = 6
+    amt = 5
     index = page * amt
     joblist = ""
-    for job in jobs[index: index + 5]:
+    for job in jobs[index: index + 7]:
         if await has_job_req(self, interaction, jobs.index(job)):
             emoji = '🔓'
         else:
@@ -759,8 +776,7 @@ class economy(commands.Cog):
                                                                         color=discord.Colour.red())
                         await interaction.response.send_message(embed=not_enough_hours_error_embed)
                         return
-            await asyncio.sleep(2)
-            if a >= 23:
+            if a >= 53:
                 not_a_job_error_embed = discord.Embed(description=f"Der Job **{beruf}** existiert nicht. Schau dir alle Jobs mit dem Command `/job list` an.",
                                                     colour=discord.Colour.red())
                 await interaction.response.send_message(embed=not_a_job_error_embed)
@@ -794,7 +810,7 @@ class economy(commands.Cog):
         """Erhalte eine Liste aller Jobs."""
         await interaction.response.send_message(embed=discord.Embed(title=':dividers: Jobliste',
                                                                     description=f"Hier siehst du alle verfügbaren Jobs.\nDu kannst dich für einen Job bewerben mit `/job apply <job>`\n\n" + await job_list(self, interaction, 1),
-                                                                    colour=discord.Colour.green()).set_footer(text='Seite 1 von 6'), view=joblist(interaction, self.bot, self))
+                                                                    colour=discord.Colour.green()).set_footer(text='Seite 1 von 11'), view=joblist(interaction, self.bot, self))
     
     shop = app_commands.Group(name='shop', description='Erstelle Items für deinen Server. Nutzer können diese kaufen.')
     item = app_commands.Group(name='item', description='Erstelle Items für deinen Server. Nutzer können diese kaufen.', parent=shop)

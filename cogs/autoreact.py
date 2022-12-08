@@ -45,10 +45,10 @@ class Autoreact(commands.Cog):
             async with self.bot.pool.acquire() as conn:
                 async with conn.cursor() as cursor:
                     await cursor.execute("INSERT INTO autoreact(guildID, channelID, emoji) VALUES(%s,%s,%s)", (interaction.guild.id, kanal.id, emoji))
-                    await interaction.followup.send(content=f"**✅ Eintrag erstellt. Jede Nachricht aus dem Kanal {kanal.mention} erhält das Emoji {emoj}.**")
+                    await interaction.followup.send(f"**✅ Eintrag erstellt. Jede Nachricht aus dem Kanal {kanal.mention} erhält das Emoji {emoj}.**")
         except:
             await msg.delete()
-            return await interaction.followup.send(content="**❌ Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+            return await interaction.followup.send("**❌ Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
 
     @autoreact.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
