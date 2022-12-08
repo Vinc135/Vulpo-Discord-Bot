@@ -130,43 +130,6 @@ class Automod(commands.Cog):
             await interaction.response.send_message(embed=warnembed)
         if a == 0:
             await interaction.response.send_message(f"**❌ Der User {user} hat keine Verwarnungen hier.**", ephemeral=True) 
-
-    @commands.Cog.listener()
-    async def on_message(self, msg):
-        if msg.guild == None:
-            return
-        if msg.author.bot:
-            return
-        try:
-            if msg.author.guild_permissions.manage_messages:
-                return
-        except:
-            pass
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute(f"SELECT word FROM blacklist WHERE guildID = {msg.guild.id}")
-                result = await cursor.fetchall()
-                if result is None:
-                    return
-                for word in result:
-                    if str(word[0].lower()) in str(msg.content.lower()):
-                        await msg.delete()
-                        await addwarn(self, msg.author, msg, f"Hat ein verbotenes Wort gesendet: ||{word[0]}||")
-
-                        await cursor.execute(f"SELECT channelid FROM modlog WHERE guildid = {msg.guild.id}")
-                        result = await cursor.fetchone()
-                        if result != None:
-                            chan = msg.guild.get_channel(int(result[0]))
-                            if chan is None:
-                                return
-                            embed = discord.Embed(colour=discord.Colour.gold(),
-                                            description=f"Der Benutzer {msg.author} (**{msg.author.id}**) wurde verwarnt.")
-                            embed.add_field(name=f"🎛️ Server:", value=f"{msg.guild.name}", inline=False)
-                            embed.add_field(name=f"👮 Moderator:", value=f"Vulpo#3749", inline=False)
-                            embed.add_field(name=f"📄 Grund:", value=f"Hat ein verbotenes Wort gesendet. ||{msg.content}||", inline=False)
-                            embed.set_author(name=msg.author, icon_url=msg.author.avatar)
-                            await chan.send(embed=embed)
-                        await msg.channel.send(f"{msg.author.mention} Bitte unterlasse diesen Ausdruck. Du wurdest verwarnt!")
     
     blacklist = app_commands.Group(name='blacklist', description='Nehme Einstellungen am Blacklist-System vor.')
 
@@ -294,51 +257,72 @@ class Automod(commands.Cog):
                                 result = await cursor.fetchone()
                                 if result != None:
                                     chan = msg.guild.get_channel(int(result[0]))
-                                    if chan is None:
-                                        return
-                                    embed = discord.Embed(colour=discord.Colour.gold(),
-                                                    description=f"Der Benutzer {msg.author} (**{msg.author.id}**) wurde verwarnt.")
-                                    embed.add_field(name=f"🎛️ Server:", value=f"{msg.guild.name}", inline=False)
-                                    embed.add_field(name=f"👮 Moderator:", value=f"Vulpo#3749", inline=False)
-                                    embed.add_field(name=f"📄 Grund:", value=f"Hat die Spam Grenze von 5 Nachrichten innerhalb 2,5 Sekunden überschritten.", inline=False)
-                                    embed.set_author(name=msg.author, icon_url=msg.author.avatar)
-                                    await chan.send(embed=embed)
+                                    if chan:
+                                        embed = discord.Embed(colour=discord.Colour.gold(),
+                                                        description=f"Der Benutzer {msg.author} (**{msg.author.id}**) wurde verwarnt.")
+                                        embed.add_field(name=f"🎛️ Server:", value=f"{msg.guild.name}", inline=False)
+                                        embed.add_field(name=f"👮 Moderator:", value=f"Vulpo#3749", inline=False)
+                                        embed.add_field(name=f"📄 Grund:", value=f"Hat die Spam Grenze von 5 Nachrichten innerhalb 2,5 Sekunden überschritten.", inline=False)
+                                        embed.set_author(name=msg.author, icon_url=msg.author.avatar)
+                                        await chan.send(embed=embed)
                 except:
                     pass
                                 
                 try:
                     await cursor.execute(f"SELECT prozent FROM caps WHERE guildID = {msg.guild.id}")
                     prozent = await cursor.fetchone()
-                    if prozent is None:
-                        return
-                    if len(msg.content) < 5:
-                        return
-                    upper = 0
-                    for character in msg.content:
-                        if character.isupper():
-                            pass
-                        else:
-                            upper += 1
-                    multiplication = 100 / len(msg.content)
-                    procent = round((len(msg.content) - upper) * multiplication)
-                    if int(procent) >= int(prozent[0]):
-                        await msg.delete()
-                        await msg.channel.send(f"{msg.author.mention} Bitte unterlasse diese große Anzahl an Caps. Du wurdest verwarnt!")
-                        await addwarn(self, msg.author, msg, f"Hat die Caps Sperre von {prozent[0]}% überschritten. Die Nachricht beinhaltete {procent}% Caps.")
+                    if prozent:
+                        if len(msg.content) > 5:
+                            upper = 0
+                            for character in msg.content:
+                                if character.isupper():
+                                    pass
+                                else:
+                                    upper += 1
+                            multiplication = 100 / len(msg.content)
+                            procent = round((len(msg.content) - upper) * multiplication)
+                            if int(procent) >= int(prozent[0]):
+                                await msg.delete()
+                                await msg.channel.send(f"{msg.author.mention} Bitte unterlasse diese große Anzahl an Caps. Du wurdest verwarnt!")
+                                await addwarn(self, msg.author, msg, f"Hat die Caps Sperre von {prozent[0]}% überschritten. Die Nachricht beinhaltete {procent}% Caps.")
 
-                        await cursor.execute(f"SELECT channelid FROM modlog WHERE guildid = {msg.guild.id}")
-                        result = await cursor.fetchone()
-                        if result != None:
-                            chan = msg.guild.get_channel(int(result[0]))
-                            if chan is None:
-                                return
-                            embed = discord.Embed(colour=discord.Colour.gold(),
-                                            description=f"Der Benutzer {msg.author} (**{msg.author.id}**) wurde verwarnt.")
-                            embed.add_field(name=f"🎛️ Server:", value=f"{msg.guild.name}", inline=False)
-                            embed.add_field(name=f"👮 Moderator:", value=f"Vulpo#3749", inline=False)
-                            embed.add_field(name=f"📄 Grund:", value=f"Hat die Caps Sperre von {prozent[0]}% überschritten. Die Nachricht beinhaltete {procent}% Caps.", inline=False)
-                            embed.set_author(name=msg.author, icon_url=msg.author.avatar)
-                            await chan.send(embed=embed)
+                                await cursor.execute(f"SELECT channelid FROM modlog WHERE guildid = {msg.guild.id}")
+                                result = await cursor.fetchone()
+                                if result != None:
+                                    chan = msg.guild.get_channel(int(result[0]))
+                                    if chan:
+                                        embed = discord.Embed(colour=discord.Colour.gold(),
+                                                        description=f"Der Benutzer {msg.author} (**{msg.author.id}**) wurde verwarnt.")
+                                        embed.add_field(name=f"🎛️ Server:", value=f"{msg.guild.name}", inline=False)
+                                        embed.add_field(name=f"👮 Moderator:", value=f"Vulpo#3749", inline=False)
+                                        embed.add_field(name=f"📄 Grund:", value=f"Hat die Caps Sperre von {prozent[0]}% überschritten. Die Nachricht beinhaltete {procent}% Caps.", inline=False)
+                                        embed.set_author(name=msg.author, icon_url=msg.author.avatar)
+                                        await chan.send(embed=embed)
+                except:
+                    pass
+
+                try:
+                    await cursor.execute(f"SELECT word FROM blacklist WHERE guildID = {msg.guild.id}")
+                    result = await cursor.fetchall()
+                    if result:
+                        for word in result:
+                            if str(word[0].lower()) in str(msg.content.lower()):
+                                await msg.delete()
+                                await addwarn(self, msg.author, msg, f"Hat ein verbotenes Wort gesendet: ||{word[0]}||")
+
+                                await cursor.execute(f"SELECT channelid FROM modlog WHERE guildid = {msg.guild.id}")
+                                result = await cursor.fetchone()
+                                if result != None:
+                                    chan = msg.guild.get_channel(int(result[0]))
+                                    if chan != None:
+                                        embed = discord.Embed(colour=discord.Colour.gold(),
+                                                        description=f"Der Benutzer {msg.author} (**{msg.author.id}**) wurde verwarnt.")
+                                        embed.add_field(name=f"🎛️ Server:", value=f"{msg.guild.name}", inline=False)
+                                        embed.add_field(name=f"👮 Moderator:", value=f"Vulpo#3749", inline=False)
+                                        embed.add_field(name=f"📄 Grund:", value=f"Hat ein verbotenes Wort gesendet. ||{msg.content}||", inline=False)
+                                        embed.set_author(name=msg.author, icon_url=msg.author.avatar)
+                                        await chan.send(embed=embed)
+                                await msg.channel.send(f"{msg.author.mention} Bitte unterlasse diesen Ausdruck. Du wurdest verwarnt!")
                 except:
                     pass
                     
