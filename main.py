@@ -13,6 +13,7 @@ from discord import app_commands
 import aiomysql
 from googletrans import Translator
 from info import discord_timestamp
+import time
 
 dbl_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjkyNTc5OTU1OTU3NjMyMjA3OCIsImJvdCI6dHJ1ZSwiaWF0IjoxNjQyODc4ODc1fQ.PJVIOEUe25WxuUbD1E68UF7bXpRZR_k4XXwr8ukue-c"
 
@@ -411,6 +412,11 @@ bot = Vulpo()
 
 @bot.tree.error
 async def on_app_command_error(interaction: discord.Interaction, error: AppCommandError):
+    def limit_characters(string: str, limit: int):
+        if len(string) > limit:
+            return string[:limit-3] + "..."
+        return string
+        
     if isinstance(error, app_commands.MissingPermissions):
         await send_error("Fehlende Berechtigungen", "❌ Du hast nicht die Rechte, diesen Command auszuführen.", interaction)
         return
@@ -463,13 +469,17 @@ async def on_app_command_error(interaction: discord.Interaction, error: AppComma
         guilds = bot.get_guild(925729625580113951)
         channels = guilds.get_channel(925732898634600458)
 
-        traceback_string = "".join(traceback.format_exception(type(error), error, error.__traceback__))
-        to_send = f"```py\n {traceback_string}```"
+        traceback_string = traceback.format_exception(type(error), error, error.__traceback__)
 
-        embed = discord.Embed(colour=discord.Colour.red(), title=type(error), description=to_send)
-        embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-        embed.set_author(name=f"{interaction.user} | {interaction.user.id}", icon_url=interaction.user.avatar)
-        embed.set_footer(text=f"{interaction.guild.name} | {interaction.guild.id}", icon_url=interaction.guild.icon)
+        embed = discord.Embed(colour=discord.Colour.red(), title="Error (Application Command)", description=f"""
+<:v_info:1037065915113676891> **Informationen**
+<:v_user:1037065935015653476> {interaction.user.mention}
+<:v_mod:1037065920704696420> `{interaction.guild.name}` | {interaction.guild.id} ({interaction.guild.member_count})
+<:v_enthullen:1037124921685442591> {interaction.channel.mention}
+<:v_zeit:1037065936643047516> <t:{int(time.time())}:R>
+<:v_haken:1048677657040134195> `/{interaction.command.name}`""")
+        embed.add_field(name="<:v_pfeil_rechts:1048677625876459562> Error", value=f"```py\n" + limit_characters(''.join(traceback_string[-1]), 1010) + "```", inline=False)
+        embed.add_field(name="<:v_pfeil_rechts:1048677625876459562> Traceback", value=f"```py\n" + limit_characters(''.join(traceback_string), 1010) + "```", inline=False)
         embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/811730903822368833/823531509461942294/2000px-Dialog-error-round.svg.png")
 
         await channels.send(embed=embed)
