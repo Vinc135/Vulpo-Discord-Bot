@@ -23,9 +23,9 @@ class Modal(discord.ui.Modal, title="Modal"):
                         embed.add_field(name=answer.label, value=answer.value, inline=False)
                     embed.set_thumbnail(url=interaction.user.avatar)
                     await channel.send(embed=embed)
-                    await interaction.response.send_message("**✅ Dein Formular wurde gesendet.**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_haken:1048677657040134195> Dein Formular wurde gesendet.**", ephemeral=True)
                 else:
-                    return await interaction.response.send_message("**❌ Der festgelegte Kanal zum Senden der Formulare existiert nicht mehr. Bitte informiere einen Admin.**", ephemeral=True)
+                    return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der festgelegte Kanal zum Senden der Formulare existiert nicht mehr. Bitte informiere einen Admin.**", ephemeral=True)
 
 class CounterButton(discord.ui.Button):
     def __init__(self, dict=None, id=None, bot=None):
@@ -55,7 +55,7 @@ class fertig(discord.ui.Modal, title="Erstelle ein Embed"):
     async def on_submit(self, interaction: discord.Interaction):
         emb = interaction.message.embeds[0]
         if emb.fields == []:
-            return await interaction.response.send_message("**❌ Du musst zuerst ein paar Optionen festlegen.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du musst zuerst ein paar Optionen festlegen.**", ephemeral=True)
         embed = discord.Embed(title=self.children[0].value, description=self.children[1].value, color=discord.Color.orange())
         if self.children[2].value:
             embed.set_thumbnail(url=self.children[2].value)
@@ -80,7 +80,7 @@ class fertig(discord.ui.Modal, title="Erstelle ein Embed"):
                     
         await interaction.message.delete()
         await interaction.channel.send(embed=embed, view=CounterButtonView(dict, summe, self.bot))
-        await interaction.response.send_message(f"**✅ Setup erfolgreich beendet.**", ephemeral=True)
+        await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Setup erfolgreich beendet.**", ephemeral=True)
         
 class frage_hinzufügen(discord.ui.Modal, title="Füge eine Frage hinzu"):
     def __init__(self, bot=None):
@@ -94,7 +94,7 @@ class frage_hinzufügen(discord.ui.Modal, title="Füge eine Frage hinzu"):
         embed.add_field(name=self.children[0].value, value=self.children[1].value)
         embed.color = discord.Color.green()
         await interaction.message.edit(content="", embed=embed)
-        await interaction.response.send_message("**✅ Frage wurde hinzugefügt.**", ephemeral=True)
+        await interaction.response.send_message("**<:v_haken:1048677657040134195> Frage wurde hinzugefügt.**", ephemeral=True)
                 
 class setup_select(discord.ui.View):
     def __init__(self, bot=None, user=None, kanal=None):
@@ -109,7 +109,7 @@ class setup_select(discord.ui.View):
             return
         await interaction.response.send_modal(frage_hinzufügen(self.bot))
 
-    @discord.ui.button(label="Fertig", style=discord.ButtonStyle.green, custom_id="egwrgwrgwrgwrt", emoji="✅")
+    @discord.ui.button(label="Fertig", style=discord.ButtonStyle.green, custom_id="egwrgwrgwrgwrt", emoji="<:v_haken:1048677657040134195>")
     async def zwei(self, interaction: discord.Interaction, button: discord.ui.Button):
         if self.user.id != interaction.user.id:
             return
@@ -119,7 +119,7 @@ class setup_select(discord.ui.View):
     async def drei(self, interaction: discord.Interaction, button: discord.ui.Button):
         if self.user.id != interaction.user.id:
             return
-        await interaction.response.edit_message(content="**❌ Vorgang abbgebrochen**", view=None, embed=None)
+        await interaction.response.edit_message(content="**<:v_kreuz:1049388811353858069> Vorgang abbgebrochen**", view=None, embed=None)
     
 class modal(commands.Cog):
     def __init__(self, bot):

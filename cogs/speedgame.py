@@ -169,8 +169,8 @@ class Speedgame(commands.Cog):
                 result = await cursor.fetchone()
                 if result == None:
                     if member == interaction.user:
-                        return await interaction.response.send_message("**❌ Du hast noch kein Match gespielt. Aufgrund dessen hast du auch keine Bestzeit. Du musst zuerst ein Match spielen.**", ephemeral=True)
-                    return await interaction.response.send_message(f"**❌ {member.mention} hat noch kein Match gespielt. Aufgrund dessen hat er/sie auch keine Bestzeit. Er/Sie muss zuerst ein Match spielen.**", ephemeral=True)
+                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du hast noch kein Match gespielt. Aufgrund dessen hast du auch keine Bestzeit. Du musst zuerst ein Match spielen.**", ephemeral=True)
+                    return await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> {member.mention} hat noch kein Match gespielt. Aufgrund dessen hat er/sie auch keine Bestzeit. Er/Sie muss zuerst ein Match spielen.**", ephemeral=True)
                 else:
                     embed = discord.Embed(color=random_color(), title="⚡️ **| __Speedgame Stats__ |** 💨", description=f"""
 Aktuelle Stats von {member.mention}

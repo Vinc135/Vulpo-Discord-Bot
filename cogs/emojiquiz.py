@@ -16,7 +16,7 @@ class buttons(discord.ui.View):
         acc = await open_acc(self, interaction.user)
         rucksack = int(acc[0])
         if 20 > int(rucksack):
-            return await interaction.response.send_message(f"❌ Du hast nicht **20 🍪** in deinem Rucksack. Es fehlen dir **{20 - rucksack} 🍪**. Entweder überweise dir die Cookies von deiner Bank in dein Rucksack oder gehe zuerst arbeiten oder betteln. Alle Commands siehst du mit `/help`.", ephemeral=True)
+            return await interaction.response.send_message(f"<:v_kreuz:1049388811353858069> Du hast nicht **20 🍪** in deinem Rucksack. Es fehlen dir **{20 - rucksack} 🍪**. Entweder überweise dir die Cookies von deiner Bank in dein Rucksack oder gehe zuerst arbeiten oder betteln. Alle Commands siehst du mit `/help`.", ephemeral=True)
 
         await update_acc(self, interaction.user, "rucksack", 0, 20)
         
@@ -137,7 +137,7 @@ async def answer_correct(self, msg):
                     b += 1
 
 async def answer_incorrect(self, msg):
-    await msg.add_reaction("❌")
+    await msg.add_reaction("<:v_kreuz:1049388811353858069>")
             
 class Emojiquiz(commands.Cog):
     def __init__(self, bot):
@@ -187,7 +187,7 @@ class Emojiquiz(commands.Cog):
                                 m2 = await kanal.send(embed=embed, view=buttons(self.bot))
                                 await cursor.execute("INSERT INTO eqcurrent(guildID, lösung, msgID) VALUES(%s, %s, %s)", (interaction.guild.id, quiz[1], m2.id))
                                 b += 100000
-                                return await interaction.response.send_message(f"**✅ Das Emojiquiz wurde gestartet in {kanal.mention}.**", ephemeral=True)
+                                return await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Das Emojiquiz wurde gestartet in {kanal.mention}.**", ephemeral=True)
                             else:
                                 b += 1
                     if result is not None:
@@ -204,7 +204,7 @@ class Emojiquiz(commands.Cog):
                                 m2 = await kanal.send(embed=embed, view=buttons(self.bot))
                                 await cursor.execute("INSERT INTO eqcurrent(guildID, lösung, msgID) VALUES(%s, %s, %s)", (interaction.guild.id, quiz[1], m2.id))
                                 b += 100000
-                                return await interaction.response.send_message(f"**✅ Das Emojiquiz wurde neu gestartet in {kanal.mention}.**", ephemeral=True)
+                                return await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Das Emojiquiz wurde neu gestartet in {kanal.mention}.**", ephemeral=True)
                             else:
                                 b += 1
         if modus == "Ausschalten":
@@ -213,9 +213,9 @@ class Emojiquiz(commands.Cog):
                     await cursor.execute("SELECT channelID FROM eq WHERE guildID = (%s)", (interaction.guild.id))
                     result = await cursor.fetchone()
                     if result is None:
-                        return await interaction.response.send_message("**❌ Das Emojiquiz ist nicht in diesem Server aktiviert.**", ephemeral=True)
+                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Das Emojiquiz ist nicht in diesem Server aktiviert.**", ephemeral=True)
                     await cursor.execute("DELETE FROM eq WHERE guildID = (%s)", (interaction.guild.id))
-                    return await interaction.response.send_message(f"**✅ Das Emojiquiz wurde in diesem Server ausgeschalten.**", ephemeral=True)
+                    return await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Das Emojiquiz wurde in diesem Server ausgeschalten.**", ephemeral=True)
 
 async def setup(bot):
     await bot.add_cog(Emojiquiz(bot))

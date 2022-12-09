@@ -18,11 +18,11 @@ class Tags(commands.Cog):
                 await cursor.execute("SELECT name FROM tags WHERE guildID = (%s) AND name = (%s)", (interaction.guild.id, name))
                 result = await cursor.fetchone()
                 if result != None:
-                    await interaction.response.send_message("**❌ Dieser Tag existiert bereits. Wähle bitte einen anderen Namen.**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Dieser Tag existiert bereits. Wähle bitte einen anderen Namen.**", ephemeral=True)
                     return
                 await cursor.execute("INSERT INTO tags(guildID, name, output) VALUES(%s,%s,%s)", (interaction.guild.id, name, output))
                 
-                await interaction.response.send_message(f"**✅ Tag erstellt. Wenn jemand `!tag {name}` schreibt, kommt dieser Text:**\n*{output}*.")
+                await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Tag erstellt. Wenn jemand `!tag {name}` schreibt, kommt dieser Text:**\n*{output}*.")
 
     @tag.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -34,11 +34,11 @@ class Tags(commands.Cog):
                 await cursor.execute("SELECT name FROM tags WHERE guildID = (%s) AND name = (%s)", (interaction.guild.id, name))
                 result = await cursor.fetchone()
                 if result == None:
-                    await interaction.response.send_message("**❌ Dieser Tag existiert nicht. Füge einen Tag mit `/tag add <name> <output>` hinzu.", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Dieser Tag existiert nicht. Füge einen Tag mit `/tag add <name> <output>` hinzu.", ephemeral=True)
                     return
                 await cursor.execute("DELETE FROM tags WHERE guildID = (%s) AND name = (%s)", (interaction.guild.id, name))
                 
-                await interaction.response.send_message(f"**✅ Tag gelöscht.**")
+                await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Tag gelöscht.**")
 
     @tag.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -50,7 +50,7 @@ class Tags(commands.Cog):
                 await cursor.execute("SELECT name, output FROM tags WHERE guildID = (%s)", (interaction.guild.id))
                 result = await cursor.fetchall()
                 if result == None:
-                    await interaction.response.send_message("**❌ Hier wurden keine Tags gefunden. Füge einen Tag mit `/tag add <name> <output>` hinzu**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Hier wurden keine Tags gefunden. Füge einen Tag mit `/tag add <name> <output>` hinzu**", ephemeral=True)
                     return
                 embed = discord.Embed(title="Alle Tags des Servers", description="Hier nähere Infos:", color=discord.Color.orange())
                 for i in result:

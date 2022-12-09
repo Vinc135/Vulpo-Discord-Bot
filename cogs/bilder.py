@@ -67,7 +67,7 @@ class bilder(commands.Cog):
             async with session.get(
                 f"https://some-random-api.ml/canvas/wasted?avatar={member.avatar}") as r:
                 if r.status != 200:
-                    return await interaction.response.send_message("**❌ Fehler beim Laden es Bildes. Versuche es später erneut!**", ephemeral=True)
+                    return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Fehler beim Laden es Bildes. Versuche es später erneut!**", ephemeral=True)
                 else:
                     data = io.BytesIO(await r.read())
                     file = discord.File(data, 'triggered.gif')
@@ -93,7 +93,7 @@ class bilder(commands.Cog):
 
                         await interaction.response.send_message(embed=embed)
         except:
-            return await interaction.response.send_message("**❌ Fehler beim Laden es Bildes. Versuche es später erneut!**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Fehler beim Laden es Bildes. Versuche es später erneut!**", ephemeral=True)
 
     @app_commands.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -106,7 +106,7 @@ class bilder(commands.Cog):
             async with session.get(
                 f"https://some-random-api.ml/canvas/triggered?avatar={member.avatar}") as r:
                 if r.status != 200:
-                    return await interaction.response.send_message("**❌ Fehler beim Laden es Bildes. Versuche es später erneut!**", ephemeral=True)
+                    return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Fehler beim Laden es Bildes. Versuche es später erneut!**", ephemeral=True)
                 else:
                     data = io.BytesIO(await r.read())
                     file=discord.File(data, 'triggered.gif')
@@ -130,7 +130,7 @@ class bilder(commands.Cog):
 
             await interaction.response.send_message(embed=embed)
         except:
-            return await interaction.response.send_message("**❌ Fehler beim Laden es Bildes. Versuche es später erneut!**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Fehler beim Laden es Bildes. Versuche es später erneut!**", ephemeral=True)
 
     @app_commands.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -144,7 +144,7 @@ class bilder(commands.Cog):
             async with session.get(
                     f"https://some-random-api.ml/canvas/gay?avatar={member.avatar}") as r:
                 if r.status != 200:
-                    return await interaction.response.send_message("**❌ Fehler beim Laden es Bildes. Versuche es später erneut!**", ephemeral=True)
+                    return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Fehler beim Laden es Bildes. Versuche es später erneut!**", ephemeral=True)
                 else:
                     data = io.BytesIO(await r.read())
                     file=discord.File(data, 'triggered.gif')

@@ -38,17 +38,17 @@ class Autoreact(commands.Cog):
             await interaction.response.defer()
             emoj = discord.PartialEmoji.from_str(emoji)
             if emoj is None:
-                return await interaction.followup.send("**❌ Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+                return await interaction.followup.send("**<:v_kreuz:1049388811353858069> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
             msg = await interaction.channel.send("**⚡️ Ich überprüfe die Verfügbarkeit des Emojis.**")
             await msg.add_reaction(emoj)
             await msg.delete()
             async with self.bot.pool.acquire() as conn:
                 async with conn.cursor() as cursor:
                     await cursor.execute("INSERT INTO autoreact(guildID, channelID, emoji) VALUES(%s,%s,%s)", (interaction.guild.id, kanal.id, emoji))
-                    await interaction.followup.send(f"**✅ Eintrag erstellt. Jede Nachricht aus dem Kanal {kanal.mention} erhält das Emoji {emoj}.**")
+                    await interaction.followup.send(f"**<:v_haken:1048677657040134195> Eintrag erstellt. Jede Nachricht aus dem Kanal {kanal.mention} erhält das Emoji {emoj}.**")
         except:
             await msg.delete()
-            return await interaction.followup.send("**❌ Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+            return await interaction.followup.send("**<:v_kreuz:1049388811353858069> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
 
     @autoreact.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -60,10 +60,10 @@ class Autoreact(commands.Cog):
                 await cursor.execute("SELECT emoji FROM autoreact WHERE guildID = (%s) AND channelID = (%s)", (interaction.guild.id, kanal.id))
                 result = await cursor.fetchall()
                 if result == None or result == "()":
-                    await interaction.response.send_message("**❌ In dem Kanal ist keine Autoreaktion eingestellt.**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> In dem Kanal ist keine Autoreaktion eingestellt.**", ephemeral=True)
                     return
                 await cursor.execute("DELETE FROM autoreact WHERE guildID = (%s) AND channelID = (%s)", (interaction.guild.id, kanal.id))
-                await interaction.response.send_message(f"**✅ Einträge gelöscht.**")
+                await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Einträge gelöscht.**")
 
     @autoreact.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -75,7 +75,7 @@ class Autoreact(commands.Cog):
                 await cursor.execute("SELECT emoji, channelID FROM autoreact WHERE guildID = (%s)", (interaction.guild.id))
                 result = await cursor.fetchall()
                 if result == ():
-                    await interaction.response.send_message("**❌ Hier gibt es keine autoemojis. Füge eine mit `/autoreact add <kanal> <emoji>` hinzu**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Hier gibt es keine autoemojis. Füge eine mit `/autoreact add <kanal> <emoji>` hinzu**", ephemeral=True)
                     return
                 embed = discord.Embed(title="Alle automatische Emojis in Kanälen", description="Hier nähere Infos:", color=discord.Color.orange())
                 for i in result:
