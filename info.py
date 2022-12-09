@@ -227,7 +227,7 @@ async def send_error(title, description, interaction):
         await interaction.response.send_message(embed=embed, ephemeral=True)
     except:
         try:
-            await interaction.response.send_message("**❌ Mir fehlt die Berechtigung 'Nachrichten einbetten'.**", ephemeral=True)
+            await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Mir fehlt die Berechtigung 'Nachrichten einbetten'.**", ephemeral=True)
         except:
             pass
 

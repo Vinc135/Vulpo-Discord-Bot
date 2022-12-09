@@ -448,16 +448,16 @@ class economy(commands.Cog):
         rucksack = int(acc[0])
         bank = int(acc[1])
         if betrag > int(bank):
-            await interaction.response.send_message(f"❌ Du hast nicht **{betrag} 🍪** auf deiner Bank. Es fehlen dir **{betrag - bank} 🍪**.", ephemeral=True)
+            await interaction.response.send_message(f"<:v_kreuz:1049388811353858069> Du hast nicht **{betrag} 🍪** auf deiner Bank. Es fehlen dir **{betrag - bank} 🍪**.", ephemeral=True)
             return
         if betrag < 0:
-            await interaction.response.send_message(f"❌ Der Betrag muss eine positive Zahl sein. Beispiel: `/balance withdraw {bank}`", ephemeral=True)
+            await interaction.response.send_message(f"<:v_kreuz:1049388811353858069> Der Betrag muss eine positive Zahl sein. Beispiel: `/balance withdraw {bank}`", ephemeral=True)
             return
 
         await update_acc(self, interaction.user, "bank", 0, betrag)
         await update_acc(self, interaction.user, "rucksack", betrag, 0)
 
-        await interaction.response.send_message(f"✅ Ich habe **{betrag} 🍪** von deiner Bank abgehoben. Du hast nun **{rucksack + betrag} 🍪** in deinem Rucksack und **{bank - betrag} 🍪** auf deiner Bank.")
+        await interaction.response.send_message(f"<:v_haken:1048677657040134195> Ich habe **{betrag} 🍪** von deiner Bank abgehoben. Du hast nun **{rucksack + betrag} 🍪** in deinem Rucksack und **{bank - betrag} 🍪** auf deiner Bank.")
     
     @cookies.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -467,16 +467,16 @@ class economy(commands.Cog):
         rucksack = int(acc[0])
         bank = int(acc[1])
         if betrag > int(rucksack):
-            await interaction.response.send_message(f"❌ Du hast nicht **{betrag} 🍪** auf deiner Bank. Es fehlen dir **{betrag - rucksack} 🍪**.", ephemeral=True)
+            await interaction.response.send_message(f"<:v_kreuz:1049388811353858069> Du hast nicht **{betrag} 🍪** auf deiner Bank. Es fehlen dir **{betrag - rucksack} 🍪**.", ephemeral=True)
             return
         if betrag < 0:
-            await interaction.response.send_message(f"❌ Der Betrag muss eine positive Zahl sein. Beispiel: `/balance withdraw {rucksack}`", ephemeral=True)
+            await interaction.response.send_message(f"<:v_kreuz:1049388811353858069> Der Betrag muss eine positive Zahl sein. Beispiel: `/balance withdraw {rucksack}`", ephemeral=True)
             return
 
         await update_acc(self, interaction.user, "rucksack", 0, betrag)
         await update_acc(self, interaction.user, "bank", betrag, 0)
 
-        await interaction.response.send_message(f"✅ Ich habe **{betrag} 🍪** auf deine Bank überwiesen. Du hast nun **{rucksack - betrag} 🍪** in deinem Rucksack und **{bank + betrag} 🍪** auf deiner Bank.")
+        await interaction.response.send_message(f"<:v_haken:1048677657040134195> Ich habe **{betrag} 🍪** auf deine Bank überwiesen. Du hast nun **{rucksack - betrag} 🍪** in deinem Rucksack und **{bank + betrag} 🍪** auf deiner Bank.")
 
     @app_commands.command()
     @app_commands.checks.cooldown(1, 3600, key=lambda i: (i.user.id))
@@ -582,7 +582,7 @@ class economy(commands.Cog):
                         embed.set_footer(text=f"Deine Arbeitsstunden: {acc[3]}", icon_url="https://cdn.discordapp.com/emojis/814202875387183145.png")
                         await interaction.response.send_message(embed=embed)
             else:
-                await interaction.response.send_message(f"❌ Du musst dich zuerst für einen Job bewerben!\nAlle Jobs siehst du mit dem Befehl `/job list`\nNutze `/job apply <job>` um dich für einen Job zu bewerben.", ephemeral=True)
+                await interaction.response.send_message(f"<:v_kreuz:1049388811353858069> Du musst dich zuerst für einen Job bewerben!\nAlle Jobs siehst du mit dem Befehl `/job list`\nNutze `/job apply <job>` um dich für einen Job zu bewerben.", ephemeral=True)
         except:
             pass
         
@@ -591,32 +591,32 @@ class economy(commands.Cog):
     async def send(self, interaction: discord.Interaction, user: discord.User, betrag: int):
         """Sende Geld zu einem anderen User."""
         if user == interaction.user:
-            await interaction.response.send_message("❌ Du kannst dir kein Geld selber senden.", ephemeral=True)
+            await interaction.response.send_message("<:v_kreuz:1049388811353858069> Du kannst dir kein Geld selber senden.", ephemeral=True)
             return
         acc = await open_acc(self, interaction.user)
         rucksack = int(acc[0])
         if betrag > int(rucksack):
-            await interaction.response.send_message(f"❌ Du hast nicht so viel Geld in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
+            await interaction.response.send_message(f"<:v_kreuz:1049388811353858069> Du hast nicht so viel Geld in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
             return
         if betrag < 0:
-            await interaction.response.send_message(f"❌ Der Betrag muss eine positive Zahl sein. Beispiel: `/send @Vinc {betrag}`", ephemeral=True)
+            await interaction.response.send_message(f"<:v_kreuz:1049388811353858069> Der Betrag muss eine positive Zahl sein. Beispiel: `/send @Vinc {betrag}`", ephemeral=True)
             return
 
         await update_acc(self, interaction.user, "rucksack", 0, betrag)
         await update_acc(self, user, "rucksack", betrag, 0)
-        await interaction.response.send_message(f"✅ {user.mention} hat **{betrag} 🍪** von dir erhalten. Du hast nun **{rucksack - betrag} 🍪** in deinem Rucksack.")
+        await interaction.response.send_message(f"<:v_haken:1048677657040134195> {user.mention} hat **{betrag} 🍪** von dir erhalten. Du hast nun **{rucksack - betrag} 🍪** in deinem Rucksack.")
 
     @app_commands.command()
     @app_commands.checks.cooldown(1, 3500, key=lambda i: (i.user.id))
     async def rob(self, interaction: discord.Interaction, user: discord.User):
         """Raube einen User aus."""
         if user == interaction.user:
-            await interaction.response.send_message("❌ Du kannst dir kein Geld selber senden.", ephemeral=True)
+            await interaction.response.send_message("<:v_kreuz:1049388811353858069> Du kannst dir kein Geld selber senden.", ephemeral=True)
             return
         acc = await open_acc(self, user)
         rucksack = int(acc[0])
         if rucksack < 50:
-            await interaction.response.send_message(f"❌ {user} hat nicht viel Geld. Versuche jemand anderen auszurauben.", ephemeral=True)
+            await interaction.response.send_message(f"<:v_kreuz:1049388811353858069> {user} hat nicht viel Geld. Versuche jemand anderen auszurauben.", ephemeral=True)
             return
         if rucksack > 50:
             x = random.randint(1, 100)
@@ -648,10 +648,10 @@ class economy(commands.Cog):
         rucksack = int(acc[0])
 
         if betrag < 0:
-            await interaction.response.send_message(f"❌ Der Betrag muss eine positive Zahl sein. Beispiel: `/send @Vinc {betrag}`", ephemeral=True)
+            await interaction.response.send_message(f"<:v_kreuz:1049388811353858069> Der Betrag muss eine positive Zahl sein. Beispiel: `/send @Vinc {betrag}`", ephemeral=True)
             return
         if betrag > rucksack:
-            await interaction.response.send_message(f"❌ Du hast nicht so viel Geld in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
+            await interaction.response.send_message(f"<:v_kreuz:1049388811353858069> Du hast nicht so viel Geld in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
             return
         # results
         choices = ["🍇", "🍋", "🍒", "🍓", "🍊"]
@@ -730,15 +730,15 @@ class economy(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def rps(self, interaction: discord.Interaction, betrag: int):
         """Game, Schere Stein Papier. Deine Reaktion ist deine Entscheidung."""
-        return await interaction.response.send_message("**❌ Der Befehl ist zurzeit nicht verfügbar.**", ephemeral=True)
+        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Befehl ist zurzeit nicht verfügbar.**", ephemeral=True)
         # überprüfen ob er geld hat
         acc = await open_acc(self, interaction.user)
         rucksack = int(acc[0])
         if betrag < 0:
-            await interaction.response.send_message(f"❌ Der Betrag muss eine positive Zahl sein.", ephemeral=True)
+            await interaction.response.send_message(f"<:v_kreuz:1049388811353858069> Der Betrag muss eine positive Zahl sein.", ephemeral=True)
             return
         if betrag > rucksack:
-            await interaction.response.send_message(f"❌ Du hast nicht so viel Geld in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
+            await interaction.response.send_message(f"<:v_kreuz:1049388811353858069> Du hast nicht so viel Geld in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
             return
         embed = discord.Embed(
             color=discord.Color.orange(),

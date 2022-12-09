@@ -44,7 +44,7 @@ class PanelbuttonView(discord.ui.View):
                     view = ClosebuttonView(self.bot)
                     panelnachricht = await new_channel.send(f"{member.mention} | {role.mention}", embed=embed, view=view)
                     await panelnachricht.pin()
-                    await interaction.response.send_message(f"✅ Ich habe ein Ticket für dich erstellt\nDu findest es dort: {new_channel.mention}", ephemeral=True)
+                    await interaction.response.send_message(f"<:v_haken:1048677657040134195> Ich habe ein Ticket für dich erstellt\nDu findest es dort: {new_channel.mention}", ephemeral=True)
                     
                     await cursor.execute("INSERT INTO tickets(guildID, channelID, userID, panelID) VALUES(%s, %s, %s, %s)", (interaction.guild_id, new_channel.id, member.id, interaction.message.id))
                     
@@ -81,7 +81,7 @@ class ClosebuttonView(discord.ui.View):
                     r = await cursor.fetchone()
                     role = interaction.guild.get_role(int(r[0]))
                     if role not in interaction.user.roles:
-                        return await interaction.response.send_message(f"**❌ Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
+                        return await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
                 except:
                     pass
                 member = interaction.user
@@ -140,7 +140,7 @@ class ClosebuttonView(discord.ui.View):
                     r = await cursor.fetchone()
                     role = interaction.guild.get_role(int(r[0]))
                     if role not in interaction.user.roles:
-                        return await interaction.response.send_message(f"**❌ Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
+                        return await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
                 except:
                     pass
                 channel = interaction.channel
@@ -195,7 +195,7 @@ class DeletebuttonView(discord.ui.View):
                     r = await cursor.fetchone()
                     role = interaction.guild.get_role(int(r[0]))
                     if role not in interaction.user.roles:
-                        return await interaction.response.send_message(f"**❌ Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
+                        return await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
                 except:
                     pass
                 member = interaction.user
@@ -250,7 +250,7 @@ class DeletebuttonView(discord.ui.View):
                     r = await cursor.fetchone()
                     role = interaction.guild.get_role(int(r[0]))
                     if role not in interaction.user.roles:
-                        return await interaction.response.send_message(f"**❌ Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
+                        return await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
                 except:
                     pass
                 member = interaction.user

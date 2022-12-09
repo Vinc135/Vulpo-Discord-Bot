@@ -20,24 +20,24 @@ class Willkommensnachricht(discord.ui.Modal, title="Willkommensnachricht"):
                 if str(self.alte_nachricht) == "%member-Member#0000 | %name-Member | %mention-@Member | %guild-Servername | %usercount-Memberanzahl":
                     if str(self.children[1].value).lower() == "ja":
                         await cursor.execute("INSERT INTO welcome (guildID, channelID, msg) VALUES (%s, %s, %s)", (interaction.guild.id, self.kanal.id, f"{self.children[0].value} B9xV123"))
-                        return await interaction.response.send_message("**✅ Die Willkommensnachricht ist nun aktiv.**")
+                        return await interaction.response.send_message("**<:v_haken:1048677657040134195> Die Willkommensnachricht ist nun aktiv.**")
                     if str(self.children[1].value).lower() == "nein":
                         await cursor.execute("INSERT INTO welcome (guildID, channelID, msg) VALUES (%s, %s, %s)", (interaction.guild.id, self.kanal.id, self.children[0].value))
-                        return await interaction.response.send_message("**✅ Die Willkommensnachricht ist nun aktiv.**")
+                        return await interaction.response.send_message("**<:v_haken:1048677657040134195> Die Willkommensnachricht ist nun aktiv.**")
                     else:
-                        return await interaction.response.send_message("**❌ Gib beim nächsten Mal deine Antwort beim Feld '**Mit Bild?**' mit einem klaren 'Ja' oder 'Nein' wider.**", ephemeral=True)
+                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Gib beim nächsten Mal deine Antwort beim Feld '**Mit Bild?**' mit einem klaren 'Ja' oder 'Nein' wider.**", ephemeral=True)
                     
                 
                 if str(self.children[1].value).lower() == "ja":
                     await cursor.execute("UPDATE welcome SET channelID = (%s) WHERE guildID = (%s)", (self.kanal.id, interaction.guild.id))
                     await cursor.execute("UPDATE welcome SET msg = (%s) WHERE guildID = (%s)", (f"{self.children[0].value} B9xV123", interaction.guild.id))
-                    return await interaction.response.send_message("**✅ Die Willkommensnachricht ist nun geändert.**")
+                    return await interaction.response.send_message("**<:v_haken:1048677657040134195> Die Willkommensnachricht ist nun geändert.**")
                 if str(self.children[1].value).lower() == "nein":
                     await cursor.execute("UPDATE welcome SET channelID = (%s) WHERE guildID = (%s)", (self.kanal.id, interaction.guild.id))
                     await cursor.execute("UPDATE welcome SET msg = (%s) WHERE guildID = (%s)", (self.children[0].value, interaction.guild.id))
-                    return await interaction.response.send_message("**✅ Die Willkommensnachricht ist nun geändert.**")
+                    return await interaction.response.send_message("**<:v_haken:1048677657040134195> Die Willkommensnachricht ist nun geändert.**")
                 else:
-                    return await interaction.response.send_message("**❌ Gib beim nächsten Mal deine Antwort beim Feld '**Mit Bild?**' mit einem klaren 'Ja' oder 'Nein' wider.**", ephemeral=True)
+                    return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Gib beim nächsten Mal deine Antwort beim Feld '**Mit Bild?**' mit einem klaren 'Ja' oder 'Nein' wider.**", ephemeral=True)
                 
 
 class Verlassensnachricht(discord.ui.Modal, title="Verlassensnachricht"):
@@ -53,10 +53,10 @@ class Verlassensnachricht(discord.ui.Modal, title="Verlassensnachricht"):
             async with conn.cursor() as cursor:
                 if str(self.alte_nachricht) == "%member-Member#0000 | %name-Member | %mention-@Member | %guild-Servername | %usercount-Memberanzahl":
                     await cursor.execute("INSERT INTO leavemsg (guildID, channelID, msg) VALUES (%s, %s, %s)", (interaction.guild.id, self.kanal.id, self.children[0].value))
-                    return await interaction.response.send_message("**✅ Die Verlassensnachricht ist nun aktiv.**")
+                    return await interaction.response.send_message("**<:v_haken:1048677657040134195> Die Verlassensnachricht ist nun aktiv.**")
                 await cursor.execute("UPDATE leavemsg SET channelID = (%s) WHERE guildID = (%s)", (self.kanal.id, interaction.guild.id))
                 await cursor.execute("UPDATE leavemsg SET msg = (%s) WHERE guildID = (%s)", (self.children[0].value, interaction.guild.id))
-                return await interaction.response.send_message("**✅ Die Verlassensnachricht ist nun geändert.**")
+                return await interaction.response.send_message("**<:v_haken:1048677657040134195> Die Verlassensnachricht ist nun geändert.**")
 
 ##########
 
@@ -119,16 +119,16 @@ class message(commands.Cog):
                 await cursor.execute(f"SELECT channelID, msg FROM welcome WHERE guildID = {interaction.guild.id}")
                 result = await cursor.fetchone()
                 if result == None:
-                    return await interaction.response.send_message("**❌ Auf diesem Server ist keine Willkommensnachricht eingerichtet.**", ephemeral=True)
+                    return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Auf diesem Server ist keine Willkommensnachricht eingerichtet.**", ephemeral=True)
                 try:
                     ch = interaction.guild.get_channel(int(result[0]))
                 except:
-                    return await interaction.response.send_message("**❌ Auf diesem Server ist keine Willkommensnachricht eingerichtet.**", ephemeral=True)
+                    return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Auf diesem Server ist keine Willkommensnachricht eingerichtet.**", ephemeral=True)
 
                 if "B9xV123" not in str(result[1]):
                     finalmsg = result[1].replace("%member", str(member)).replace("%name", str(member.name)).replace("%mention", str(member.mention)).replace("%guild", str(member.guild)).replace("%usercount", str(member.guild.member_count))
                     await ch.send(finalmsg + f"\n\nTest-Willkommensnachricht angefordert von {interaction.user}")
-                    return await interaction.response.send_message(f"**✅ Die Test-Willkommensnachricht wurde an den Kanal {ch.mention} gesendet.**")
+                    return await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Die Test-Willkommensnachricht wurde an den Kanal {ch.mention} gesendet.**")
 
                 else:
                     finalmsg = result[1].replace("B9xV123", "").replace("%member", str(member)).replace("%name", str(member.name)).replace("%mention", str(member.mention)).replace("%guild", str(member.guild)).replace("%usercount", str(member.guild.member_count))
@@ -144,7 +144,7 @@ class message(commands.Cog):
                     file = discord.File(fp=background.image_bytes, filename="willkommen.png")
 
                     await ch.send(finalmsg + f"\nTestjoin angefordert von {interaction.user}", file=file)
-                    await interaction.response.send_message(f"**✅ Die Test-Willkommensnachricht wurde an den Kanal {ch.mention} gesendet.**")
+                    await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Die Test-Willkommensnachricht wurde an den Kanal {ch.mention} gesendet.**")
 
     @app_commands.command()
     @app_commands.checks.has_permissions(administrator=True)
@@ -157,12 +157,12 @@ class message(commands.Cog):
                     await cursor.execute(f"SELECT channelID, msg FROM welcome WHERE guildID = {interaction.guild.id}")
                     result = await cursor.fetchone()
                     if result == None:
-                        return await interaction.response.send_message("**❌ Auf diesem Server ist keine Willkommensnachricht eingerichtet.**", ephemeral=True)
+                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Auf diesem Server ist keine Willkommensnachricht eingerichtet.**", ephemeral=True)
                     await cursor.execute("DELETE FROM welcome WHERE guildID = (%s)", (interaction.guild.id))
-                    return await interaction.response.send_message("**✅ Die Willkommensnachricht wurde ausgeschaltet.**")
+                    return await interaction.response.send_message("**<:v_haken:1048677657040134195> Die Willkommensnachricht wurde ausgeschaltet.**")
                 if argument == "Einrichten (Kanal muss mit angegeben werden)":
                     if kanal == None:
-                        return await interaction.response.send_message("**❌ Beim Einrichten ist auch eine Kanal-Angabe erforderlich.**", ephemeral=True)
+                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Beim Einrichten ist auch eine Kanal-Angabe erforderlich.**", ephemeral=True)
 
                     await cursor.execute(f"SELECT channelID, msg FROM welcome WHERE guildID = {interaction.guild.id}")
                     result = await cursor.fetchone()
@@ -178,7 +178,7 @@ class message(commands.Cog):
                     try:
                         ch = interaction.guild.get_channel(int(wel[0]))
                     except:
-                        return await interaction.response.send_message("**❌ Der Kanal der Willkommensnachricht existiert nicht mehr. Bitte deaktiviere die Willkommensnachricht und richte sie erneut ein.**", ephemeral=True)
+                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Kanal der Willkommensnachricht existiert nicht mehr. Bitte deaktiviere die Willkommensnachricht und richte sie erneut ein.**", ephemeral=True)
 
                     embed = discord.Embed(title="Willkommensnachricht", description=f"Die aktuelle Willkommensnachricht:", color=discord.Color.orange())
                     embed.add_field(name="Kanal", value=ch.mention, inline=False)
@@ -217,7 +217,7 @@ class message(commands.Cog):
                 await cursor.execute(f"SELECT channelID, msg FROM leavemsg WHERE guildID = {interaction.guild.id}")
                 result = await cursor.fetchone()
                 if result == None:
-                    return await interaction.response.send_message("**❌ Auf diesem Server ist keine Verlassensnachricht eingerichtet. Deaktiviere diese zuerst!**", ephemeral=True)
+                    return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Auf diesem Server ist keine Verlassensnachricht eingerichtet. Deaktiviere diese zuerst!**", ephemeral=True)
                 try:
                     ch = interaction.guild.get_channel(int(result[0]))
                 except:
@@ -227,7 +227,7 @@ class message(commands.Cog):
                     embed = discord.Embed(color=random_color(), description=finalmsg)
                     embed.set_footer(text=f"Test-Verlassensnachricht angefordert von {interaction.user}")
                     await ch.send(embed=embed)
-                    await interaction.response.send_message(f"**✅ Die Test-Verlassensnachricht wurde an den Kanal {ch.mention} gesendet.**")
+                    await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Die Test-Verlassensnachricht wurde an den Kanal {ch.mention} gesendet.**")
                 except:
                     pass
 
@@ -242,12 +242,12 @@ class message(commands.Cog):
                     await cursor.execute(f"SELECT channelID, msg FROM leavemsg WHERE guildID = {interaction.guild.id}")
                     result = await cursor.fetchone()
                     if result == None:
-                        return await interaction.response.send_message("**❌ Auf diesem Server ist keine Verlassensnachricht eingerichtet.**", ephemeral=True)
+                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Auf diesem Server ist keine Verlassensnachricht eingerichtet.**", ephemeral=True)
                     await cursor.execute("DELETE FROM leavemsg WHERE guildID = (%s)", (interaction.guild.id))
-                    return await interaction.response.send_message("**✅ Die Verlassensnachricht wurde ausgeschaltet.**")
+                    return await interaction.response.send_message("**<:v_haken:1048677657040134195> Die Verlassensnachricht wurde ausgeschaltet.**")
                 if argument == "Einrichten (Kanal muss mit angegeben werden)":
                     if kanal == None:
-                        return await interaction.response.send_message("**❌ Beim Einrichten ist auch eine Kanal-Angabe erforderlich.**", ephemeral=True)
+                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Beim Einrichten ist auch eine Kanal-Angabe erforderlich.**", ephemeral=True)
 
                     await cursor.execute(f"SELECT channelID, msg FROM leavemsg WHERE guildID = {interaction.guild.id}")
                     result = await cursor.fetchone()
@@ -263,7 +263,7 @@ class message(commands.Cog):
                     try:
                         ch = interaction.guild.get_channel(int(wel[0]))
                     except:
-                        return await interaction.response.send_message("**❌ Der Kanal der Verlassensnachricht existiert nicht mehr. Bitte deaktiviere die Verlassensnachricht und richte sie erneut ein.**", ephemeral=True)
+                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Kanal der Verlassensnachricht existiert nicht mehr. Bitte deaktiviere die Verlassensnachricht und richte sie erneut ein.**", ephemeral=True)
 
                     embed = discord.Embed(title="Verlassensnachricht", description=f"Die aktuelle Verlassensnachricht:", color=discord.Color.orange())
                     embed.add_field(name="Kanal", value=ch.mention, inline=False)

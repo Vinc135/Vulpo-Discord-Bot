@@ -225,19 +225,19 @@ class levelsystem(commands.Cog):
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 if await checkstatus(self, interaction.guild) == False:
-                    await interaction.response.send_message("**❌ Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
                     return
                 if not int(level) > 0 or not int(level) < 101:
-                    await interaction.response.send_message("**❌ Die Stufe muss eine Zahl zwischen 1 und 100 sein.**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Die Stufe muss eine Zahl zwischen 1 und 100 sein.**", ephemeral=True)
                     return
                 await cursor.execute("SELECT guild_id FROM levelroles WHERE level = (%s) AND roleid = (%s)", (level, role.id))
                 r = await cursor.fetchone()
                 if r is not None:
-                    await interaction.response.send_message("**❌ Für dieses Level wird bereits eine Rolle vergeben. Bitte wähle ein anderes Level.**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Für dieses Level wird bereits eine Rolle vergeben. Bitte wähle ein anderes Level.**", ephemeral=True)
                     return
                 await cursor.execute("INSERT INTO levelroles(guild_id, roleid, level) VALUES (%s, %s, %s)", (interaction.guild.id, role.id, level))
                 
-                await interaction.response.send_message(f"**✅ Die Rolle {role} wird nun beim Erreichen von Level {level} vergeben.**")
+                await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Die Rolle {role} wird nun beim Erreichen von Level {level} vergeben.**")
 
     @role.command()
     @app_commands.checks.has_permissions(manage_roles=True)
@@ -247,16 +247,16 @@ class levelsystem(commands.Cog):
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 if await checkstatus(self, interaction.guild) == False:
-                    await interaction.response.send_message("**❌ Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
                     return
                 await cursor.execute("SELECT roleid FROM levelroles WHERE roleid = (%s) AND level = (%s) AND guild_id = (%s)", (role.id, level, interaction.guild.id))
                 r = await cursor.fetchone()
                 if r is None:
-                    await interaction.response.send_message("**❌ Diese Levelrolle existiert nicht.**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Diese Levelrolle existiert nicht.**", ephemeral=True)
                     return
                 await cursor.execute("DELETE FROM levelroles WHERE guild_id = (%s) AND roleid = (%s) AND level = (%s)", (interaction.guild.id, role.id, level))
                 
-                await interaction.response.send_message(f"**✅ Die Rolle {role} wird nun nicht mehr beim Erreichen von Level {level} vergeben.**")
+                await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Die Rolle {role} wird nun nicht mehr beim Erreichen von Level {level} vergeben.**")
     
     @role.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -265,15 +265,15 @@ class levelsystem(commands.Cog):
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 if await checkstatus(self, interaction.guild) == False:
-                    await interaction.response.send_message("**❌ Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
                     return
                 try:
                     await cursor.execute(f"SELECT roleid FROM levelroles WHERE guild_id = {interaction.guild.id}")
                     r = await cursor.fetchall()
                     if r is None:
-                        return await interaction.response.send_message("❌ Ich habe auf diesem Server keine Levelrolle gefunden.", ephemeral=True)
+                        return await interaction.response.send_message("<:v_kreuz:1049388811353858069> Ich habe auf diesem Server keine Levelrolle gefunden.", ephemeral=True)
                 except:
-                    return await interaction.response.send_message("❌ Ich habe auf diesem Server keine Levelrolle gefunden.", ephemeral=True)
+                    return await interaction.response.send_message("<:v_kreuz:1049388811353858069> Ich habe auf diesem Server keine Levelrolle gefunden.", ephemeral=True)
 
                 await cursor.execute(f"SELECT roleid, level FROM levelroles WHERE guild_id = {interaction.guild.id}")
                 result = await cursor.fetchall()
@@ -296,7 +296,7 @@ class levelsystem(commands.Cog):
                 if a >= 1:
                     await interaction.response.send_message(embed=embed)
                 if a < 1:
-                    return await interaction.response.send_message("❌ Ich habe auf diesem Server keine Levelrolle gefunden.", ephemeral=True)
+                    return await interaction.response.send_message("<:v_kreuz:1049388811353858069> Ich habe auf diesem Server keine Levelrolle gefunden.", ephemeral=True)
     
     @levelsystem.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -306,18 +306,18 @@ class levelsystem(commands.Cog):
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 if await checkstatus(self, interaction.guild) == False:
-                    await interaction.response.send_message("**❌ Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
                     return
                 if nachricht:
                     if len(nachricht) > 1000:
-                        await interaction.response.send_message("**❌ Deine Nachricht darf nicht größer als 1000 Charaktere sein.**", ephemeral=True)
+                        await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Deine Nachricht darf nicht größer als 1000 Charaktere sein.**", ephemeral=True)
                         return
                 if modus == "Deaktivieren":
                     await cursor.execute("UPDATE levelup SET message = (%s) WHERE guild_id = (%s)", ("Normal", interaction.guild.id))
                     
-                    return await interaction.response.send_message("**✅ Die Levelupnachricht wurde erfolgreich zurückgesetzt.**")
+                    return await interaction.response.send_message("**<:v_haken:1048677657040134195> Die Levelupnachricht wurde erfolgreich zurückgesetzt.**")
                 if nachricht == None:
-                    await interaction.response.send_message("**❌ Du musst auch eine Nachricht angeben.**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du musst auch eine Nachricht angeben.**", ephemeral=True)
                     return
                 await cursor.execute(f"SELECT message FROM levelup WHERE guild_id = {interaction.guild.id}")
                 message = await cursor.fetchone()
@@ -326,7 +326,7 @@ class levelsystem(commands.Cog):
                     
                 await cursor.execute("UPDATE levelup SET message = (%s) WHERE guild_id = (%s)", (nachricht, interaction.guild.id))
                 
-                await interaction.response.send_message("**✅ Die Levelupnachricht wurde erfolgreich geändert.**")
+                await interaction.response.send_message("**<:v_haken:1048677657040134195> Die Levelupnachricht wurde erfolgreich geändert.**")
 
     @levelsystem.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -336,43 +336,43 @@ class levelsystem(commands.Cog):
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 if await checkstatus(self, interaction.guild) == False:
-                    await interaction.response.send_message("**❌ Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
                     return
                 await cursor.execute(f"SELECT channel_id FROM levelup WHERE guild_id = {interaction.guild.id}")
                 channel = await cursor.fetchone()
 
                 if modus == "Deaktivieren":
                     if channel == None:
-                        await interaction.response.send_message("**❌ Hier ist kein Levelupkanal eingerichtet.", ephemeral=True)
+                        await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Hier ist kein Levelupkanal eingerichtet.", ephemeral=True)
                         return
                     await cursor.execute("UPDATE levelup SET channel_id = (%s) WHERE guild_id = (%s)", ("Normal", interaction.guild.id))
                     
-                    return await interaction.response.send_message("**✅ Der Levelupkanal wurde erfolgreich zurückgesetzt.**")
+                    return await interaction.response.send_message("**<:v_haken:1048677657040134195> Der Levelupkanal wurde erfolgreich zurückgesetzt.**")
 
                 if modus == "Kanal des Levelups":
                     if channel == None:
                         await cursor.execute("INSERT INTO levelup (guild_id, channel_id) VALUES (%s, %s)", (interaction.guild.id, "Normal"))
                         
                     await cursor.execute("UPDATE levelup SET channel_id = (%s) WHERE guild_id = (%s)", ("Normal", interaction.guild.id))
-                    return await interaction.response.send_message("**✅ Der Levelupkanal wurde erfolgreich geändert.**")
+                    return await interaction.response.send_message("**<:v_haken:1048677657040134195> Der Levelupkanal wurde erfolgreich geändert.**")
                  
                 if modus == "Private Nachricht":
                     if channel == None:
                         await cursor.execute("INSERT INTO levelup (guild_id, channel_id) VALUES (%s, %s)", (interaction.guild.id, "Privat"))
                         
                     await cursor.execute("UPDATE levelup SET channel_id = (%s) WHERE guild_id = (%s)", ("Privat", interaction.guild.id))
-                    return await interaction.response.send_message("**✅ Der Levelupkanal wurde erfolgreich geändert.**")
+                    return await interaction.response.send_message("**<:v_haken:1048677657040134195> Der Levelupkanal wurde erfolgreich geändert.**")
 
                 if modus == "Spezieller Kanal (Kanalangabe benötigt)":
                     if kanal == None:
-                        await interaction.response.send_message("**❌ Du musst auch einen Kanal angeben.**", ephemeral=True)
+                        await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du musst auch einen Kanal angeben.**", ephemeral=True)
                         return
                     if channel == None:
                         await cursor.execute("INSERT INTO levelup (guild_id, channel_id) VALUES (%s, %s)", (interaction.guild.id, kanal.id))
                         
                     await cursor.execute("UPDATE levelup SET channel_id = (%s) WHERE guild_id = (%s)", (kanal.id, interaction.guild.id))
                     
-                    return await interaction.response.send_message("**✅ Der Levelupkanal wurde erfolgreich geändert.**")
+                    return await interaction.response.send_message("**<:v_haken:1048677657040134195> Der Levelupkanal wurde erfolgreich geändert.**")
 
     @block.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -382,26 +382,26 @@ class levelsystem(commands.Cog):
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 if await checkstatus(self, interaction.guild) == False:
-                    await interaction.response.send_message("**❌ Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
                     return
                 await cursor.execute("SELECT channel_id FROM lb_channel WHERE guild_id = (%s) AND channel_id = (%s)", (interaction.guild.id, kanal.id))
                 channel = await cursor.fetchone()
 
                 if modus == "Der Blacklist hinzufügen":
                     if channel:
-                        await interaction.response.send_message("**❌ Der Kanal ist bereits auf der Blacklist.**", ephemeral=True)
+                        await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Kanal ist bereits auf der Blacklist.**", ephemeral=True)
                         return
                     await cursor.execute("INSERT INTO lb_channel (channel_id, guild_id) VALUES (%s,%s)", (kanal.id, interaction.guild.id))
                     
-                    await interaction.response.send_message("**✅ Der Kanal ist nun auf der Blacklist.**")
+                    await interaction.response.send_message("**<:v_haken:1048677657040134195> Der Kanal ist nun auf der Blacklist.**")
 
                 if modus == "Von der Blacklist entfernen":
                     if channel == None:
-                        await interaction.response.send_message("**❌ Der Kanal ist nicht auf der Blacklist.**", ephemeral=True)
+                        await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Kanal ist nicht auf der Blacklist.**", ephemeral=True)
                         return
                     await cursor.execute("DELETE FROM lb_channel WHERE channel_id = (%s) AND guild_id = (%s)", (kanal.id, interaction.guild.id))
                     
-                    await interaction.response.send_message("**✅ Der Kanal ist nun nicht mehr auf der Blacklist.**")
+                    await interaction.response.send_message("**<:v_haken:1048677657040134195> Der Kanal ist nun nicht mehr auf der Blacklist.**")
 
     @block.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -411,31 +411,31 @@ class levelsystem(commands.Cog):
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 if await checkstatus(self, interaction.guild) == False:
-                    await interaction.response.send_message("**❌ Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
                     return
                 await cursor.execute("SELECT role_id FROM lb_rollen WHERE guild_id = (%s) AND role_id = (%s)", (interaction.guild.id, rolle.id))
                 r = await cursor.fetchone()
 
                 if modus == "Der Blacklist hinzufügen":
                     if r:
-                        await interaction.response.send_message("**❌ Die Rolle ist bereits auf der Blacklist.**", ephemeral=True)
+                        await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Die Rolle ist bereits auf der Blacklist.**", ephemeral=True)
                         return
                     await cursor.execute("INSERT INTO lb_rollen (role_id, guild_id) VALUES (%s,%s)", (rolle.id, interaction.guild.id))
-                    await interaction.response.send_message("**✅ Die Rolle ist nun auf der Blacklist.**")
+                    await interaction.response.send_message("**<:v_haken:1048677657040134195> Die Rolle ist nun auf der Blacklist.**")
 
                 if modus == "Von der Blacklist entfernen":
                     if r == None:
-                        await interaction.response.send_message("**❌ Die Rolle ist nicht auf der Blacklist.**", ephemeral=True)
+                        await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Die Rolle ist nicht auf der Blacklist.**", ephemeral=True)
                         return
                     await cursor.execute("DELETE FROM lb_rollen WHERE role_id = (%s) AND guild_id = (%s)", (rolle.id, interaction.guild.id))
-                    await interaction.response.send_message("**✅ Die Rolle ist nun nicht mehr auf der Blacklist.**")
+                    await interaction.response.send_message("**<:v_haken:1048677657040134195> Die Rolle ist nun nicht mehr auf der Blacklist.**")
     
     @app_commands.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def rank(self, interaction: discord.Interaction, member: discord.Member=None):
         """Dieser Befehl zeigt dein Level und deine Erfahrungspunkte."""
         if await checkstatus(self, interaction.guild) == False:
-            return await interaction.response.send_message("**❌ Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
         await interaction.response.defer(thinking=True)
         if member == None:
             member = interaction.user
@@ -446,8 +446,8 @@ class levelsystem(commands.Cog):
                 result = await cursor.fetchone()
                 if result == None or result == False:
                     if member == None:
-                        return await interaction.followup.send(f"**❌ Du bist noch nicht eingestuft. Sende erst noch ein paar Nachrichten.**", ephemeral=True)
-                    return await interaction.followup.send(f"**❌ {member} ist noch nicht eingestuft. Er/Sie muss erst noch ein paar Nachrichten.**", ephemeral=True)
+                        return await interaction.followup.send(f"**<:v_kreuz:1049388811353858069> Du bist noch nicht eingestuft. Sende erst noch ein paar Nachrichten.**", ephemeral=True)
+                    return await interaction.followup.send(f"**<:v_kreuz:1049388811353858069> {member} ist noch nicht eingestuft. Er/Sie muss erst noch ein paar Nachrichten.**", ephemeral=True)
                 try:
                     xp_start = result[0]
                     lvl_start = result[1]
@@ -456,8 +456,8 @@ class levelsystem(commands.Cog):
                     prozent = round(xp_start) * multiplication
                 except:
                     if member == None:
-                        return await interaction.followup.send(f"**❌ Du bist noch nicht eingestuft. Sende erst noch ein paar Nachrichten.**", ephemeral=True)
-                    return await interaction.followup.send(f"**❌ {member} ist noch nicht eingestuft. Er/Sie muss erst noch ein paar Nachrichten.**", ephemeral=True)
+                        return await interaction.followup.send(f"**<:v_kreuz:1049388811353858069> Du bist noch nicht eingestuft. Sende erst noch ein paar Nachrichten.**", ephemeral=True)
+                    return await interaction.followup.send(f"**<:v_kreuz:1049388811353858069> {member} ist noch nicht eingestuft. Er/Sie muss erst noch ein paar Nachrichten.**", ephemeral=True)
                 await cursor.execute(f"SELECT client_id FROM levelsystem WHERE guild_id = {interaction.guild.id} ORDER BY user_level DESC")
                 result = await cursor.fetchall()
                 a = 0
@@ -519,15 +519,15 @@ class levelsystem(commands.Cog):
                     if enabled == None:
                         await cursor.execute(f"UPDATE levelstatus SET enabled = 1 WHERE guild_id = {interaction.guild.id}")
                         
-                        await interaction.response.send_message("**✅ Das Levelsystem ist jetzt auf diesem Server aktiviert.**")
+                        await interaction.response.send_message("**<:v_haken:1048677657040134195> Das Levelsystem ist jetzt auf diesem Server aktiviert.**")
                         return
                     if enabled[0] == 1:
-                        await interaction.response.send_message("**❌ Das Levelsystem ist hier bereits aktiviert.**", ephemeral=True)
+                        await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Das Levelsystem ist hier bereits aktiviert.**", ephemeral=True)
                         return
                     if enabled[0] == 0:
                         await cursor.execute(f"UPDATE levelstatus SET enabled = 1 WHERE guild_id = {interaction.guild.id}")
                         
-                        await interaction.response.send_message("**✅ Das Levelsystem ist jetzt auf diesem Server aktiviert.**")
+                        await interaction.response.send_message("**<:v_haken:1048677657040134195> Das Levelsystem ist jetzt auf diesem Server aktiviert.**")
                         return
                 if modus == "Aus":
                     await cursor.execute(f"SELECT enabled FROM levelstatus WHERE guild_id = {interaction.guild.id}")
@@ -535,15 +535,15 @@ class levelsystem(commands.Cog):
                     if enabled == None:
                         await cursor.execute(f"UPDATE levelstatus SET enabled = 0 WHERE guild_id = {interaction.guild.id}")
                         
-                        await interaction.response.send_message("**✅ Das Levelsystem ist jetzt auf diesem Server deaktiviert.**")
+                        await interaction.response.send_message("**<:v_haken:1048677657040134195> Das Levelsystem ist jetzt auf diesem Server deaktiviert.**")
                         return
                     if enabled[0] == 1:
                         await cursor.execute(f"UPDATE levelstatus SET enabled = 0 WHERE guild_id = {interaction.guild.id}")
                         
-                        await interaction.response.send_message("**✅ Das Levelsystem ist jetzt auf diesem Server deaktiviert.**")
+                        await interaction.response.send_message("**<:v_haken:1048677657040134195> Das Levelsystem ist jetzt auf diesem Server deaktiviert.**")
                         return
                     if enabled[0] == 0:
-                        await interaction.response.send_message("**❌ Das Levelsystem ist hier bereits deaktiviert.**", ephemeral=True)
+                        await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Das Levelsystem ist hier bereits deaktiviert.**", ephemeral=True)
 
     @app_commands.command()
     @app_commands.checks.has_permissions(administrator=True)
@@ -553,15 +553,15 @@ class levelsystem(commands.Cog):
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 if await checkstatus(self, interaction.guild) == False:
-                    await interaction.response.send_message("**❌ Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
                     return
                 await cursor.execute("SELECT user_xp, user_level FROM levelsystem WHERE guild_id = (%s) AND client_id = (%s)", (interaction.guild.id, member.id))
                 result = await cursor.fetchone()
                 if result is None:
-                    await interaction.response.send_message("**❌ Der Nutzer hat bisher noch keinen Rang. Er muss erst ein paar Nachrichten schreiben.**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Nutzer hat bisher noch keinen Rang. Er muss erst ein paar Nachrichten schreiben.**", ephemeral=True)
                     return
                 await cursor.execute("UPDATE levelsystem SET user_level = (%s) WHERE guild_id = (%s) AND client_id = (%s)", (level, interaction.guild.id, member.id))
-                await interaction.response.send_message(f"**✅ Der Benutzer {member.mention} ist nun Level {level}.**")
+                await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Der Benutzer {member.mention} ist nun Level {level}.**")
 
     @app_commands.command()
     @app_commands.checks.has_permissions(administrator=True)
@@ -571,7 +571,7 @@ class levelsystem(commands.Cog):
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 if await checkstatus(self, interaction.guild) == False:
-                    await interaction.response.send_message("**❌ Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
                     return
                 
                 await cursor.execute("SELECT status FROM xpboost WHERE guildID = (%s)", (interaction.guild.id))
@@ -579,20 +579,20 @@ class levelsystem(commands.Cog):
                 if result == None:
                     if status == "Anschalten (2x)":
                         await cursor.execute("INSERT INTO xpboost (status, guildID) VALUES (%s, %s)", (1, interaction.guild.id))
-                        return await interaction.response.send_message(f"**✅ Der XP Boost wurde auf diesem Server aktiviert.**")
+                        return await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Der XP Boost wurde auf diesem Server aktiviert.**")
                     if status == "Ausschalten (1x)":
-                        return await interaction.response.send_message("**❌ Hier ist kein XP Boost aktiviert.**", ephemeral=True)
+                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Hier ist kein XP Boost aktiviert.**", ephemeral=True)
                 if result != None:
                     if status == "Anschalten (2x)":
                         if result[0] == 1:
-                            return await interaction.response.send_message("**❌ Hier ist der XP Boost bereits aktiviert.**", ephemeral=True)
+                            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Hier ist der XP Boost bereits aktiviert.**", ephemeral=True)
                         await cursor.execute("UPDATE xpboost SET status = (%s) WHERE guildID = (%s)", (1, interaction.guild.id))
-                        return await interaction.response.send_message(f"**✅ Der XP Boost wurde auf diesem Server aktiviert.**")
+                        return await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Der XP Boost wurde auf diesem Server aktiviert.**")
                     if status == "Ausschalten (1x)":
                         if result[0] == 0:
-                            return await interaction.response.send_message("**❌ Hier ist der XP Boost bereits deaktiviert.**", ephemeral=True)
+                            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Hier ist der XP Boost bereits deaktiviert.**", ephemeral=True)
                         await cursor.execute("UPDATE xpboost SET status = (%s) WHERE guildID = (%s)", (0, interaction.guild.id))
-                        return await interaction.response.send_message(f"**✅ Der XP Boost wurde auf diesem Server deaktiviert.**")
+                        return await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Der XP Boost wurde auf diesem Server deaktiviert.**")
                 
 async def setup(bot):
     await bot.add_cog(levelsystem(bot))

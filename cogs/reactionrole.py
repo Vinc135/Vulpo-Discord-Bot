@@ -45,7 +45,7 @@ class fertig(discord.ui.Modal, title="Erstelle ein Embed"):
     async def on_submit(self, interaction: discord.Interaction):
         emb = interaction.message.embeds[0]
         if emb.fields == []:
-            return await interaction.response.send_message("**❌ Du musst zuerst ein paar Optionen festlegen.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du musst zuerst ein paar Optionen festlegen.**", ephemeral=True)
         embed = discord.Embed(title=self.children[0].value, description=self.children[1].value, color=discord.Color.orange())
         if self.children[2].value:
             embed.set_thumbnail(url=self.children[2].value)
@@ -69,7 +69,7 @@ class fertig(discord.ui.Modal, title="Erstelle ein Embed"):
                     
         await interaction.message.delete()
         await interaction.channel.send(embed=embed, view=DropdownView(dict, id))
-        await interaction.response.send_message(f"**✅ Setup erfolgreich beendet.**", ephemeral=True)
+        await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Setup erfolgreich beendet.**", ephemeral=True)
         
 class option_hinzufügen(discord.ui.Modal, title="Füge eine Option hinzu"):
     def __init__(self, bot=None):
@@ -82,14 +82,14 @@ class option_hinzufügen(discord.ui.Modal, title="Füge eine Option hinzu"):
         try:
             rolle = interaction.guild.get_role(int(self.children[0].value))
             if rolle == None:
-                return await interaction.response.send_message("**❌ Die Rolle wurde nicht gefunden. Stelle sicher dass es sich um eine Rollen ID gehandelt hat.**", ephemeral=True)
+                return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Die Rolle wurde nicht gefunden. Stelle sicher dass es sich um eine Rollen ID gehandelt hat.**", ephemeral=True)
         except:
-            return await interaction.response.send_message("**❌ Die Rolle wurde nicht gefunden. Stelle sicher dass es sich um eine Rollen ID gehandelt hat.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Die Rolle wurde nicht gefunden. Stelle sicher dass es sich um eine Rollen ID gehandelt hat.**", ephemeral=True)
         embed = interaction.message.embeds[0]
         embed.add_field(name=self.children[1].value, value=rolle.id)
         embed.color = discord.Color.green()
         await interaction.message.edit(content="", embed=embed)
-        await interaction.response.send_message("**✅ Option wurde hinzugefügt.**", ephemeral=True)
+        await interaction.response.send_message("**<:v_haken:1048677657040134195> Option wurde hinzugefügt.**", ephemeral=True)
                 
 class setup_select(discord.ui.View):
     def __init__(self, bot=None, user=None):
@@ -103,7 +103,7 @@ class setup_select(discord.ui.View):
             return
         await interaction.response.send_modal(option_hinzufügen(self.bot))
 
-    @discord.ui.button(label="Fertig", style=discord.ButtonStyle.green, custom_id="iuchouflgeiuhvcwoghjdk", emoji="✅")
+    @discord.ui.button(label="Fertig", style=discord.ButtonStyle.green, custom_id="iuchouflgeiuhvcwoghjdk", emoji="<:v_haken:1048677657040134195>")
     async def zwei(self, interaction: discord.Interaction, button: discord.ui.Button):
         if self.user.id != interaction.user.id:
             return
@@ -113,7 +113,7 @@ class setup_select(discord.ui.View):
     async def drei(self, interaction: discord.Interaction, button: discord.ui.Button):
         if self.user.id != interaction.user.id:
             return
-        await interaction.response.edit_message(content="**❌ Vorgang abbgebrochen**", view=None, embed=None)
+        await interaction.response.edit_message(content="**<:v_kreuz:1049388811353858069> Vorgang abbgebrochen**", view=None, embed=None)
 
 
 ####################################################################################################
@@ -131,7 +131,7 @@ class setup_buttons(discord.ui.View):
             return
         await interaction.response.send_modal(option_hinzufügen_2(self.bot))
 
-    @discord.ui.button(label="Fertig", style=discord.ButtonStyle.green, custom_id="wrtwrtwrgwrgw4tg", emoji="✅")
+    @discord.ui.button(label="Fertig", style=discord.ButtonStyle.green, custom_id="wrtwrtwrgwrgw4tg", emoji="<:v_haken:1048677657040134195>")
     async def zwei(self, interaction: discord.Interaction, button: discord.ui.Button):
         if self.user.id != interaction.user.id:
             return
@@ -141,7 +141,7 @@ class setup_buttons(discord.ui.View):
     async def drei(self, interaction: discord.Interaction, button: discord.ui.Button):
         if self.user.id != interaction.user.id:
             return
-        await interaction.response.edit_message(content="**❌ Vorgang abbgebrochen**", view=None, embed=None)
+        await interaction.response.edit_message(content="**<:v_kreuz:1049388811353858069> Vorgang abbgebrochen**", view=None, embed=None)
 
 class option_hinzufügen_2(discord.ui.Modal, title="Füge eine Option hinzu"):
     def __init__(self, bot=None):
@@ -154,14 +154,14 @@ class option_hinzufügen_2(discord.ui.Modal, title="Füge eine Option hinzu"):
         try:
             rolle = interaction.guild.get_role(int(self.children[0].value))
             if rolle == None:
-                return await interaction.response.send_message("**❌ Die Rolle wurde nicht gefunden. Stelle sicher dass es sich um eine Rollen ID gehandelt hat.**", ephemeral=True)
+                return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Die Rolle wurde nicht gefunden. Stelle sicher dass es sich um eine Rollen ID gehandelt hat.**", ephemeral=True)
         except:
-            return await interaction.response.send_message("**❌ Die Rolle wurde nicht gefunden. Stelle sicher dass es sich um eine Rollen ID gehandelt hat.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Die Rolle wurde nicht gefunden. Stelle sicher dass es sich um eine Rollen ID gehandelt hat.**", ephemeral=True)
         embed = interaction.message.embeds[0]
         embed.add_field(name=self.children[1].value, value=rolle.id)
         embed.color = discord.Color.green()
         await interaction.message.edit(content="", embed=embed)
-        await interaction.response.send_message("**✅ Option wurde hinzugefügt.**", ephemeral=True)
+        await interaction.response.send_message("**<:v_haken:1048677657040134195> Option wurde hinzugefügt.**", ephemeral=True)
 
 class fertig2(discord.ui.Modal, title="Erstelle ein Embed"):
     def __init__(self, bot=None):
@@ -175,7 +175,7 @@ class fertig2(discord.ui.Modal, title="Erstelle ein Embed"):
     async def on_submit(self, interaction: discord.Interaction):
         emb = interaction.message.embeds[0]
         if emb.fields == []:
-            return await interaction.response.send_message("**❌ Du musst zuerst ein paar Optionen festlegen.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du musst zuerst ein paar Optionen festlegen.**", ephemeral=True)
         embed = discord.Embed(title=self.children[0].value, description=self.children[1].value, color=discord.Color.orange())
         if self.children[2].value:
             embed.set_thumbnail(url=self.children[2].value)
@@ -203,7 +203,7 @@ class fertig2(discord.ui.Modal, title="Erstelle ein Embed"):
                     
         await interaction.message.delete()
         await interaction.channel.send(embed=embed, view=view)
-        await interaction.response.send_message(f"**✅ Setup erfolgreich beendet.**", ephemeral=True)
+        await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Setup erfolgreich beendet.**", ephemeral=True)
 
 class CounterButton(discord.ui.Button):
     def __init__(self, label, role, id):

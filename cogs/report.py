@@ -20,12 +20,12 @@ class report(commands.Cog):
                     await cursor.execute(f"SELECT channelID FROM reportlog WHERE guildID = {interaction.guild.id}")
                     result = await cursor.fetchone()
                     if result == None:
-                        return await interaction.response.send_message("**❌ Auf diesem Server ist kein Reportlog eingerichtet.**", ephemeral=True)
+                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Auf diesem Server ist kein Reportlog eingerichtet.**", ephemeral=True)
                     await cursor.execute("DELETE FROM reportlog WHERE guildID = (%s)", (interaction.guild.id))
-                    return await interaction.response.send_message("**✅ Der Reportlog wurde ausgeschaltet.**")
+                    return await interaction.response.send_message("**<:v_haken:1048677657040134195> Der Reportlog wurde ausgeschaltet.**")
                 if argument == "Einrichten (Kanal muss mit angegeben werden)":
                     if kanal == None:
-                        return await interaction.response.send_message("**❌ Beim Einrichten ist auch eine Kanal-Angabe erforderlich.**", ephemeral=True)
+                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Beim Einrichten ist auch eine Kanal-Angabe erforderlich.**", ephemeral=True)
 
                     await cursor.execute(f"SELECT channelID FROM reportlog WHERE guildID = {interaction.guild.id}")
                     result = await cursor.fetchone()
@@ -33,14 +33,14 @@ class report(commands.Cog):
                         await cursor.execute("UPDATE reportlog SET channelID = (%s) WHERE guildID = (%s)", (kanal.id, interaction.guild.id))
                     else:
                         await cursor.execute("INSERT INTO reportlog(guildID, channelID) VALUES(%s, %s)", (interaction.guild.id, kanal.id))
-                    await interaction.response.send_message(f"**✅ Der Reportlog ist nun aktiv in {kanal.mention}.**")
+                    await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Der Reportlog ist nun aktiv in {kanal.mention}.**")
                 if argument == "Anzeigen":
                     await cursor.execute(f"SELECT channelID FROM reportlog WHERE guildID = {interaction.guild.id}")
                     result = await cursor.fetchone()
                     try:
                         channel = interaction.guild.get_channel(int(result[0]))
                     except:
-                        return await interaction.response.send_message("**❌ Der Kanal des Reportlogs existiert nicht mehr. Bitte deaktiviere den Reportlog und richte ihn erneut ein.**", ephemeral=True)
+                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Kanal des Reportlogs existiert nicht mehr. Bitte deaktiviere den Reportlog und richte ihn erneut ein.**", ephemeral=True)
 
                     embed = discord.Embed(title="Reportlog", description=f"Der aktuelle Reportlog ist aktiv in {channel.mention}", color=discord.Color.orange())
                     await interaction.response.send_message(embed=embed)

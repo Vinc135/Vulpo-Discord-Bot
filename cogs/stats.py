@@ -20,10 +20,10 @@ class StatsKanal(discord.ui.Modal, title="Stats Kanal"):
                 if self.kanal == None:
                     new_channel = await interaction.guild.create_voice_channel(name="[erstellen] circa 10 Minuten")
                     await cursor.execute("INSERT INTO upstats (guildID, channelID, text) VALUES (%s, %s, %s)", (interaction.guild.id, new_channel.id, self.children[0].value))
-                    return await interaction.response.send_message("**✅ Der Stats Kanal wird nun erstellt. Es dauert bis zu 10 Minuten, bis der Kanal zum ersten Male geupdated wird.**")
+                    return await interaction.response.send_message("**<:v_haken:1048677657040134195> Der Stats Kanal wird nun erstellt. Es dauert bis zu 10 Minuten, bis der Kanal zum ersten Male geupdated wird.**")
                 if self.kanal != None:
                     await cursor.execute("INSERT INTO upstats (guildID, channelID, text) VALUES (%s, %s, %s)", (interaction.guild.id, self.kanal.id, self.children[0].value))
-                    return await interaction.response.send_message("**✅ Der Stats Kanal wird nun bearbeitet. Es dauert bis zu 10 Minuten, bis der Kanal zum ersten Male geupdated wird.**")
+                    return await interaction.response.send_message("**<:v_haken:1048677657040134195> Der Stats Kanal wird nun bearbeitet. Es dauert bis zu 10 Minuten, bis der Kanal zum ersten Male geupdated wird.**")
 
 async def getuserstats(self, art, member, guild):
     async with self.bot.pool.acquire() as conn:
@@ -485,9 +485,9 @@ class Stats(commands.Cog):
         monat = translation.text
         
         if member == None and textkanal == None and sprachkanal == None:
-            return await interaction.response.send_message("**❌ Bitte gib beim nächsten Male an für welchen Kanal oder für welchen Member du die Stats einsehen willst.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Bitte gib beim nächsten Male an für welchen Kanal oder für welchen Member du die Stats einsehen willst.**", ephemeral=True)
         if member != None and textkanal != None or member != None and sprachkanal != None or textkanal != None and sprachkanal != None:
-            return await interaction.response.send_message("**❌ Du kannst dich nur für eines entscheiden. Entweder für die Stats eines Members oder für die Stats eines Kanals.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst dich nur für eines entscheiden. Entweder für die Stats eines Members oder für die Stats eines Kanals.**", ephemeral=True)
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 if member != None:
@@ -615,9 +615,9 @@ class Stats(commands.Cog):
                 result = await cursor.fetchone()
                 if result == None:
                     await cursor.execute("INSERT INTO stats_blacklist(guildID, channelID) VALUES(%s, %s)", (interaction.guild.id, kanal.id))
-                    return await interaction.response.send_message(f"**✅ {kanal.mention} ist nun auf der Blacklist.**")
+                    return await interaction.response.send_message(f"**<:v_haken:1048677657040134195> {kanal.mention} ist nun auf der Blacklist.**")
                 await cursor.execute("DELETE FROM stats_blacklist WHERE guildID = (%s) AND channelID = (%s)", (interaction.guild.id, kanal.id))
-                return await interaction.response.send_message(f"**✅ {kanal.mention} ist nun nicht mehr auf der Blacklist.**")
+                return await interaction.response.send_message(f"**<:v_haken:1048677657040134195> {kanal.mention} ist nun nicht mehr auf der Blacklist.**")
     
     @stats.command()
     @app_commands.checks.has_permissions(administrator=True)
@@ -627,7 +627,7 @@ class Stats(commands.Cog):
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 await cursor.execute("DELETE FROM nachrichten WHERE guildID = (%s)", (interaction.guild.id))
-                await interaction.response.send_message("**✅ Alle Stats dieses Servers wurden gelöscht.**")
+                await interaction.response.send_message("**<:v_haken:1048677657040134195> Alle Stats dieses Servers wurden gelöscht.**")
     
     @stats.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -831,22 +831,22 @@ class Stats(commands.Cog):
                     await cursor.execute(f"SELECT channelID, text FROM upstats WHERE guildID = {interaction.guild.id}")
                     result = await cursor.fetchone()
                     if result == None:
-                        return await interaction.response.send_message("**❌ Auf diesem Server ist kein Stats-Kanal eingerichtet.**", ephemeral=True)
+                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Auf diesem Server ist kein Stats-Kanal eingerichtet.**", ephemeral=True)
                     await cursor.execute("DELETE FROM upstats WHERE guildID = (%s)", (interaction.guild.id))
-                    return await interaction.response.send_message("**✅ Die Stats-Kanäle wurden ausgeschaltet.**")
+                    return await interaction.response.send_message("**<:v_haken:1048677657040134195> Die Stats-Kanäle wurden ausgeschaltet.**")
                 if argument == "Einrichten":
                     if kanal:
                         await cursor.execute("SELECT text FROM upstats WHERE guildID = (%s) AND channelID = (%s)", (interaction.guild.id, kanal.id))
                         result = await cursor.fetchone()
                         if result:
-                            return await interaction.response.send_message("**❌ Der Kanal ist bereits ein Stats-Kanal.**", ephemeral=True)
+                            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Kanal ist bereits ein Stats-Kanal.**", ephemeral=True)
 
                     await interaction.response.send_modal(StatsKanal(self.bot, kanal))
                 if argument == "Anzeigen":
                     await cursor.execute(f"SELECT guildID, channelID, text FROM upstats WHERE guildID = {interaction.guild.id}")
                     wel = await cursor.fetchall()
                     if wel == []:
-                        return await interaction.response.send_message("**❌ Auf diesem Server ist kein Stats-Kanal eingerichtet.**", ephemeral=True)
+                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Auf diesem Server ist kein Stats-Kanal eingerichtet.**", ephemeral=True)
 
                     embed = discord.Embed(title="Stats Kanäle", description=f"Die aktuellen Stats Kanäle:", color=discord.Color.orange())
                     for ergebnis in wel:

@@ -48,16 +48,16 @@ class joinrole(commands.Cog):
             async with conn.cursor() as cursor:
                 if argument == "Löschen":
                     await cursor.execute(f"DELETE FROM joinroles WHERE guild_id = {interaction.guild.id}")
-                    await interaction.response.send_message("**✅ Alle Joinrollen gelöscht.**")           
+                    await interaction.response.send_message("**<:v_haken:1048677657040134195> Alle Joinrollen gelöscht.**")           
                     return
                 if argument == "Hinzufügen (Rolle muss mit angegeben werden)":
                     if rolle is None:
-                        await interaction.response.send_message("**❌ Eine Rollen-Angabe ist erforderlich beim Einrichten.**", ephemeral=True)           
+                        await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Eine Rollen-Angabe ist erforderlich beim Einrichten.**", ephemeral=True)           
                         return
                     await cursor.execute(f"SELECT guild_id FROM joinroles WHERE role_id = {rolle.id}")
                     result = await cursor.fetchone()
                     if result:
-                        await interaction.response.send_message("**❌ Diese Rolle ist bereits eingestellt.**", ephemeral=True)           
+                        await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Diese Rolle ist bereits eingestellt.**", ephemeral=True)           
                         return
                     await cursor.execute("INSERT INTO joinroles (role_id, guild_id) VALUES (%s, %s)", (rolle.id, interaction.guild.id))
                     embed = discord.Embed(colour=discord.Colour.orange(),
@@ -99,16 +99,16 @@ class joinrole(commands.Cog):
             async with conn.cursor() as cursor:
                 if argument == "Löschen":
                     await cursor.execute(f"DELETE FROM botroles WHERE guild_id = {interaction.guild.id}")
-                    await interaction.response.send_message("**✅ Alle Joinrollen gelöscht.**")           
+                    await interaction.response.send_message("**<:v_haken:1048677657040134195> Alle Joinrollen gelöscht.**")           
                     return
                 if argument == "Hinzufügen (Rolle muss mit angegeben werden)":
                     if rolle is None:
-                        await interaction.response.send_message("**❌ Eine Rollen-Angabe ist erforderlich beim Einrichten.**", ephemeral=True)           
+                        await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Eine Rollen-Angabe ist erforderlich beim Einrichten.**", ephemeral=True)           
                         return
                     await cursor.execute(f"SELECT guild_id FROM botroles WHERE role_id = {rolle.id}")
                     result = await cursor.fetchone()
                     if result:
-                        await interaction.response.send_message("**❌ Diese Rolle ist bereits eingestellt.**", ephemeral=True)           
+                        await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Diese Rolle ist bereits eingestellt.**", ephemeral=True)           
                         return
                     await cursor.execute("INSERT INTO botroles (role_id, guild_id) VALUES (%s, %s)", (rolle.id, interaction.guild.id))
                     embed = discord.Embed(colour=discord.Colour.orange(),

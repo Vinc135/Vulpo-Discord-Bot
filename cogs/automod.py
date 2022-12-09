@@ -22,11 +22,11 @@ class Automod(commands.Cog):
                 await cursor.execute("SELECT aktion FROM automod WHERE guildID = (%s) AND warnanzahl = (%s)", (interaction.guild.id, warnanzahl))
                 result = await cursor.fetchone()
                 if result != None:
-                    await interaction.response.send_message("**❌ Du kannst für eine Warnanzahl nur eine Aktion hinzufügen. Bitte wähle eine andere Warnanzahl oder entferne diese Aktion mit `/automod removeaction <warnanzahl>`.**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst für eine Warnanzahl nur eine Aktion hinzufügen. Bitte wähle eine andere Warnanzahl oder entferne diese Aktion mit `/automod removeaction <warnanzahl>`.**", ephemeral=True)
                     return
                 await cursor.execute("INSERT INTO automod(guildID, warnanzahl, aktion) VALUES(%s,%s,%s)", (interaction.guild.id, warnanzahl, aktion))
                 
-                await interaction.response.send_message(f"**✅ Eintrag erstellt. Jeder User mit einer Anzahl an Verwarnungen von {warnanzahl} wird erhält bei der nächsten Verwarnung einen {aktion}.**")
+                await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Eintrag erstellt. Jeder User mit einer Anzahl an Verwarnungen von {warnanzahl} wird erhält bei der nächsten Verwarnung einen {aktion}.**")
 
     @automod.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -38,11 +38,11 @@ class Automod(commands.Cog):
                 await cursor.execute("SELECT aktion FROM automod WHERE guildID = (%s) AND warnanzahl = (%s)", (interaction.guild.id, warnanzahl))
                 result = await cursor.fetchone()
                 if result == None:
-                    await interaction.response.send_message("**❌ Dieser Eintrag existiert nicht. Bitte wähle eine andere Warnanzahl oder füge eine Aktion mit `/automod addaction <warnanzahl> <aktion>` hinzu**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Dieser Eintrag existiert nicht. Bitte wähle eine andere Warnanzahl oder füge eine Aktion mit `/automod addaction <warnanzahl> <aktion>` hinzu**", ephemeral=True)
                     return
                 await cursor.execute("DELETE FROM automod WHERE guildID = (%s) AND warnanzahl = (%s)", (interaction.guild.id, warnanzahl))
                 
-                await interaction.response.send_message(f"**✅ Eintrag gelöscht.**")
+                await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Eintrag gelöscht.**")
 
     @automod.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -54,7 +54,7 @@ class Automod(commands.Cog):
                 await cursor.execute("SELECT aktion, warnanzahl FROM automod WHERE guildID = (%s)", (interaction.guild.id))
                 result = await cursor.fetchall()
                 if result == None:
-                    await interaction.response.send_message("**❌ Hier wurden keine Aktionen gefunden. Füge eine Aktion mit `/automod addaction <warnanzahl> <aktion>` hinzu**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Hier wurden keine Aktionen gefunden. Füge eine Aktion mit `/automod addaction <warnanzahl> <aktion>` hinzu**", ephemeral=True)
                     return
                 embed = discord.Embed(title="Alle Aktionen vom Automod", description="Hier nähere Infos:", color=discord.Color.orange())
                 for i in result:
@@ -96,7 +96,7 @@ class Automod(commands.Cog):
                 await cursor.execute("SELECT grund FROM warns WHERE guildID = (%s) AND userID = (%s) AND warnID = (%s)", (interaction.guild.id, user.id, warnid))
                 result = await cursor.fetchone()
                 if result is None:
-                    await interaction.response.send_message(f"**❌ Die Verwarnung mit der ID {warnid} von {user} wurde nicht gefunden.**")
+                    await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Die Verwarnung mit der ID {warnid} von {user} wurde nicht gefunden.**")
                     return
                 await cursor.execute("DELETE FROM warns WHERE userID = (%s) AND guildID = (%s) AND warnID = (%s)", (user.id, interaction.guild.id, warnid))
         
@@ -129,7 +129,7 @@ class Automod(commands.Cog):
         if a != 0:
             await interaction.response.send_message(embed=warnembed)
         if a == 0:
-            await interaction.response.send_message(f"**❌ Der User {user} hat keine Verwarnungen hier.**", ephemeral=True) 
+            await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Der User {user} hat keine Verwarnungen hier.**", ephemeral=True) 
     
     blacklist = app_commands.Group(name='blacklist', description='Nehme Einstellungen am Blacklist-System vor.')
 
@@ -163,11 +163,11 @@ class Automod(commands.Cog):
                 await cursor.execute("SELECT word FROM blacklist WHERE guildID = (%s) AND word = (%s)", (interaction.guild.id, wort))
                 result = await cursor.fetchone()
                 if result != None:
-                    await interaction.response.send_message(f"**❌ Das Wort `{wort}` existiert bereits in der Blacklist.**", ephemeral=True)
+                    await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Das Wort `{wort}` existiert bereits in der Blacklist.**", ephemeral=True)
                     return
                 
                 await cursor.execute("INSERT INTO blacklist(guildID, word) VALUES(%s, %s)", (interaction.guild.id, wort))
-                await interaction.response.send_message(f"**✅ Das Wort `{wort}` ist nun auf der Blacklist.**")
+                await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Das Wort `{wort}` ist nun auf der Blacklist.**")
 
     @blacklist.command()
     @app_commands.checks.has_permissions(manage_messages=True)
@@ -179,10 +179,10 @@ class Automod(commands.Cog):
                 await cursor.execute("SELECT word FROM blacklist WHERE guildID = (%s) AND word = (%s)", (interaction.guild.id, wort))
                 result = await cursor.fetchone()
                 if result is None or result == "()":
-                    await interaction.response.send_message(f"**❌ Das Wort `{wort}` existiert nicht in der Blacklist.**", ephemeral=True)
+                    await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Das Wort `{wort}` existiert nicht in der Blacklist.**", ephemeral=True)
                     return
                 await cursor.execute("DELETE FROM blacklist WHERE word = (%s) AND guildID = (%s)", (wort, interaction.guild.id))
-                await interaction.response.send_message(f"**✅ Das Wort `{wort}` ist nun nicht mehr auf der Blacklist.**")
+                await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Das Wort `{wort}` ist nun nicht mehr auf der Blacklist.**")
 
     @automod.command()
     @app_commands.checks.has_permissions(manage_messages=True)
@@ -193,18 +193,18 @@ class Automod(commands.Cog):
             async with conn.cursor() as cursor:
                 if modus == "Anschalten (Prozent Angabe erforderlich)":
                     if prozent == None:
-                        return await interaction.response.send_message("**❌ Eine Prozentangabe ist zum Aktivieren erforderlich.", ephemeral=True)
+                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Eine Prozentangabe ist zum Aktivieren erforderlich.", ephemeral=True)
                     await cursor.execute("SELECT prozent FROM caps WHERE guildID = (%s)", (interaction.guild.id))
                     result = await cursor.fetchone()
                     if result != None:
                         await cursor.execute("UPDATE caps SET prozent = (%s) WHERE guildID = (%s)", (prozent, interaction.guild.id))
-                        return await interaction.response.send_message(f"**✅ Jede Nachricht die mindestens {prozent} Caps beihnaltet, wird ab sofort gelöscht und der User verwarnt.**")
+                        return await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Jede Nachricht die mindestens {prozent} Caps beihnaltet, wird ab sofort gelöscht und der User verwarnt.**")
                     if result == None:
                         await cursor.execute("INSERT INTO caps(guildID, prozent) VALUES(%s, %s)", (interaction.guild.id, prozent))
-                        return await interaction.response.send_message(f"**✅ Jede Nachricht die mindestens {prozent} Caps beihnaltet, wird ab sofort gelöscht und der User verwarnt.**")
+                        return await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Jede Nachricht die mindestens {prozent} Caps beihnaltet, wird ab sofort gelöscht und der User verwarnt.**")
                 if modus == "Ausschalten":
                     await cursor.execute("DELETE FROM caps WHERE guildID = (%s)", (interaction.guild.id))
-                    return await interaction.response.send_message(f"**✅ Der Caps Filter wurde deaktiviert.**")
+                    return await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Der Caps Filter wurde deaktiviert.**")
     
     @automod.command()
     @app_commands.checks.has_permissions(manage_messages=True)
@@ -218,13 +218,13 @@ class Automod(commands.Cog):
                     result = await cursor.fetchone()
                     if result != None:
                         await cursor.execute("UPDATE spam SET status = (%s) WHERE guildID = (%s)", (1, interaction.guild.id))
-                        return await interaction.response.send_message(f"**✅ Jeder User, der mindestens 5 Nachrichten in 2,5 Sekunden sendet, wird verwarnt. Außerdem werden die Nachrichten gelöscht.**")
+                        return await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Jeder User, der mindestens 5 Nachrichten in 2,5 Sekunden sendet, wird verwarnt. Außerdem werden die Nachrichten gelöscht.**")
                     if result == None:
                         await cursor.execute("INSERT INTO spam(guildID, status) VALUES(%s, %s)", (interaction.guild.id, 1))
-                        return await interaction.response.send_message(f"**✅ Jeder User, der mindestens 5 Nachrichten in 2,5 Sekunden sendet, wird verwarnt. Außerdem werden die Nachrichten gelöscht.**")
+                        return await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Jeder User, der mindestens 5 Nachrichten in 2,5 Sekunden sendet, wird verwarnt. Außerdem werden die Nachrichten gelöscht.**")
                 if modus == "Ausschalten":
                     await cursor.execute("DELETE FROM spam WHERE guildID = (%s)", (interaction.guild.id))
-                    return await interaction.response.send_message(f"**✅ Der Spam Filter wurde deaktiviert.**")
+                    return await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Der Spam Filter wurde deaktiviert.**")
             
     @commands.Cog.listener()
     async def on_message(self, msg):

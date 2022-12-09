@@ -64,15 +64,15 @@ class interface(discord.ui.View):
     @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="wefhqiwuzdlgkedf", emoji="<:v_sperren:1037124926919938130>")
     async def lock_channel(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.voice == None:
-            return await interaction.response.send_message("**❌ Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du bist in keinem Tempchannel.**", ephemeral=True)
 
         channel = await isTempChannel(self, interaction.user, interaction.user.voice.channel)
         owner = await isOwner(self, interaction.user, interaction.user.voice.channel)
         if channel == False:
-            return await interaction.response.send_message("**❌ Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du bist in keinem Tempchannel.**", ephemeral=True)
         
         if owner == False:
-            return await interaction.response.send_message("**❌ Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
         
         overwrites = {
             interaction.guild.default_role: discord.PermissionOverwrite(
@@ -85,15 +85,15 @@ class interface(discord.ui.View):
     @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="qvweifuqgieuzfviuw", emoji="<:v_entsperren:1037124922805330001>")
     async def unlock_channel(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.voice == None:
-            return await interaction.response.send_message("**❌ Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du bist in keinem Tempchannel.**", ephemeral=True)
 
         channel = await isTempChannel(self, interaction.user, interaction.user.voice.channel)
         owner = await isOwner(self, interaction.user, interaction.user.voice.channel)
         if channel == False:
-            return await interaction.response.send_message("**❌ Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du bist in keinem Tempchannel.**", ephemeral=True)
         
         if owner == False:
-            return await interaction.response.send_message("**❌ Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
         
         overwrites = {
             interaction.guild.default_role: discord.PermissionOverwrite(
@@ -106,15 +106,15 @@ class interface(discord.ui.View):
     @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="ergwrgwrg", emoji="<:v_unsichtbar:1037124928345997322>")
     async def hide_channel(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.voice == None:
-            return await interaction.response.send_message("**❌ Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du bist in keinem Tempchannel.**", ephemeral=True)
 
         channel = await isTempChannel(self, interaction.user, interaction.user.voice.channel)
         owner = await isOwner(self, interaction.user, interaction.user.voice.channel)
         if channel == False:
-            return await interaction.response.send_message("**❌ Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du bist in keinem Tempchannel.**", ephemeral=True)
         
         if owner == False:
-            return await interaction.response.send_message("**❌ Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
         
         overwrites = {
             interaction.guild.default_role: discord.PermissionOverwrite(
@@ -127,15 +127,15 @@ class interface(discord.ui.View):
     @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="öqhefoiuhioudgwc", emoji="<:v_enthullen:1037124921685442591>")
     async def unhide_channel(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.voice == None:
-            return await interaction.response.send_message("**❌ Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du bist in keinem Tempchannel.**", ephemeral=True)
 
         channel = await isTempChannel(self, interaction.user, interaction.user.voice.channel)
         owner = await isOwner(self, interaction.user, interaction.user.voice.channel)
         if channel == False:
-            return await interaction.response.send_message("**❌ Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du bist in keinem Tempchannel.**", ephemeral=True)
         
         if owner == False:
-            return await interaction.response.send_message("**❌ Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
         
         overwrites = {
             interaction.guild.default_role: discord.PermissionOverwrite(
@@ -148,30 +148,30 @@ class interface(discord.ui.View):
     @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="faegvwtgethr", emoji="<:v_chat:1037065910567055370>")
     async def rename_channel(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.voice == None:
-            return await interaction.response.send_message("**❌ Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du bist in keinem Tempchannel.**", ephemeral=True)
 
         channel = await isTempChannel(self, interaction.user, interaction.user.voice.channel)
         owner = await isOwner(self, interaction.user, interaction.user.voice.channel)
         if channel == False:
-            return await interaction.response.send_message("**❌ Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du bist in keinem Tempchannel.**", ephemeral=True)
         
         if owner == False:
-            return await interaction.response.send_message("**❌ Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
         
         await interaction.response.send_modal(rename())
     
     @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="iuehrofgweiuzfzg", emoji="<:v_limit:1037124925653274674>")
     async def limit_channel(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.voice == None:
-            return await interaction.response.send_message("**❌ Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du bist in keinem Tempchannel.**", ephemeral=True)
 
         channel = await isTempChannel(self, interaction.user, interaction.user.voice.channel)
         owner = await isOwner(self, interaction.user, interaction.user.voice.channel)
         if channel == False:
-            return await interaction.response.send_message("**❌ Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du bist in keinem Tempchannel.**", ephemeral=True)
         
         if owner == False:
-            return await interaction.response.send_message("**❌ Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
         
         await interaction.response.send_modal(limit())
 

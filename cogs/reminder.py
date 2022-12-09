@@ -28,7 +28,7 @@ class Reminder(commands.Cog):
                 if minuten:
                     zeit_als_string += f" {minuten}"
                 if zeit_als_string == "":
-                    return await interaction.response.send_message("**❌ Du musst auch eine Zeit angeben, wann du erinnert werden möchtest ;D**", ephemeral=True)
+                    return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du musst auch eine Zeit angeben, wann du erinnert werden möchtest ;D**", ephemeral=True)
                 zeit = convert(zeit_als_string)
                 t1 = math.floor(datetime.datetime.utcnow().timestamp() + zeit)
                 t2 = datetime.datetime.fromtimestamp(int(t1))
@@ -56,16 +56,16 @@ class Reminder(commands.Cog):
                 await cursor.execute("SELECT beschreibung FROM erinnerungen WHERE userID = (%s) AND id = (%s)", (interaction.user.id, id))
                 result = await cursor.fetchone()
                 if result is None:
-                    await interaction.response.send_message(f"**❌ Die Erinnerung mit der ID {id} von dir wurde nicht gefunden.**", ephemeral=True)
+                    await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Die Erinnerung mit der ID {id} von dir wurde nicht gefunden.**", ephemeral=True)
                     return
                 await cursor.execute("DELETE FROM erinnerungen WHERE userID = (%s) AND id = (%s)", (interaction.user.id, id))
                 for task in asyncio.all_tasks():
                     name = str(task.get_name())
                     if name == f"Erinnerung - {id}":
                         task.cancel()
-                        return await interaction.response.send_message(f"**✅ Die Erinnerung mit der ID {id} von dir wurde entfernt.**")
+                        return await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Die Erinnerung mit der ID {id} von dir wurde entfernt.**")
                     
-                await interaction.response.send_message(f"**❌ Die Erinnerung mit der ID {id} von dir wurde nicht gefunden.**", ephemeral=True)
+                await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Die Erinnerung mit der ID {id} von dir wurde nicht gefunden.**", ephemeral=True)
         
     @erinnerung.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -76,7 +76,7 @@ class Reminder(commands.Cog):
                 await cursor.execute("SELECT beschreibung, id, endtime FROM erinnerungen WHERE userID = (%s)", (interaction.user.id))
                 result = await cursor.fetchall()
                 if result == ():
-                    return await interaction.response.send_message(f"**❌ Du hast keine Erninnerungen gestellt.**", ephemeral=True) 
+                    return await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Du hast keine Erninnerungen gestellt.**", ephemeral=True) 
                 embed = discord.Embed(colour=discord.Colour.blurple(), title=f"Alle Erinnerungen von {interaction.user}.")
                 embed.set_thumbnail(url=interaction.user.avatar)
                 for er in result:
