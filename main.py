@@ -315,17 +315,17 @@ class Vulpo(commands.Bot):
             loop = asyncio.get_event_loop()
             pool = await aiomysql.create_pool(host='142.132.233.69', port=3306, user='u64287_IF3HQ8wHRH', password='3oKMMVfuEqv^Xcvf@i!3bzw^', db='s64287_VulpoDB', loop=loop, autocommit=True, maxsize=25)
             bot.pool = pool
-            print(f"<:v_haken:1048677657040134195> Pool erstellt")
+            print(f"✅ Pool erstellt")
         except:
-            print(f"<:v_kreuz:1049388811353858069> Fehler bei der Pool Erstellung")
+            print(f"❌ Fehler bei der Pool Erstellung")
         async with bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 try:
                     topgg_webhook = topgg.WebhookManager(bot).dbl_webhook("/dblwebhook", "Vulpo123321")
                     await topgg_webhook.run(25505)
-                    print("<:v_haken:1048677657040134195> Verbunden mit der topgg api")
+                    print("✅ Verbunden mit der topgg api")
                 except:
-                    print("<:v_kreuz:1049388811353858069> Verbindung zur topgg api fehlgeschlagen")
+                    print("❌ Verbindung zur topgg api fehlgeschlagen")
                     
                 try:
                     if self.giveaways is False:
@@ -333,16 +333,16 @@ class Vulpo(commands.Bot):
                         await cursor.execute("SELECT endtime, msgID FROM gewinnspiele WHERE status = (%s)", ("Aktiv"))
                         result = await cursor.fetchall()
                         if str(result) == "()":
-                            return print(f"<:v_haken:1048677657040134195> Asyncio tasks für Giveaways bereit(0)")
+                            return print(f"✅ Asyncio tasks für Giveaways bereit(0)")
                         a = 0
                         for i in result:
                             time_to_convert = int(i[0])
                             time_converted = datetime.datetime.fromtimestamp(int(time_to_convert))
                             a += 1
                             asyncio.create_task(giveaway_end(time_converted, bot, int(i[1])))
-                        print(f"<:v_haken:1048677657040134195> Asyncio tasks für Giveaways bereit({a})")
+                        print(f"✅ Asyncio tasks für Giveaways bereit({a})")
                 except Exception as e:
-                    print(f"<:v_kreuz:1049388811353858069> Asyncio tasks für Giveaways nicht bereit\n\n{e}")
+                    print(f"❌ Asyncio tasks für Giveaways nicht bereit\n\n{e}")
                     
                 try:
                     if self.votes is False:
@@ -355,9 +355,9 @@ class Vulpo(commands.Bot):
                             time_converted = datetime.datetime.fromtimestamp(int(time_to_convert))
                             a += 1
                             asyncio.create_task(vote_reminder(time_converted, bot, int(c[0])))
-                        print(f"<:v_haken:1048677657040134195> Asyncio tasks für Vote bereit({a})")
+                        print(f"✅ Asyncio tasks für Vote bereit({a})")
                 except Exception as e:
-                    print(f"<:v_kreuz:1049388811353858069> Asyncio tasks für Vote nicht bereit\n\n{e}")
+                    print(f"❌ Asyncio tasks für Vote nicht bereit\n\n{e}")
                     
                 try:
                     if self.reminder is False:
@@ -370,9 +370,9 @@ class Vulpo(commands.Bot):
                             time_converted = datetime.datetime.fromtimestamp(int(time_to_convert))
                             a += 1
                             asyncio.create_task(reminder_end(time_converted, bot, c[0], c[2]))
-                        print(f"<:v_haken:1048677657040134195> Asyncio tasks für Erinnerungen bereit({a})")
+                        print(f"✅ Asyncio tasks für Erinnerungen bereit({a})")
                 except Exception as e:
-                    print(f"<:v_kreuz:1049388811353858069> Asyncio tasks für Vote Erinnerungen bereit\n\n{e}")
+                    print(f"❌ Asyncio tasks für Vote Erinnerungen bereit\n\n{e}")
         try:
             geladen = 0
             fehler = 0
@@ -385,13 +385,13 @@ class Vulpo(commands.Bot):
                         geladen += 1
                     except:
                         fehler += 1
-                        print(f'<:v_kreuz:1049388811353858069> cogs.{filename[:-3]} konnte nicht geladen werden', file=sys.stderr)
+                        print(f'❌ cogs.{filename[:-3]} konnte nicht geladen werden', file=sys.stderr)
                         traceback.print_exc()		
                         print('\n\n--------------------------------------------\n\n')
      
-            print(f"<:v_haken:1048677657040134195> {geladen}/{geladen + fehler} Cogs geladen")
+            print(f"✅ {geladen}/{geladen + fehler} Cogs geladen")
         except Exception as e:
-            print(f"<:v_kreuz:1049388811353858069> Es gab einen Fehler beim Laden der Cogs\n{e}")
+            print(f"❌ Es gab einen Fehler beim Laden der Cogs\n{e}")
         ##########                   ##########
         print("   ___        _ _             ")
         print("  / _ \ _ __ | (_)_ __   ___  ")
@@ -402,11 +402,11 @@ class Vulpo(commands.Bot):
     async def on_ready(self):
         try:
             await bot.change_presence(status=discord.Status.online,activity=discord.Activity(type=discord.ActivityType.playing, name="mit vulpo-bot.de"))
-            print("<:v_haken:1048677657040134195> Status bereit")
+            print("✅ Status bereit")
         except:
-            print("<:v_kreuz:1049388811353858069> Status nicht bereit")
+            print("❌ Status nicht bereit")
         bot.add_view(view=reportmsg(None, bot))
-        print("<:v_haken:1048677657040134195> Alle System sind nun bereit.")
+        print("✅ Alle System sind nun bereit.")
 
 bot = Vulpo()
 
