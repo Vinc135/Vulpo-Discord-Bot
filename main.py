@@ -529,7 +529,7 @@ Der User {interaction.user.mention} hat eine Nachricht von {message.author.menti
                     embed.set_thumbnail(url=interaction.guild.icon)
                     embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                     await channel.send(embed=embed, view=reportmsg(message, bot))
-                    await interaction.response.send_message(f"`Das Mitglied` {interaction.user.mention} `hat eine Nachricht von` {message.author.mention} `gemeldet.`")
+                    await interaction.response.send_message(f"`Du hast eine Nachricht von` {message.author.mention} `gemeldet.`", ephemeral=True)
             except:
                 return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Kanal des Reportlogs existiert nicht mehr. Bitte melde dies dem lokalen Serverteam.**", ephemeral=True)
 

@@ -34,7 +34,7 @@ class Dropdown(discord.ui.Select):
         
         if self.values[0] == "Stats":
             anzeige = """
-> <:v_info:1037065915113676891> Vulpos Stats System basiert auf Tracking von Mitgliedern, wie aktiv sie in Text- und Sprachkanälen sind. Dies ist noch in der Beta. Es kommen noch Stats Kanäle und mehr!
+> <:v_info:1037065915113676891> Vulpos Stats System basiert auf Tracking von Mitgliedern, wie aktiv sie in Text- und Sprachkanälen sind.
 
 __<:v_user:1037065935015653476> User Befehle__
 `/stats anzeigen` Zeigt Stats für Member und Kanäle.
@@ -153,6 +153,7 @@ __<:v_user:1037065935015653476> User Befehle__
 `/erinnerung löschen` Entfernt eine Erinnerung.
 `/erinnerung anzeigen` Bekomme eine Liste von deinen Erinnerungen.
 `/afk` Setze dich AFK.
+`/starboard` - Lege einen Kanal fest für Nachrichten mit 5 Sternen von Usern.
 
 __<:v_einstellungen:1037067521049759865> Team Befehle__
 `/joinrole` Lege eine Joinrolle fest.
@@ -337,10 +338,10 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
 > <:v_spiel:1037065928304771183> Minispiele
 
 **Letzte Updates**
+<:v_info:1037065915113676891> Starboard für coole Nachrichten -> `/starboard`
 <:v_info:1037065915113676891> Tempchannels nun mit **Interface verfügbar** -> `/voicesetup`
 <:v_info:1037065915113676891> Reportlog - melde Nutzer per Rechtsklick ans Team -> `/reportlog`
 <:v_info:1037065915113676891> Statschannel - fertige live Stats Kanäle an -> `/statschannel`
-<:v_info:1037065915113676891> Reaktionsrollen mit Dropdown und Buttons -> `/reactionrole`
 
 **Links**
 [Einladen](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands) **|** [Support](https://discord.gg/49jD3VXksp) **|** [Voten](https://top.gg/bot/925799559576322078/vote)
