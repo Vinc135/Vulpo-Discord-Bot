@@ -101,7 +101,7 @@ class Counting(commands.Cog):
                         await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Erfolgreich ausgeschaltet.**")
 
     @commands.Cog.listener()
-    async def on_message(self, msg):
+    async def on_message(self, msg: discord.Message):
         if msg.guild == None:
             return
         if msg.author.bot:
@@ -134,46 +134,13 @@ class Counting(commands.Cog):
                                     else:
                                         await cursor.execute("UPDATE counting SET zahl = (%s) WHERE guildID = (%s)", (zahl + 1, msg.guild.id))
                                         await msg.add_reaction("<:v_haken:1048677657040134195>")
-                                        if int(msg.content) == 100:
-                                            await msg.add_reaction("🎉")
-                                        if int(msg.content) == 200:
-                                            await msg.add_reaction("🎉")
-                                        if int(msg.content) == 300:
-                                            await msg.add_reaction("🎉")
-                                        if int(msg.content) == 400:
-                                            await msg.add_reaction("🎉")
-                                        if int(msg.content) == 500:
-                                            await msg.add_reaction("🎉")
-                                        if int(msg.content) == 600:
-                                            await msg.add_reaction("🎉")
-                                        if int(msg.content) == 700:
-                                            await msg.add_reaction("🎉")
-                                        if int(msg.content) == 800:
-                                            await msg.add_reaction("🎉")
-                                        if int(msg.content) == 900:
-                                            await msg.add_reaction("🎉")
-                                        if int(msg.content) == 1000:
-                                            await msg.add_reaction("🎉")
-                                        if int(msg.content) == 1100:
-                                            await msg.add_reaction("🎉")
-                                        if int(msg.content) == 1200:
-                                            await msg.add_reaction("🎉")
-                                        if int(msg.content) == 1300:
-                                            await msg.add_reaction("🎉")
-                                        if int(msg.content) == 1400:
-                                            await msg.add_reaction("🎉")
-                                        if int(msg.content) == 1500:
-                                            await msg.add_reaction("🎉")
-                                        if int(msg.content) == 1600:
-                                            await msg.add_reaction("🎉")
-                                        if int(msg.content) == 1700:
-                                            await msg.add_reaction("🎉")
-                                        if int(msg.content) == 1800:
-                                            await msg.add_reaction("🎉")
-                                        if int(msg.content) == 1900:
-                                            await msg.add_reaction("🎉")
-                                        if int(msg.content) == 2000:
-                                            await msg.add_reaction("🎉")
+
+                                        k = 100
+                                        for i in range(100):
+                                            z = i * k
+                                            if int(neue_zahl) == z:
+                                                await msg.add_reaction("🎉")
+                                                await msg.pin(reason="Zähl-Meilenstein")
                         else:
                             m = await msg.reply(f"**<:v_kreuz:1049388811353858069> Die nächste Zahl wäre {zahl + 1}**\n*Diese Nachricht wird in 3 Sekunden gelöscht*")
                             await asyncio.sleep(3)

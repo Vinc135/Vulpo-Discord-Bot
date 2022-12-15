@@ -137,7 +137,7 @@ class Speedgame(commands.Cog):
 **{interaction.user.mention}, mach dich bereit** 
 > Es geht los in `3` Sekunden.""")
         embed.set_thumbnail(url=interaction.user.avatar)
-        await interaction.response.send_message(embed=embed, view=speedgame_setup(self.bot, interaction.user, farbe, time.perf_counter(), "Aus"))
+        await interaction.response.send_message(embed=embed, view=speedgame_setup(self.bot, interaction.user, farbe, time.perf_counter(), "Aus"), ephemeral=True)
         
         await asyncio.sleep(1)
         embed.description = f"""
