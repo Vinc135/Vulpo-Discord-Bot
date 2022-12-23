@@ -125,7 +125,7 @@ class Speedgame(commands.Cog):
     async def on_ready(self):
         self.bot.add_view(view=speedgame_setup(self.bot, None, None, None, None))
 
-    speedgame = app_commands.Group(name="speedgame", description="Das Minispiel Speedgame.")
+    speedgame = app_commands.Group(name="speedgame", description="Das Minispiel Speedgame.", guild_only=True)
     
     @speedgame.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id)) 
@@ -133,29 +133,12 @@ class Speedgame(commands.Cog):
         """Teste deine Schnelligkeit und steige Ränge auf."""
         farben = [":black_circle:", ":blue_circle:", ":brown_circle:", ":green_circle:", ":orange_circle:", ":purple_circle:", ":red_circle:", ":white_circle:", ":yellow_circle:", ":cookie:"]
         farbe = random.choice(farben)
-        embed = discord.Embed(colour=random_color(), title="⏱ Teste deine Schnelligkeit", description=f"""
-**{interaction.user.mention}, mach dich bereit** 
-> Es geht los in `3` Sekunden.""")
+        embed = discord.Embed(colour=random_color(), title="⏱ Teste deine Schnelligkeit", description="")
         embed.set_thumbnail(url=interaction.user.avatar)
-        await interaction.response.send_message(embed=embed, view=speedgame_setup(self.bot, interaction.user, farbe, time.perf_counter(), "Aus"), ephemeral=True)
-        
-        await asyncio.sleep(1)
-        embed.description = f"""
-**{interaction.user.mention}, mach dich bereit!** 
-> Es geht los in `2` Sekunden."""
-        await interaction.edit_original_response(content="", embed=embed, view=speedgame_setup(self.bot, interaction.user, farbe, time.perf_counter(), "Aus"))
-        
-        await asyncio.sleep(1)
-        embed.description = f"""
-**{interaction.user.mention}, mach dich bereit!** 
-> Es geht los in `1` Sekunde."""
-        await interaction.edit_original_response(content="", embed=embed, view=speedgame_setup(self.bot, interaction.user, farbe, time.perf_counter(), "Aus"))
-        
-        await asyncio.sleep(1)
         embed.description = f"""
 **{interaction.user.mention}, es geht jetzt los, sei schnell und geschickt!** 
 > Tippe das Emoji {farbe} an."""
-        await interaction.edit_original_response(content="", embed=embed, view=speedgame_setup(self.bot, interaction.user, farbe, time.perf_counter(), "An"))
+        await interaction.response.send_message(embed=embed, view=speedgame_setup(self.bot, interaction.user, farbe, time.perf_counter(), "An"))
         
     @speedgame.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id)) 

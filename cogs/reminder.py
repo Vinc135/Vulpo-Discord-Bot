@@ -11,7 +11,7 @@ class Reminder(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    erinnerung = app_commands.Group(name='erinnerung', description='Nehme Einstellungen an deinen Erinnerungen vor.')
+    erinnerung = app_commands.Group(name='erinnerung', description='Nehme Einstellungen an deinen Erinnerungen vor.', guild_only=True)
 
     @erinnerung.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))

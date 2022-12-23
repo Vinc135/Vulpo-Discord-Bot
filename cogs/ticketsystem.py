@@ -1,7 +1,10 @@
+import datetime
+import math
 import discord
 from discord.ext import commands
 import os
 from discord import app_commands
+from info import discord_timestamp
 
 class PanelbuttonView(discord.ui.View):
     def __init__(self, bot):
@@ -29,7 +32,7 @@ class PanelbuttonView(discord.ui.View):
                         ),
                         role: discord.PermissionOverwrite(
                             read_messages=True,
-                            send_messages=True,
+                            send_messages=False,
                         ),
                         member: discord.PermissionOverwrite(
                             read_messages=True,
@@ -68,7 +71,7 @@ class ClosebuttonView(discord.ui.View):
         super().__init__(timeout=None)
         self.bot = bot
 
-    @discord.ui.button(label="Ticket schließen", emoji="🔒", custom_id="Button-CloseTicket", style=discord.ButtonStyle.red)
+    @discord.ui.button(label="Ticket schließen", emoji="<:v_kreuz:1049388811353858069>", custom_id="Button-CloseTicket", style=discord.ButtonStyle.red)
     async def button_closeticket(self, interaction: discord.Interaction, button):
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
@@ -127,7 +130,7 @@ class ClosebuttonView(discord.ui.View):
                 except:
                     pass
 
-    @discord.ui.button(label="Ticket claimen", emoji="🎫", custom_id="Button-ClaimTicket", style=discord.ButtonStyle.blurple)
+    @discord.ui.button(label="Ticket claimen", emoji="<:v_support:1037065931588894841>", custom_id="Button-ClaimTicket", style=discord.ButtonStyle.blurple)
     async def button_claimticket(self, interaction: discord.Interaction, button):
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
@@ -160,6 +163,23 @@ class ClosebuttonView(discord.ui.View):
                 embed.set_author(name=authorname, icon_url=authoricon)
                 embed.add_field(name=Themaheader, value=Thema)
                 embed.add_field(name=Claimer, value=interaction.user.mention)
+
+                overwrites = {
+                    interaction.guild.default_role: discord.PermissionOverwrite(
+                        read_messages=False,
+                        send_messages=False,
+                    ),
+                    interaction.user: discord.PermissionOverwrite(
+                        read_messages=True,
+                        send_messages=True,
+                    ),
+                    role: discord.PermissionOverwrite(
+                        read_messages=True,
+                        send_messages=False, 
+                    )
+                }
+
+                await interaction.channel.edit(overwrites=overwrites)
                 await interaction.response.edit_message(content=f"{member.mention}", embed=embed, view=self)
 
                 try:
@@ -176,12 +196,77 @@ class ClosebuttonView(discord.ui.View):
                 except:
                     pass
 
+    @discord.ui.button(label="Userinfo", emoji="<:v_job:1037065916501983252>", custom_id="Button-UserInfo", style=discord.ButtonStyle.red)
+    async def button_userinfo(self, interaction: discord.Interaction, button):
+        async with self.bot.pool.acquire() as conn:
+            async with conn.cursor() as cursor:
+                await cursor.execute(f"SELECT channelID, userID, panelID FROM tickets WHERE channelID = {interaction.channel_id}")
+                result = await cursor.fetchone()
+                if result is None:
+                    return
+                    
+                member = interaction.guild.get_member(int(result[1]))
+                t1 = math.floor(member.created_at.timestamp())
+                t2 = datetime.datetime.fromtimestamp(int(t1))
+                t3 = math.floor(member.joined_at.timestamp())
+                t4= datetime.datetime.fromtimestamp(int(t3))
+                embed = discord.Embed(colour=member.color, description=f"Der Account wurde {discord_timestamp(t2, 'R')} erstellt.")
+                embed.set_thumbnail(url=member.avatar)
+                embed.add_field(name="ID", value=member.id, inline=False)
+                embed.add_field(name="Beitritt", value=f"Der User ist {discord_timestamp(t4, 'R')} dem Server beigetreten.", inline=True)
+                embed.add_field(name="Bot?", value='Ja' if member.bot else 'Nein', inline=False)
+                embed.add_field(name="Höchte Rolle", value=member.top_role.mention, inline=True)
+                if member.public_flags:
+                    flags = ""
+                    for flag in member.public_flags:
+                        if flag[1] == True:
+                            if flag[0] == "staff":
+                                flags += "<:v_discordstaff:1037069155008000042> "
+                            if flag[0] == "partner":
+                                flags += "<:v_discordpartner:1037069463532601404> "
+                            if flag[0] == "bug_hunter":
+                                flags += "<:v_bughunter:1037069367483060244> "
+                            if flag[0] == "hypesquad_bravery":
+                                flags += "<:v_bravery:1037069608127037500> "
+                            if flag[0] == "hypesquad_brilliance":
+                                flags += "<:brilliance:1037069659708600435> "
+                            if flag[0] == "hypesquad_balance":
+                                flags += "<:v_balance:1037069709318819950> "
+                            if flag[0] == "early_supporter":
+                                flags += "<:v_supporter:1037069787043483678> "
+                            if flag[0] == "bug_hunter_level_2":
+                                flags += "<:v_bughuntergold:1037069871286059058> "
+                            if flag[0] == "verified_bot":
+                                flags += "<:v_verifiedbot:1037069972226179182> "
+                            if flag[0] == "verified_bot_developer":
+                                flags += "<:v_verifiedbotdeveloper:1037070049539788851>"
+                            if flag[0] == "discord_certified_moderator":
+                                flags += "<:v_mod:1037070124164857867> "
+                    if flags != "":
+                        embed.add_field(name="🎖 Abzeichen", value=flags, inline=False)
+
+                liste = ""
+                m = interaction.guild.get_member(member.id)
+                for a in m.activities:
+                    if a.name not in liste:
+                        if liste == "":
+                            liste += f"{a.name}"
+                        else:
+                            liste += f", {a.name}"
+                if liste != "":
+                    embed.add_field(name="🎮 Aktivitäten", value=liste, inline=False)
+                user = await self.bot.fetch_user(member.id)
+                if user.banner:
+                    embed.set_image(url=user.banner)
+                embed.set_author(name=f"Userinfo {member}", icon_url=member.avatar)
+                await interaction.response.send_message(embed=embed, ephemeral=True)
+
 class DeletebuttonView(discord.ui.View):
     def __init__(self, bot):
         super().__init__(timeout=None)
         self.bot = bot
 
-    @discord.ui.button(label="Ticket löschen", emoji="🗑", custom_id="Button-DeleteTicket", style=discord.ButtonStyle.red)
+    @discord.ui.button(label="Ticket löschen", emoji="<:v_kreuz:1049388811353858069>", custom_id="Button-DeleteTicket", style=discord.ButtonStyle.red)
     async def button_deleteticket(self, interaction: discord.Interaction, button):
         await interaction.channel.send(f"{interaction.user.mention} hat das Ticket gelöscht.")
         async with self.bot.pool.acquire() as conn:
@@ -237,7 +322,7 @@ class DeletebuttonView(discord.ui.View):
                 
                 await interaction.channel.delete()
 
-    @discord.ui.button(label="Ticket erneut öffnen", emoji="🔓", custom_id="Button-ReopenTicket", style=discord.ButtonStyle.green)
+    @discord.ui.button(label="Ticket erneut öffnen", emoji="<:v_sicherheit:1037065924722839554>", custom_id="Button-ReopenTicket", style=discord.ButtonStyle.green)
     async def button_reopenticket(self, interaction: discord.Interaction, button):
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
@@ -304,6 +389,7 @@ class Ticketsystem(commands.Cog):
         self.bot.add_view(view=DeletebuttonView(self.bot))
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(manage_channels=True)
     async def createpanel(self, interaction, kanal: discord.TextChannel, titel: str, beschreibung: str, supportrolle: discord.Role, kategorie: discord.CategoryChannel, archiv: discord.CategoryChannel):

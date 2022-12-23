@@ -46,7 +46,7 @@ class TicTacToeButton2(discord.ui.Button):
             if self.playertwo.id != interaction.user.id:
                 return await interaction.response.defer(thinking=False)
             self.style = discord.ButtonStyle.danger
-            self.label = '<:v_kreuz:1049388811353858069>'
+            self.label = '❌'
             self.disabled = True
             view.board[self.y][self.x] = view.X
             view.current_player = view.O
@@ -205,7 +205,7 @@ class TicTacToeButton(discord.ui.Button):
             if self.playertwo.id != interaction.user.id:
                 return await interaction.response.defer(thinking=False)
             self.style = discord.ButtonStyle.danger
-            self.label = '<:v_kreuz:1049388811353858069>'
+            self.label = '❌'
             self.disabled = True
             view.board[self.y][self.x] = view.X
             view.current_player = view.O
@@ -330,7 +330,7 @@ class Ttt(commands.Cog):
         self.bot.add_view(view=tictactoeherausforderung(None, None, self.bot))
         self.bot.add_view(view=tictactoeherausforderung2(None, None, self.bot))
 
-    tictactoe = app_commands.Group(name='tictactoe', description='Alle Commands vom Tictactoe System.')
+    tictactoe = app_commands.Group(name='tictactoe', description='Alle Commands vom Tictactoe System.', guild_only=True)
 
     @tictactoe.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -338,7 +338,7 @@ class Ttt(commands.Cog):
         """Spiele mit jemanden Tik-Tik-Toe."""
         if modus == "Klassisch":
             if spieler2 == interaction.user:
-                return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst nicht gegen dich selbst spielen.**", ephemeral=True)
+                return await interaction.response.send_message("**❌ Du kannst nicht gegen dich selbst spielen.**", ephemeral=True)
             async with self.bot.pool.acquire() as conn:
                 async with conn.cursor() as cursor:
                     await cursor.execute("SELECT wins, loses, ties FROM ttt WHERE userID = (%s)", (interaction.user.id))
@@ -360,7 +360,7 @@ class Ttt(commands.Cog):
                 await interaction.edit_original_response(content=f"**Tik-Tak-Toe**\n{spieler2.mention}, du wurdest von {interaction.user.mention} herausgefordert. Jedoch ist die Zeit abgelaufen, dem Match beizutreten.", view=None)
         if modus == "BIG":
             if spieler2 == interaction.user:
-                return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst nicht gegen dich selbst spielen.**", ephemeral=True)
+                return await interaction.response.send_message("**❌ Du kannst nicht gegen dich selbst spielen.**", ephemeral=True)
             async with self.bot.pool.acquire() as conn:
                 async with conn.cursor() as cursor:
                     await cursor.execute("SELECT wins, loses, ties FROM ttt WHERE userID = (%s)", (interaction.user.id))
@@ -393,12 +393,12 @@ class Ttt(commands.Cog):
                 result = await cursor.fetchone()
                 if result == None:
                     if member == interaction.user:
-                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du hast noch kein Match gespielt. Aufgrund dessen hast du auch keine Punkte. Du musst zuerst ein Match spielen.**", ephemeral=True)
-                    return await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> {member.mention} hat noch kein Match gespielt. Aufgrund dessen hat er/sie auch keine Punkte. Er/Sie muss zuerst ein Match spielen.**", ephemeral=True)
+                        return await interaction.response.send_message("**❌ Du hast noch kein Match gespielt. Aufgrund dessen hast du auch keine Punkte. Du musst zuerst ein Match spielen.**", ephemeral=True)
+                    return await interaction.response.send_message(f"**❌ {member.mention} hat noch kein Match gespielt. Aufgrund dessen hat er/sie auch keine Punkte. Er/Sie muss zuerst ein Match spielen.**", ephemeral=True)
                 else:
                     rating = (result[0] * 3) + (result[1] * -1) + (result[2] * 2)
                     total_plays = result[0] + result[1] + result[2]
-                    embed = discord.Embed(color=random_color(), title="<:v_kreuz:1049388811353858069> **| __TicTacToe Stats__ |** ⭕", description=f"""
+                    embed = discord.Embed(color=random_color(), title="❌ **| __TicTacToe Stats__ |** ⭕", description=f"""
 Aktuelle Stats von {member.mention}
 **Rating: `{rating}`**
 

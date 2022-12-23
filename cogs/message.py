@@ -96,7 +96,7 @@ class message(commands.Cog):
                             profile = await load_image_async(str(member.avatar))
 
                             profile = Editor(profile).resize((125, 125)).circle_image()
-                            background.paste(profile.image, (700, 600))
+                            background.paste(profile.image, (100, 100))
                             poppins_small = Font.poppins("bold", size=30)
                             background.text((380, 145), str(member), font=poppins_small, color="#e67e22")
                             background.text((380, 195), str(member.id), font=poppins_small, color="#e67e22")
@@ -109,6 +109,7 @@ class message(commands.Cog):
                             pass
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def testjoin(self, interaction: discord.Interaction):
@@ -147,6 +148,7 @@ class message(commands.Cog):
                     await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Die Test-Willkommensnachricht wurde an den Kanal {ch.mention} gesendet.**")
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def joinmsg(self, interaction: discord.Interaction, argument: typing.Literal["Einrichten (Kanal muss mit angegeben werden)","Anzeigen","Ausschalten"], kanal: discord.TextChannel=None):
@@ -207,6 +209,7 @@ class message(commands.Cog):
                         pass
             
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def testleave(self, interaction: discord.Interaction):
@@ -232,6 +235,7 @@ class message(commands.Cog):
                     pass
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def leavemsg(self, interaction: discord.Interaction, argument: typing.Literal["Einrichten (Kanal muss mit angegeben werden)","Anzeigen","Ausschalten"], kanal: discord.TextChannel=None):

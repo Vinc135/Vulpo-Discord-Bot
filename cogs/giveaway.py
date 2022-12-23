@@ -221,7 +221,7 @@ class giveaway(commands.Cog):
     async def on_ready(self):
         self.bot.add_view(view=Gewinnspiel_Teilnehmen(self.bot))
                 
-    gewinnspiel = app_commands.Group(name='gewinnspiel', description='Verwalte Gewinnspiele.')
+    gewinnspiel = app_commands.Group(name='gewinnspiel', description='Verwalte Gewinnspiele.', guild_only=True)
     
     @gewinnspiel.command()
     @app_commands.checks.has_permissions(administrator=True)

@@ -10,6 +10,7 @@ class fun(commands.Cog):
         self.bot = bot
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def lostrate(self, interaction: discord.Interaction, user: discord.Member=None):
         """Berechnet mit einem hochkomplexen Prozess wie Lost der Benutzer ist."""
@@ -21,6 +22,7 @@ class fun(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def iq(self, interaction: discord.Interaction, member: discord.Member=None):
         """Finde heraus, wie hoch der IQ von dir oder einem Benutzer ist."""
@@ -42,6 +44,7 @@ class fun(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def ask(self, interaction: discord.Interaction, frage: str):
         """Lass bekannte Leute deine Frage beantworten."""
@@ -73,6 +76,7 @@ class fun(commands.Cog):
         await interaction.response.send_message(f"**{frage}**\n\n{gif}")
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def love(self, interaction: discord.Interaction, member: discord.Member, user: discord.Member):
         """Finde heraus, wie verliebt 2 Benutzer oder du und ein anderer Benutzer sind!"""
@@ -96,6 +100,7 @@ class fun(commands.Cog):
         await message.edit(embed=embed2)
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def los(self, interaction: discord.Interaction):
         """Ziehe ein Ticket und reibe es auf, indem du auf die schwarzen Blöcke tippst."""
@@ -126,6 +131,7 @@ class fun(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def games(self, interaction: discord.Interaction):
         """Zeigt alle Spiele an, die auf dem aktuellen Server gespielt werden."""
@@ -146,6 +152,7 @@ class fun(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def password(self, interaction: discord.Interaction):
         """Generiert ein zufälliges Passwort für dich!"""

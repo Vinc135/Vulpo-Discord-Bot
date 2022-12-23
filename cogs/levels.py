@@ -213,9 +213,9 @@ class levelsystem(commands.Cog):
                         if result == None:
                             continue
 
-    levelsystem = app_commands.Group(name='levelsystem', description='Nehme Einstellungen am Levelsystem vor.')
-    role = app_commands.Group(name='role', description='Nehme Einstellungen an Levelrollen vor oder lass sie dir alle anzeigen.', parent=levelsystem)
-    block = app_commands.Group(name='block', description='Entferne Rollen und Kanäle vom Levelsystem.', parent=levelsystem)
+    levelsystem = app_commands.Group(name='levelsystem', description='Nehme Einstellungen am Levelsystem vor.', guild_only=True)
+    role = app_commands.Group(name='role', description='Nehme Einstellungen an Levelrollen vor oder lass sie dir alle anzeigen.', parent=levelsystem, guild_only=True)
+    block = app_commands.Group(name='block', description='Entferne Rollen und Kanäle vom Levelsystem.', parent=levelsystem, guild_only=True)
 
     @role.command()
     @app_commands.checks.has_permissions(manage_roles=True)
@@ -431,6 +431,7 @@ class levelsystem(commands.Cog):
                     await interaction.response.send_message("**<:v_haken:1048677657040134195> Die Rolle ist nun nicht mehr auf der Blacklist.**")
     
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def rank(self, interaction: discord.Interaction, member: discord.Member=None):
         """Dieser Befehl zeigt dein Level und deine Erfahrungspunkte."""
@@ -546,6 +547,7 @@ class levelsystem(commands.Cog):
                         await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Das Levelsystem ist hier bereits deaktiviert.**", ephemeral=True)
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def setlevel(self, interaction: discord.Interaction, member: discord.Member, level: int):
@@ -564,6 +566,7 @@ class levelsystem(commands.Cog):
                 await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Der Benutzer {member.mention} ist nun Level {level}.**")
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def xpboost(self, interaction: discord.Interaction, status: typing.Literal["Anschalten (2x)", "Ausschalten (1x)"]):

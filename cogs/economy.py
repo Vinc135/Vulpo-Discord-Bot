@@ -412,7 +412,7 @@ class economy(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    cookies = app_commands.Group(name='cookies', description='Befehle vom Economy System für das Verwalten seines Accounts.')
+    cookies = app_commands.Group(name='cookies', description='Befehle vom Economy System für das Verwalten seines Accounts.', guild_only=True)
         
     @cookies.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -479,6 +479,7 @@ class economy(commands.Cog):
         await interaction.response.send_message(f"<:v_haken:1048677657040134195> Ich habe **{betrag} 🍪** auf deine Bank überwiesen. Du hast nun **{rucksack - betrag} 🍪** in deinem Rucksack und **{bank + betrag} 🍪** auf deiner Bank.")
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3600, key=lambda i: (i.user.id))
     async def beg(self, interaction: discord.Interaction):
         """Bettle für Münzen."""
@@ -525,6 +526,7 @@ class economy(commands.Cog):
             return
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 86400 , key=lambda i: (i.user.id))
     async def daily(self, interaction: discord.Interaction):
         """Sammle deinen täglichen Cookie-Bonus ein."""
@@ -564,6 +566,7 @@ class economy(commands.Cog):
                     await interaction.response.send_message(embed=embed)
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3600, key=lambda i: (i.user.id))
     async def work(self, interaction: discord.Interaction):
         """Gehe zur Arbeit mit deinem aktuellen Job."""
@@ -587,6 +590,7 @@ class economy(commands.Cog):
             pass
         
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def send(self, interaction: discord.Interaction, user: discord.User, betrag: int):
         """Sende Geld zu einem anderen User."""
@@ -607,6 +611,7 @@ class economy(commands.Cog):
         await interaction.response.send_message(f"<:v_haken:1048677657040134195> {user.mention} hat **{betrag} 🍪** von dir erhalten. Du hast nun **{rucksack - betrag} 🍪** in deinem Rucksack.")
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3500, key=lambda i: (i.user.id))
     async def rob(self, interaction: discord.Interaction, user: discord.User):
         """Raube einen User aus."""
@@ -640,6 +645,7 @@ class economy(commands.Cog):
                 return
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def slot(self, interaction: discord.Interaction, betrag: int):
         """Teste dein Glück."""
@@ -727,6 +733,7 @@ class economy(commands.Cog):
         self.bot.add_view(view=rps(None, None, None, self.bot, None))
         
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def rps(self, interaction: discord.Interaction, betrag: int):
         """Game, Schere Stein Papier. Deine Reaktion ist deine Entscheidung."""
@@ -750,7 +757,7 @@ class economy(commands.Cog):
         choice = random.choice(emojis)
         await interaction.response.send_message(embed=embed, view=rps(choice, betrag, interaction.user, self.bot, interaction))
 
-    job = app_commands.Group(name='job', description='Bewirb dich für Jobs, kündige diese oder lass sie dir alle anzeigen.')
+    job = app_commands.Group(name='job', description='Bewirb dich für Jobs, kündige diese oder lass sie dir alle anzeigen.', guild_only=True)
     
     @job.command()
     @app_commands.autocomplete(beruf=job_autocomplete)
@@ -812,8 +819,8 @@ class economy(commands.Cog):
                                                                     description=f"Hier siehst du alle verfügbaren Jobs.\nDu kannst dich für einen Job bewerben mit `/job apply <job>`\n\n" + await job_list(self, interaction, 1),
                                                                     colour=discord.Colour.green()).set_footer(text='Seite 1 von 11'), view=joblist(interaction, self.bot, self))
     
-    shop = app_commands.Group(name='shop', description='Erstelle Items für deinen Server. Nutzer können diese kaufen.')
-    item = app_commands.Group(name='item', description='Erstelle Items für deinen Server. Nutzer können diese kaufen.', parent=shop)
+    shop = app_commands.Group(name='shop', description='Erstelle Items für deinen Server. Nutzer können diese kaufen.', guild_only=True)
+    item = app_commands.Group(name='item', description='Erstelle Items für deinen Server. Nutzer können diese kaufen.', parent=shop, guild_only=True)
     
     @item.command()
     @app_commands.checks.has_permissions(administrator=True)

@@ -261,6 +261,7 @@ class reactionrole(commands.Cog):
                         self.bot.add_view(view=view)
         
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(manage_roles=True)
     async def reactionrole(self, interaction: discord.Interaction, erscheinungsbild: typing.Literal["Select Menü", "Buttons"]):

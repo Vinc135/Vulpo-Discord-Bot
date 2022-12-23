@@ -38,6 +38,7 @@ class event(commands.Cog):
         self.bot = bot
 
     @app_commands.command()
+    @app_commands.guild_only()
     async def teilnehmen(self, interaction: discord.Interaction):
         """Nimm am riesen Event Teil!!!"""
         if interaction.guild.owner != interaction.user:
