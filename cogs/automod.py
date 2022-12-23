@@ -10,7 +10,8 @@ class Automod(commands.Cog):
         self.bot = bot
         self._cd = commands.CooldownMapping.from_cooldown(5, 2.5, commands.BucketType.user)
 
-    automod = app_commands.Group(name='automod', description='Nehme Einstellungen am Automod vor.')
+    automod = app_commands.Group(name='automod', description='Nehme Einstellungen am Automod vor.', guild_only=True)
+    
 
     @automod.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -62,6 +63,7 @@ class Automod(commands.Cog):
                 await interaction.response.send_message(embed=embed)
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(kick_members=True)
     async def warn(self, interaction: discord.Interaction, user: discord.User, grund: str):
@@ -87,6 +89,7 @@ class Automod(commands.Cog):
             await interaction.response.send_message(embed=embed)
         
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(kick_members=True)
     async def unwarn(self, interaction: discord.Interaction, user: discord.User, warnid: str):
@@ -109,6 +112,7 @@ class Automod(commands.Cog):
         await interaction.response.send_message(embed=embed)
         
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(kick_members=True)
     async def listwarns(self, interaction: discord.Interaction, user: discord.User):
@@ -131,7 +135,7 @@ class Automod(commands.Cog):
         if a == 0:
             await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Der User {user} hat keine Verwarnungen hier.**", ephemeral=True) 
     
-    blacklist = app_commands.Group(name='blacklist', description='Nehme Einstellungen am Blacklist-System vor.')
+    blacklist = app_commands.Group(name='blacklist', description='Nehme Einstellungen am Blacklist-System vor.', guild_only=True)
 
     @blacklist.command()
     @app_commands.checks.has_permissions(manage_messages=True)

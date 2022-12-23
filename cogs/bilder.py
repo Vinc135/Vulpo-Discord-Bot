@@ -15,6 +15,7 @@ class bilder(commands.Cog):
         self.bot = bot
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def wanted(self, interaction, member: discord.Member=None):
         """Erstellt ein 'Gesucht' Plakat mit dem Profilbild eines Members."""
@@ -36,6 +37,7 @@ class bilder(commands.Cog):
             os.remove("profile.jpg")
     
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def pix(self, interaction, member: discord.Member=None):
         """Verpixelt das Profilbild eines Nutzers."""
@@ -57,6 +59,7 @@ class bilder(commands.Cog):
             os.remove("pix.png")
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def wasted(self, interaction, *, member: discord.Member = None):
         """Sendet ein Bild deines Avatars mit Effekten."""
@@ -78,6 +81,7 @@ class bilder(commands.Cog):
                     await session.close()
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def cat(self, interaction):
         """Ein zufälliges Bild einer Katze."""
@@ -96,6 +100,7 @@ class bilder(commands.Cog):
             return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Fehler beim Laden es Bildes. Versuche es später erneut!**", ephemeral=True)
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def triggered(self, interaction, *, member: discord.Member=None):
         """Sendet ein Bild deines Avatars mit Effekten."""
@@ -117,6 +122,7 @@ class bilder(commands.Cog):
                     await session.close()
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def color(self, interaction, hexcode: str):
         """Gib einen HEX-Code ein und die dazugehörige Farbe wird erscheinen."""
@@ -133,6 +139,7 @@ class bilder(commands.Cog):
             return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Fehler beim Laden es Bildes. Versuche es später erneut!**", ephemeral=True)
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def regenbogen(self, interaction, member: discord.Member=None):
         """Sendet ein Bild deines Avatars mit Effekten."""
@@ -155,6 +162,7 @@ class bilder(commands.Cog):
                     await session.close()
                     
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def meme(self, interaction):
         """Sendet ein Meme."""

@@ -6,7 +6,7 @@ class Tags(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    tag = app_commands.Group(name='tag', description='Erstelle und lösche Tags.')
+    tag = app_commands.Group(name='tag', description='Erstelle und lösche Tags.', guild_only=True)
 
     @tag.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))

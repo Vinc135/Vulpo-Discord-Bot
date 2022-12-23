@@ -473,7 +473,7 @@ class Stats(commands.Cog):
                         return await cursor.execute("INSERT INTO nachrichten(userID, guildID, zeit, anzahl, channelID) VALUES(%s, %s, %s, %s, %s)", (msg.author.id, msg.guild.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), 1, msg.channel.id))
                     await cursor.execute("UPDATE nachrichten SET anzahl = (%s) WHERE guildID = (%s) AND userID = (%s) AND zeit = (%s) AND channelID = (%s)", (result[0] + 1, msg.guild.id, msg.author.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), msg.channel.id))
     
-    stats = app_commands.Group(name='stats', description='Verwalte Stats.')
+    stats = app_commands.Group(name='stats', description='Verwalte Stats.', guild_only=True)
     
     @stats.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -821,6 +821,7 @@ class Stats(commands.Cog):
                     return await interaction.channel.send(file=file, embed=embed)
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def statschannel(self, interaction: discord.Interaction, argument: typing.Literal["Einrichten","Anzeigen","Ausschalten"], kanal: discord.abc.GuildChannel=None):

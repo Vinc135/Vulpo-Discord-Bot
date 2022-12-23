@@ -54,6 +54,7 @@ class meta(commands.Cog):
         self.base_url = "http://api.openweathermap.org/data/2.5/weather?"
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(manage_messages=True)
     async def embed(self, interaction: discord.Interaction, titel: str, farbe: typing.Literal["Gelb","Orange","Rot","Grün","Blau"]):
@@ -61,6 +62,7 @@ class meta(commands.Cog):
         await interaction.response.send_modal(EmbedMaker(farbe, titel))
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def invites(self, interaction: discord.Interaction, member: discord.Member=None):
         """Finde heraus wieveiele Leute du schon eingeladen hast."""
@@ -78,6 +80,7 @@ class meta(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def avatar(self, interaction: discord.Interaction, member: discord.Member = None):
         """Zeigt das Profilbild eines Benutzers an."""
@@ -96,6 +99,7 @@ class meta(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def umfrage(self, interaction: discord.Interaction, frage: str, antworten: str):
         """Beispiel: /umfrage Testfrage <Antwort Nummer 1> <Hier die zweite Antwort>. Maximale Antowrten: 9"""
@@ -188,7 +192,7 @@ class meta(commands.Cog):
 
         await interaction.response.send_message("**<:v_haken:1048677657040134195> Die Umfrage wurde geschickt.**", ephemeral=True)
 
-    info = app_commands.Group(name='info', description='Bekomme Infos zu bestimmten Usern, Rollen und Kanälen.')
+    info = app_commands.Group(name='info', description='Bekomme Infos zu bestimmten Usern, Rollen und Kanälen.', guild_only=True)
 
     @info.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -432,6 +436,7 @@ class meta(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def servericon(self, interaction: discord.Interaction):
         """Zeigt das Profilbild vom Server an."""
@@ -442,6 +447,7 @@ class meta(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def wetter(self, interaction: discord.Interaction, stadt: str=None):
         """Zeigt das Wetter einer Stadt an."""
@@ -470,6 +476,7 @@ class meta(commands.Cog):
             return
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def permissions(self, interaction: discord.Interaction, user: discord.Member=None):
         """Listet alle Berechtigungen von jemandem auf."""
@@ -492,6 +499,7 @@ class meta(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def emojiurl(self, interaction: discord.Interaction, emoji: str):
         """Gibt den Link für ein Emoji."""
@@ -508,6 +516,7 @@ class meta(commands.Cog):
             return await interaction.response.send_message(content="**<:v_kreuz:1049388811353858069> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch in und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(manage_emojis_and_stickers=True)
     async def stealemoji(self, interaction: discord.Interaction, emoji: str, name: str):
@@ -529,6 +538,7 @@ class meta(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def random(self, interaction: discord.Interaction, erstezahl: int, zweitezahl: int):
         """Erhalte eine random Zahl von deinen ausgewählten Zahlen."""
@@ -536,6 +546,7 @@ class meta(commands.Cog):
         await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Deine zufällige Zahl zwischen `{erstezahl}` und `{zweitezahl}` ist `{drittezahl}`.**")
         
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def translate(self, interaction: discord.Interaction, sprache: typing.Literal["Arabisch", "Chinesisch", "Deutsch", "Englisch", "Französisch", "Hindi", "Italienisch", "Japanisch", "Portugiesisch", "Russisch", "Spanisch", "Türkisch"], text: str):
         """Übersetze einen Text in mehrere Sprachen."""
@@ -573,6 +584,7 @@ class meta(commands.Cog):
         await interaction.response.send_message(embed=embed)
     
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 10, key=lambda i: (i.guild_id, i.user.id))
     async def bestenliste(self, interaction: discord.Interaction, system: typing.Literal["Economy", "Emojiquiz", "Levelsystem", "TicTacToe", "Speedgame", "Votes"]):
         """Bekomme Bestenlisten verschiedenster Funktionen."""

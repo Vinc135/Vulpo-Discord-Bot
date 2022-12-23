@@ -31,7 +31,7 @@ class Counting(commands.Cog):
     async def on_ready(self):
         self.bot.add_view(view=countconfirm(None, self.bot))
 
-    counting = app_commands.Group(name='counting', description='Nehme Einstellungen am Count-System vor.')
+    counting = app_commands.Group(name='counting', description='Nehme Einstellungen am Count-System vor.', guild_only=True)
 
     @counting.command()
     @app_commands.checks.has_permissions(manage_messages=True)

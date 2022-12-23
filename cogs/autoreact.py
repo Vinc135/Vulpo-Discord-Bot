@@ -26,7 +26,7 @@ class Autoreact(commands.Cog):
                     except:
                         return
 
-    autoreact = app_commands.Group(name='autoreact', description='Nehme Einstellungen am Autoreactsystem vor.')
+    autoreact = app_commands.Group(name='autoreact', description='Nehme Einstellungen am Autoreactsystem vor.', guild_only=True)
 
     @autoreact.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))

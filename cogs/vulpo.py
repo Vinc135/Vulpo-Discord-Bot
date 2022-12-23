@@ -316,6 +316,7 @@ class vulpo(commands.Cog):
         self.bot.add_view(DropdownView(None))
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def help(self, interaction: discord.Interaction):
         """Wichtige Links wie invite, support, vote und viele andere Infos."""
@@ -351,6 +352,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
         await interaction.response.send_message(embed=embed, view=DropdownView(interaction.user))
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def vote(self, interaction: discord.Interaction):
         """Zeigt an, wann du wieder für Vulpo voten kannst."""
@@ -375,6 +377,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
                 await interaction.response.send_message(embed=embed)
         
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def about(self, interaction: discord.Interaction):
         """Zeigt Infos über mich."""
@@ -420,6 +423,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def invite(self, interaction: discord.Interaction):
         """Zeigt einen Link um mich einzuladen."""
@@ -428,6 +432,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def support(self, interaction: discord.Interaction):
         """Zeigt einen Link für den Support-Server."""
@@ -436,6 +441,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def ping(self, interaction: discord.Interaction):
         """Zeigt den Ping von den verschiedensten Funktionen."""

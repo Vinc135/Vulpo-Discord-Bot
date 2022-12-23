@@ -10,6 +10,7 @@ class logging(commands.Cog):
 
     #reportlog
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def reportlog(self, interaction: discord.Interaction, argument: typing.Literal["Einrichten (Kanal muss mit angegeben werden)","Anzeigen","Ausschalten"], kanal: discord.TextChannel=None):
@@ -47,6 +48,7 @@ class logging(commands.Cog):
     #messagelog
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def messagelog(self, interaction: discord.Interaction, modus: typing.Literal["An","Aus"], kanal: discord.TextChannel):
@@ -187,6 +189,7 @@ class logging(commands.Cog):
     #modlog
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def modlog(self, interaction: discord.Interaction,  modus: typing.Literal["An","Aus"], kanal: discord.TextChannel):
@@ -450,6 +453,7 @@ class logging(commands.Cog):
                     pass
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def ticketlog(self, interaction: discord.Interaction,  modus: typing.Literal["An","Aus"], kanal: discord.TextChannel):

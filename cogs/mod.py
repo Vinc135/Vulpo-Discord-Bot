@@ -9,6 +9,7 @@ class moderation(commands.Cog):
         self.bot = bot
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(manage_roles=True)
     async def rolle(self, interaction: discord.Interaction, member: discord.Member, rolle: discord.Role):
@@ -37,6 +38,7 @@ class moderation(commands.Cog):
                 await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Ich habe hier keine Brechtigungen dazu.**", ephemeral=True)
     
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(kick_members=True)
     async def kick(self, interaction: discord.Interaction, member: discord.Member, grund: str):
@@ -65,6 +67,7 @@ class moderation(commands.Cog):
             await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Ich habe hier keine Brechtigungen dazu.**", ephemeral=True)
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(ban_members=True)
     async def ban(self, interaction: discord.Interaction, user: discord.User, grund: str, nachrichten_löschen: typing.Literal["Keine löschen","Letzte 24 Stunden","Letzte 7 Tage"]):
@@ -108,6 +111,7 @@ class moderation(commands.Cog):
             await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Ich habe hier keine Brechtigungen dazu.**", ephemeral=True)
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(ban_members=True)
     async def unban(self, interaction: discord.Interaction, userstag: str):
@@ -127,6 +131,7 @@ class moderation(commands.Cog):
 
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(ban_members=True)
     async def banlist(self, interaction: discord.Interaction):
@@ -161,7 +166,7 @@ class moderation(commands.Cog):
         except:
             await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Hier gibt es keine gebannten Nutzer.**", ephemeral=True)
 
-    clear = app_commands.Group(name='clear', description='Lösche bestimmte Nachrichten.')
+    clear = app_commands.Group(name='clear', description='Lösche bestimmte Nachrichten.', guild_only=True)
 
     @clear.command()
     @app_commands.checks.has_permissions(manage_messages=True)

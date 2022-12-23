@@ -1,7 +1,6 @@
 import typing
 import discord
 from discord.ext import commands
-import random
 from discord import app_commands
 
 class starboard(commands.Cog):
@@ -9,6 +8,7 @@ class starboard(commands.Cog):
         self.bot = bot
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def starboard(self, interaction: discord.Interaction, argument: typing.Literal["Einrichten (Kanal muss mit angegeben werden)","Anzeigen","Ausschalten"], kanal: discord.TextChannel=None):
@@ -58,34 +58,25 @@ class starboard(commands.Cog):
                             channel: discord.TextChannel = self.bot.get_channel(int(result[0]))
                             if channel:
                                 msg: discord.Message = await channel.fetch_message(int(result[1]))
-                                if msg:
-                                    embed = msg.embeds[0]
-                                    embed.set_footer(text=f"{reaction.count} ⭐️-Reaktionen")
+                                if msg is None:
+                                    embed = discord.Embed(title="⭐️ Nachricht ausgezeichnet! ⭐️", description=reaction.message.content, color=discord.Color.orange())
+                                    embed.description += f"\n\n**[Springe zur Nachricht]({reaction.message.jump_url})**"
+                                    embed.set_author(name=reaction.message.author, icon_url=reaction.message.author.avatar)
+                                    for attachment in reaction.message.attachments:
+                                        embed.set_image(url=attachment.url)
+                                    await channel.send(embed=embed)
                         else:
+                            if reaction.count < 3:
+                                return
                             channel = self.bot.get_channel(int(channel_id[0]))
                             if channel:
-                                embed = discord.Embed(title="⭐️ Nachricht ausgezeichnet! ⭐️", description=f"'{reaction.message.content}' - {reaction.message.author.mention}", color=discord.Color.orange())
+                                embed = discord.Embed(title="⭐️ Nachricht ausgezeichnet! ⭐️", description=reaction.message.content, color=discord.Color.orange())
+                                embed.description += f"\n\n**[Springe zur Nachricht]({reaction.message.jump_url})**"
                                 embed.set_author(name=reaction.message.author, icon_url=reaction.message.author.avatar)
                                 for attachment in reaction.message.attachments:
                                     embed.set_image(url=attachment.url)
-                                embed.set_footer(text=f"{reaction.count} ⭐️-Reaktionen")
                                 msg = await channel.send(embed=embed)
                                 await cursor.execute("INSERT INTO starboard_msg(guildID, channelID, msgID, starboardID) VALUES(%s, %s, %s, %s)", (reaction.message.guild.id, channel.id, reaction.message.id, msg.id))
-
-    @commands.Cog.listener()
-    async def on_reaction_remove(self, reaction, user):
-        if reaction.emoji == "⭐️":
-            async with self.bot.pool.acquire() as conn:
-                async with conn.cursor() as cursor:
-                    await cursor.execute("SELECT channelD, starboardID FROM starboard_msg WHERE msgID = (%s)", (reaction.message.id))
-                    result = await cursor.fetchone()
-                    if result:
-                        channel: discord.TextChannel = self.bot.get_channel(int(result[0]))
-                        if channel:
-                            msg: discord.Message = await channel.fetch_message(int(result[1]))
-                            if msg:
-                                embed = msg.embeds[0]
-                                embed.set_footer(text=f"{reaction.count} ⭐️-Reaktionen")
 
 async def setup(bot):
     await bot.add_cog(starboard(bot))

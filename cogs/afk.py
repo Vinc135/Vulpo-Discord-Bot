@@ -76,7 +76,9 @@ Ich habe deinen AFK-Status entfernt. AFK gegangen {discord_timestamp(t2, 'R')}."
 AFK gegangen {discord_timestamp(t2, 'R')}.""")
                                 await msg.reply(embed=embed)
                             
-    @app_commands.command(name="afk")
+    @app_commands.command()
+    @app_commands.guild_only()
+    @app_commands.guild_only()
     async def afk(self, interaction: discord.Interaction, grund: str="Bitte nicht stören"):
         """Setze dich AFK."""
         async with self.bot.pool.acquire() as conn:

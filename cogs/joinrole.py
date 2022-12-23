@@ -40,6 +40,7 @@ class joinrole(commands.Cog):
                         return
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.has_permissions(manage_roles=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def joinrole(self, interaction: discord.Interaction, argument: typing.Literal["Hinzufügen (Rolle muss mit angegeben werden)", "Löschen","Anzeigen"], rolle: discord.Role=None):
@@ -91,6 +92,7 @@ class joinrole(commands.Cog):
                         return
 
     @app_commands.command()
+    @app_commands.guild_only()
     @app_commands.checks.has_permissions(manage_roles=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def botrole(self, interaction: discord.Interaction, argument: typing.Literal["Hinzufügen (Rolle muss mit angegeben werden)", "Löschen","Anzeigen"], rolle: discord.Role=None):
