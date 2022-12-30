@@ -26,8 +26,7 @@ class levelsystem(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self._cd = commands.CooldownMapping.from_cooldown(1.0, 5.0, commands.BucketType.user)
-        self.data = dict()
-    
+
     def cog_load(self):
         self.myLoop.start()
 
@@ -121,97 +120,82 @@ class levelsystem(commands.Cog):
                             return
                         await msg.channel.send(f"🎉 Glückwunsch {msg.author.mention}! Du hast Level {int (lvl_start) + 1} erreicht.\nViel Spaß mit deiner neuen Levelrolle **{neue_levelrolle.name}**.")
 
-    @commands.Cog.listener()
-    async def on_voice_state_update(self, member, before, after):
-        if await checkstatus(self, member.guild) == False:
-            return
-        if not before.channel and after.channel:
-            self.data[member.id] = member.guild.id
-        elif before.channel and not after.channel and member.id in self.data:
-            del self.data[member.id]
-
     @tasks.loop(minutes=1)
     async def myLoop(self):
-        for userid in self.data:
-            guild = self.bot.get_guild(int(self.data.get(userid)))
-            user = guild.get_member(int(userid))
-            channelid = 0
-            for voicechannel in guild.voice_channels:
-                if user in voicechannel.members:
-                    channelid += int(voicechannel.id)
-            channel = guild.get_channel(channelid)
-            if channel is None:
-                continue
-            async with self.bot.pool.acquire() as conn:
-                async with conn.cursor() as cursor:
-                    await cursor.execute(f"SELECT role_id FROM lb_rollen WHERE guild_id = {guild.id}")
-                    lb_rollen = await cursor.fetchall()
-                    if lb_rollen != []:
-                        for r_id in lb_rollen:
-                            rolle = guild.get_role(int(r_id[0]))
-                            if rolle:
-                                if rolle in user.roles:
+        async with self.bot.pool.acquire() as conn:
+            async with conn.cursor() as cursor:
+                for guild in self.bot.guilds:
+                    for voicechannel in guild.voice_channels:
+                        if len(voicechannel.members) > 0:
+                            for user in voicechannel.members:
+                                await cursor.execute("SELECT role_id FROM lb_rollen WHERE guild_id = (%s)", (guild.id))
+                                lb_rollen = await cursor.fetchall()
+                                if lb_rollen != ():
+                                    for r_id in lb_rollen:
+                                        rolle = guild.get_role(int(r_id[0]))
+                                        if rolle:
+                                            if rolle in user.roles:
+                                                continue
+                                
+                                await cursor.execute(f"SELECT channel_id FROM lb_channel WHERE guild_id = {guild.id}")
+                                lb_channel = await cursor.fetchall()
+                                if lb_channel != ():
+                                    for c_id in lb_channel:
+                                        if int(c_id[0]) == int(voicechannel.id):
+                                            continue
+
+                                await cursor.execute("SELECT user_xp, user_level FROM levelsystem WHERE client_id = (%s) AND guild_id = (%s)", (user.id, guild.id))
+                                userdata = await cursor.fetchone()
+                                if userdata == None:
+                                    await cursor.execute("INSERT INTO levelsystem (client_id, user_xp, user_level, guild_id) VALUES (%s, %s, %s, %s)", (user.id, 2, 0, guild.id))
                                     continue
-                    
-                    await cursor.execute(f"SELECT channel_id FROM lb_channel WHERE guild_id = {guild.id}")
-                    lb_channel = await cursor.fetchall()
-                    if lb_channel != []:
-                        for c_id in lb_channel:
-                            if int(c_id[0]) == int(channel.id):
-                                continue
+                                
+                                xp_start = int(userdata[0])
+                                lvl_start = int(userdata[1])
+                                xp_end = 5 * (math.pow(lvl_start , 2)) + (50 * lvl_start) + 100
+                                newxp = random.randint(15, 30)
+                                #################################################################################################### XP BOOST
+                            
+                                await cursor.execute("SELECT status FROM xpboost WHERE guildID = (%s)", (user.guild.id))
+                                xpboost = await cursor.fetchone()
+                                if xpboost != None:
+                                    if xpboost[0] == 1:
+                                        newxp += newxp * 2
+                                
+                                #################################################################################################### XP BOOST
+                                await cursor.execute("UPDATE levelsystem SET user_xp = (%s) WHERE client_id = (%s) AND guild_id = (%s)", (int(userdata[0]) + newxp, user.id, guild.id))
+                                
+                                if xp_end < (xp_start + newxp):
+                                    await cursor.execute("UPDATE levelsystem SET user_level = (%s) WHERE client_id = (%s) AND guild_id = (%s)", (int(lvl_start) + 1, user.id, guild.id))
+                                    await cursor.execute("UPDATE levelsystem SET user_xp = (%s) WHERE client_id = (%s) AND guild_id = (%s)", (0 + 1, user.id, guild.id))
+                                    
 
-                    await cursor.execute("SELECT user_xp, user_level FROM levelsystem WHERE client_id = (%s) AND guild_id = (%s)", (user.id, guild.id))
-                    userdata = await cursor.fetchone()
-                    if userdata == None:
-                        await cursor.execute("INSERT INTO levelsystem (client_id, user_xp, user_level, guild_id) VALUES (%s, %s, %s, %s)", (user.id, 2, 0, guild.id))
-                        continue
-
-                    xp_start = int(userdata[0])
-                    lvl_start = int(userdata[1])
-                    xp_end = 5 * (math.pow(lvl_start , 2)) + (50 * lvl_start) + 100
-                    newxp = random.randint(15, 30)
-                    #################################################################################################### XP BOOST
-                
-                    await cursor.execute("SELECT status FROM xpboost WHERE guildID = (%s)", (user.guild.id))
-                    xpboost = await cursor.fetchone()
-                    if xpboost != None:
-                        if xpboost[0] == 1:
-                            newxp += newxp * 2
-                    
-                    #################################################################################################### XP BOOST
-                    await cursor.execute("UPDATE levelsystem SET user_xp = (%s) WHERE client_id = (%s) AND guild_id = (%s)", (int(userdata[0]) + newxp, user.id, guild.id))
-                    
-                    if xp_end < (xp_start + newxp):
-                        await cursor.execute("UPDATE levelsystem SET user_level = (%s) WHERE client_id = (%s) AND guild_id = (%s)", (int(lvl_start) + 1, user.id, guild.id))
-                        await cursor.execute("UPDATE levelsystem SET user_xp = (%s) WHERE client_id = (%s) AND guild_id = (%s)", (0 + 1, user.id, guild.id))
-                        
-
-                        await cursor.execute(f"SELECT channel_id, message FROM levelup WHERE guild_id = {guild.id}")
-                        result = await cursor.fetchone()
-                        nachricht = ""
-                        neue_levelrolle = await levelup_role_check(self.bot, guild, user, int(lvl_start) + 1)
-                        if result:
-                            if result[1] != None:
-                                nachricht += result[1].replace("%member", str(user.mention)).replace("%level", str(int(lvl_start) + 1))
-                            if result[1] == None or result[1] == "Normal":
-                                if neue_levelrolle == None:
-                                    nachricht += f"🎉 Glückwunsch {user.mention}! Du hast Level {int (lvl_start) + 1} erreicht."
-                                else:
-                                    nachricht += f"🎉 Glückwunsch {user.mention}! Du hast Level {int (lvl_start) + 1} erreicht.\nViel Spaß mit deiner neuen Levelrolle **{neue_levelrolle.name}**."
-                            if result[0] == "Privat":
-                                await user.send(nachricht)
-                                continue
-                            if result[0] == None or result[0] == "Normal":
-                                pass
-                            if result[0] != None and result[0] != "Normal":
-                                channel_objct = guild.get_channel(int(result[0]))
-                                if channel_objct:
-                                    kanal = channel_objct
-                                if channel_objct is None:
-                                    continue
-                            await kanal.send(nachricht)
-                        if result == None:
-                            continue
+                                    await cursor.execute(f"SELECT channel_id, message FROM levelup WHERE guild_id = {guild.id}")
+                                    result = await cursor.fetchone()
+                                    nachricht = ""
+                                    neue_levelrolle = await levelup_role_check(self.bot, guild, user, int(lvl_start) + 1)
+                                    if result:
+                                        if result[1] != None:
+                                            nachricht += result[1].replace("%member", str(user.mention)).replace("%level", str(int(lvl_start) + 1))
+                                        if result[1] == None or result[1] == "Normal":
+                                            if neue_levelrolle == None:
+                                                nachricht += f"🎉 Glückwunsch {user.mention}! Du hast Level {int (lvl_start) + 1} erreicht."
+                                            else:
+                                                nachricht += f"🎉 Glückwunsch {user.mention}! Du hast Level {int (lvl_start) + 1} erreicht.\nViel Spaß mit deiner neuen Levelrolle **{neue_levelrolle.name}**."
+                                        if result[0] == "Privat":
+                                            await user.send(nachricht)
+                                            continue
+                                        if result[0] == None or result[0] == "Normal":
+                                            pass
+                                        if result[0] != None and result[0] != "Normal":
+                                            channel_objct = guild.get_channel(int(result[0]))
+                                            if channel_objct:
+                                                kanal = channel_objct
+                                            if channel_objct is None:
+                                                continue
+                                        await kanal.send(nachricht)
+                                    if result == None:
+                                        continue
 
     levelsystem = app_commands.Group(name='levelsystem', description='Nehme Einstellungen am Levelsystem vor.', guild_only=True)
     role = app_commands.Group(name='role', description='Nehme Einstellungen an Levelrollen vor oder lass sie dir alle anzeigen.', parent=levelsystem, guild_only=True)

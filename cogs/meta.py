@@ -1,5 +1,6 @@
 import datetime
 import math
+import time
 import discord
 from discord.ext import commands
 import typing
@@ -9,6 +10,9 @@ import re
 import random
 from googletrans import Translator
 from info import discord_timestamp
+import openai
+
+openai.api_key = "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"
 
 class EmbedMaker(discord.ui.Modal, title="Embed-Maker"):
     def __init__(self, farbe: str, titel: str):
@@ -599,7 +603,9 @@ class meta(commands.Cog):
                         total = bank + rucksack
                         name = self.bot.get_user(int(userID))
                         if name is None:
-                            name = f"Nicht gefunden ({userID})"
+                            name = await self.bot.fetch_user(int(userID))
+                            if name is None:
+                                name = f"Nicht gefunden ({userID})"
                         embed.add_field(name=f"{i}. {name}", value=f"Total: {total} 🍪", inline=False)
                         if i == 10:
                             await interaction.response.send_message(embed=embed)
@@ -616,7 +622,9 @@ class meta(commands.Cog):
                         anzahl, userID = pos
                         name = self.bot.get_user(int(userID))
                         if name is None:
-                            name = f"Nicht gefunden ({userID})"
+                            name = await self.bot.fetch_user(int(userID))
+                            if name is None:
+                                name = f"Nicht gefunden ({userID})"
                         embed.add_field(name=f"{i}. {name}", value=f"Gelöste Quizze: {anzahl}", inline=False)
                         if i == 10:
                             await interaction.response.send_message(embed=embed)
@@ -633,12 +641,16 @@ class meta(commands.Cog):
                     await cursor.execute(f"SELECT user_level, user_xp, client_id FROM levelsystem WHERE guild_id = {interaction.guild.id} ORDER BY user_level DESC, user_xp DESC")
                     leaderboard = await cursor.fetchall()
                     embed = discord.Embed(title="Bestenliste (Levelsystem)", color=discord.Color.blue())
-                    for i, pos in enumerate(leaderboard, start=1):
-                        lvl, xp, member_id = pos
+                    i = 0
+                    for eintrag in leaderboard:
+                        lvl = eintrag[0]
+                        xp = eintrag[1]
+                        member_id = eintrag[2]
                         xp_end = 5 * (math.pow(int(lvl) , 2)) + (50 * int(lvl)) + 100
                         name = self.bot.get_user(int(member_id))
                         if name is None:
-                            name = f"Nicht gefunden ({member_id})"
+                            continue
+                        i += 1
                         embed.add_field(name=f"{i}. {name}", value=f"Level {lvl} Erfahrung: {xp}/{xp_end}", inline=False)
                         if i == 10:
                             await interaction.response.send_message(embed=embed)
@@ -655,7 +667,9 @@ class meta(commands.Cog):
                         wins, loses, ties, userID, rating = pos
                         name = self.bot.get_user(int(userID))
                         if name is None:
-                            name = f"Nicht gefunden ({userID})"
+                            name = await self.bot.fetch_user(int(userID))
+                            if name is None:
+                                name = f"Nicht gefunden ({userID})"
                         rating = (wins * 3) + (loses * -1) + (ties * 2)
                         embed.add_field(name=f"{i}. {name}", value=f"Rating: {rating}", inline=False)    
                         if i == 10:
@@ -673,6 +687,8 @@ class meta(commands.Cog):
                         name = self.bot.get_user(int(userID))
                         if name is None:
                             name = await self.bot.fetch_user(int(userID))
+                            if name is None:
+                                name = f"Nicht gefunden ({userID})"
                         guild = self.bot.get_guild(int(guildID))
                         embed.add_field(name=f"{i}. {name}", value=f"{zeit}ms {'(' if guild is not None else ''}{guild.name if guild is not None else ''}{')' if guild is not None else ''}", inline=False)
                         if i == 10:
@@ -690,12 +706,32 @@ class meta(commands.Cog):
                         name = self.bot.get_user(int(userID))
                         if name is None:
                             name = await self.bot.fetch_user(int(userID))
+                            if name is None:
+                                name = f"Nicht gefunden ({userID})"
                         embed.add_field(name=f"{i}. {name}", value=f"{votes} Votes", inline=False)
                         if i == 10:
                             await interaction.response.send_message(embed=embed)
                             break
                     if i != 10:
                         await interaction.response.send_message(embed=embed)
-                    
+
+    @app_commands.command()
+    @app_commands.guild_only()
+    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
+    async def chatgpt(self, interaction: discord.Interaction, text: str):
+        """Rede mit einer künstlichen Intelligenz."""
+        await interaction.response.defer(thinking=True)
+        start_time = time.time()
+        response = openai.Completion.create(engine="text-davinci-002", prompt=text, max_tokens=1024, temperature=0.5)
+        response_text = response["choices"][0]["text"]
+
+        end_time = time.time()
+        result = round(end_time - start_time, 1)
+
+        embed = discord.Embed(title=text, description=response_text, color=discord.Colour.orange())
+        embed.set_footer(text=f"Antwort benötigte {result} Sekunden zum Laden")
+
+        await interaction.followup.send(embed=embed)
+
 async def setup(bot):
     await bot.add_cog(meta(bot))

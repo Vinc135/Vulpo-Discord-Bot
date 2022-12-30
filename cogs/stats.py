@@ -418,33 +418,21 @@ class Stats(commands.Cog):
 
     @tasks.loop(minutes=1)
     async def myLoop(self):
-        try:
-            for userid in list(self.data):
-                guild = self.bot.get_guild(int(self.data.get(userid)))
-                user = guild.get_member(int(userid))
-                channelid = 0
-                for voicechannel in guild.voice_channels:
-                    if user in voicechannel.members:
-                        channelid += int(voicechannel.id)
-                channel = guild.get_channel(channelid)
-                if channel is None:
-                    continue
-                async with self.bot.pool.acquire() as conn:
-                    async with conn.cursor() as cursor:
-                        await cursor.execute("SELECT channelID FROM stats_blacklist WHERE guildID = (%s)", (guild.id))
-                        blacklist = await cursor.fetchall()
-                        if blacklist != None or str(blacklist) != "()":
-                            for id in blacklist:
-                                if channel.id == int(id[0]):
-                                    continue
-                        await cursor.execute("SELECT anzahl FROM voice WHERE guildID = (%s) AND userID = (%s) AND zeit = (%s) AND channelID = (%s)", (guild.id, user.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), channel.id))
-                        result = await cursor.fetchone()
-                        if result is None:
-                            await cursor.execute("INSERT INTO voice(userID, guildID, zeit, anzahl, channelID) VALUES(%s, %s, %s, %s, %s)", (user.id, guild.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), 1, channel.id))
-                            continue
-                        await cursor.execute("UPDATE voice SET anzahl = (%s) WHERE guildID = (%s) AND userID = (%s) AND zeit = (%s) AND channelID = (%s)", (result[0] + 1, guild.id, user.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), channel.id))
-        except:
-            pass
+        async with self.bot.pool.acquire() as conn:
+            async with conn.cursor() as cursor:
+                for guild in self.bot.guilds:
+                    for voicechannel in guild.voice_channels:
+                        if len(voicechannel.members) > 0:
+                            await cursor.execute("SELECT channelID FROM stats_blacklist WHERE guildID = (%s) AND channelID = (%s)", (guild.id, voicechannel.id))
+                            blacklist = await cursor.fetchall()
+                            if str(blacklist) == "()":
+                                for member in voicechannel.members:
+                                    await cursor.execute("SELECT anzahl FROM voice WHERE guildID = (%s) AND userID = (%s) AND zeit = (%s) AND channelID = (%s)", (guild.id, member.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), voicechannel.id))
+                                    result = await cursor.fetchone()
+                                    if result is None:
+                                        await cursor.execute("INSERT INTO voice(userID, guildID, zeit, anzahl, channelID) VALUES(%s, %s, %s, %s, %s)", (member.id, guild.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), 1, voicechannel.id))
+                                    else:
+                                        await cursor.execute("UPDATE voice SET anzahl = (%s) WHERE guildID = (%s) AND userID = (%s) AND zeit = (%s) AND channelID = (%s)", (result[0] + 1, guild.id, member.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), voicechannel.id))
 
     @tasks.loop(minutes=10)
     async def channel_update(self):
@@ -517,7 +505,7 @@ class Stats(commands.Cog):
                                 if b == 5:
                                     break
                                 b += 1
-                                text2 += f"> {channel.mention}: {data[1]} {'Minute' if int(data[1]) > 1 else 'Minuten'}\n"
+                                text2 += f"> {channel.mention}: {data[1]} {'Minuten' if int(data[1]) > 1 else 'Minute'}\n"
                     except:
                         text2 += "Keine Daten"
                     
@@ -586,7 +574,7 @@ class Stats(commands.Cog):
                                 if a == 5:
                                     break
                                 a += 1
-                                text += f"> {mitglied.mention}: {data[1]} {'Nachrichten' if int(data[1]) > 1 else 'Nachricht'}\n"
+                                text += f"> {mitglied.mention}: {data[1]} {'Minuten' if int(data[1]) > 1 else 'Minute'}\n"
                     except:
                         text += "Keine Daten"
                         

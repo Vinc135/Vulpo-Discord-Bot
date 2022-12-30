@@ -35,8 +35,7 @@ class buttons(discord.ui.View):
                         embed.add_field(name="❗️ Tipp", value=quiz[2])
                         embed.set_footer(text=f"Das letzte Quiz wurde übersprungen von {interaction.user}.", icon_url=interaction.user.avatar)
                         await asyncio.sleep(2)
-                        async for message in interaction.channel.history():
-                            await message.delete()
+                        await interaction.channel.purge(limit=99)
                         m2 = await interaction.channel.send(embed=embed, view=buttons(self.bot))
                         await cursor.execute("DELETE FROM eqcurrent WHERE guildID = (%s)", (interaction.guild.id))
                         await cursor.execute("INSERT INTO eqcurrent(guildID, lösung, msgID) VALUES(%s, %s, %s)", (interaction.guild.id, quiz[1], m2.id))
@@ -122,8 +121,7 @@ async def answer_correct(self, msg):
                     embed.add_field(name="❗️ Tipp", value=quiz[2])
                     embed.set_footer(text=f"Das letzte Quiz wurde gelöst von {msg.author}.", icon_url=msg.author.avatar)
                     await asyncio.sleep(2)
-                    async for message in msg.channel.history():
-                        await message.delete()
+                    await msg.channel.purge(limit=99)
                     m2 = await msg.channel.send(embed=embed, view=buttons(self.bot))
                     await cursor.execute("INSERT INTO eqcurrent(guildID, lösung, msgID) VALUES(%s, %s, %s)", (msg.guild.id, quiz[1], m2.id))
                     await cursor.execute("SELECT anzahl FROM eq_leaderboard WHERE userID = (%s)", (msg.author.id))
