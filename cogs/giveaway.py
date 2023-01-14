@@ -7,7 +7,7 @@ from info import giveaway_end, discord_timestamp, convert
 from discord import app_commands
 import typing
      
-async def teilnahme_angenommen(self, interaction, result):
+async def teilnahme_angenommen(self, interaction: discord.Interaction, result):
     t2 = datetime.datetime.fromtimestamp(int(result[1]))
     embed = discord.Embed(colour=discord.Color.green(), title=result[6], description=f"""
 `🤖` · [Lade den Bot hier ein](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands)
@@ -16,8 +16,12 @@ async def teilnahme_angenommen(self, interaction, result):
 `⏰` · Das Gewinnspiel endet {discord_timestamp(t2, 'R')}
 """)
     embed.set_thumbnail(url=interaction.guild.icon)
-    embed.set_image(url="https://media.discordapp.net/attachments/965302660871884840/1011704490598076416/GW_Pannel_31.png")
-    await interaction.user.send("<:v_spa:1037065926929027122> Deine Teilnahme an einem Gewinnspiel war **erfolgreich**.", embed=embed)
+    embed.set_image(url="https://media.discordapp.net/attachments/1023508002453594122/1023508199426506782/GW_Pannel_31.png")
+    try:
+        await interaction.user.send("<:v_spa:1037065926929027122> Deine Teilnahme an einem Gewinnspiel war **erfolgreich**.", embed=embed)
+        await interaction.response.send_message("**<:v_info:1037065915113676891> Schau in deine Direktnachrichten.**", ephemeral=True)
+    except:
+        await interaction.response.send_message("<:v_spa:1037065926929027122> Deine Teilnahme an einem Gewinnspiel war **erfolgreich**.", embed=embed, ephemeral=True)
     
     async with self.bot.pool.acquire() as conn:
         async with conn.cursor() as cursor:
@@ -51,7 +55,7 @@ async def teilnahme_angenommen(self, interaction, result):
             await interaction.message.edit(content=interaction.message.content, embed=embed)
 
            
-async def teilnahme_abgelehnt(self, interaction, grund, result):
+async def teilnahme_abgelehnt(self, interaction: discord.Interaction, grund, result):
     t2 = datetime.datetime.fromtimestamp(int(result[1]))
     embed = discord.Embed(colour=discord.Color.red(), title=result[6], description=f"""
 `🤖` · [Lade den Bot hier ein](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands)
@@ -63,8 +67,13 @@ async def teilnahme_abgelehnt(self, interaction, grund, result):
 {grund}
 """)
     embed.set_thumbnail(url=interaction.guild.icon)
-    embed.set_image(url="https://media.discordapp.net/attachments/965302660871884840/1009692136142286898/GW_Pannel_3.png")
-    await interaction.user.send("<:v_spa:1037065926929027122> Deine Teilnahme an einem Gewinnspiel war **nicht erfolgreich**.", embed=embed)
+    embed.set_image(url="https://media.discordapp.net/attachments/1023508002453594122/1023508199044829294/GW_Pannel_3.png")
+    try:
+        await interaction.user.send("<:v_spa:1037065926929027122> Deine Teilnahme an einem Gewinnspiel war **nicht erfolgreich**.", embed=embed)
+        await interaction.response.send_message("**<:v_info:1037065915113676891> Schau in deine Direktnachrichten.**", ephemeral=True)
+    except:
+        await interaction.response.send_message("<:v_spa:1037065926929027122> Deine Teilnahme an einem Gewinnspiel war **nicht erfolgreich**.", embed=embed, ephemeral=True)
+    
 
     async with self.bot.pool.acquire() as conn:
         async with conn.cursor() as cursor:
@@ -119,11 +128,9 @@ class Gewinnspiel_Teilnehmen(discord.ui.View):
                     rolle = interaction.guild.get_role(int(id[0]))
                     if rolle != None:
                         if rolle in member.roles:
-                            await interaction.response.defer(ephemeral=True, thinking=False)
-                            return await teilnahme_abgelehnt(self, interaction, "`<:v_kreuz:1049388811353858069>` Du stehst auf der Gewinnspiel Blacklist und bist deshalb von jeglichen Gewinnspielen dieses Servers ausgeschlossen.", result)
+                            return await teilnahme_abgelehnt(self, interaction, "`❌` Du stehst auf der Gewinnspiel Blacklist und bist deshalb von jeglichen Gewinnspielen dieses Servers ausgeschlossen.", result)
                     if int(id[0]) == interaction.user.id:
-                        await interaction.response.defer(ephemeral=True, thinking=False)
-                        return await teilnahme_abgelehnt(self, interaction, "`<:v_kreuz:1049388811353858069>` Du stehst auf der Gewinnspiel Blacklist und bist deshalb von jeglichen Gewinnspielen dieses Servers ausgeschlossen.", result)
+                        return await teilnahme_abgelehnt(self, interaction, "`❌` Du stehst auf der Gewinnspiel Blacklist und bist deshalb von jeglichen Gewinnspielen dieses Servers ausgeschlossen.", result)
                     
                 await cursor.execute("SELECT msgID, channelID, hostID, endtime, winners, nachrichten, level, rollenID, preis FROM gewinnspiele WHERE guildID = (%s) AND status = (%s)", (interaction.guild.id, "Aktiv"))
                 bypassrollen = await cursor.fetchall()
@@ -135,12 +142,11 @@ class Gewinnspiel_Teilnehmen(discord.ui.View):
                         await cursor.execute("SELECT userID FROM gewinnspiel_teilnehmer WHERE guildID = (%s) AND channelID = (%s) AND msgID = (%s) AND userID = (%s)", (interaction.guild.id, interaction.channel.id, interaction.message.id, interaction.user.id))
                         result4 = await cursor.fetchone()
                         if result4 != None:
-                            await interaction.response.defer(ephemeral=True, thinking=False)
                             await cursor.execute("DELETE FROM gewinnspiel_teilnehmer WHERE guildID = (%s) AND channelID = (%s) AND msgID = (%s) AND userID = (%s)", (interaction.guild.id, interaction.channel.id, interaction.message.id, interaction.user.id))
-                            return await teilnahme_abgelehnt(self, interaction, "`<:v_kreuz:1049388811353858069>` Du warst bereits ein Teilnehmer, hast jedoch nochmal den Button gedrückt. Nun bist du kein Teilnehmer mehr.", result)
+                            return await teilnahme_abgelehnt(self, interaction, "`❌` Du warst bereits ein Teilnehmer, hast jedoch nochmal den Button gedrückt. Nun bist du kein Teilnehmer mehr.", result)
                             #Mitglied ist kein Teilnehmer mehr
                         #Mitglied war noch kein Teilnehmer
-                        await interaction.response.defer(ephemeral=True, thinking=False)
+
                         await cursor.execute("INSERT INTO gewinnspiel_teilnehmer(guildID, channelID, msgID, userID) VALUES(%s, %s, %s, %s)", (interaction.guild.id, interaction.channel.id, interaction.message.id, interaction.user.id))
                         return await teilnahme_angenommen(self, interaction, result)
                         #Mitglied ist nun Teilnehmer
@@ -149,43 +155,36 @@ class Gewinnspiel_Teilnehmen(discord.ui.View):
                     await cursor.execute("SELECT anzahl FROM gw_nachrichten WHERE gwID = (%s) AND userID = (%s) AND guildID = (%s)", (interaction.message.id, interaction.user.id, interaction.guild.id))
                     result2 = await cursor.fetchall()
                     if result2 == ():
-                        await interaction.response.defer(ephemeral=True, thinking=False)
                         return await teilnahme_abgelehnt(self, interaction, f"`🔥` Du hast bisher 0 Nachrichten geschrieben, benötigst jedoch {result[3]} Nachrichten um am Gewinnspiel teilzunehmen.", result)
                     nachrichten = 0
                     for tag in result2:
                         nachrichten += int(tag[0])
                     if nachrichten < int(result[3]):
-                        await interaction.response.defer(ephemeral=True, thinking=False)
                         return await teilnahme_abgelehnt(self, interaction, f"`🔥` Du hast bisher {nachrichten} Nachrichten geschrieben, benötigst jedoch {result[3]} Nachrichten um am Gewinnspiel teilzunehmen.", result)
                 #Die Level Anforderung überprüfen
                 if result[4] != None:
                     await cursor.execute("SELECT user_level FROM levelsystem WHERE client_id = (%s) AND guild_id = (%s)", (member.id, interaction.guild.id))
                     result3 = await cursor.fetchone()
                     if result3 is None:
-                        await interaction.response.defer(ephemeral=True, thinking=False)
                         return await teilnahme_abgelehnt(self, interaction, f"`🔥` Du bist hier Level 0, benötigst jedoch Level {result[4]} um am Gewinnspiel teilzunehmen.", result)
                     if int(result3[0]) < int(result[4]):
-                        await interaction.response.defer(ephemeral=True, thinking=False)
                         return await teilnahme_abgelehnt(self, interaction, f"`🔥` Du bist hier Level {result3[0]}, benötigst jedoch Level {result[4]} um am Gewinnspiel teilzunehmen.", result)
                 #Die Rollen Anforderung überprüfen
                 if result[5] != None:
                     rolle2 = interaction.guild.get_role(int(result[5]))
                     if rolle2 != None:
                         if rolle2 not in member.roles:
-                            await interaction.response.defer(ephemeral=True, thinking=False)
-                            return await teilnahme_abgelehnt(self, interaction, f"`<:v_kreuz:1049388811353858069>` Du benötigst die Rolle {rolle2.name} um am Gewinnspiel teilzunehmen.", result)
+                            return await teilnahme_abgelehnt(self, interaction, f"`❌` Du benötigst die Rolle {rolle2.name} um am Gewinnspiel teilzunehmen.", result)
                 
                 #Wenn man bis hier gekommen ist, erfüllt man alle Anforderungen, falls es welche gab
                 #Das Mitglied als "möglichen Gewinner" eintragen
                 await cursor.execute("SELECT userID FROM gewinnspiel_teilnehmer WHERE guildID = (%s) AND channelID = (%s) AND msgID = (%s) AND userID = (%s)", (interaction.guild.id, interaction.channel.id, interaction.message.id, interaction.user.id))
                 result5 = await cursor.fetchone()
                 if result5 != None:
-                    await interaction.response.defer(ephemeral=True, thinking=False)
                     await cursor.execute("DELETE FROM gewinnspiel_teilnehmer WHERE guildID = (%s) AND channelID = (%s) AND msgID = (%s) AND userID = (%s)", (interaction.guild.id, interaction.channel.id, interaction.message.id, interaction.user.id))
-                    return await teilnahme_abgelehnt(self, interaction, "`<:v_kreuz:1049388811353858069>` Du warst bereits ein Teilnehmer, hast jedoch nochmal den Button gedrückt. Nun bist du kein Teilnehmer mehr.", result)
+                    return await teilnahme_abgelehnt(self, interaction, "`❌` Du warst bereits ein Teilnehmer, hast jedoch nochmal den Button gedrückt. Nun bist du kein Teilnehmer mehr.", result)
                     #Mitglied ist kein Teilnehmer mehr
                 #Mitglied war noch kein Teilnehmer
-                await interaction.response.defer(ephemeral=True, thinking=False)
                 await cursor.execute("INSERT INTO gewinnspiel_teilnehmer(guildID, channelID, msgID, userID) VALUES(%s, %s, %s, %s)", (interaction.guild.id, interaction.channel.id, interaction.message.id, interaction.user.id))
                 await teilnahme_angenommen(self, interaction, result)
                 #Mitglied ist nun Teilnehmer
@@ -226,24 +225,17 @@ class giveaway(commands.Cog):
     @gewinnspiel.command()
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
-    async def starten(self, interaction: discord.Interaction, preis: str, kanal: discord.TextChannel, gewinneranzahl: typing.Literal[1,2,3,4,5,6,7,8,9,10,20,30,40,50,60,70,80,90], minuten: typing.Literal["1m","15m","30m","45m"]=None, stunden: typing.Literal["1h","2h","3h","4h","5h","6h","7h","8h","9h","10h","11h","12h","13h","14h","15h","16h","17h","18h","19h","20h","21h","22h","23h"]=None, tage: typing.Literal["1d","2d","3d","4d","5d","6d","7d","14d"]=None, rolle: discord.Role=None, nachrichtenanzahl: int=None, mindestlevel: int=None):
+    async def starten(self, interaction: discord.Interaction, preis: str, kanal: discord.TextChannel, gewinneranzahl: typing.Literal[1,2,3,4,5,6,7,8,9,10,20,30,40,50,60,70,80,90], endzeit: str, rolle: discord.Role=None, nachrichtenanzahl: int=None, mindestlevel: int=None):
         """Starte ein Gewinnspiel."""
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 #endzeit umwandeln in timestamp
-                zeit_als_string = ""
-                if tage:
-                    zeit_als_string += f" {tage}"
-                if stunden:
-                    zeit_als_string += f" {stunden}"
-                if minuten:
-                    zeit_als_string += f" {minuten}"
-                if zeit_als_string == "":
-                    return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du musst auch eine Zeit angeben, wann das Gewinnspiel enden soll ;D**", ephemeral=True)
                 if nachrichtenanzahl:
                     if nachrichtenanzahl > 10000:
                         return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Das Maximum für eine Mindestnachrichtenanzahl liegt bei 10000. Bitte überschreite diese Grenze nicht.**", ephemeral=True)
-                zeit = convert(zeit_als_string)
+                zeit = convert(endzeit)
+                if zeit == None:
+                    return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du musst auch eine Zeit angeben, wann das Gewinnspiel enden soll. Du kannst s, m, h, d, w verwenden, um den Zeitraum zu definieren. Beispiel: '1w 3d 5h' oder '2d 45s'.**", ephemeral=True)
                 t1 = math.floor(datetime.datetime.utcnow().timestamp() + zeit)
                 t2 = datetime.datetime.fromtimestamp(int(t1))
 
@@ -336,12 +328,12 @@ class giveaway(commands.Cog):
                     for gewinnspiel in result3:
                         kanal3 = interaction.guild.get_channel(int(gewinnspiel[1]))
                         if kanal3 == None:
-                            pass
+                            continue
                         nachricht3 = await kanal3.fetch_message(int(gewinnspiel[0]))
                         if nachricht3 == None:
-                            pass
-                        t2 = datetime.datetime.fromtimestamp(int(result3[3]))
-                        embed.add_field(name=f"[{result3[8]}]({nachricht3.jump_url()})", value=f"Das Gewinnspiel endet {discord_timestamp(t2, 'R')}.", inline=False)
+                            continue
+                        t2 = datetime.datetime.fromtimestamp(int(gewinnspiel[3]))
+                        embed.add_field(name=gewinnspiel[8], value=f"Das Gewinnspiel endet {discord_timestamp(t2, 'R')}.", inline=False)
                     await interaction.response.send_message(embed=embed)
 
     @gewinnspiel.command()

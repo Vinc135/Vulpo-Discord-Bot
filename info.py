@@ -4,6 +4,69 @@ from typing import Literal
 import random
 import datetime
 
+async def checkstatus(self, guild):
+    async with self.bot.pool.acquire() as conn:
+        async with conn.cursor() as cursor:
+            await cursor.execute("SELECT enabled FROM levelstatus WHERE guild_id = (%s)", (guild.id))
+            enabled = await cursor.fetchone()
+            if enabled == None:
+                await cursor.execute("INSERT INTO levelstatus (guild_id, enabled) VALUES (%s, %s)", (guild.id, 0))
+                return False
+            if enabled[0] == 1:
+                return True
+            if enabled[0] == 0:
+                return False
+
+async def voicetime_to_xp(self, member, time, before):
+    if member.bot:
+        return
+    async with self.bot.pool.acquire() as conn:
+        async with conn.cursor() as cursor:
+            if await checkstatus(self, member.guild) == False:
+                return
+            
+            await cursor.execute(f"SELECT role_id FROM lb_rollen WHERE guild_id = {member.guild.id}")
+            lb_rollen = await cursor.fetchall()
+            for r_id in lb_rollen:
+                rolle = member.guild.get_role(int(r_id[0]))
+                if rolle:
+                    if rolle in member.roles:
+                        return
+            
+            await cursor.execute(f"SELECT channel_id FROM lb_channel WHERE guild_id = {member.guild.id}")
+            lb_channel = await cursor.fetchall()
+            for c_id in lb_channel:
+                if int(c_id[0]) == int(before.channel.id):
+                    return
+
+            newxp = random.randint(15, 30) * time
+            await cursor.execute("SELECT user_xp, user_level FROM levelsystem WHERE client_id = (%s) AND guild_id = (%s)", (member.id, member.guild.id))
+            userdata = await cursor.fetchone()
+            if userdata == None:
+                await cursor.execute("INSERT INTO levelsystem (client_id, user_xp, user_level, guild_id) VALUES (%s, %s, %s, %s)", (member.id, newxp, 0, member.guild.id))
+                return
+
+            
+            #################################################################################################### XP BOOST
+            
+            await cursor.execute("SELECT status FROM xpboost WHERE guildID = (%s)", (member.guild.id))
+            xpboost = await cursor.fetchone()
+            if xpboost == None:
+                pass
+            if xpboost != None:
+                if xpboost[0] == 1:
+                    newxp += newxp * 2
+                if xpboost[0] == 0:
+                    pass
+            
+            #################################################################################################### XP BOOST
+            await cursor.execute("UPDATE levelsystem SET user_xp = (%s) WHERE client_id = (%s) AND guild_id = (%s)", (int(userdata[0]) + newxp, member.id, member.guild.id))
+                
+def limit_characters(string: str, limit: int):
+    if len(string) > limit:
+        return string[:limit-3] + "..."
+    return string
+
 def random_color():
     return discord.Color.from_rgb(random.randint(1, 255), random.randint(1, 255), random.randint(1, 255))
 
@@ -147,7 +210,10 @@ async def giveaway_end(when: datetime.datetime, bot, msgID, status=None):
     `⏰` · Das Gewinnspiel endete {discord_timestamp(t2, 'R')}
     """)
                     embed.set_thumbnail(url=guild.icon)
-                    await member.send("<:v_geschenk:1037065913981218818> Du hast ein Gewinnspiel **gewonnen**!", embed=embed)
+                    try:
+                        await member.send("<:v_geschenk:1037065913981218818> Du hast ein Gewinnspiel **gewonnen**!", embed=embed)
+                    except:
+                        pass
                     if winners == "":
                         winners += f"{member.mention}"
                     else:
@@ -195,9 +261,9 @@ def convert(time):
         if int(summe) >= 1:
             return summe
         else:
-            return False
+            return None
     except:
-        return False
+        return None
 
 async def levelup_role_check(botobject, guildobjekt, userobjekt, newlevel):
     async with botobject.pool.acquire() as conn:

@@ -1,6 +1,5 @@
 import datetime
 import math
-import time
 import discord
 from discord.ext import commands
 import typing
@@ -10,9 +9,6 @@ import re
 import random
 from googletrans import Translator
 from info import discord_timestamp
-import openai
-
-openai.api_key = "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"
 
 class EmbedMaker(discord.ui.Modal, title="Embed-Maker"):
     def __init__(self, farbe: str, titel: str):
@@ -714,24 +710,6 @@ class meta(commands.Cog):
                             break
                     if i != 10:
                         await interaction.response.send_message(embed=embed)
-
-    @app_commands.command()
-    @app_commands.guild_only()
-    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
-    async def chatgpt(self, interaction: discord.Interaction, text: str):
-        """Rede mit einer künstlichen Intelligenz."""
-        await interaction.response.defer(thinking=True)
-        start_time = time.time()
-        response = openai.Completion.create(engine="text-davinci-002", prompt=text, max_tokens=1024, temperature=0.5)
-        response_text = response["choices"][0]["text"]
-
-        end_time = time.time()
-        result = round(end_time - start_time, 1)
-
-        embed = discord.Embed(title=text, description=response_text, color=discord.Colour.orange())
-        embed.set_footer(text=f"Antwort benötigte {result} Sekunden zum Laden")
-
-        await interaction.followup.send(embed=embed)
 
 async def setup(bot):
     await bot.add_cog(meta(bot))

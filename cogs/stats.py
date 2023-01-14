@@ -1,5 +1,6 @@
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands
+from info import convert, voicetime_to_xp
 from discord import app_commands
 import typing
 from googletrans import Translator
@@ -59,8 +60,13 @@ async def getuserstats(self, art, member, guild):
                                     woche1 += int(datum[0])
                             else:
                                 letzter_monat = 31 - a
+                                jahr = discord.utils.utcnow().__format__('%Y')
+                                l_m = int(discord.utils.utcnow().__format__('%m')) - 1
+                                if int(discord.utils.utcnow().__format__('%m')) - 1 <= 0:
+                                    l_m = 12
+                                    jahr = int(discord.utils.utcnow().__format__('%Y')) -1
                                 a += 1
-                                if f"{letzter_monat}.{int(discord.utils.utcnow().__format__('%m')) - 1}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
+                                if f"{letzter_monat}.{l_m}.{jahr}" in str(datum[1]):
                                     woche1 += int(datum[0])
                         #tages stats
                         if f"{discord.utils.utcnow().__format__('%d')}." in str(datum[1]):
@@ -102,8 +108,13 @@ async def getuserstats(self, art, member, guild):
                                     woche1 += int(datum[0])
                             else:
                                 letzter_monat = 31 - a
+                                jahr = discord.utils.utcnow().__format__('%Y')
+                                l_m = int(discord.utils.utcnow().__format__('%m')) - 1
+                                if int(discord.utils.utcnow().__format__('%m')) - 1 <= 0:
+                                    l_m = 12
+                                    jahr = int(discord.utils.utcnow().__format__('%Y')) -1
                                 a += 1
-                                if f"{letzter_monat}.{int(discord.utils.utcnow().__format__('%m')) - 1}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
+                                if f"{letzter_monat}.{l_m}.{jahr}" in str(datum[1]):
                                     woche1 += int(datum[0])
                         #tages stats
                         if f"{discord.utils.utcnow().__format__('%d')}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
@@ -184,8 +195,13 @@ async def getchannelstats(self, art, channel, guild):
                                     woche1 += int(datum[0])
                             else:
                                 letzter_monat = 31 - a
+                                jahr = discord.utils.utcnow().__format__('%Y')
+                                l_m = int(discord.utils.utcnow().__format__('%m')) - 1
+                                if int(discord.utils.utcnow().__format__('%m')) - 1 <= 0:
+                                    l_m = 12
+                                    jahr = int(discord.utils.utcnow().__format__('%Y')) -1
                                 a += 1
-                                if f"{letzter_monat}.{int(discord.utils.utcnow().__format__('%m')) - 1}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
+                                if f"{letzter_monat}.{l_m}.{jahr}" in str(datum[1]):
                                     woche1 += int(datum[0])
                         #tages stats
                         if f"{discord.utils.utcnow().__format__('%d')}." in str(datum[1]):
@@ -227,8 +243,13 @@ async def getchannelstats(self, art, channel, guild):
                                     woche1 += int(datum[0])
                             else:
                                 letzter_monat = 31 - a
+                                jahr = discord.utils.utcnow().__format__('%Y')
+                                l_m = int(discord.utils.utcnow().__format__('%m')) - 1
+                                if int(discord.utils.utcnow().__format__('%m')) - 1 <= 0:
+                                    l_m = 12
+                                    jahr = int(discord.utils.utcnow().__format__('%Y')) -1
                                 a += 1
-                                if f"{letzter_monat}.{int(discord.utils.utcnow().__format__('%m')) - 1}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
+                                if f"{letzter_monat}.{l_m}.{jahr}" in str(datum[1]):
                                     woche1 += int(datum[0])
                         #tages stats
                         if f"{discord.utils.utcnow().__format__('%d')}." in str(datum[1]):
@@ -374,15 +395,20 @@ async def lookback_messages(self, tage, guild, art):
 
                             else:
                                 letzter_monat = 31 - a
+                                jahr = discord.utils.utcnow().__format__('%Y')
+                                l_m = int(discord.utils.utcnow().__format__('%m')) - 1
+                                if int(discord.utils.utcnow().__format__('%m')) - 1 <= 0:
+                                    l_m = 12
+                                    jahr = int(discord.utils.utcnow().__format__('%Y')) -1
                                 a += 1
-                                if f"{letzter_monat}.{int(discord.utils.utcnow().__format__('%m')) - 1}.{discord.utils.utcnow().__format__('%Y')}" in str(data[2]):
+                                if f"{letzter_monat}.{l_m}.{jahr}" in str(data[2]):
                                     mitglied = guild.get_channel(int(data[0]))
                                     if mitglied != None:
                                         try:
                                             leaderboard[int(data[0])] += int(data[1])
                                         except:
                                             leaderboard[int(data[0])] = int(data[1])
-                                                  
+                      
                     s_l = sorted(leaderboard.items(), key=lambda kv: kv[1], reverse=True)
                     return s_l
                 return None
@@ -411,8 +437,13 @@ async def lookback_messages(self, tage, guild, art):
 
                             else:
                                 letzter_monat = 31 - a
+                                jahr = discord.utils.utcnow().__format__('%Y')
+                                l_m = int(discord.utils.utcnow().__format__('%m')) - 1
+                                if int(discord.utils.utcnow().__format__('%m')) - 1 <= 0:
+                                    l_m = 12
+                                    jahr = int(discord.utils.utcnow().__format__('%Y')) -1
                                 a += 1
-                                if f"{letzter_monat}.{int(discord.utils.utcnow().__format__('%m')) - 1}.{discord.utils.utcnow().__format__('%Y')}" in str(data[2]):
+                                if f"{letzter_monat}.{l_m}.{jahr}" in str(data[2]):
                                     mitglied = guild.get_channel(int(data[0]))
                                     if mitglied != None:
                                         try:
@@ -451,8 +482,13 @@ async def lookback_voice(self, tage, guild, art):
 
                             else:
                                 letzter_monat = 31 - a
+                                jahr = discord.utils.utcnow().__format__('%Y')
+                                l_m = int(discord.utils.utcnow().__format__('%m')) - 1
+                                if int(discord.utils.utcnow().__format__('%m')) - 1 <= 0:
+                                    l_m = 12
+                                    jahr = int(discord.utils.utcnow().__format__('%Y')) -1
                                 a += 1
-                                if f"{letzter_monat}.{int(discord.utils.utcnow().__format__('%m')) - 1}.{discord.utils.utcnow().__format__('%Y')}" in str(data[2]):
+                                if f"{letzter_monat}.{l_m}.{jahr}" in str(data[2]):
                                     mitglied = guild.get_channel(int(data[0]))
                                     if mitglied != None:
                                         try:
@@ -488,8 +524,13 @@ async def lookback_voice(self, tage, guild, art):
 
                             else:
                                 letzter_monat = 31 - a
+                                jahr = discord.utils.utcnow().__format__('%Y')
+                                l_m = int(discord.utils.utcnow().__format__('%m')) - 1
+                                if int(discord.utils.utcnow().__format__('%m')) - 1 <= 0:
+                                    l_m = 12
+                                    jahr = int(discord.utils.utcnow().__format__('%Y')) -1
                                 a += 1
-                                if f"{letzter_monat}.{int(discord.utils.utcnow().__format__('%m')) - 1}.{discord.utils.utcnow().__format__('%Y')}" in str(data[2]):
+                                if f"{letzter_monat}.{l_m}.{jahr}" in str(data[2]):
                                     mitglied = guild.get_channel(int(data[0]))
                                     if mitglied != None:
                                         try:
@@ -537,60 +578,36 @@ async def update_all(self):
 class Stats(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.data = dict()
-    
-    def cog_load(self):
-        self.myLoop.start()
-        self.channel_update.start()
 
-    def cog_unload(self):
-        self.myLoop.cancel()
-        self.channel_update.cancel()
-
-    #Voice Stats#
-    
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
-        if member.bot:
-            return
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
-                await cursor.execute("SELECT channelID FROM stats_blacklist WHERE guildID = (%s)", (member.guild.id))
-                blacklist = await cursor.fetchall()
-                if blacklist != ():
-                    for id in blacklist:
-                        if before.channel:
-                            if before.channel.id == int(id[0]):
-                                return
-                        if after.channel:
-                            if after.channel.id == int(id[0]):
-                                return
-        if not before.channel and after.channel:
-            self.data[member.id] = member.guild.id
-        elif before.channel and not after.channel and member.id in self.data:
-            del self.data[member.id]
+                await cursor.execute("SELECT time FROM voicedata WHERE userID = (%s)", (member.id))
+                result = await cursor.fetchone()
+                if result != None:
+                    if before.channel:
+                        voice_leave_time = datetime.datetime.now().time().strftime('%H:%M:%S')
+                        voice_join_time = result[0]
 
-    @tasks.loop(minutes=1)
-    async def myLoop(self):
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                for guild in self.bot.guilds:
-                    for voicechannel in guild.voice_channels:
-                        if len(voicechannel.members) > 0:
-                            await cursor.execute("SELECT channelID FROM stats_blacklist WHERE guildID = (%s) AND channelID = (%s)", (guild.id, voicechannel.id))
-                            blacklist = await cursor.fetchall()
-                            if str(blacklist) == "()":
-                                for member in voicechannel.members:
-                                    await cursor.execute("SELECT anzahl FROM voice WHERE guildID = (%s) AND userID = (%s) AND zeit = (%s) AND channelID = (%s)", (guild.id, member.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), voicechannel.id))
-                                    result = await cursor.fetchone()
-                                    if result is None:
-                                        await cursor.execute("INSERT INTO voice(userID, guildID, zeit, anzahl, channelID) VALUES(%s, %s, %s, %s, %s)", (member.id, guild.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), 1, voicechannel.id))
-                                    else:
-                                        await cursor.execute("UPDATE voice SET anzahl = (%s) WHERE guildID = (%s) AND userID = (%s) AND zeit = (%s) AND channelID = (%s)", (result[0] + 1, guild.id, member.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), voicechannel.id))
-
-    @tasks.loop(minutes=10)
-    async def channel_update(self):
-        await update_all(self)
+                        calculate_time = (
+                                datetime.datetime.strptime(voice_leave_time, '%H:%M:%S') - datetime.datetime.strptime(
+                            voice_join_time, '%H:%M:%S'))
+                        string = f"{str(calculate_time)[0]}h {str(calculate_time)[2]}{str(calculate_time)[3]}m {str(calculate_time)[5]}{str(calculate_time)[6]}s"
+                        time_in_seconds = convert(string)
+                        time_in_minutes = round(time_in_seconds / 60)
+                        
+                        await cursor.execute("DELETE FROM voicedata WHERE userID = (%s)", (member.id))
+                        await cursor.execute("SELECT anzahl FROM voice WHERE guildID = (%s) AND userID = (%s) AND zeit = (%s) AND channelID = (%s)", (member.guild.id, member.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), before.channel.id))
+                        result = await cursor.fetchone()
+                        if result is None:
+                            await cursor.execute("INSERT INTO voice(userID, guildID, zeit, anzahl, channelID) VALUES(%s, %s, %s, %s, %s)", (member.id, member.guild.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), time_in_minutes, before.channel.id))
+                        else:
+                            await cursor.execute("UPDATE voice SET anzahl = (%s) WHERE guildID = (%s) AND userID = (%s) AND zeit = (%s) AND channelID = (%s)", (round(result[0] + time_in_minutes), member.guild.id, member.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), before.channel.id))
+                        await voicetime_to_xp(self, member, time_in_minutes, before)
+                if after.channel:
+                    new_voice_join_time = datetime.datetime.now().time().strftime('%H:%M:%S')
+                    await cursor.execute("INSERT INTO voicedata(time, userID) VALUES(%s, %s)", (new_voice_join_time, member.id))
 
     #Nachrichten Stats#
     
@@ -750,6 +767,7 @@ class Stats(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def lookback(self, interaction: discord.Interaction, tage: typing.Literal[7,14,21,28]):
         """Zeigt Stats für Member und Kanäle für eine Zeitspanne."""
+        await interaction.response.defer(thinking=True, ephemeral=False)
         lookback_messages_members = await lookback_messages(self, tage, interaction.guild, "Mitglieder")
         lookback_messages_channels = await lookback_messages(self, tage, interaction.guild, "Kanäle")
         lookback_voice_members = await lookback_voice(self, tage, interaction.guild, "Mitglieder")
@@ -832,7 +850,7 @@ class Stats(commands.Cog):
 {text4}
 """)
         embed.set_thumbnail(url=interaction.guild.icon)
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
                 
     @stats.command()
     @app_commands.checks.has_permissions(administrator=True)

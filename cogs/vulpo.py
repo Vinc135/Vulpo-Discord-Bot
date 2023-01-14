@@ -39,6 +39,7 @@ class Dropdown(discord.ui.Select):
 __<:v_user:1037065935015653476> User Befehle__
 `/stats anzeigen` Zeigt Stats für Member und Kanäle.
 `/stats top` Lass dir die besten Stats dieses Servers anzeigen.
+`/stats lookback` Zeigt Stats für Member und Kanäle von einem bestimmten Zeitraum.
 
 __<:v_einstellungen:1037067521049759865> Team Befehle__
 `/stats blacklist` Setze Kanäle auf die Blacklist für Nachrichten.
