@@ -5,7 +5,7 @@ import datetime
 import asyncio
 import traceback
 import sys
-from info import giveaway_end, vote_reminder, send_error, random_color, reminder_end
+from info import giveaway_end, vote_reminder, send_error, random_color, reminder_end, limit_characters
 import topgg
 import math
 from discord.app_commands import AppCommandError, CommandTree
@@ -14,6 +14,7 @@ import aiomysql
 from googletrans import Translator
 from info import discord_timestamp
 import time
+
 
 dbl_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjkyNTc5OTU1OTU3NjMyMjA3OCIsImJvdCI6dHJ1ZSwiaWF0IjoxNjQyODc4ODc1fQ.PJVIOEUe25WxuUbD1E68UF7bXpRZR_k4XXwr8ukue-c"
 
@@ -88,7 +89,7 @@ class MyTree(CommandTree):
                 return False
         return True
 
-class Vulpo(commands.Bot):
+class Vulpo(commands.AutoShardedBot):
     def __init__(self):
         super().__init__(command_prefix="vulpo!", help_command=None, case_insensitive=True, intents=discord.Intents.all(), tree_cls=MyTree)
         self.giveaways = False
@@ -412,11 +413,6 @@ bot = Vulpo()
 
 @bot.tree.error
 async def on_app_command_error(interaction: discord.Interaction, error: AppCommandError):
-    def limit_characters(string: str, limit: int):
-        if len(string) > limit:
-            return string[:limit-3] + "..."
-        return string
-        
     if isinstance(error, app_commands.MissingPermissions):
         await send_error("Fehlende Berechtigungen", "<:v_kreuz:1049388811353858069> Du hast nicht die Rechte, diesen Command auszuführen.", interaction)
         return
@@ -463,6 +459,9 @@ async def on_app_command_error(interaction: discord.Interaction, error: AppComma
         return
     if isinstance(error,app_commands.NoPrivateMessage):
         await send_error("Kein Zugang", "<:v_kreuz:1049388811353858069> Dieser Command funktioniert nur in Servern.", interaction)
+        return
+    if isinstance(error,app_commands.TransformerError):
+        await send_error("Nicht gefunden", "<:v_kreuz:1049388811353858069> Die ausgewählte Person o.Ä. konnte nicht gefunden werden.", interaction)
         return
     else:
         await send_error("Unbekannt", "<:v_kreuz:1049388811353858069> Ein unbekannter Fehler ist aufgetreten.\nBitte öffne ein Ticket im [Supportserver](https://discord.gg/49jD3VXksp)", interaction)

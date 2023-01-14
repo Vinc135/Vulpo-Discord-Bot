@@ -280,7 +280,7 @@ async def job_list(self, interaction, page):
             emoji = '🔓'
         else:
             emoji = '🔒'
-        joblist = joblist + f'**{emoji} {job["name"]}** Verdiene zwischen {job["amt"][0]} und {job["amt"][1]} pro Arbeitsstunde.\n'
+        joblist = joblist + f'**{emoji} {job["name"]}** Verdiene zwischen {job["amt"][0]} und {job["amt"][1]} pro Arbeitsstunde.\nDu brauchst {job["req"]} Arbeitsstunden.\n'
     return joblist
 
 async def has_job_req(self, interaction, job):

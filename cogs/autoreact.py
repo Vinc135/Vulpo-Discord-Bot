@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-import asyncio
 
 class Autoreact(commands.Cog):
     def __init__(self, bot):
@@ -39,15 +38,11 @@ class Autoreact(commands.Cog):
             emoj = discord.PartialEmoji.from_str(emoji)
             if emoj is None:
                 return await interaction.followup.send("**<:v_kreuz:1049388811353858069> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
-            msg = await interaction.channel.send("**⚡️ Ich überprüfe die Verfügbarkeit des Emojis.**")
-            await msg.add_reaction(emoj)
-            await msg.delete()
             async with self.bot.pool.acquire() as conn:
                 async with conn.cursor() as cursor:
                     await cursor.execute("INSERT INTO autoreact(guildID, channelID, emoji) VALUES(%s,%s,%s)", (interaction.guild.id, kanal.id, emoji))
                     await interaction.followup.send(f"**<:v_haken:1048677657040134195> Eintrag erstellt. Jede Nachricht aus dem Kanal {kanal.mention} erhält das Emoji {emoj}.**")
         except:
-            await msg.delete()
             return await interaction.followup.send("**<:v_kreuz:1049388811353858069> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
 
     @autoreact.command()

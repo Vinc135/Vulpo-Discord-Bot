@@ -25,8 +25,8 @@ class afk(commands.Cog):
                 for r in result:
                     member = msg.guild.get_member(int(r[0]))
                     if member == None:
-                        await cursor.execute("DELETE FROM afk_nachrichten WHERE userID = (%s) AND guildID = (%s)", (member.id, msg.guild.id))
-                        return await cursor.execute("DELETE FROM afk WHERE userID = (%s) AND guildID = (%s)", (member.id, msg.guild.id))
+                        await cursor.execute("DELETE FROM afk_nachrichten WHERE userID = (%s) AND guildID = (%s)", (r[0], msg.guild.id))
+                        return await cursor.execute("DELETE FROM afk WHERE userID = (%s) AND guildID = (%s)", (r[0], msg.guild.id))
                     if member.id == msg.author.id:
                         t2 = datetime.datetime.fromtimestamp(int(r[2]))
                         try:
@@ -45,16 +45,23 @@ Ich habe deinen AFK-Status entfernt. AFK gegangen {discord_timestamp(t2, 'R')}."
                             await msg.reply(embed=embed)
                         else:
                             text = ""
+                            a = 0
                             embed.description += f"\n💬 Während du AFK warst wurdest du hier **{len(result2)}** Mal gepingt. \n__Alle Erwähnungen:__"
                             for ping in result2:
                                 author = msg.guild.get_member(int(ping[0]))
                                 channel = msg.guild.get_channel(int(ping[2]))
                                 if channel == None:
-                                    return
-                                msg2 = await channel.fetch_message(int(ping[1]))
-                                if author == None or channel == None or msg2 == None:
-                                    pass
-                                else:
+                                    continue
+                                try:
+                                    msg2 = await channel.fetch_message(int(ping[1]))
+                                    a = 1
+                                except:
+                                    text += "Diese Nachricht wurde gelöscht."
+                                    a = 1
+                                if author == None or channel == None:
+                                    text += "Diese Nachricht wurde gelöscht."
+                                    a = 1
+                                if a == 0:
                                     t2 = datetime.datetime.fromtimestamp(int(ping[3]))
                                     if text == "":
                                         text += f"[{author.name}]({msg2.jump_url})"
@@ -119,16 +126,24 @@ Ich habe deinen AFK-Status entfernt. AFK gegangen {discord_timestamp(t2, 'R')}."
                         await interaction.response.send_message(embed=embed)
                     else:
                         text = ""
+                        a = 0
+                        embed.description += f"\n💬 Während du AFK warst wurdest du hier **{len(result2)}** Mal gepingt. \n__Alle Erwähnungen:__"
                         for ping in result2:
                             author = interaction.guild.get_member(int(ping[0]))
                             channel = interaction.guild.get_channel(int(ping[2]))
                             if channel == None:
-                                    return
-                            msg2 = await channel.fetch_message(int(ping[1]))
-                            if author == None or channel == None or msg2 == None:
-                                pass
-                            else:
-                                t2 = datetime.datetime.fromtimestamp(int(result[3]))
+                                continue
+                            try:
+                                msg2 = await channel.fetch_message(int(ping[1]))
+                                a = 1
+                            except:
+                                text += "Diese Nachricht wurde gelöscht."
+                                a = 1
+                            if author == None or channel == None:
+                                text += "Diese Nachricht wurde gelöscht."
+                                a = 1
+                            if a == 0:
+                                t2 = datetime.datetime.fromtimestamp(int(ping[3]))
                                 if text == "":
                                     text += f"[{author.name}]({msg2.jump_url})"
                                 else:
