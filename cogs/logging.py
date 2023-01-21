@@ -419,7 +419,7 @@ class logging(commands.Cog):
                                 embed = discord.Embed(title="Mitglied wurde geändert", description=f"{entry.user.mention} hat eine Rolle von einem Mitglied entzogen.",
                                                     colour=discord.Colour.orange(), timestamp=discord.utils.utcnow())
 
-                                fields = [("Betroffened Mitglied", before.mention, True),
+                                fields = [("Betroffenes Mitglied", before.mention, True),
                                         ("Entzogende Rolle", role.mention, True)]
 
                                 for name, value, inline in fields:
