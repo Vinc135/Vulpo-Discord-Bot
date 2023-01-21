@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 from info import convert, voicetime_to_xp
 from discord import app_commands
 import typing
@@ -578,7 +578,17 @@ async def update_all(self):
 class Stats(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
+	
+    def cog_load(self):
+        self.channel_update.start()
+        
+    def cog_unload(self):
+        self.channel_update.cancel()
+        
+    @tasks.loop(minutes=10)
+    async def channel_update(self):
+        await update_all(self)
+        
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
         async with self.bot.pool.acquire() as conn:
@@ -595,6 +605,8 @@ class Stats(commands.Cog):
                             voice_join_time, '%H:%M:%S'))
                         string = f"{str(calculate_time)[0]}h {str(calculate_time)[2]}{str(calculate_time)[3]}m {str(calculate_time)[5]}{str(calculate_time)[6]}s"
                         time_in_seconds = convert(string)
+                        if time_in_seconds == None:
+                            return
                         time_in_minutes = round(time_in_seconds / 60)
                         
                         await cursor.execute("DELETE FROM voicedata WHERE userID = (%s)", (member.id))

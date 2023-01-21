@@ -11,7 +11,7 @@ class PanelbuttonView(discord.ui.View):
         super().__init__(timeout=None)
         self.bot = bot
 
-    @discord.ui.button(label="Ticket öffnen", emoji="🎫", custom_id="Button-CreateTicket", style=discord.ButtonStyle.blurple)
+    @discord.ui.button(label="Ticket öffnen", emoji="🎫", custom_id="Button-CreateTicket", style=discord.ButtonStyle.grey)
     async def button_createticket(self, interaction: discord.Interaction, button):
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
@@ -130,7 +130,7 @@ class ClosebuttonView(discord.ui.View):
                 except:
                     pass
 
-    @discord.ui.button(label="Ticket claimen", emoji="<:v_support:1037065931588894841>", custom_id="Button-ClaimTicket", style=discord.ButtonStyle.blurple)
+    @discord.ui.button(label="Ticket claimen", emoji="<:v_support:1037065931588894841>", custom_id="Button-ClaimTicket", style=discord.ButtonStyle.grey)
     async def button_claimticket(self, interaction: discord.Interaction, button):
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
@@ -176,7 +176,12 @@ class ClosebuttonView(discord.ui.View):
                     role: discord.PermissionOverwrite(
                         read_messages=True,
                         send_messages=False, 
+                    ),
+                    member: discord.PermissionOverwrite(
+                        read_messages=True,
+                        send_messages=True
                     )
+
                 }
 
                 await interaction.channel.edit(overwrites=overwrites)
@@ -196,7 +201,7 @@ class ClosebuttonView(discord.ui.View):
                 except:
                     pass
 
-    @discord.ui.button(label="Userinfo", emoji="<:v_job:1037065916501983252>", custom_id="Button-UserInfo", style=discord.ButtonStyle.red)
+    @discord.ui.button(label="Userinfo", emoji="<:v_job:1037065916501983252>", custom_id="Button-UserInfo", style=discord.ButtonStyle.grey)
     async def button_userinfo(self, interaction: discord.Interaction, button):
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
@@ -260,6 +265,27 @@ class ClosebuttonView(discord.ui.View):
                     embed.set_image(url=user.banner)
                 embed.set_author(name=f"Userinfo {member}", icon_url=member.avatar)
                 await interaction.response.send_message(embed=embed, ephemeral=True)
+
+    @discord.ui.button(label="Einstellungen", emoji="<:v_einstellungen:1037067521049759865>", custom_id="Button-einstellungen", style=discord.ButtonStyle.blurple)
+    async def button_einstellungen(self, interaction: discord.Interaction, button):
+        async with self.bot.pool.acquire() as conn:
+            async with conn.cursor() as cursor:
+                await cursor.execute(f"SELECT channelID, userID, panelID FROM tickets WHERE channelID = {interaction.channel_id}")
+                result = await cursor.fetchone()
+                if result is None:
+                    return
+                try:
+                    await cursor.execute("SELECT role FROM panels WHERE guildID = (%s) AND categoryID = (%s) AND msgID = (%s)", (interaction.guild.id, interaction.channel.category.id, result[2]))
+                    r = await cursor.fetchone()
+                    role = interaction.guild.get_role(int(r[0]))
+                    if role not in interaction.user.roles:
+                        return await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
+                except:
+                    pass
+                
+                view = discord.ui.View(timeout=None)
+                view.add_item(menu_member(self.bot))
+                await interaction.response.send_message(f"<:v_einstellungen:1037067521049759865> **Du kannst hier Nutzer auswählen, die vom Ticket entfernt werden sollen und welche hinzugefügt werden sollen.**", ephemeral=True, view=view)
 
 class DeletebuttonView(discord.ui.View):
     def __init__(self, bot):
@@ -377,6 +403,36 @@ class DeletebuttonView(discord.ui.View):
                     await ticketlog.send(embed=embed)
                 except:
                     pass
+    
+class menu_member(discord.ui.UserSelect):
+    def __init__(self, bot=None):
+        super().__init__(placeholder="Wähle aus", min_values=1, max_values=1, custom_id="erfweraf")
+        self.bot = bot
+
+    async def callback(self, interaction: discord.Interaction):
+        await interaction.response.defer(thinking=False, ephemeral=True)
+        overwrites = interaction.channel.overwrites
+        endtext = ""
+        for member in self.values:
+            if member not in interaction.channel.members:
+                overwrites[member] = discord.PermissionOverwrite(
+                    read_messages=True,
+                    send_messages=True,
+                )
+                endtext += f"\n<:v_haken:1048677657040134195> **{member.mention} wurde von {interaction.user.mention} zum Ticket hinzugefügt.**"
+            
+            if member in interaction.channel.members:
+                try:
+                    del overwrites[member]
+                except:
+                    overwrites[member] = discord.PermissionOverwrite(
+                        read_messages=False,
+                        send_messages=False,
+                    )
+                endtext += f"\n<:v_kreuz:1049388811353858069> **{member.mention} wurde von {interaction.user.mention} vom Ticket entfernt.**"
+        
+        await interaction.channel.edit(overwrites=overwrites)
+        await interaction.followup.send(endtext)
 
 class Ticketsystem(commands.Cog):
     def __init__(self, bot):
