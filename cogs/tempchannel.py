@@ -43,7 +43,10 @@ class rename(discord.ui.Modal, title="Kanalname ändern"):
         self.add_item(discord.ui.TextInput(label="Neuer Name", style=discord.TextStyle.short, required=True, placeholder="Zockerhöhle"))
 
     async def on_submit(self, interaction: discord.Interaction):
-        await interaction.user.voice.channel.edit(name=self.children[0].value)
+        try:
+            await interaction.user.voice.channel.edit(name=self.children[0].value)
+        except:
+            return await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Der Name ist zu lang.**", ephemeral=True)
         await interaction.response.defer(thinking=False, ephemeral=True)
 
 class limit(discord.ui.Modal, title="Kanallimit ändern"):
@@ -52,6 +55,10 @@ class limit(discord.ui.Modal, title="Kanallimit ändern"):
         self.add_item(discord.ui.TextInput(label="Neues Limit", style=discord.TextStyle.short, required=True, placeholder="1"))
 
     async def on_submit(self, interaction: discord.Interaction):
+        try:
+            int(self.children[0].value)
+        except:
+            return await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Das ist keine Zahl. Bitte gib eine Zahl beim nächsten Mal an.**", ephemeral=True)
         await interaction.user.voice.channel.edit(name=interaction.user.voice.channel.name, user_limit=self.children[0].value)
         await interaction.response.defer(thinking=False, ephemeral=True)
 
