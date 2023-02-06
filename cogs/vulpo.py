@@ -347,8 +347,6 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
 
 **Links**
 [Einladen](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands) **|** [Support](https://discord.gg/49jD3VXksp) **|** [Voten](https://top.gg/bot/925799559576322078/vote)
-
-<:v_pfeil_rechts:1048677625876459562> [Community Event 2022 Gewinner Server](https://discord.gg/7QtpsKRNvg) <:v_pfeil_links:1048677593743888536>
 """, color=discord.Color.orange())
         embed.set_author(name="Vulpo", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
         embed.set_thumbnail(url=interaction.guild.icon)
