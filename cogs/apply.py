@@ -65,14 +65,12 @@ class fertig(discord.ui.Modal, title="Erstelle ein Embed"):
         dict = {}
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
-                
-                await cursor.execute("SELECT custom_id FROM rr_buttons ORDER BY custom_id DESC")
-                result3 = await cursor.fetchall()
-
                 await cursor.execute("SELECT id FROM modals")
                 result4 = await cursor.fetchall()
-                
-                summe = int(result3[0][0]) + 1 + len(result4)
+                if result4 == ():
+                    summe = "1modal"
+                else:
+                    summe = f"{int(str(result4[len(result4) - 1][0]).replace('modal', '')) + 1}modal"
                     
                 for field in emb.fields:
                     dict[field.name] = field.value
@@ -132,22 +130,17 @@ class modal(commands.Cog):
             async with conn.cursor() as cursor:
                 await cursor.execute("SELECT id, label, beschreibung, guildID FROM modals")
                 result = await cursor.fetchall()
-                
-                await cursor.execute("SELECT custom_id FROM rr_buttons ORDER BY custom_id DESC")
-                result3 = await cursor.fetchall()
-                
-                summe = int(result3[0][0]) + 1 + len(result)
                 if result != []:
-                    for i in range(summe + 1):
+                    for i in range(len(result)):
                         dict1 = {}
-                        await cursor.execute("SELECT label, beschreibung, guildID FROM modals WHERE id = (%s)", (i))
+                        await cursor.execute("SELECT label, beschreibung, guildID FROM modals WHERE id = (%s)", (f"{i}modal"))
                         result2 = await cursor.fetchall()
                         if result2 == []:
                             continue
                         for eintrag in result2:
                             dict1[eintrag[0]] = eintrag[1]
                         
-                        self.bot.add_view(view=CounterButtonView(dict1, i, self.bot))
+                        self.bot.add_view(view=CounterButtonView(dict1, f"{i}modal", self.bot))
                                                 
     @app_commands.command()
     @app_commands.guild_only()
