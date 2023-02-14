@@ -74,20 +74,23 @@ class reportmsg(discord.ui.View):
 
 class MyTree(CommandTree):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        user = interaction.user
-        guild = bot.get_guild(925729625580113951)
-        banned_users = [ban async for ban in guild.bans()]
-        for entry in banned_users:
-            banned_user = entry.user
-            if int(user.id) == int(banned_user.id):
-                embed = discord.Embed(title="<:v_mod:1037065920704696420> Du bist gebannt", description=f"""
-> <:v_info:1037065915113676891> Mit einem Bann hast du keinen Zugang mehr zu Vulpo's Befehlen. Außerdem hast du keinen Zutritt zum Supportserver "Vulpo's Wald".
-<:v_play:1037065922134945853> Grund: {entry.reason}
-<:v_play:1037065922134945853> Falls du denkst, dass du dich geändert hast, oder du zu unrecht bestraft wurdest, kannst du einen [Entbannungsantrag](https://forms.gle/NH1Jb1gVNEPuTLA58) stellen.
-""", colour=0xac0000)
-                await interaction.response.send_message(embed=embed, ephemeral=True)
-                return False
-        return True
+        try:
+            user = interaction.user
+            guild = bot.get_guild(925729625580113951)
+            banned_users = [ban async for ban in guild.bans()]
+            for entry in banned_users:
+                banned_user = entry.user
+                if int(user.id) == int(banned_user.id):
+                    embed = discord.Embed(title="<:v_mod:1037065920704696420> Du bist gebannt", description=f"""
+    > <:v_info:1037065915113676891> Mit einem Bann hast du keinen Zugang mehr zu Vulpo's Befehlen. Außerdem hast du keinen Zutritt zum Supportserver "Vulpo's Wald".
+    <:v_play:1037065922134945853> Grund: {entry.reason}
+    <:v_play:1037065922134945853> Falls du denkst, dass du dich geändert hast, oder du zu unrecht bestraft wurdest, kannst du einen [Entbannungsantrag](https://forms.gle/NH1Jb1gVNEPuTLA58) stellen.
+    """, colour=0xac0000)
+                    await interaction.response.send_message(embed=embed, ephemeral=True)
+                    return False
+            return True
+        except:
+            pass
 
 class Vulpo(commands.AutoShardedBot):
     def __init__(self):
@@ -133,17 +136,7 @@ class Vulpo(commands.AutoShardedBot):
         embed.add_field(name="Owner", value=guild.owner, inline=False)
         embed.set_thumbnail(url=guild.icon if guild.icon else "https://cdn.discordapp.com/attachments/971092445435682907/973630982425047050/server_join.png")
         await channels.send(embed=embed)
-        try:
-            embed = discord.Embed(colour=discord.Colour.blurple(), title=f"✨ Vulpo ✨", description=f"Hallo, ich bin Vulpo, hier um diesen Server fantastisch zu machen! Ich bin jetzt in **{len(bot.guilds)}** Servern!")
-            embed.add_field(name="Erster Schritt", value=f"`/help`", inline=False)
-            embed.add_field(name="Links", value="**[Support server](https://discord.gg/49jD3VXksp) | [Invite](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commandst)** | **[Vote](https://top.gg/bot/925799559576322078/vote)**", inline=False)
-            embed.set_footer(text=guild.name, icon_url=guild.icon if guild.icon else 'https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549')
-            embed.set_author(name="Vielen Dank für die Einladung!", icon_url="https://cdn.discordapp.com/emojis/823981604752982077.gif")
-            for channel in guild.text_channels:
-                await channel.send(embed=embed)
-                break
-        except:
-            pass
+
     async def on_guild_remove(self, guild):
         try:
             guilds = bot.get_guild(925729625580113951)
@@ -161,30 +154,6 @@ class Vulpo(commands.AutoShardedBot):
             embed.add_field(name="Owner", value=guild.owner, inline=False)
             embed.set_thumbnail(url=guild.icon if guild.icon else 'https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549')
             await channels.send(embed=embed)
-        except:
-            pass
-
-        try:
-            embed = discord.Embed(colour=discord.Colour.orange(), title=f"Hallo {guild.owner.name}", description=f"""
-            Könnten Sie sich eine Minute Zeit nehmen, um uns zu sagen, warum Sie Vulpo von Ihrem Server `{guild.name}` entfernt haben und ob Sie irgendwelche Vorschläge haben?
-            Wenn Sie etwas sagen möchten, antworten Sie innerhalb der nächsten 15 Minuten auf diese DM!
-
-            ~Vinc (Entwickler)""")
-            embed.set_thumbnail(url=guild.icon if guild.icon else 'https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549')
-            await guild.owner.send(embed=embed)
-
-            def check(m):
-                return m.author == guild.owner and m.guild == None
-            try:
-                input = await bot.wait_for('message', timeout=900, check=check)
-            except asyncio.TimeoutError:
-                return
-            else:
-                embed = discord.Embed(colour=discord.Colour.green(), title="Vielen Dank für Ihr Feedback", description="Wenn Sie noch weitere Fragen haben, dann treten Sie dem [Supportserver](https://discord.gg/49jD3VXksp) bei.")
-                await guild.owner.send(embed=embed)
-                guilds = bot.get_guild(925729625580113951)
-                channels = guilds.get_channel(925732763364106290)
-                await channels.send(f"**{guild.owner}({guild.owner.id})** hat ein Feedback nach dem Kicken von Vulpo, auf dem Server `{guild.name}({guild.id})` hinterlassen:\n*{input.content}*")
         except:
             pass
     

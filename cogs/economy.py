@@ -92,10 +92,11 @@ jobs = [{"name": "Küchenhilfe", "req": 0, "amt": [20, 30]},
 
 async def job_autocomplete(interaction: discord.Interaction, current: str,) -> typing.List[app_commands.Choice[str]]:
     try:
-        return [
+        matching_jobs = [
             app_commands.Choice(name=job["name"], value=job["name"])
             for job in jobs if current.lower() in job["name"].lower()
         ]
+        return matching_jobs[:25]
     except:
         pass
         
@@ -339,7 +340,6 @@ async def work(self, user):
             await cursor.execute("UPDATE economy SET stunden = (%s) WHERE userID = (%s)", (int(result[0]) + 1, user.id))
 
 #SHOP
-#cursor.execute("CREATE TABLE IF NOT EXISTS economy_shop(guildID TEXT, titel TEXT, beschreibung TEXT, preis TEXT)")
 async def addshopitem(self, guild, titel, beschreibung, preis):
     async with self.bot.pool.acquire() as conn:
         async with conn.cursor() as cursor:
@@ -371,7 +371,6 @@ async def listshopitems(self, guild):
                 return result
             
 #ITEMS
-#cursor.execute("CREATE TABLE IF NOT EXISTS economy_items(userID TEXT, titel TEXT, beschreibung TEXT, preis TEXT)")
 async def buyitem(self, user, guild, titel):
     async with self.bot.pool.acquire() as conn:
         async with conn.cursor() as cursor:

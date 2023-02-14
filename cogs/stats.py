@@ -545,7 +545,6 @@ async def lookback_voice(self, tage, guild, art):
 async def update_all(self):
     async with self.bot.pool.acquire() as conn:
         async with conn.cursor() as cursor:
-            #await cursor.execute("CREATE TABLE IF NOT EXISTS upstats(guildID TEXT, channelID TEXT, text TEXT)")
             await cursor.execute("SELECT guildID, channelID, text FROM upstats")
             result = await cursor.fetchall()
             for ergebnis in result:
@@ -608,7 +607,6 @@ class Stats(commands.Cog):
                         if time_in_seconds == None:
                             return
                         time_in_minutes = round(time_in_seconds / 60)
-                        
                         await cursor.execute("DELETE FROM voicedata WHERE userID = (%s)", (member.id))
                         await cursor.execute("SELECT anzahl FROM voice WHERE guildID = (%s) AND userID = (%s) AND zeit = (%s) AND channelID = (%s)", (member.guild.id, member.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), before.channel.id))
                         result = await cursor.fetchone()
@@ -617,6 +615,20 @@ class Stats(commands.Cog):
                         else:
                             await cursor.execute("UPDATE voice SET anzahl = (%s) WHERE guildID = (%s) AND userID = (%s) AND zeit = (%s) AND channelID = (%s)", (round(result[0] + time_in_minutes), member.guild.id, member.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), before.channel.id))
                         await voicetime_to_xp(self, member, time_in_minutes, before)
+                        try:
+                            await cursor.execute("SELECT msgID FROM gewinnspiele WHERE guildID = (%s) AND status = (%s)", (member.guild.id, "Aktiv"))
+                            result2 = await cursor.fetchall()
+                            if result2 == ():
+                                return
+                            for gewinnspiel in result2:
+                                await cursor.execute("SELECT anzahl FROM gw_voice WHERE userID = (%s) AND guildID = (%s) AND gwID = (%s)", (member.id, member.guild.id, gewinnspiel[0]))
+                                result = await cursor.fetchone()
+                                if result == None:
+                                    await cursor.execute("INSERT INTO gw_voice(userID, guildID, gwID, anzahl) VALUES(%s, %s, %s, %s)", (member.id, member.guild.id, gewinnspiel[0], time_in_minutes))
+                                else:
+                                    await cursor.execute("UPDATE gw_voice SET anzahl = (%s) WHERE guildID = (%s) AND userID = (%s) AND gwID = (%s)", (result[0] + time_in_minutes, member.guild.id, member.id, gewinnspiel[0]))
+                        except:
+                            pass
                 if after.channel:
                     new_voice_join_time = datetime.datetime.now().time().strftime('%H:%M:%S')
                     await cursor.execute("INSERT INTO voicedata(time, userID) VALUES(%s, %s)", (new_voice_join_time, member.id))
