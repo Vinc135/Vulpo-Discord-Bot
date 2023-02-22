@@ -163,19 +163,20 @@ async def giveaway_end(when: datetime.datetime, bot, msgID, status=None):
         async with bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 if status == None:
-                    await cursor.execute("SELECT hostID, endtime, winners, nachrichten, level, rollenID, preis, guildID, channelID FROM gewinnspiele WHERE msgID = (%s) AND status = (%s)", (msgID, "Aktiv"))
+                    await cursor.execute("SELECT * FROM gewinnspiele WHERE msgID = (%s) AND status = (%s)", (msgID, "Aktiv"))
                     result = await cursor.fetchone()
                 if status == "Beenden":
-                    await cursor.execute("SELECT hostID, endtime, winners, nachrichten, level, rollenID, preis, guildID, channelID FROM gewinnspiele WHERE msgID = (%s) AND status = (%s)", (msgID, "Aktiv"))
+                    await cursor.execute("SELECT * FROM gewinnspiele WHERE msgID = (%s) AND status = (%s)", (msgID, "Aktiv"))
                     result = await cursor.fetchone()
                 if status == "Reroll":
-                    await cursor.execute("SELECT hostID, endtime, winners, nachrichten, level, rollenID, preis, guildID, channelID FROM gewinnspiele WHERE msgID = (%s) AND status = (%s)", (msgID, "Inaktiv"))
+                    await cursor.execute("SELECT * WHERE msgID = (%s) AND status = (%s)", (msgID, "Inaktiv"))
                     result = await cursor.fetchone()
                 if result is None:
                     return
+                #guildID, channelID, msgID, hostID, endtime, preis, winners, status, nachrichten, rollenID, voicezeit, custom_status, jointime
                 try:
-                    guild = bot.get_guild(int(result[7]))
-                    kanal = guild.get_channel(int(result[8]))
+                    guild = bot.get_guild(int(result[0]))
+                    kanal = guild.get_channel(int(result[1]))
                     msg = await kanal.fetch_message(int(msgID))
                 except:
                     pass
@@ -189,30 +190,28 @@ async def giveaway_end(when: datetime.datetime, bot, msgID, status=None):
                 result2 = await cursor.fetchall()
                 if result2 == None or str(result2) == "()":
                     await msg.reply("😢 Es gab leider keine Teilnehmer. Niemand hat gewonnen.")
-                    embed = discord.Embed(title=f"🏆 {result[6]}", description=f"""
-    `🤖` · [Lade den Bot hier ein](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands)
-                
-    <:v_geschenk:1037065913981218818> › __**Wer hat gewonnen?**__
-    <:v_play:1037065922134945853> Niemand hat gewonnen.
-    <:v_play:1037065922134945853> Das Gewinnspiel endete {discord_timestamp(t2, 'R')}
-    <:v_play:1037065922134945853> Es gab 0 Teilnehmer.""", color=discord.Color.red())
+                    embed = discord.Embed(title=f"🏆 {result[5]}", description=f"""
+`🤖` · [Lade den Bot hier ein](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands)
+            
+<:v_geschenk:1037065913981218818> › __**Wer hat gewonnen?**__
+<:v_play:1037065922134945853> Niemand hat gewonnen.
+<:v_play:1037065922134945853> Das Gewinnspiel endete {discord_timestamp(t2, 'R')}
+<:v_play:1037065922134945853> Es gab 0 Teilnehmer.""", color=discord.Color.red())
                     embed.set_thumbnail(url=msg.guild.icon)
                     return await msg.edit(content="**⛔️ Gewinnspiel beendet ⛔️**", embed=embed, view=None)
 
                 participants = [userid[0] for userid in result2]
-                winner = random.sample(participants, k=len(participants) if len(participants) < int(result[2]) else int(result[2]))
+                winner = random.sample(participants, k=len(participants) if len(participants) < int(result[6]) else int(result[6]))
                 winners = ""
                 for win in winner:
                     member = guild.get_member(int(win))
-                    embed = discord.Embed(colour=discord.Color.gold(), title=result[6], description=f"""
-    `🤖` · [Lade den Bot hier ein](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands)
-
+                    embed = discord.Embed(colour=discord.Color.gold(), title=result[5], description=f"""
     `🎉` · Gewonnen auf [{guild.name}]({msg.jump_url})
     `⏰` · Das Gewinnspiel endete {discord_timestamp(t2, 'R')}
     """)
                     embed.set_thumbnail(url=guild.icon)
                     try:
-                        await member.send("<:v_geschenk:1037065913981218818> Du hast ein Gewinnspiel **gewonnen**!", embed=embed)
+                        await member.send("Du hast ein Gewinnspiel **gewonnen**!", embed=embed)
                     except:
                         pass
                     if winners == "":
@@ -220,15 +219,15 @@ async def giveaway_end(when: datetime.datetime, bot, msgID, status=None):
                     else:
                         winners += f", {member.mention}"
                         
-                await msg.reply(f"<:v_geschenk:1037065913981218818> {winners} {'hat' if len(winner) == 1 else 'haben'} {result[6]} gewonnen.")
-                embed = discord.Embed(title=f"🏆 {result[6]}", description=f"""
-    `🤖` · [Lade den Bot hier ein](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands)
-                
-    <:v_geschenk:1037065913981218818> › __**Wer hat gewonnen?**__
-    <:v_play:1037065922134945853> {winners} {'hat' if len(winner) == 1 else 'haben'} {result[6]} gewonnen.
-    <:v_play:1037065922134945853> Das Gewinnspiel endete {discord_timestamp(t2, 'R')}
-    <:v_play:1037065922134945853> Es gab {len(result2)} Teilnehmer.""", color=discord.Color.red())
-                embed.set_footer(text=f"🍀 Die Wahrscheinlichkeit zu gewinnen lag bei {round((int(result[2]) / len(result2)) * 100)}%")
+                await msg.reply(f"{winners} {'hat' if len(winner) == 1 else 'haben'} {result[5]} gewonnen.")
+                embed = discord.Embed(title=f"🏆 {result[5]}", description=f"""
+`🤖` · [Lade den Bot hier ein](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands)
+            
+<:v_geschenk:1037065913981218818> › __**Wer hat gewonnen?**__
+<:v_play:1037065922134945853> {winners} {'hat' if len(winner) == 1 else 'haben'} {result[5]} gewonnen.
+<:v_play:1037065922134945853> Das Gewinnspiel endete {discord_timestamp(t2, 'R')}
+<:v_play:1037065922134945853> Es gab {len(result2)} Teilnehmer.""", color=discord.Color.red())
+                embed.set_footer(text=f"🍀 Die Wahrscheinlichkeit zu gewinnen lag bei {round((int(result[6]) / len(result2)) * 100)}%")
                 embed.set_thumbnail(url=msg.guild.icon)
                 await msg.edit(content="**⛔️ Gewinnspiel beendet ⛔️**", embed=embed, view=None)
     
