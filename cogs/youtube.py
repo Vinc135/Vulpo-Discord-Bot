@@ -104,7 +104,7 @@ class youtube(commands.Cog):
                 if result == None:
                     await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Hier wurden keine YT Ankündigungen gefunden. Füge einen Tag mit `/youtube add` hinzu**", ephemeral=True)
                     return
-                embed = discord.Embed(title="Alle YT Ankündigungen des Servers", description="Hier nähere Infos:", color=discord.Color.orange())
+                embed = discord.Embed(title="Alle YT Ankündigungen des Servers", description="Hier nähere Infos:", color=await getcolour(self, interaction.user))
                 for i in result:
                     embed.add_field(name=i[0], value=f"Kanal: <#{i[1]}>")
                 await interaction.response.send_message(embed=embed)

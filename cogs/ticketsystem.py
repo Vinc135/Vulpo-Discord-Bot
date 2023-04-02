@@ -5,6 +5,7 @@ from discord.ext import commands
 import os
 from discord import app_commands
 from info import discord_timestamp
+from info import getcolour
 
 class PanelbuttonView(discord.ui.View):
     def __init__(self, bot):
@@ -452,7 +453,7 @@ class Ticketsystem(commands.Cog):
         """Erstelle ein Panel für Tickets."""
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
-                finalemb = discord.Embed(title="Ticketsystem", description="Ein neues Panel wurde erstellt!", color=discord.Color.orange())
+                finalemb = discord.Embed(title="Ticketsystem", description="Ein neues Panel wurde erstellt!", color=await getcolour(self, interaction.user))
                 finalemb.add_field(name="Kanal", value=kanal.mention, inline=False)
                 finalemb.add_field(name="Embedtitel", value=titel, inline=False)
                 finalemb.add_field(name="Embedbeschreibung", value=beschreibung, inline=False)
@@ -461,7 +462,7 @@ class Ticketsystem(commands.Cog):
                 finalemb.add_field(name="Kategorie für geschlossene Tickets", value=archiv.name, inline=False)
                 await interaction.response.send_message(f"{interaction.user.mention} hat ein Panel erstellt.", embed=finalemb)
 
-                embed = discord.Embed(title=titel, description=beschreibung, color=discord.Color.blurple())
+                embed = discord.Embed(title=titel, description=beschreibung, color=await getcolour(self, interaction.user))
                 if interaction.guild.icon != None:
                     embed.set_thumbnail(url=interaction.guild.icon)
                 embed.set_footer(text="Drücke auf den Button um ein Ticket zu erstellen")

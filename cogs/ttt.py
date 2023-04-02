@@ -6,6 +6,7 @@ from discord import app_commands
 from info import random_color, discord_timestamp
 import math
 import datetime
+from info import getcolour
 
 class tictactoeherausforderung2(discord.ui.View):
     def __init__(self, member: discord.Member=None, membertwo: discord.Member=None, bot=None):
@@ -398,7 +399,7 @@ class Ttt(commands.Cog):
                 else:
                     rating = (result[0] * 3) + (result[1] * -1) + (result[2] * 2)
                     total_plays = result[0] + result[1] + result[2]
-                    embed = discord.Embed(color=random_color(), title="❌ **| __TicTacToe Stats__ |** ⭕", description=f"""
+                    embed = discord.Embed(color=await getcolour(self, interaction.user), title="❌ **| __TicTacToe Stats__ |** ⭕", description=f"""
 Aktuelle Stats von {member.mention}
 **Rating: `{rating}`**
 

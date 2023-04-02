@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 from datetime import datetime
 from discord import app_commands
+from info import getcolour
 
 class moderation(commands.Cog):
     def __init__(self, bot):
@@ -16,7 +17,7 @@ class moderation(commands.Cog):
         """Auf diese Weise können Sie Rollen zu einem Benutzer hinzufügen und entfernen."""
         if rolle not in member.roles:
             try:
-                embed = discord.Embed(colour=discord.Colour.green(),
+                embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                       description=f"{rolle.mention} wurde hinzugefügt zu {member.mention}.")
                 embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                 await member.add_roles(rolle)
@@ -28,7 +29,7 @@ class moderation(commands.Cog):
 
         if rolle in member.roles:
             try:
-                embed = discord.Embed(colour=discord.Colour.red(),
+                embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                     description=f"{rolle.mention} wurde entfernt von {member.mention}.")
                 embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                 await member.remove_roles(rolle)
@@ -43,14 +44,14 @@ class moderation(commands.Cog):
     @app_commands.checks.has_permissions(kick_members=True)
     async def kick(self, interaction: discord.Interaction, member: discord.Member, grund: str):
         """Lässt einen Benutzer kicken. Wenn möglich."""
-        embed = discord.Embed(colour=discord.Colour.orange(),
+        embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                 description=f"Der Benutzer {member} (**{member.id}**) wurde gekickt.")
         embed.add_field(name=f"🎛️ Server:", value=f"{interaction.guild.name}", inline=False)
         embed.add_field(name=f"👮 Moderator:", value=f"{interaction.user} (**{interaction.user.id}**)", inline=False)
         embed.add_field(name=f"📄 Grund:", value=f"{grund}", inline=False)
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
 
-        dm = discord.Embed(colour=discord.Colour.orange(),
+        dm = discord.Embed(colour=await getcolour(self, interaction.user),
                             description=f"Hey {member.mention}! \nDu wurdest auf dem Server **{interaction.guild.name}** gekickt! Genauere Informationen hier:")
         dm.add_field(name=f"🎛️ Server:", value=f"{interaction.guild.name}", inline=False)
         dm.add_field(name=f"👮 Moderator:", value=f"{interaction.user.mention}", inline=False)
@@ -72,14 +73,14 @@ class moderation(commands.Cog):
     @app_commands.checks.has_permissions(ban_members=True)
     async def ban(self, interaction: discord.Interaction, user: discord.User, grund: str, nachrichten_löschen: typing.Literal["Keine löschen","Letzte 24 Stunden","Letzte 7 Tage"]):
         """Sperrt einen Benutzer. Wenn möglich."""
-        embed = discord.Embed(colour=discord.Colour.red(),
+        embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                 description=f"Der Benutzer {user.mention} (**{user.id}**) wurde gebannt.")
         embed.add_field(name=f"🎛️ Server:", value=f"{interaction.guild.name}", inline=False)
         embed.add_field(name=f"👮 Moderator:", value=f"{interaction.user.mention} (**{interaction.user.id}**)", inline=False)
         embed.add_field(name=f"📄 Grund:", value=f"{grund}", inline=False)
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
 
-        dm = discord.Embed(colour=discord.Colour.red(),
+        dm = discord.Embed(colour=await getcolour(self, interaction.user),
                             description=f"Hey {user.mention}! \nDu wurdest auf dem Server **{interaction.guild.name}** gebannt! Genauere Informationen hier:")
         dm.add_field(name=f"🎛️ Server:", value=f"{interaction.guild.name}", inline=False)
         dm.add_field(name=f"👮 Moderator:", value=f"{interaction.user.mention}", inline=False)
@@ -150,13 +151,13 @@ class moderation(commands.Cog):
                     a += 1
                 try:
                     for chunk in [msg1[i:i + 2000] for i in range(0, len(msg1), 2000)]:
-                        embed = discord.Embed(title="Banliste", description=f"{msg1}", color=discord.Color.red())
+                        embed = discord.Embed(title="Banliste", description=f"{msg1}", color=await getcolour(self, interaction.user))
                         embed.set_thumbnail(url=interaction.guild.icon)
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         embed.set_footer(text=f"{a} gesperrte Benutzer in diesem Server.")
                         await interaction.response.send_message(embed=embed)
                 except discord.HTTPException:
-                    embed2 = discord.Embed(title="Banliste", description=f"{msg1}", color=discord.Color.red())
+                    embed2 = discord.Embed(title="Banliste", description=f"{msg1}", color=await getcolour(self, interaction.user))
                     embed2.set_thumbnail(url=interaction.guild.icon)
                     embed2.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                     embed.set_footer(text=f"{a} gesperrte Benutzer in diesem Server.")

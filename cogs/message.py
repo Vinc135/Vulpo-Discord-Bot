@@ -4,6 +4,7 @@ from discord.ext import commands
 import random
 from discord import app_commands
 from easy_pil import Editor, load_image_async, Font
+from info import getcolour
 
 class Willkommensnachricht(discord.ui.Modal, title="Willkommensnachricht"):
     def __init__(self, kanal: discord.TextChannel=None, bot=None, alte_nachricht: str=None):
@@ -84,14 +85,14 @@ class message(commands.Cog):
                     if "B9xV123" not in str(result[1]):
                         finalmsg = result[1].replace("%member", str(member)).replace("%name", str(member.name)).replace("%mention", str(member.mention)).replace("%guild", str(member.guild)).replace("%usercount", str(member.guild.member_count))
                         try:
-                            embed = discord.Embed(color=random_color(), description=finalmsg)
+                            embed = discord.Embed(color=await getcolour(self, member), description=finalmsg)
                             await ch.send(finalmsg)
                         except:
                             pass
                     else:
                         finalmsg = result[1].replace("B9xV123", "").replace("%member", str(member)).replace("%name", str(member.name)).replace("%mention", str(member.mention)).replace("%guild", str(member.guild)).replace("%usercount", str(member.guild.member_count))
                         try:
-                            embed = discord.Embed(color=random_color(), description=finalmsg)
+                            embed = discord.Embed(color=await getcolour(self, member), description=finalmsg)
                             background = Editor("willkommen.png")
                             profile = await load_image_async(str(member.avatar))
 
@@ -182,7 +183,7 @@ class message(commands.Cog):
                     except:
                         return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Kanal der Willkommensnachricht existiert nicht mehr. Bitte deaktiviere die Willkommensnachricht und richte sie erneut ein.**", ephemeral=True)
 
-                    embed = discord.Embed(title="Willkommensnachricht", description=f"Die aktuelle Willkommensnachricht:", color=discord.Color.orange())
+                    embed = discord.Embed(title="Willkommensnachricht", description=f"Die aktuelle Willkommensnachricht:", color=await getcolour(self, interaction.user))
                     embed.add_field(name="Kanal", value=ch.mention, inline=False)
                     embed.add_field(name="Nachricht", value=wel[1], inline=False)
                     await interaction.response.send_message(embed=embed)
@@ -203,7 +204,7 @@ class message(commands.Cog):
                         return
                     finalmsg = result[1].replace("%member", str(member)).replace("%name", str(member.name)).replace("%mention", str(member.mention)).replace("%guild", str(member.guild)).replace("%usercount", str(member.guild.member_count))
                     try:
-                        embed = discord.Embed(color=random_color(), description=finalmsg)
+                        embed = discord.Embed(color=await getcolour(self, member), description=finalmsg)
                         await ch.send(embed=embed)
                     except:
                         pass
@@ -227,7 +228,7 @@ class message(commands.Cog):
                     return
                 finalmsg = result[1].replace("%member", str(member)).replace("%name", str(member.name)).replace("%mention", str(member.mention)).replace("%guild", str(member.guild)).replace("%usercount", str(member.guild.member_count))
                 try:
-                    embed = discord.Embed(color=random_color(), description=finalmsg)
+                    embed = discord.Embed(color=await getcolour(self, interaction.user), description=finalmsg)
                     embed.set_footer(text=f"Test-Verlassensnachricht angefordert von {interaction.user}")
                     await ch.send(embed=embed)
                     await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Die Test-Verlassensnachricht wurde an den Kanal {ch.mention} gesendet.**")
@@ -269,7 +270,7 @@ class message(commands.Cog):
                     except:
                         return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Kanal der Verlassensnachricht existiert nicht mehr. Bitte deaktiviere die Verlassensnachricht und richte sie erneut ein.**", ephemeral=True)
 
-                    embed = discord.Embed(title="Verlassensnachricht", description=f"Die aktuelle Verlassensnachricht:", color=discord.Color.orange())
+                    embed = discord.Embed(title="Verlassensnachricht", description=f"Die aktuelle Verlassensnachricht:", color=await getcolour(self, interaction.user))
                     embed.add_field(name="Kanal", value=ch.mention, inline=False)
                     embed.add_field(name="Nachricht", value=wel[1], inline=False)
                     await interaction.response.send_message(embed=embed)

@@ -6,6 +6,7 @@ import typing
 import asyncio
 import math
 import datetime
+from info import getcolour
 
 class Reminder(commands.Cog):
     def __init__(self, bot):
@@ -41,7 +42,7 @@ class Reminder(commands.Cog):
                 
                 await cursor.execute("INSERT INTO erinnerungen(userID, endtime, beschreibung, id) VALUES(%s, %s, %s, %s)", (interaction.user.id, t1, beschreibung, id))
                 
-                embed = discord.Embed(color=discord.Colour.green(), title=f"Erinnerung gestellt (ID {id})", description=f"""
+                embed = discord.Embed(color=await getcolour(self, interaction.user), title=f"Erinnerung gestellt (ID {id})", description=f"""
 <:v_info:1037065915113676891> Erinnerung gesetzt auf {discord_timestamp(t2, 'f')}
 <:v_play:1037065922134945853> {beschreibung}""")
                 asyncio.create_task(reminder_end(t2, self.bot, interaction.user.id, id), name=f"Erinnerung - {id}")
@@ -77,7 +78,7 @@ class Reminder(commands.Cog):
                 result = await cursor.fetchall()
                 if result == ():
                     return await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Du hast keine Erninnerungen gestellt.**", ephemeral=True) 
-                embed = discord.Embed(colour=discord.Colour.blurple(), title=f"Alle Erinnerungen von {interaction.user}.")
+                embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"Alle Erinnerungen von {interaction.user}.")
                 embed.set_thumbnail(url=interaction.user.avatar)
                 for er in result:
                     t2 = datetime.datetime.fromtimestamp(int(er[2]))

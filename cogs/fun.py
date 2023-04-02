@@ -4,6 +4,7 @@ import random
 import discord
 from discord.ext import commands
 from discord import app_commands
+from info import getcolour
 
 class fun(commands.Cog):
     def __init__(self, bot):
@@ -17,7 +18,7 @@ class fun(commands.Cog):
         if user is None:
             user = interaction.user
         x = random.randint(1, 100)
-        embed = discord.Embed(colour=discord.Color.gold(), description=f"{user.mention} is LOST zu {x}%.")
+        embed = discord.Embed(colour=await getcolour(self, interaction.user), description=f"{user.mention} is LOST zu {x}%.")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         await interaction.response.send_message(embed=embed)
 
@@ -39,7 +40,7 @@ class fun(commands.Cog):
             iq = "ziemlich schlau."
         else:
             iq = "ein **SUPERBRAIN**!"
-        embed = discord.Embed(colour=discord.Color.gold(), description=f"Mit einem IQ von {x} ist {member.mention} {iq}")
+        embed = discord.Embed(colour=await getcolour(self, interaction.user), description=f"Mit einem IQ von {x} ist {member.mention} {iq}")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         await interaction.response.send_message(embed=embed)
 
@@ -84,7 +85,7 @@ class fun(commands.Cog):
         love_per = random.randint(1, 100)
 
         # erstes Einbetten
-        embed = discord.Embed(color=discord.Color.orange(),
+        embed = discord.Embed(color=await getcolour(self, interaction.user),
                               description=f"Mal sehen, wie sehr sich {member.mention} und {user.mention} lieben ... <3")
         embed.add_field(name="❤️ Loverator", value="💌 Ich berechne Liebe ...")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
@@ -92,7 +93,7 @@ class fun(commands.Cog):
         await asyncio.sleep(3)
 
         # 2. embed
-        embed2 = discord.Embed(color=discord.Color.orange(),
+        embed2 = discord.Embed(color=await getcolour(self, interaction.user),
                                description=f"Mal sehen, wie sehr sich {member.mention} und {user.mention} lieben ... <3")
         embed2.add_field(name="❤️ Loverator",
                          value=f"{member.mention} und {user.mention} lieben sich zu **{love_per}%**.")
@@ -122,7 +123,7 @@ class fun(commands.Cog):
         ergebnis7 = random.choice(choices7)
         ergebnis8 = random.choice(choices8)
         ergebnis9 = random.choice(choices9)
-        embed = discord.Embed(colour=discord.Colour.dark_blue(), title="Rubbellos",
+        embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Rubbellos",
                               description=f"{ergebnis1} {ergebnis2} {ergebnis3}\n"
                                           f"{ergebnis4} {ergebnis5} {ergebnis6}\n"
                                           f"{ergebnis7} {ergebnis8} {ergebnis9}\n")
@@ -147,7 +148,7 @@ class fun(commands.Cog):
                 pass
         if description == "":
             description += "Sieht hier echt langweilig aus. Zurzeit spielt niemand ein Spiel."
-        embed = discord.Embed(title="Aktuell gespielte Spiele auf diesem Server", description=description, color=discord.Color.green())
+        embed = discord.Embed(title="Aktuell gespielte Spiele auf diesem Server", description=description, color=await getcolour(self, interaction.user))
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         await interaction.response.send_message(embed=embed)
 
@@ -183,7 +184,7 @@ class fun(commands.Cog):
         x22 = random.choice(choices)
         result = f"||{x1}{x2}{x3}{x4}{x5}{x6}{x7}{x8}{x9}{x10}{x11}{x12}{x13}{x14}{x15}{x16}{x17}{x18}{x19}{x20}{x21}{x22}||"
 
-        embed = discord.Embed(colour=discord.Colour.green(), title="🔐 Passwort", description=f"**Nicht anderen Personen zeigen, falls du dieses Passwort verwenden solltest!**")
+        embed = discord.Embed(colour=await getcolour(self, interaction.user), title="🔐 Passwort", description=f"**Nicht anderen Personen zeigen, falls du dieses Passwort verwenden solltest!**")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         embed.add_field(name="Vorgschlagenes Passwort:", value=result)
         await user.send(embed=embed)

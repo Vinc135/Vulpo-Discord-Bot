@@ -2,6 +2,7 @@ import typing
 import discord
 from discord.ext import commands
 from discord import app_commands
+from info import getcolour
 
 class starboard(commands.Cog):
     def __init__(self, bot):

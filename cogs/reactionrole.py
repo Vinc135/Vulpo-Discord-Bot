@@ -2,6 +2,7 @@ import typing
 import discord
 from discord.ext import commands
 from discord import app_commands
+from info import getcolour
 #########
 
 class Dropdown(discord.ui.Select):
@@ -47,7 +48,7 @@ class fertig(discord.ui.Modal, title="Erstelle ein Embed"):
         emb = interaction.message.embeds[0]
         if emb.fields == []:
             return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du musst zuerst ein paar Optionen festlegen.**", ephemeral=True)
-        embed = discord.Embed(title=self.children[0].value, description=self.children[1].value, color=discord.Color.orange())
+        embed = discord.Embed(title=self.children[0].value, description=self.children[1].value, color=await getcolour(self, interaction.user))
         if self.children[2].value:
             embed.set_thumbnail(url=self.children[2].value)
         if self.children[3].value:
@@ -90,7 +91,7 @@ class option_hinzufügen(discord.ui.Modal, title="Füge eine Option hinzu"):
     async def on_submit(self, interaction: discord.Interaction):
         embed = interaction.message.embeds[0]
         embed.add_field(name=self.children[0].value, value=self.roleID)
-        embed.color = discord.Color.green()
+        embed.color = await getcolour(self, interaction.user)
         await interaction.message.edit(content="", embed=embed)
         await interaction.response.send_message("**<:v_haken:1048677657040134195> Option wurde hinzugefügt.**", ephemeral=True)
                 
@@ -151,7 +152,7 @@ class option_hinzufügen_2(discord.ui.Modal, title="Füge eine Option hinzu"):
     async def on_submit(self, interaction: discord.Interaction):
         embed = interaction.message.embeds[0]
         embed.add_field(name=self.children[0].value, value=self.roleID)
-        embed.color = discord.Color.green()
+        embed.color = await getcolour(self, interaction.user)
         await interaction.message.edit(content="", embed=embed)
         await interaction.response.send_message("**<:v_haken:1048677657040134195> Option wurde hinzugefügt.**", ephemeral=True)
 
@@ -168,7 +169,7 @@ class fertig2(discord.ui.Modal, title="Erstelle ein Embed"):
         emb = interaction.message.embeds[0]
         if emb.fields == []:
             return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du musst zuerst ein paar Optionen festlegen.**", ephemeral=True)
-        embed = discord.Embed(title=self.children[0].value, description=self.children[1].value, color=discord.Color.orange())
+        embed = discord.Embed(title=self.children[0].value, description=self.children[1].value, color=await getcolour(self, interaction.user))
         if self.children[2].value:
             embed.set_thumbnail(url=self.children[2].value)
         if self.children[3].value:
@@ -259,12 +260,12 @@ class reactionrole(commands.Cog):
     async def reactionrole(self, interaction: discord.Interaction, erscheinungsbild: typing.Literal["Select Menü", "Buttons"]):
         """Lege Reaktionsrollen fest."""
         if erscheinungsbild == "Select Menü":
-            embed = discord.Embed(color=discord.Color.gold(), title="Reaktionsrollen Setup", description="Hier kannst du mithilfe von Buttons, Reaktionsrollen dem Select Menü hinzufügen.")
+            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Reaktionsrollen Setup", description="Hier kannst du mithilfe von Buttons, Reaktionsrollen dem Select Menü hinzufügen.")
             view = setup_select(self.bot, interaction.user)
             view.add_item(select_role1(self.bot))
             await interaction.response.send_message(embed=embed, view=view)
         if erscheinungsbild == "Buttons":
-            embed = discord.Embed(color=discord.Color.gold(), title="Reaktionsrollen Setup", description="Hier kannst du mithilfe von Buttons, Reaktionsrollen als Buttons hinzufügen.")
+            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Reaktionsrollen Setup", description="Hier kannst du mithilfe von Buttons, Reaktionsrollen als Buttons hinzufügen.")
             view = setup_buttons(self.bot, interaction.user)
             view.add_item(select_role2(self.bot))
             await interaction.response.send_message(embed=embed, view=view)

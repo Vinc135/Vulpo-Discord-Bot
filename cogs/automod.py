@@ -4,6 +4,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from info import addwarn
+from info import getcolour
 
 class Automod(commands.Cog):
     def __init__(self, bot):
@@ -57,7 +58,7 @@ class Automod(commands.Cog):
                 if result == None:
                     await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Hier wurden keine Aktionen gefunden. Füge eine Aktion mit `/automod addaction <warnanzahl> <aktion>` hinzu**", ephemeral=True)
                     return
-                embed = discord.Embed(title="Alle Aktionen vom Automod", description="Hier nähere Infos:", color=discord.Color.orange())
+                embed = discord.Embed(title="Alle Aktionen vom Automod", description="Hier nähere Infos:", color=await getcolour(self, interaction.user))
                 for i in result:
                     embed.add_field(name=i[0], value=f"Verwarnungen benötigt: {i[1]}")
                 await interaction.response.send_message(embed=embed)
@@ -69,14 +70,14 @@ class Automod(commands.Cog):
     async def warn(self, interaction: discord.Interaction, user: discord.User, grund: str):
         """Warnt einen Benutzer."""
         await addwarn(self, user, interaction, grund)
-        embed = discord.Embed(colour=discord.Colour.gold(),
+        embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                 description=f"Der Benutzer {user} (**{user.id}**) wurde verwarnt.")
         embed.add_field(name=f"🎛 Server:", value=f"{interaction.guild.name}", inline=False)
         embed.add_field(name=f"👮 Moderator:", value=f"{interaction.user} (**{interaction.user.id}**)", inline=False)
         embed.add_field(name=f"📄 Grund:", value=f"{grund}", inline=False)
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
 
-        dm = discord.Embed(colour=discord.Colour.gold(),
+        dm = discord.Embed(colour=await getcolour(self, interaction.user),
                             description=f"Hey {user.mention}! \nDu wurdest auf dem Server **{interaction.guild.name}** verwarnt! Genauere Informationen hier:")
         dm.add_field(name=f"🎛 Server:", value=f"{interaction.guild.name}", inline=False)
         dm.add_field(name=f"👮 Moderator:", value=f"{interaction.user.mention}", inline=False)
@@ -103,7 +104,7 @@ class Automod(commands.Cog):
                     return
                 await cursor.execute("DELETE FROM warns WHERE userID = (%s) AND guildID = (%s) AND warnID = (%s)", (user.id, interaction.guild.id, warnid))
         
-        embed = discord.Embed(colour=discord.Colour.gold(),
+        embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                 description=f"Die Verwarnung mit der ID {warnid} von {user} (**{user.id}**) wurde entfernt.")
         embed.add_field(name=f"🎛️ Server:", value=f"{interaction.guild.name}", inline=False)
         embed.add_field(name=f"👮 Moderator:", value=f"{interaction.user} (**{interaction.user.id}**)", inline=False)
@@ -124,7 +125,7 @@ class Automod(commands.Cog):
         if result is None:
             await interaction.response.send_message(f"Der User {user} hat keine Verwarnungen hier.")
             return
-        warnembed = discord.Embed(colour=discord.Colour.gold(), description=f"Alle Verwarnungen von {user} (**{user.id}**).")
+        warnembed = discord.Embed(colour=await getcolour(self, interaction.user), description=f"Alle Verwarnungen von {user} (**{user.id}**).")
         warnembed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         a = 0
         for warn in result:
@@ -154,7 +155,7 @@ class Automod(commands.Cog):
                     desc += f"{word[0]}\n"
                 if desc == "":
                     desc = f"Die Blacklist dieses Servers ist leer.\nWort der Blacklist hinzufügen: `/blacklist add <wort>\n`Wort von der Blacklist entfernen: `/blacklist remove <wort>`"
-                embed = discord.Embed(title="Die Blacklist", description=desc + f"\nWort der Blacklist hinzufügen: `/blacklist add <wort>\n`Wort von der Blacklist entfernen: `/blacklist remove <wort>`", color=discord.Color.red())
+                embed = discord.Embed(title="Die Blacklist", description=desc + f"\nWort der Blacklist hinzufügen: `/blacklist add <wort>\n`Wort von der Blacklist entfernen: `/blacklist remove <wort>`", color=await getcolour(self, interaction.user))
                 await interaction.response.send_message(embed=embed)
 
     @blacklist.command()
@@ -262,7 +263,7 @@ class Automod(commands.Cog):
                                 if result != None:
                                     chan = msg.guild.get_channel(int(result[0]))
                                     if chan:
-                                        embed = discord.Embed(colour=discord.Colour.gold(),
+                                        embed = discord.Embed(colour=await getcolour(self, msg.author),
                                                         description=f"Der Benutzer {msg.author} (**{msg.author.id}**) wurde verwarnt.")
                                         embed.add_field(name=f"🎛️ Server:", value=f"{msg.guild.name}", inline=False)
                                         embed.add_field(name=f"👮 Moderator:", value=f"Vulpo#3749", inline=False)
@@ -295,7 +296,7 @@ class Automod(commands.Cog):
                                 if result != None:
                                     chan = msg.guild.get_channel(int(result[0]))
                                     if chan:
-                                        embed = discord.Embed(colour=discord.Colour.gold(),
+                                        embed = discord.Embed(colour=await getcolour(self, msg.author),
                                                         description=f"Der Benutzer {msg.author} (**{msg.author.id}**) wurde verwarnt.")
                                         embed.add_field(name=f"🎛️ Server:", value=f"{msg.guild.name}", inline=False)
                                         embed.add_field(name=f"👮 Moderator:", value=f"Vulpo#3749", inline=False)
@@ -319,7 +320,7 @@ class Automod(commands.Cog):
                                 if result != None:
                                     chan = msg.guild.get_channel(int(result[0]))
                                     if chan != None:
-                                        embed = discord.Embed(colour=discord.Colour.gold(),
+                                        embed = discord.Embed(colour=await getcolour(self, msg.author),
                                                         description=f"Der Benutzer {msg.author} (**{msg.author.id}**) wurde verwarnt.")
                                         embed.add_field(name=f"🎛️ Server:", value=f"{msg.guild.name}", inline=False)
                                         embed.add_field(name=f"👮 Moderator:", value=f"Vulpo#3749", inline=False)

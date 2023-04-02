@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
+from info import getcolour
 ##########
 
 async def isTempChannel(self, member, channel):
@@ -204,7 +205,7 @@ class tempchannel(commands.Cog):
                     category1 = discord.utils.get(interaction.guild.categories, id=int(new_category.id))
                     vc = await interaction.guild.create_voice_channel("Join to create", category=category1)
 
-                    embed = discord.Embed(colour=discord.Colour.blue(),
+                    embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                             description=f"Die Einrichtung des Sprachsystems war erfolgreich.\n{vc.mention}")
                     embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                     await interaction.response.send_message(embed=embed)
@@ -217,7 +218,7 @@ class tempchannel(commands.Cog):
                     category1 = discord.utils.get(interaction.guild.categories, id=int(new_category.id))
                     vc = await interaction.guild.create_voice_channel("Join to create", category=category1)
 
-                    embed = discord.Embed(colour=discord.Colour.blue(),
+                    embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                             description=f"Die Aktualisierung des Sprachsystems war erfolgreich.\n{vc.mention}")
                     embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                     await interaction.response.send_message(embed=embed)
