@@ -5,6 +5,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from info import random_color
+from info import getcolour
 
 class buttons(discord.ui.View):
     def __init__(self, bot=None):
@@ -30,7 +31,7 @@ class buttons(discord.ui.View):
                 b = 0
                 for quiz in result:
                     if a == b:
-                        embed = discord.Embed(color=random_color(), title="Emojiquiz", description="Solltest du Probleme beim Lösen haben, kannst du die Buttons dieser Nachricht benutzen.")
+                        embed = discord.Embed(color=await getcolour(self, interaction.user), title="Emojiquiz", description="Solltest du Probleme beim Lösen haben, kannst du die Buttons dieser Nachricht benutzen.")
                         embed.add_field(name="❓ Gesuchter Begriff", value=quiz[0])
                         embed.add_field(name="❗️ Tipp", value=quiz[2])
                         embed.set_footer(text=f"Das letzte Quiz wurde übersprungen von {interaction.user}.", icon_url=interaction.user.avatar)
@@ -116,7 +117,7 @@ async def answer_correct(self, msg):
             b = 0
             for quiz in result:
                 if a == b:
-                    embed = discord.Embed(color=random_color(), title="Emojiquiz", description="Solltest du Probleme beim Lösen haben, kannst du die Buttons dieser Nachricht benutzen.")
+                    embed = discord.Embed(color=await getcolour(self, msg.author), title="Emojiquiz", description="Solltest du Probleme beim Lösen haben, kannst du die Buttons dieser Nachricht benutzen.")
                     embed.add_field(name="❓ Gesuchter Begriff", value=quiz[0])
                     embed.add_field(name="❗️ Tipp", value=quiz[2])
                     embed.set_footer(text=f"Das letzte Quiz wurde gelöst von {msg.author}.", icon_url=msg.author.avatar)
@@ -180,7 +181,7 @@ class Emojiquiz(commands.Cog):
                         b = 0
                         for quiz in result2:
                             if a == b:
-                                embed = discord.Embed(color=random_color(), title="Emojiquiz", description="Solltest du Probleme beim Lösen haben, kannst du die Buttons dieser Nachricht benutzen.")
+                                embed = discord.Embed(color=await getcolour(self, interaction.user), title="Emojiquiz", description="Solltest du Probleme beim Lösen haben, kannst du die Buttons dieser Nachricht benutzen.")
                                 embed.add_field(name="❓ Gesuchter Begriff", value=quiz[0])
                                 embed.add_field(name="❗️ Tipp", value=quiz[2])
                                 m2 = await kanal.send(embed=embed, view=buttons(self.bot))
@@ -197,7 +198,7 @@ class Emojiquiz(commands.Cog):
                         b = 0
                         for quiz in result2:
                             if a == b:
-                                embed = discord.Embed(color=random_color(), title="Emojiquiz", description="Solltest du Probleme beim Lösen haben, kannst du die Buttons dieser Nachricht benutzen.")
+                                embed = discord.Embed(color=await getcolour(self, interaction.user), title="Emojiquiz", description="Solltest du Probleme beim Lösen haben, kannst du die Buttons dieser Nachricht benutzen.")
                                 embed.add_field(name="❓ Gesuchter Begriff", value=quiz[0])
                                 embed.add_field(name="❗️ Tipp", value=quiz[2])
                                 m2 = await kanal.send(embed=embed, view=buttons(self.bot))

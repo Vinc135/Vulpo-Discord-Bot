@@ -7,6 +7,7 @@ from googletrans import Translator
 import datetime
 import matplotlib.pyplot as plt
 import os
+from info import getcolour
 
 class StatsKanal(discord.ui.Modal, title="Stats Kanal"):
     def __init__(self, bot, kanal=None):
@@ -704,7 +705,7 @@ class Stats(commands.Cog):
                     except:
                         text2 += "Keine Daten"
                     
-                    embed = discord.Embed(colour=member.color, title=f"<:v_stats:1037065930284474398> Statistiken von {member.name}", description=f"""
+                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1037065930284474398> Statistiken von {member.name}", description=f"""
 <:v_chat:1037065910567055370> **Nachrichten Stats:**
 > Insgesammt: {stats1[0]} Nachrichten
 > Jahr {discord.utils.utcnow().__format__('%Y')}: {stats1[1]} Nachrichten
@@ -745,7 +746,7 @@ class Stats(commands.Cog):
                         text += "Keine Daten"
                         
                     stats = await getchannelstats(self, "Textkanal", textkanal, interaction.guild)
-                    embed = discord.Embed(colour=discord.Colour.green(), title=f"<:v_stats:1037065930284474398> Statistiken von {textkanal.name}", description=f"""
+                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1037065930284474398> Statistiken von {textkanal.name}", description=f"""
 <:v_chat:1037065910567055370> **Nachrichten Stats:**
 > Insgesammt: {stats[0]} Nachrichten
 > Jahr {discord.utils.utcnow().__format__('%Y')}: {stats[1]} Nachrichten
@@ -774,7 +775,7 @@ class Stats(commands.Cog):
                         text += "Keine Daten"
                         
                     stats = await getchannelstats(self, "Sprachkanal", sprachkanal, interaction.guild)
-                    embed = discord.Embed(colour=discord.Colour.green(), title=f"<:v_stats:1037065930284474398> Statistiken von {sprachkanal.name}", description=f"""
+                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1037065930284474398> Statistiken von {sprachkanal.name}", description=f"""
 <:v_mikrofon:1037065919282810910> **Aktivität im Sprachkanal:**
 > Insgesammt: {stats[0]} Minuten
 > Jahr {discord.utils.utcnow().__format__('%Y')}: {stats[1]} Minuten
@@ -860,7 +861,7 @@ class Stats(commands.Cog):
         except:
             text4 += f"Keine Daten"
         
-        embed = discord.Embed(colour=discord.Colour.green(), title=f"<:v_stats:1037065930284474398> Statistiken der letzten {tage} Tage", description=f"""
+        embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1037065930284474398> Statistiken der letzten {tage} Tage", description=f"""
 <:v_chat:1037065910567055370> **Aktivste Nutzer in Textkanälen:**
 {text}
 
@@ -987,7 +988,7 @@ class Stats(commands.Cog):
                     plt.xticks(rotation=45)
                     plt.savefig("stats.png")
                     plt.close()
-                    embed = discord.Embed(colour=discord.Colour.green(), title=f"<:v_stats:1037065930284474398> Statistiken der aktivsten {art}", description=f"""
+                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1037065930284474398> Statistiken der aktivsten {art}", description=f"""
 <:v_chat:1037065910567055370> **Aktivste Nutzer in Textkanälen:**
 {text}
 
@@ -1078,7 +1079,7 @@ class Stats(commands.Cog):
                     plt.xticks(rotation=45)
                     plt.savefig("stats.png")
                     plt.close()
-                    embed = discord.Embed(colour=discord.Colour.green(), title=f"<:v_stats:1037065930284474398> Statistiken der aktivsten {art}", description=f"""
+                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1037065930284474398> Statistiken der aktivsten {art}", description=f"""
 <:v_chat:1037065910567055370> **Aktivste Textkanäle:**
 {text}
 
@@ -1121,7 +1122,7 @@ class Stats(commands.Cog):
                     if wel == []:
                         return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Auf diesem Server ist kein Stats-Kanal eingerichtet.**", ephemeral=True)
 
-                    embed = discord.Embed(title="Stats Kanäle", description=f"Die aktuellen Stats Kanäle:", color=discord.Color.orange())
+                    embed = discord.Embed(title="Stats Kanäle", description=f"Die aktuellen Stats Kanäle:", color=await getcolour(self, interaction.user))
                     for ergebnis in wel:
                         g = self.bot.get_guild(int(ergebnis[0]))
                         if g == None:

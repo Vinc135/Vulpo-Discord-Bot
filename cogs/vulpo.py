@@ -8,11 +8,13 @@ import time
 import sys
 import psutil
 from discord import app_commands
-from info import discord_timestamp, get_lang
+from info import discord_timestamp
+from info import getcolour
 
 class Dropdown(discord.ui.Select):
-    def __init__(self, user):
+    def __init__(self, user, farbe):
         selectOptions = [
+            discord.SelectOption(label="Premium", emoji="<:v_ticket:1037065933014958230>"),
             discord.SelectOption(label="Information", emoji="<:v_info:1037065915113676891>"),
             discord.SelectOption(label="Settings & Setup", emoji="<:v_einstellungen:1037067521049759865>"),
             discord.SelectOption(label="Basic Moderation", emoji="<:v_mod:1037065920704696420>"),
@@ -28,10 +30,24 @@ class Dropdown(discord.ui.Select):
         ]
         super().__init__(placeholder="Wähle eine Seite", min_values=1, max_values=1, options=selectOptions, custom_id="Dropdown-Help")
         self.user = user
+        self.farbe = farbe
     async def callback(self, interaction: discord.Interaction):
         if self.user.id != interaction.user.id:
             return await interaction.response.defer(thinking=False, ephemeral=True)
         
+        if self.values[0] == "Premium":
+            anzeige = """
+> <:v_info:1037065915113676891> Spezielle Befehle und Funtkionen, nur für Premium Nutzer.
+
+__<:v_user:1037065935015653476> User Befehle__
+`/premium embedfarbe` Ändere die Farbe aller Embeds, die dir gesendet werden von Vulpo.
+`/premium rangkarte` Ändere das Bild deiner Rangkarte.
+
+__<:v_ticket:1037065933014958230> Premium erhalten__
+Premium ist heiß begehrt. Du kannst es bekommen, indem du ein Patron wirst: https://patreon.com/Vulpo. Um dir deine Vorteile zu sichern, musst du im Supportserver ein Ticket öffnen, mit dem Nachweis dass du es gekauft hast."""
+            embed = discord.Embed(colour=self.farbe, description=anzeige)
+            embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
+            return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Stats":
             anzeige = """
 > <:v_info:1037065915113676891> Vulpos Stats System basiert auf Tracking von Mitgliedern, wie aktiv sie in Text- und Sprachkanälen sind.
@@ -45,7 +61,7 @@ __<:v_einstellungen:1037067521049759865> Team Befehle__
 `/stats blacklist` Setze Kanäle auf die Blacklist für Nachrichten.
 `/stats reset` Setze alle Stats auf 0 zurück.
 `/statschannel` Richte einen Stats-Kanal ein."""
-            embed = discord.Embed(colour=discord.Colour.green(), description=anzeige)
+            embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Auto Moderation":
@@ -72,7 +88,7 @@ __<:v_einstellungen:1037067521049759865> Team Befehle__
 `/blacklist show` Zeigt alle Wörter auf der Blacklist an.
 `/blacklist add` Füge ein Wort der Blacklist hinzu.
 `/blacklist remove` Entferne ein Wort von der Blacklist."""
-            embed = discord.Embed(colour=discord.Colour.green(), description=anzeige)
+            embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Ticketsystem":
@@ -85,7 +101,7 @@ Keine User Befehle.
 __<:v_einstellungen:1037067521049759865> Team Befehle__
 `/createpanel` Erstelle ein Panel, womit User ein Ticket öffnen können.
 `/ticketlog` Richte einen Ticketlog ein."""
-            embed = discord.Embed(colour=discord.Colour.green(), description=anzeige)
+            embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Nachrichten":
@@ -113,7 +129,7 @@ Außerdem:
 Jeder Nutzer kann die Custom Befehle des Tags System nutzen. Wenn erstmal ein Tag erstellt wurde kann jeder User ihn mit `!tag tagname` ausführen.
 
 ❓ Du suchst nach Stats? Sieh dir die Kategorie Stats an! ;)"""
-            embed = discord.Embed(colour=discord.Colour.green(), description=anzeige)
+            embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Information":
@@ -142,7 +158,7 @@ __<:v_user:1037065935015653476> User Befehle__
 
 __<:v_einstellungen:1037067521049759865> Team Befehle__
 Keine Team Befehle."""
-            embed = discord.Embed(colour=discord.Colour.green(), description=anzeige)
+            embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Settings & Setup":
@@ -161,7 +177,7 @@ __<:v_einstellungen:1037067521049759865> Team Befehle__
 `/botrole` Lege eine Botrolle fest.
 `/voicesetup` Erstelle einen "Join to Create" Kanal.
 `/reactionrole` Erstelle Reaktionsrollen."""
-            embed = discord.Embed(colour=discord.Colour.greyple(), description=anzeige)
+            embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Basic Moderation":
@@ -180,7 +196,7 @@ __<:v_einstellungen:1037067521049759865> Team Befehle__
 `/clear between` Lösche alle Nachrichten zwischen zwei Nachrichten eines Kanals.
 
 ❓ Du suchst nach Verwarnungs Befehlen? Guck mal in der Kategorie Auto Moderation nach! ;)"""
-            embed = discord.Embed(colour=discord.Colour.brand_red(), description=anzeige)
+            embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Levelsystem":
@@ -198,7 +214,7 @@ __<:v_einstellungen:1037067521049759865> Team Befehle__
 `/levelsystem block channel/rolle` Richte Channels/Rollen ein, die keine Level sammeln können.
 `/setlevel` Setze einen User zu einem bestimmten Level.
 `/xpboost` Starte einen XP Boost auf deinem Server."""
-            embed = discord.Embed(colour=discord.Colour.blurple(), description=anzeige)
+            embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Giveaway":
@@ -214,7 +230,7 @@ __<:v_einstellungen:1037067521049759865> Team Befehle__
 `/gewinnspiel verwalten` Verwalte Gewinnspiele. 
 `/gewinnspiel bypassrolle` Bearbeite Rollen, die die Bedingungen umgehen. 
 `/gewinnspiel blacklist` Setze Member und Rollen auf die Blacklist."""
-            embed = discord.Embed(colour=discord.Colour.purple(), description=anzeige)
+            embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Fun":
@@ -245,7 +261,7 @@ __<:v_user:1037065935015653476> User Befehle__
 
 __<:v_einstellungen:1037067521049759865> Team Befehle__
 Keine Team Befehle."""
-            embed = discord.Embed(colour=discord.Colour.orange(), description=anzeige)
+            embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Minispiele":
@@ -261,7 +277,7 @@ __<:v_einstellungen:1037067521049759865> Team Befehle__
 `/counting zahl` Stelle die aktuelle Zahl des Counting Kanals ein.
 `/counting disable` Deaktiviere das Minispiel.
 `/guessthenumber` Verwalte das Minispiel 'Guess the number' auf deinem Server."""
-            embed = discord.Embed(colour=discord.Colour.orange(), description=anzeige)
+            embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Economy":
@@ -297,14 +313,14 @@ __<:v_einstellungen:1037067521049759865> Team Befehle__
 **Shop System**
 `/shop item hinzufügen` Füge ein Item dem Shop hinzu.
 `/shop item entfernen` Entferne ein Item aus dem Shop."""
-            embed = discord.Embed(colour=discord.Colour.dark_orange(), description=anzeige)
+            embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             return await interaction.response.edit_message(embed=embed)
 
 class DropdownView(discord.ui.View):
-    def __init__(self, user):
+    def __init__(self, user, farbe):
         super().__init__(timeout=None)
-        self.add_item(Dropdown(user))
+        self.add_item(Dropdown(user, farbe))
 
 class vulpo(commands.Cog):
     def __init__(self, bot):
@@ -314,13 +330,14 @@ class vulpo(commands.Cog):
     
     @commands.Cog.listener()
     async def on_ready(self):
-        self.bot.add_view(DropdownView(None))
+        self.bot.add_view(DropdownView(None, None))
 
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def help(self, interaction: discord.Interaction):
         """Wichtige Links wie invite, support, vote und viele andere Infos."""
+        farbe = await getcolour(self, interaction.user)
         embed = discord.Embed(title="Help Menü", description=f"""
 <:v_info:1037065915113676891> Danke dass du mich benutzt. Hier findest du alle Befehle von mir und wichtige Links.
 Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49jD3VXksp).
@@ -347,10 +364,10 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
 
 **Links**
 [Einladen](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands) **|** [Support](https://discord.gg/49jD3VXksp) **|** [Voten](https://top.gg/bot/925799559576322078/vote)
-""", color=discord.Color.orange())
+""", color=farbe)
         embed.set_author(name="Vulpo", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
         embed.set_thumbnail(url=interaction.guild.icon)
-        await interaction.response.send_message(embed=embed, view=DropdownView(interaction.user))
+        await interaction.response.send_message(embed=embed, view=DropdownView(interaction.user, farbe))
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -365,7 +382,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
                     embed = discord.Embed(title="Du kannst voten", url="https://top.gg/bot/925799559576322078/vote", description="""
 <:v_info:1037065915113676891> Der Vote-Cooldown von 12 Stunden ist abgelaufen. Es wäre sehr schön, wenn du wieder für mich votest.
 
-<:herz:941398727501955113> Als Belohnung für einen weiteren Vote bekommst du **300 🍪 im Economy System** und eine besondere **Rolle in [Vulpos Wald](https://discord.gg/49jD3VXksp)**""", colour=discord.Colour.green())
+<:herz:941398727501955113> Als Belohnung für einen weiteren Vote bekommst du **300 🍪 im Economy System** und eine besondere **Rolle in [Vulpos Wald](https://discord.gg/49jD3VXksp)**""", colour=await getcolour(self, interaction.user))
                     embed.set_footer(text="Danke für deine Unterstützung", icon_url="https://media.discordapp.net/attachments/965302660871884840/965315155816767548/Vulpo_neu.png?width=1572&height=1572")
                     return await interaction.response.send_message(embed=embed)
                 t1 = int(result[0])
@@ -373,7 +390,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
                 embed = discord.Embed(title="Du kannst noch nicht voten", url="https://top.gg/bot/925799559576322078/vote", description=f"""
 <:v_info:1037065915113676891> Der Vote-Cooldown von 12 Stunden ist noch nicht abgelaufen. Du kannst wieder {discord_timestamp(t2, "R")} voten.
 
-<:herz:941398727501955113> Als Belohnung für einen weiteren Vote bekommst du **300 🍪 im Economy System** und eine besondere **Rolle in [Vulpos Wald](https://discord.gg/49jD3VXksp)**""", colour=discord.Colour.yellow())
+<:herz:941398727501955113> Als Belohnung für einen weiteren Vote bekommst du **300 🍪 im Economy System** und eine besondere **Rolle in [Vulpos Wald](https://discord.gg/49jD3VXksp)**""", colour=await getcolour(self, interaction.user))
                 embed.set_footer(text="Danke für deine Unterstützung", icon_url="https://media.discordapp.net/attachments/965302660871884840/965315155816767548/Vulpo_neu.png?width=1572&height=1572")
                 await interaction.response.send_message(embed=embed)
         
@@ -404,7 +421,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
             else:
                 teammember += f", {member}"
 
-        embed = discord.Embed(color=discord.Color.orange(), title="Infos über Vulpo", description=f"""
+        embed = discord.Embed(color=await getcolour(self, interaction.user), title="Infos über Vulpo", description=f"""
 <:v_statusonline:1037071233902182491> Vulpo wurde {discord_timestamp(erstellt2, 'R')} erstellt
 <:v_verifiedbot:1037069972226179182> Vulpo wurde {discord_timestamp(verifiziert, 'R')} verifiziert
 <:v_info:1037065915113676891> Vulpo ist {discord_timestamp(self.t2, 'R')} online gegangen.
@@ -428,7 +445,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def invite(self, interaction: discord.Interaction):
         """Zeigt einen Link um mich einzuladen."""
-        embed = discord.Embed(colour=discord.Colour.blue(), title=f"Vulpo auf anderen Servern verwenden", description=f"Du kannst Vulpo mit [diesem Link](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands) zu deinem Server hinzufügen.", url="https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands")
+        embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"Vulpo auf anderen Servern verwenden", description=f"Du kannst Vulpo mit [diesem Link](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands) zu deinem Server hinzufügen.", url="https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         await interaction.response.send_message(embed=embed)
 
@@ -437,7 +454,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def support(self, interaction: discord.Interaction):
         """Zeigt einen Link für den Support-Server."""
-        embed = discord.Embed(colour=discord.Colour.blue(), title=f"Bekomme Hilfe", description=f"Wenn du Hilfe benötigst, kannst du meinem Supportserver über [diesen Link](https://discord.gg/49jD3VXksp) beitreten.", url="https://discord.gg/49jD3VXksp")
+        embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"Bekomme Hilfe", description=f"Wenn du Hilfe benötigst, kannst du meinem Supportserver über [diesen Link](https://discord.gg/49jD3VXksp) beitreten.", url="https://discord.gg/49jD3VXksp")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         await interaction.response.send_message(embed=embed)
 
@@ -458,14 +475,14 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
 
         bot = round(self.bot.latency * 1000)
         t_3 = time.perf_counter()
-        embed = discord.Embed(title="Internetgeschwindigkeit", description=f"```Bot: {bot} ms\nDatenbank: {time_delta1} ms```", color=discord.Color.orange())
+        embed = discord.Embed(title="Internetgeschwindigkeit", description=f"```Bot: {bot} ms\nDatenbank: {time_delta1} ms```", color=await getcolour(self, interaction.user))
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         await interaction.response.send_message(embed=embed)
 
         #Answer
         t_4 = time.perf_counter()
         time_delta2 = round((t_4 - t_3) * 1000)
-        embed = discord.Embed(title="Internetgeschwindigkeit", description=f"```Bot: {bot} ms\nDatenbank: {time_delta1} ms\nDiscord-Api: {time_delta2} ms```", color=discord.Color.orange())
+        embed = discord.Embed(title="Internetgeschwindigkeit", description=f"```Bot: {bot} ms\nDatenbank: {time_delta1} ms\nDiscord-Api: {time_delta2} ms```", color=await getcolour(self, interaction.user))
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         await interaction.edit_original_response(embed=embed)
 

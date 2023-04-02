@@ -5,6 +5,7 @@ import random
 import asyncio
 from datetime import datetime, timedelta
 from discord import app_commands
+from info import getcolour
 
 class joblist(discord.ui.View):
     def __init__(self, interaction=None, bot=None, s=None):
@@ -20,7 +21,7 @@ class joblist(discord.ui.View):
         if new_page <= 0:
             new_page = 11
         embed = discord.Embed(title=':dividers: Jobliste', description=f"Hier siehst du alle verfügbaren Jobs.\nDu kannst dich für einen Job bewerben mit `/job apply <job>`\n\n" + await job_list(self.s, interaction, new_page),
-                            colour=discord.Colour.green()).set_footer(text=f'Seite {new_page} von 11')
+                            colour=await getcolour(self, interaction.user)).set_footer(text=f'Seite {new_page} von 11')
         await interaction.response.edit_message(embed=embed, content="")
     
     @discord.ui.button(label='Weiter', style=discord.ButtonStyle.green, custom_id="fewgwrgwrtgtg", emoji="➡️")
@@ -30,7 +31,7 @@ class joblist(discord.ui.View):
         if new_page > 11:
             new_page = 1
         embed = discord.Embed(title=':dividers: Jobliste', description=f"Hier siehst du alle verfügbaren Jobs.\nDu kannst dich für einen Job bewerben mit `/job apply <job>`\n\n" + await job_list(self.s, interaction, new_page),
-                            colour=discord.Colour.green()).set_footer(text=f'Seite {new_page} von 11')
+                            colour=await getcolour(self, interaction.user)).set_footer(text=f'Seite {new_page} von 11')
         await interaction.response.edit_message(embed=embed, content="")
 
 ##########
@@ -418,7 +419,7 @@ class economy(commands.Cog):
     async def anzeigen(self, interaction: discord.Interaction):
         """Verwalte dein Geld."""            
         acc = await open_acc(self, interaction.user)
-        em = discord.Embed(title=f"Dein supertolles Konto", color=discord.Color.orange(), description="> Dein Rucksack hat viel Platz. Dort findest du deine Items und deine Cookies.")
+        em = discord.Embed(title=f"Dein supertolles Konto", color=await getcolour(self, interaction.user), description="> Dein Rucksack hat viel Platz. Dort findest du deine Items und deine Cookies.")
         em.add_field(name="Rucksack", value=f"{acc[0]} 🍪")
         em.add_field(name="Bank", value=f"{acc[1]} 🍪")
         em.add_field(name='Beruf', value=f"{acc[2]}, :stopwatch: {acc[3]} Stunden")
@@ -436,7 +437,7 @@ class economy(commands.Cog):
             em.add_field(name="Items", value=string)
         
         em.set_thumbnail(url=interaction.user.avatar)
-        em.set_footer(text="Interesse an einen tägliche steigenden Cookie Bonus? Befehl: /daily", icon_url="https://cdn.discordapp.com/emojis/814202875387183145.png")
+        em.set_footer(text="Interesse an einem täglich steigenden Cookie Bonus? Befehl: /daily", icon_url="https://cdn.discordapp.com/emojis/814202875387183145.png")
         await interaction.response.send_message(embed=em)
 
     @cookies.command()
@@ -485,7 +486,7 @@ class economy(commands.Cog):
         x = random.randint(0, 1000)
         if int(x) <= 400:
             earnings = random.randint(30, 50)
-            em = discord.Embed(title=f"Bettel command", description=f"Ein alter Mann hat dir **{earnings}** 🍪 gegeben.", color=discord.Color.gold())
+            em = discord.Embed(title=f"Bettel command", description=f"Ein alter Mann hat dir **{earnings}** 🍪 gegeben.", color=await getcolour(self, interaction.user))
             em.set_footer(text="Du kannst mit dem Command work schneller Geld verdienen.",
                           icon_url="https://cdn.discordapp.com/emojis/814202875387183145.png")
             em.set_author(name=interaction.user, icon_url=interaction.user.avatar)
@@ -496,7 +497,7 @@ class economy(commands.Cog):
             earnings = random.randint(1, 30)
             em = discord.Embed(title=f"Bettel command",
                                description=f"Jemand gab dir **{earnings}** 🍪.",
-                               color=discord.Color.gold())
+                               color=await getcolour(self, interaction.user))
             em.set_footer(text="Du kannst mit dem Command work schneller Geld verdienen.",
                           icon_url="https://cdn.discordapp.com/emojis/814202875387183145.png")
             em.set_author(name=interaction.user, icon_url=interaction.user.avatar)
@@ -506,7 +507,7 @@ class economy(commands.Cog):
         if int(x) <= 999:
             em = discord.Embed(title=f"Bettel command",
                                description=f"Du hast nichts bekommen",
-                               color=discord.Color.red())
+                               color=await getcolour(self, interaction.user))
             em.set_footer(text="Du kannst mit dem Command work schneller Geld verdienen.",
                           icon_url="https://cdn.discordapp.com/emojis/814202875387183145.png")
             em.set_author(name=interaction.user, icon_url=interaction.user.avatar)
@@ -516,7 +517,7 @@ class economy(commands.Cog):
             earnings = random.randint(1000, 10000)
             em = discord.Embed(title=f"Bettel command",
                                description=f"Du hast so viel Glück!!!\nDie Chance, dies zu bekommen, ist 1 zu 1000\nDu hast {earnings} 🍪 erhalten.",
-                               color=discord.Color.red())
+                               color=await getcolour(self, interaction.user))
             em.set_footer(text="Du kannst mit dem Command work schneller Geld verdienen.",
                           icon_url="https://cdn.discordapp.com/emojis/814202875387183145.png")
             em.set_author(name=interaction.user, icon_url=interaction.user.avatar)
@@ -544,7 +545,7 @@ class economy(commands.Cog):
                         await cursor.execute("UPDATE economy_streak SET timestamp = (%s) WHERE userID = (%s)", (str(now.timestamp()), interaction.user.id))
                         earnings = 50
                         await update_acc(self, interaction.user, "rucksack", earnings, 0)
-                        embed = discord.Embed(title="Täglicher Bonus", description=f"Du hast deinen täglichen Bonus eingefordert und dafür **{earnings} 🍪** bekommen. Leider warst du zu spät und dein Daily Streak von **{streak}🔥** wurde auf **1** zurückgesetzt.", color=discord.Colour.red())
+                        embed = discord.Embed(title="Täglicher Bonus", description=f"Du hast deinen täglichen Bonus eingefordert und dafür **{earnings} 🍪** bekommen. Leider warst du zu spät und dein Daily Streak von **{streak}🔥** wurde auf **1** zurückgesetzt.", color=await getcolour(self, interaction.user))
                         await interaction.response.send_message(embed=embed)
                         return
                     else:
@@ -552,7 +553,7 @@ class economy(commands.Cog):
                         await cursor.execute("UPDATE economy_streak SET timestamp = (%s) WHERE userID = (%s)", (str(now.timestamp()), interaction.user.id))
                         earnings = 50 + ((streak + 1) * 5)
                         await update_acc(self, interaction.user, "rucksack", earnings, 0)
-                        embed = discord.Embed(title="Täglicher Bonus", description=f"Du hast deinen täglichen Bonus eingefordert und dafür **{earnings} 🍪** bekommen. Du kamst rechtzeitig und hast deinen Streak erhöht.", color=discord.Colour.orange())
+                        embed = discord.Embed(title="Täglicher Bonus", description=f"Du hast deinen täglichen Bonus eingefordert und dafür **{earnings} 🍪** bekommen. Du kamst rechtzeitig und hast deinen Streak erhöht.", color=await getcolour(self, interaction.user))
                         embed.set_footer(text=f"Er liegt nun bei {streak + 1}🔥", icon_url="https://cdn.discordapp.com/emojis/814202875387183145.png")
                         await interaction.response.send_message(embed=embed)
                         return
@@ -560,7 +561,7 @@ class economy(commands.Cog):
                     await cursor.execute("INSERT INTO economy_streak(streak, timestamp, userID) VALUES(%s,%s,%s)", (1, str(now.timestamp()), interaction.user.id))
                     earnings = 50
                     await update_acc(self, interaction.user, "rucksack", earnings, 0)
-                    embed = discord.Embed(title="Täglicher Bonus", description=f"Du hast deinen täglichen Bonus eingefordert und dafür **{earnings} 🍪** bekommen. Oh, du bist neu 🔎! Wenn du innerhalb von 48 Stunden diesen Befehl erneut ausführst, bekommst du immer mehr Cookies.", color=discord.Colour.orange())
+                    embed = discord.Embed(title="Täglicher Bonus", description=f"Du hast deinen täglichen Bonus eingefordert und dafür **{earnings} 🍪** bekommen. Oh, du bist neu 🔎! Wenn du innerhalb von 48 Stunden diesen Befehl erneut ausführst, bekommst du immer mehr Cookies.", color=await getcolour(self, interaction.user))
                     embed.set_footer(text=f"Er liegt nun bei 1🔥", icon_url="https://cdn.discordapp.com/emojis/814202875387183145.png")
                     await interaction.response.send_message(embed=embed)
 
@@ -579,7 +580,7 @@ class economy(commands.Cog):
                         text = [f"Du hast als **{beruf}** gearbeitet und hast dafür **{earnings} 🍪** bekommen!", f"Eine erfolgreiche Arbeitsstunde als **{beruf}** hat dir **{earnings} 🍪** gebracht!", f"Nach einer harten Arbeitsstunde als **{beruf}** hat dich dein Chef mit **{earnings} 🍪** bezahlt!"]
                         endtext = random.choice(text)
                         await update_acc(self, interaction.user, "bank", earnings, 0)
-                        embed = discord.Embed(title="Du hast gearbeitet", description=endtext, color=discord.Colour.orange())
+                        embed = discord.Embed(title="Du hast gearbeitet", description=endtext, color=await getcolour(self, interaction.user))
                         acc = await open_acc(self, interaction.user)
                         embed.set_footer(text=f"Deine Arbeitsstunden: {acc[3]}", icon_url="https://cdn.discordapp.com/emojis/814202875387183145.png")
                         await interaction.response.send_message(embed=embed)
@@ -626,7 +627,7 @@ class economy(commands.Cog):
             x = random.randint(1, 100)
             if x < 25:
                 strafe = random.randint(50, rucksack)
-                embed = discord.Embed(colour=discord.Colour.red(), title="Guter Versuch!",
+                embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Guter Versuch!",
                                         description=f"Du wurdest beim Ausrauben von {user} erwischt! Du musst **{strafe} 🍪** als Strafe zahlen.")
                 embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                 await update_acc(self, interaction.user, "rucksack", 0, strafe)
@@ -635,7 +636,7 @@ class economy(commands.Cog):
 
             if x > 25:
                 earnings = random.randint(50, rucksack)
-                embed = discord.Embed(colour=discord.Colour.green(), title="Glück gehabt!",
+                embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Glück gehabt!",
                                         description=f"Du hast {user} erfolgreich ausgeraubt und **{earnings} 🍪** bekommen.")
                 embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                 await update_acc(self, interaction.user, "rucksack", earnings, 0)
@@ -665,7 +666,7 @@ class economy(commands.Cog):
         e3 = random.choice(choices)
 
         # embed1
-        embed1 = discord.Embed(colour=discord.Colour.blurple(),
+        embed1 = discord.Embed(colour=await getcolour(self, interaction.user),
                                description="🎰 Slots")
         embed1.add_field(name=f"Slots:",
                          value=f"[<a:slot:1037066744105291918> <a:slot:1037066744105291918> <a:slot:1037066744105291918>]",
@@ -674,7 +675,7 @@ class economy(commands.Cog):
         embed1.set_author(name=interaction.user, icon_url=interaction.user.avatar)
 
         # embed2
-        embed2 = discord.Embed(colour=discord.Colour.blurple(),
+        embed2 = discord.Embed(colour=await getcolour(self, interaction.user),
                                description="🎰 Slots")
         embed2.add_field(name=f"Slots", value=f"[{e1} <a:slot:1037066744105291918> <a:slot:1037066744105291918>]",
                          inline=False)
@@ -682,7 +683,7 @@ class economy(commands.Cog):
         embed2.set_author(name=interaction.user, icon_url=interaction.user.avatar)
 
         # embed3
-        embed3 = discord.Embed(colour=discord.Colour.blurple(),
+        embed3 = discord.Embed(colour=await getcolour(self, interaction.user),
                                description="🎰 Slots")
         embed3.add_field(name=f"Slots", value=f"[{e1} {e2} <a:slot:1037066744105291918>]", inline=False)
         embed3.add_field(name="💰 Einsatz", value=f"{betrag} 🍪", inline=False)
@@ -696,7 +697,7 @@ class economy(commands.Cog):
         await interaction.edit_original_response(embed=embed3)
         if e1 == e2 == e3:
             await asyncio.sleep(1.5)
-            embed4 = discord.Embed(colour=discord.Colour.gold(),
+            embed4 = discord.Embed(colour=await getcolour(self, interaction.user),
                                     description="🎰 Slots")
             embed4.add_field(name=f"Slots", value=f"[{e1} {e2} {e3}]", inline=False)
             embed4.add_field(name="🏆 Gewinn", value=f"Du gewinnst {betrag * 3} 🍪",
@@ -707,7 +708,7 @@ class economy(commands.Cog):
             return
         if e1 == e3 != e2 or e1 == e2 != e3 or e2 == e1 != e3 or e2 == e3 != e1 or e3 == e1 != e2 or e3 == e2 != e1:
             await asyncio.sleep(1.5)
-            embed4 = discord.Embed(colour=discord.Colour.green(),
+            embed4 = discord.Embed(colour=await getcolour(self, interaction.user),
                                     description="🎰 Slots")
             embed4.add_field(name=f"Slots", value=f"[{e1} {e2} {e3}]", inline=False)
             embed4.add_field(name="💰 Unentschieden", value=f"Du behältst {betrag} 🍪",
@@ -717,7 +718,7 @@ class economy(commands.Cog):
             return
         else:
             await asyncio.sleep(1.5)
-            embed4 = discord.Embed(colour=discord.Colour.red(),
+            embed4 = discord.Embed(colour=await getcolour(self, interaction.user),
                                     description="🎰 Slots")
             embed4.add_field(name=f"Slots", value=f"[{e1} {e2} {e3}]", inline=False)
             embed4.add_field(name="💰 Verloren", value=f"Du verlierst {betrag} 🍪",
@@ -747,7 +748,7 @@ class economy(commands.Cog):
             await interaction.response.send_message(f"<:v_kreuz:1049388811353858069> Du hast nicht so viel Geld in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
             return
         embed = discord.Embed(
-            color=discord.Color.orange(),
+            color=await getcolour(self, interaction.user),
             description=f"✊ Schere, Stein oder Papier?\nEinsatz: {betrag} 🍪",
             timestamp=datetime.utcnow()
         )
@@ -774,24 +775,24 @@ class economy(commands.Cog):
                     if int(user_hours) >= job["req"]:
                         await set_job(self, interaction.user, beruf)
                         success_embed = discord.Embed(description=f'Herzlichen Glückwunsch! Deine Bewerbung als **{beruf}** wurde angenommen.',
-                                                        colour=discord.Colour.green())
+                                                        colour=await getcolour(self, interaction.user))
                         await interaction.response.send_message(embed=success_embed)
                         return
                     else:
                         not_enough_hours_error_embed = discord.Embed(description=f'Um sich als {beruf} zu bewerben, musst du mindestens **{job["req"]}** Stunden gearbeitet haben.',
-                                                                        color=discord.Colour.red())
+                                                                        color=await getcolour(self, interaction.user))
                         await interaction.response.send_message(embed=not_enough_hours_error_embed)
                         return
             if a >= 53:
                 not_a_job_error_embed = discord.Embed(description=f"Der Job **{beruf}** existiert nicht. Schau dir alle Jobs mit dem Command `/job list` an.",
-                                                    colour=discord.Colour.red())
+                                                    colour=await getcolour(self, interaction.user))
                 await interaction.response.send_message(embed=not_a_job_error_embed)
                 return
         else:
             active_job = await get_job(self, interaction.user)
             active_job_error_embed = discord.Embed(description=f'Du bist derzeit noch als **{active_job}** angestellt!\n'
                                                                 f'Beende deinen Job als **{active_job}** mit `/job quit`',
-                                                    colour=discord.Colour.red())
+                                                    colour=await getcolour(self, interaction.user))
             await interaction.response.send_message(embed=active_job_error_embed)
             return
 
@@ -802,7 +803,7 @@ class economy(commands.Cog):
         job = await get_job(self, interaction.user)
         if job != "Kein Job":
             success_embed = discord.Embed(description=f'Du hast deinen Job als **{job}** gekündigt.',
-                                          colour=discord.Colour.green())
+                                          colour=await getcolour(self, interaction.user))
             await set_job(self, interaction.user, "Kein Job")
             await interaction.response.send_message(embed=success_embed)
             return
@@ -816,7 +817,7 @@ class economy(commands.Cog):
         """Erhalte eine Liste aller Jobs."""
         await interaction.response.send_message(embed=discord.Embed(title=':dividers: Jobliste',
                                                                     description=f"Hier siehst du alle verfügbaren Jobs.\nDu kannst dich für einen Job bewerben mit `/job apply <job>`\n\n" + await job_list(self, interaction, 1),
-                                                                    colour=discord.Colour.green()).set_footer(text='Seite 1 von 11'), view=joblist(interaction, self.bot, self))
+                                                                    colour=await getcolour(self, interaction.user)).set_footer(text='Seite 1 von 11'), view=joblist(interaction, self.bot, self))
     
     shop = app_commands.Group(name='shop', description='Erstelle Items für deinen Server. Nutzer können diese kaufen.', guild_only=True)
     item = app_commands.Group(name='item', description='Erstelle Items für deinen Server. Nutzer können diese kaufen.', parent=shop, guild_only=True)
@@ -828,11 +829,11 @@ class economy(commands.Cog):
         item = await getshopitem(self, interaction.guild, titel)
         if item is False:
             await addshopitem(self, interaction.guild, titel, beschreibung, kaufpreis)
-            embed = discord.Embed(color=discord.Color.green(), title="Item hinzugefügt", description=f"Das Item {titel} wurde zum Shop dieses Servers hinzugefügt.")
+            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item hinzugefügt", description=f"Das Item {titel} wurde zum Shop dieses Servers hinzugefügt.")
             await interaction.response.send_message(embed=embed)
             return
         if item is True:
-            embed = discord.Embed(color=discord.Color.red(), title="Item bereits vorhanden", description=f"Das Item {titel} gibt es bereits im Shop dieses Servers. Bitte wähle einen anderen Namen für das Item.")
+            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item bereits vorhanden", description=f"Das Item {titel} gibt es bereits im Shop dieses Servers. Bitte wähle einen anderen Namen für das Item.")
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @item.command()
@@ -842,11 +843,11 @@ class economy(commands.Cog):
         item = await getshopitem(self, interaction.guild, titel)
         if item is True:
             await removeshopitem(self, interaction.guild, titel)
-            embed = discord.Embed(color=discord.Color.green(), title="Item gelöscht", description=f"Das Item {titel} wurde aus dem Shop dieses Servers gelöscht.")
+            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item gelöscht", description=f"Das Item {titel} wurde aus dem Shop dieses Servers gelöscht.")
             await interaction.response.send_message(embed=embed)
             return
         if item is False:
-            embed = discord.Embed(color=discord.Color.red(), title="Item nicht vorhanden", description=f"Das Item {titel} gibt es nicht im Shop dieses Servers. Bitte gib den korrekten Namen für das Item an.")
+            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item nicht vorhanden", description=f"Das Item {titel} gibt es nicht im Shop dieses Servers. Bitte gib den korrekten Namen für das Item an.")
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @shop.command()
@@ -854,18 +855,18 @@ class economy(commands.Cog):
         """Zeigt dir alle Items im Shop."""
         items = await listshopitems(self, interaction.guild)
         if items == False:
-            embed = discord.Embed(color=discord.Color.red(), title="Keine Items vorhanden", description=f"Es gibt keine Items in dem Shop dieses Servers.\nFüge Items hinzu mit dem Command `/shop item hinzufügen`")
+            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Keine Items vorhanden", description=f"Es gibt keine Items in dem Shop dieses Servers.\nFüge Items hinzu mit dem Command `/shop item hinzufügen`")
             await interaction.response.send_message(embed=embed, ephemeral=True)
             return
         else:
             a = 0
-            embed = discord.Embed(color=discord.Color.orange(), title="Alle Items dieses Servers", description=f"Dieser Server hat ein paar Items im Shop.")
+            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Alle Items dieses Servers", description=f"Dieser Server hat ein paar Items im Shop.")
             for item in items:
                 a += 1
                 #guildID, titel, beschreibung, preis
                 embed.add_field(name=item[1], value=f"{item[2]}\n**Preis:** {item[3]}")
             if a == 0:
-                embed = discord.Embed(color=discord.Color.red(), title="Keine Items vorhanden", description=f"Es gibt keine Items in dem Shop dieses Servers.\nFüge Items hinzu mit dem Command `/shop item hinzufügen`")
+                embed = discord.Embed(color=await getcolour(self, interaction.user), title="Keine Items vorhanden", description=f"Es gibt keine Items in dem Shop dieses Servers.\nFüge Items hinzu mit dem Command `/shop item hinzufügen`")
                 await interaction.response.send_message(embed=embed, ephemeral=True)
                 return
             await interaction.response.send_message(embed=embed)
@@ -875,7 +876,7 @@ class economy(commands.Cog):
         """Kaufe ein Item aus dem Shop."""
         i = await getshopitem(self, interaction.guild, item)
         if i == False:
-            embed = discord.Embed(color=discord.Color.red(), title="Item nicht vorhanden", description=f"Das Item {item} gibt es nicht im Shop dieses Servers. Bitte gib den korrekten Namen für das Item an.")
+            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item nicht vorhanden", description=f"Das Item {item} gibt es nicht im Shop dieses Servers. Bitte gib den korrekten Namen für das Item an.")
             await interaction.response.send_message(embed=embed)
             return
         if i == True:
@@ -884,7 +885,7 @@ class economy(commands.Cog):
                     await cursor.execute("SELECT preis FROM economy_shop WHERE guildID = (%s) AND titel = (%s)", (interaction.guild.id, item))
                     result = await cursor.fetchone()
                     if result is None:
-                        embed = discord.Embed(color=discord.Color.red(), title="Item nicht vorhanden", description=f"Das Item {item} gibt es nicht im Shop dieses Servers. Bitte gib den korrekten Namen für das Item an.")
+                        embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item nicht vorhanden", description=f"Das Item {item} gibt es nicht im Shop dieses Servers. Bitte gib den korrekten Namen für das Item an.")
                         await interaction.response.send_message(embed=embed, ephemeral=True)
                         return
                     else:
@@ -892,11 +893,11 @@ class economy(commands.Cog):
                         if canbuy == True:
                             await buyitem(self, interaction.user, interaction.guild, item)
                             await update_acc(self, interaction.user, "rucksack", 0, result[0])
-                            embed = discord.Embed(color=discord.Color.green(), title="Item gekauft", description=f"Das Item {item} wurde von dir gekauft. Ich habe es für dich in deinen Rucksack getan!")
+                            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item gekauft", description=f"Das Item {item} wurde von dir gekauft. Ich habe es für dich in deinen Rucksack getan!")
                             await interaction.response.send_message(embed=embed)
                             return
                         if canbuy == False:
-                            embed = discord.Embed(color=discord.Color.red(), title="Item nicht gekauft", description=f"Das Item {item} wurde von dir nicht gekauft. Du hast zu wenig Geld in deinem Rucksack!")
+                            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item nicht gekauft", description=f"Das Item {item} wurde von dir nicht gekauft. Du hast zu wenig Geld in deinem Rucksack!")
                             await interaction.response.send_message(embed=embed, ephemeral=True)
                             return
 
@@ -905,17 +906,17 @@ class economy(commands.Cog):
         """Zeigt alle deine gekauften Items vom Shop."""
         items = await getuseritems(self, interaction.user)
         if items == False:
-            embed = discord.Embed(color=discord.Color.red(), title="Keine Items vorhanden", description=f"Es gibt keine Items in deinem Rucksack.\nKaufe Items mit dem Command `/shop item kaufen`")
+            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Keine Items vorhanden", description=f"Es gibt keine Items in deinem Rucksack.\nKaufe Items mit dem Command `/shop item kaufen`")
             await interaction.response.send_message(embed=embed, ephemeral=True)
             return
         else:
             a = 0
-            embed = discord.Embed(color=discord.Color.orange(), title="Alle Items in deinem Rucksack", description=f"In deinem Rucksack sind ein paar Items.")
+            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Alle Items in deinem Rucksack", description=f"In deinem Rucksack sind ein paar Items.")
             for item in items:
                 a += 1
                 embed.add_field(name=item[1], value=f"{item[2]}\n**Hat gekostet:** {item[3]}")
             if a == 0:
-                embed = discord.Embed(color=discord.Color.red(), title="Keine Items vorhanden", description=f"Es gibt keine Items in deinem Rucksack.\nKaufe Items mit dem Command `/shop item meine`")
+                embed = discord.Embed(color=await getcolour(self, interaction.user), title="Keine Items vorhanden", description=f"Es gibt keine Items in deinem Rucksack.\nKaufe Items mit dem Command `/shop item meine`")
                 await interaction.response.send_message(embed=embed, ephemeral=True)
                 return
             await interaction.response.send_message(embed=embed)
@@ -925,7 +926,7 @@ class economy(commands.Cog):
         """Verkaufe ein Item aus deinem Rucksack. Du bekommst zufällige Prozente des Kaufpreises wieder. Prozente im Bereich von 65% bis 115%"""
         items = await getuseritems(self, interaction.user)
         if items == False:
-            embed = discord.Embed(color=discord.Color.red(), title="Keine Items vorhanden", description=f"Es gibt keine Items in deinem Rucksack.\nKaufe Items mit dem Command `/shop item kaufen`")
+            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Keine Items vorhanden", description=f"Es gibt keine Items in deinem Rucksack.\nKaufe Items mit dem Command `/shop item kaufen`")
             await interaction.response.send_message(embed=embed, ephemeral=True)
             return
         else:
@@ -937,7 +938,7 @@ class economy(commands.Cog):
                     verkaufspreis = round(Prozente * int(preis[0]))
                     await sellitem(self, interaction.user, item)
                     await update_acc(self, interaction.user, "rucksack", verkaufspreis, 0)
-                    embed = discord.Embed(color=discord.Color.green(), title="Item verkauft", description=f"Das Item {item} wurde für {verkaufspreis} 🍪 verkauft. Du hast es nun nicht mehr im Rucksack.")
+                    embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item verkauft", description=f"Das Item {item} wurde für {verkaufspreis} 🍪 verkauft. Du hast es nun nicht mehr im Rucksack.")
                     await interaction.response.send_message(embed=embed)
             
 async def setup(bot):

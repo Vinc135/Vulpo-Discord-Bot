@@ -2,10 +2,31 @@ import discord
 from discord.ext import commands
 import asyncio
 import sys
+from info import getcolour
 
 class owner(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.command()
+    @commands.guild_only()
+    async def cog(self, ctx, arg, name):
+        if ctx.author.id == 835782971235368960 or ctx.author.id == 824378909985341451:
+            try:
+                if arg == "load":
+                    cogname = f"cogs.{name}"
+                    await self.bot.load_extension(cogname)
+                    await ctx.send(f"📥 cogs.{name}")
+                if arg == "reload":
+                    cogname = f"cogs.{name}"
+                    await self.bot.reload_extension(cogname)
+                    await ctx.send(f"🔄 cogs.{name}")
+                if arg == "unload":
+                    cogname = f"cogs.{name}"
+                    await self.bot.unload_extension(cogname)
+                    await ctx.send(f"📤 cogs.{name}")
+            except Exception as e:
+                await ctx.send(f"```py\n{e}\n```")
 
     @commands.command(usage="<Benutzer/ID> <Nachricht>")
     @commands.is_owner()

@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
+from info import getcolour
 #########
 class Modal(discord.ui.Modal, title="Modal"):
     def __init__(self, dict=None, id=None, bot=None):
@@ -18,7 +19,7 @@ class Modal(discord.ui.Modal, title="Modal"):
                 result = await cursor.fetchone()
                 channel = interaction.guild.get_channel(int(result[0]))
                 if channel:
-                    embed = discord.Embed(color=discord.Color.orange(), title="Neues Formular", description=f"Das Formular wurde gesendet von {interaction.user.mention} ({interaction.user.id}).")
+                    embed = discord.Embed(color=await getcolour(self, interaction.user), title="Neues Formular", description=f"Das Formular wurde gesendet von {interaction.user.mention} ({interaction.user.id}).")
                     for answer in self.children:
                         embed.add_field(name=answer.label, value=answer.value, inline=False)
                     embed.set_thumbnail(url=interaction.user.avatar)
@@ -56,7 +57,7 @@ class fertig(discord.ui.Modal, title="Erstelle ein Embed"):
         emb = interaction.message.embeds[0]
         if emb.fields == []:
             return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du musst zuerst ein paar Optionen festlegen.**", ephemeral=True)
-        embed = discord.Embed(title=self.children[0].value, description=self.children[1].value, color=discord.Color.orange())
+        embed = discord.Embed(title=self.children[0].value, description=self.children[1].value, color=await getcolour(self, interaction.user))
         if self.children[2].value:
             embed.set_thumbnail(url=self.children[2].value)
         if self.children[3].value:
@@ -90,7 +91,7 @@ class frage_hinzufügen(discord.ui.Modal, title="Füge eine Frage hinzu"):
     async def on_submit(self, interaction: discord.Interaction):
         embed = interaction.message.embeds[0]
         embed.add_field(name=self.children[0].value, value=self.children[1].value)
-        embed.color = discord.Color.green()
+        embed.color = await getcolour(self, interaction.user)
         await interaction.message.edit(content="", embed=embed)
         await interaction.response.send_message("**<:v_haken:1048677657040134195> Frage wurde hinzugefügt.**", ephemeral=True)
                 
@@ -149,7 +150,7 @@ class modal(commands.Cog):
     @app_commands.checks.has_permissions(manage_roles=True)
     async def modal(self, interaction: discord.Interaction, empfangskanal: discord.TextChannel):
         """Erstelle Modals."""
-        embed = discord.Embed(color=discord.Color.gold(), title="Modal Setup", description="Hier kannst du mithilfe von Buttons, Fragen zum Modal hinzufügen.")
+        embed = discord.Embed(color=await getcolour(self, interaction.user), title="Modal Setup", description="Hier kannst du mithilfe von Buttons, Fragen zum Modal hinzufügen.")
         await interaction.response.send_message(embed=embed, view=setup_select(self.bot, interaction.user, empfangskanal.id))
 
 async def setup(bot):

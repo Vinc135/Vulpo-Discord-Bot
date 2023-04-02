@@ -8,7 +8,7 @@ import aiohttp
 from PIL import Image
 from io import BytesIO
 from discord import app_commands
-
+from info import getcolour
 
 class bilder(commands.Cog):
     def __init__(self, bot):
@@ -29,7 +29,7 @@ class bilder(commands.Cog):
             pfp = pfp.resize((640,640))
             wanted.paste(pfp, (335, 565))
             wanted.save("profile.jpg")
-            embed = discord.Embed(title=" ", description=f"**{member} wird gesucht!**", colour=discord.Colour.blue())
+            embed = discord.Embed(title=" ", description=f"**{member} wird gesucht!**", colour=await getcolour(self, interaction.user))
             embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
             file = discord.File("profile.jpg", filename="profile.jpg")
             embed.set_image(url="attachment://profile.jpg")
@@ -51,7 +51,7 @@ class bilder(commands.Cog):
             img = img.resize((16, 16))
             img = img.resize(old)
             img.save('pix.png')
-            embed = discord.Embed(title=" ", description=f"**{member} wurde verpixelt!**", colour=discord.Colour.blue())
+            embed = discord.Embed(title=" ", description=f"**{member} wurde verpixelt!**", colour=await getcolour(self, interaction.user))
             embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
             file = discord.File("pix.png", filename="pix.png")
             embed.set_image(url="attachment://pix.png")
@@ -74,7 +74,7 @@ class bilder(commands.Cog):
                 else:
                     data = io.BytesIO(await r.read())
                     file = discord.File(data, 'triggered.gif')
-                    embed = discord.Embed(title=" ", description="**Geliefert!**", colour=discord.Colour.blue())
+                    embed = discord.Embed(title=" ", description="**Geliefert!**", colour=await getcolour(self, interaction.user))
                     embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
                     embed.set_image(url="attachment://triggered.gif")
                     await interaction.response.send_message(file=file, embed=embed)
@@ -91,7 +91,7 @@ class bilder(commands.Cog):
                     async with cs.get("http://aws.random.cat/meow") as r:
                         data = await r.json()
 
-                        embed = discord.Embed(title="Miau")
+                        embed = discord.Embed(title="Miau", color=await getcolour(self, interaction.user))
                         embed.set_image(url=data['file'])
                         embed.set_footer(text="http://random.cat/")
 
@@ -115,7 +115,7 @@ class bilder(commands.Cog):
                 else:
                     data = io.BytesIO(await r.read())
                     file=discord.File(data, 'triggered.gif')
-                    embed = discord.Embed(title=" ", description="**Genervt!!!**", colour=discord.Colour.blue())
+                    embed = discord.Embed(title=" ", description="**Genervt!!!**", colour=await getcolour(self, interaction.user))
                     embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
                     embed.set_image(url="attachment://triggered.gif")
                     await interaction.response.send_message(file=file, embed=embed)
@@ -129,7 +129,7 @@ class bilder(commands.Cog):
         try:
             link =f'https://some-random-api.ml/canvas/colorviewer?hex={hexcode}'
 
-            embed = discord.Embed(color=discord.Color.light_gray(),title=f"**Hier die Farbe** **#{hexcode}**")
+            embed = discord.Embed(color=await getcolour(self, interaction.user), title=f"**Hier die Farbe** **#{hexcode}**")
             embed.set_image(url=link)
             embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
             embed.set_footer(text="HEX Code: (a-f, 1-9) up to 6 characters")
@@ -155,7 +155,7 @@ class bilder(commands.Cog):
                 else:
                     data = io.BytesIO(await r.read())
                     file=discord.File(data, 'triggered.gif')
-                    embed = discord.Embed(title=" ", description="**Schwul**!", colour=discord.Colour.blue())
+                    embed = discord.Embed(title=" ", description="**Schwul**!", colour=await getcolour(self, interaction.user))
                     embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
                     embed.set_image(url="attachment://triggered.gif")
                     await interaction.response.send_message(file=file, embed=embed)
@@ -178,7 +178,7 @@ class bilder(commands.Cog):
                 downs = res[0]['data']['children'][0]['data']['downs']
                 comments = res[0]['data']['children'][0]['data']['num_comments']
 
-                embed = discord.Embed(colour=discord.Colour.blue(), title=title, url=url)
+                embed = discord.Embed(colour=await getcolour(self, interaction.user), title=title, url=url)
                 embed.set_image(url=image)
                 embed.set_footer(text=f"🔺 {ups} | 🔻 {downs} | 💬 {comments} ")
                 await interaction.response.send_message(embed=embed, content=None)

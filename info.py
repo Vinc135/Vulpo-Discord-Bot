@@ -4,6 +4,23 @@ from typing import Literal
 import random
 import datetime
 
+async def getcolour(self, user):
+    async with self.bot.pool.acquire() as conn:
+        async with conn.cursor() as cursor:
+            await cursor.execute("SELECT status FROM premium WHERE userID = (%s)", (user.id))
+            status = await cursor.fetchone()
+            if status == None:
+                return discord.Colour.orange()
+            if status[0] == 0:
+                return discord.Colour.orange()
+            if status[0] == 1:
+                await cursor.execute("SELECT farbe FROM embedfarben WHERE userID = (%s)", (user.id))
+                farbe = await cursor.fetchone()
+                if farbe == None:
+                    return discord.Colour.orange()
+                else:
+                    return discord.Colour(int(farbe[0], 16))
+
 async def checkstatus(self, guild):
     async with self.bot.pool.acquire() as conn:
         async with conn.cursor() as cursor:

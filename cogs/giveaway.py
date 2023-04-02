@@ -7,10 +7,11 @@ from info import giveaway_end, discord_timestamp, convert
 from discord import app_commands
 import typing
 import pytz
+from info import getcolour
      
 async def teilnahme_angenommen(self, interaction: discord.Interaction, result):
     t2 = datetime.datetime.fromtimestamp(int(result[4]))
-    embed = discord.Embed(colour=discord.Color.green(), title=result[5], description=f"""
+    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=result[5], description=f"""
 `🤖` · [Lade den Bot hier ein](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands)
 
 `🎉` · Erfolgreich teilgenommen auf [{interaction.guild.name}]({interaction.message.jump_url})
@@ -58,7 +59,7 @@ async def teilnahme_angenommen(self, interaction: discord.Interaction, result):
            
 async def teilnahme_abgelehnt(self, interaction: discord.Interaction, grund, result):
     t2 = datetime.datetime.fromtimestamp(int(result[4]))
-    embed = discord.Embed(colour=discord.Color.red(), title=result[5], description=f"""
+    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=result[5], description=f"""
 `🤖` · [Lade den Bot hier ein](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands)
 
 `🎉` · Nicht erfolgreich teilgenommen auf [{interaction.guild.name}]({interaction.message.jump_url})
@@ -336,7 +337,7 @@ class giveaway(commands.Cog):
                     result3 = await cursor.fetchall()
                     if result3 == ():
                         return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Es gibt keine aktiven Gewinnspiele auf diesem Server.**", ephemeral=True)
-                    embed = discord.Embed(colour=discord.Colour.orange(), title="Gewinnspiele", description="Alle aktiven Gewinnspiele von diesem Server findest du in dieser Nachricht.")
+                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Gewinnspiele", description="Alle aktiven Gewinnspiele von diesem Server findest du in dieser Nachricht.")
                     for gewinnspiel in result3:
                         kanal3 = interaction.guild.get_channel(int(gewinnspiel[1]))
                         if kanal3 == None:
@@ -379,7 +380,7 @@ class giveaway(commands.Cog):
                     result3 = await cursor.fetchall()
                     if result3 == None:
                         return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Auf diesem Server gibt es keine Bypassrollen.**", ephemeral=True)
-                    embed = discord.Embed(colour=discord.Colour.orange(), title="Gewinnspiele", description="Alle aktiven Gewinnspiele von diesem Server findest du in dieser Nachricht.")
+                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Gewinnspiele", description="Alle aktiven Gewinnspiele von diesem Server findest du in dieser Nachricht.")
                     for rolle in result3:
                         rolle2 = interaction.guild.get_role(int(rolle[0]))
                         if rolle2 == None:

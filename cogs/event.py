@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from datetime import datetime, timedelta
+from info import getcolour
 
 class Dropdown(discord.ui.Select):
     def __init__(self, bot, selectOptions):

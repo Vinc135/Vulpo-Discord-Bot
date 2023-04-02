@@ -2,7 +2,8 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from datetime import datetime
-import typing 
+import typing
+from info import getcolour
 
 class logging(commands.Cog):
     def __init__(self, bot):
@@ -43,7 +44,7 @@ class logging(commands.Cog):
                     except:
                         return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Kanal des Reportlogs existiert nicht mehr. Bitte deaktiviere den Reportlog und richte ihn erneut ein.**", ephemeral=True)
 
-                    embed = discord.Embed(title="Reportlog", description=f"Der aktuelle Reportlog ist aktiv in {channel.mention}", color=discord.Color.orange())
+                    embed = discord.Embed(title="Reportlog", description=f"Der aktuelle Reportlog ist aktiv in {channel.mention}", color=await getcolour(self, interaction.user))
                     await interaction.response.send_message(embed=embed)
     #messagelog
 
@@ -62,14 +63,14 @@ class logging(commands.Cog):
                         await cursor.execute("INSERT INTO messagelog(guildid, channelid) VALUES(%s, %s)", (interaction.guild.id, kanal.id))
                         
 
-                        embed = discord.Embed(colour=discord.Colour.orange(), title="Nachrichtenlog", description=f"Der Nachrichtenlog ist nun aktiv in {kanal.mention}.")
+                        embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Nachrichtenlog", description=f"Der Nachrichtenlog ist nun aktiv in {kanal.mention}.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         await interaction.response.send_message(embed=embed)
                         return
                     if result != None:
                         await cursor.execute(f"UPDATE messagelog SET channelid = {kanal.id} WHERE guildid = {interaction.guild.id}")
                         
-                        embed = discord.Embed(colour=discord.Colour.orange(), title="Nachrichtenlog", description=f"Der Nachrichtenlog ist nun aktiv in {kanal.mention}.")
+                        embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Nachrichtenlog", description=f"Der Nachrichtenlog ist nun aktiv in {kanal.mention}.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         await interaction.response.send_message(embed=embed)
                         return
@@ -203,7 +204,7 @@ class logging(commands.Cog):
                         await cursor.execute("INSERT INTO modlog(guildid, channelid) VALUES(%s, %s)", (interaction.guild.id, kanal.id))
                         
 
-                        embed = discord.Embed(colour=discord.Colour.orange(), title="Modlog", description=f"Der Modlog ist nun aktiv in {kanal.mention}.")
+                        embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Modlog", description=f"Der Modlog ist nun aktiv in {kanal.mention}.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         await interaction.response.send_message(embed=embed)
                         return
@@ -211,7 +212,7 @@ class logging(commands.Cog):
                         await cursor.execute(f"UPDATE modlog SET channelid = {kanal.id} WHERE guildid = {interaction.guild.id}")
                         
 
-                        embed = discord.Embed(colour=discord.Colour.orange(), title="Modlog", description=f"Der Modlog ist nun aktiv in {kanal.mention}.")
+                        embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Modlog", description=f"Der Modlog ist nun aktiv in {kanal.mention}.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         await interaction.response.send_message(embed=embed)
                         return
@@ -220,7 +221,7 @@ class logging(commands.Cog):
                     await cursor.execute(f"SELECT channelid FROM modlog WHERE guildid = {interaction.guild.id}")
                     result = await cursor.fetchone()
                     if result is None:
-                        embed = discord.Embed(colour=discord.Colour.red(), title="Modlog", description=f"Der Modlog ist nicht aktiviert auf diesem Server.")
+                        embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Modlog", description=f"Der Modlog ist nicht aktiviert auf diesem Server.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         await interaction.response.send_message(embed=embed)
                         return
@@ -228,7 +229,7 @@ class logging(commands.Cog):
                         await cursor.execute(f"DELETE FROM modlog WHERE guildid = {interaction.guild.id}")
                         
 
-                        embed = discord.Embed(colour=discord.Colour.red(), title="Modlog deaktiviert", description=f"Der Modlog ist auf diesem Server nun deaktiviert.")
+                        embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Modlog deaktiviert", description=f"Der Modlog ist auf diesem Server nun deaktiviert.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         await interaction.response.send_message(embed=embed)
                         return
@@ -467,7 +468,7 @@ class logging(commands.Cog):
                         await cursor.execute("INSERT INTO ticketlog(guildid, channelid) VALUES(%s, %s)", (interaction.guild.id, kanal.id))
                         
 
-                        embed = discord.Embed(colour=discord.Colour.orange(), title="Ticketlog", description=f"Der Ticketlog ist nun aktiv in {kanal.mention}.")
+                        embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Ticketlog", description=f"Der Ticketlog ist nun aktiv in {kanal.mention}.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         await interaction.response.send_message(embed=embed)
                         return
@@ -475,7 +476,7 @@ class logging(commands.Cog):
                         await cursor.execute("UPDATE ticketlog SET channelid = (%s) WHERE guildid = (%s)", (kanal.id, interaction.guild.id))
                         
 
-                        embed = discord.Embed(colour=discord.Colour.orange(), title="Ticketlog", description=f"Der Ticketlog ist nun aktiv in {kanal.mention}.")
+                        embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Ticketlog", description=f"Der Ticketlog ist nun aktiv in {kanal.mention}.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         await interaction.response.send_message(embed=embed)
                         return
@@ -484,7 +485,7 @@ class logging(commands.Cog):
                     await cursor.execute("SELECT channelid FROM ticketlog WHERE guildid = (%s)", (interaction.guild.id))
                     result = await cursor.fetchone()
                     if result is None:
-                        embed = discord.Embed(colour=discord.Colour.red(), title="Ticketlog", description=f"Der Ticketlog ist nicht aktiviert auf diesem Server.")
+                        embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Ticketlog", description=f"Der Ticketlog ist nicht aktiviert auf diesem Server.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         await interaction.response.send_message(embed=embed)
                         return
@@ -492,7 +493,7 @@ class logging(commands.Cog):
                         await cursor.execute("DELETE FROM ticketlog WHERE guildid = (%s)", (interaction.guild.id))
                         
 
-                        embed = discord.Embed(colour=discord.Colour.red(), title="Ticketlog deaktiviert", description=f"Der Ticketlog ist auf diesem Server nun deaktiviert.")
+                        embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Ticketlog deaktiviert", description=f"Der Ticketlog ist auf diesem Server nun deaktiviert.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         await interaction.response.send_message(embed=embed)
                         return

@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
+from info import getcolour
 
 class Autoreact(commands.Cog):
     def __init__(self, bot):
@@ -72,7 +73,7 @@ class Autoreact(commands.Cog):
                 if result == ():
                     await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Hier gibt es keine autoemojis. Füge eine mit `/autoreact add <kanal> <emoji>` hinzu**", ephemeral=True)
                     return
-                embed = discord.Embed(title="Alle automatische Emojis in Kanälen", description="Hier nähere Infos:", color=discord.Color.orange())
+                embed = discord.Embed(title="Alle automatische Emojis in Kanälen", description="Hier nähere Infos:", color=await getcolour(self, interaction.user))
                 for i in result:
                     k = interaction.guild.get_channel(int(i[1]))
                     if k is not None:

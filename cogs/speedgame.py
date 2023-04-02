@@ -5,6 +5,7 @@ from info import random_color
 import random
 import asyncio
 import time
+from info import getcolour
 
 async def function(self, interaction, farbe, t_1, t_3):
     if self.user.id != interaction.user.id:
@@ -29,7 +30,7 @@ async def function(self, interaction, farbe, t_1, t_3):
                 await cursor.execute("INSERT INTO speedgame(userID, zeit, guildID) VALUES(%s, %s, %s)", (interaction.user.id, time_delta1, interaction.guild.id))
                 
                 
-                embed = discord.Embed(colour=discord.Colour.gold(), title="⏱ Teste deine Schnelligkeit", description=f"""
+                embed = discord.Embed(colour=await getcolour(self, interaction.user), title="⏱ Teste deine Schnelligkeit", description=f"""
                                     
 `🤖 Gespielt mit einem Ping von {time_delta2}ms`
                         
@@ -42,7 +43,7 @@ async def function(self, interaction, farbe, t_1, t_3):
                     await cursor.execute("UPDATE speedgame SET zeit = (%s) WHERE userID = (%s)", (time_delta1, interaction.user.id))
                     await cursor.execute("UPDATE speedgame SET guildID = (%s) WHERE userID = (%s)", (interaction.guild.id, interaction.user.id))
                     
-                    embed = discord.Embed(colour=discord.Colour.gold(), title="⏱ Teste deine Schnelligkeit", description=f"""
+                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title="⏱ Teste deine Schnelligkeit", description=f"""
                                         
 `🤖 Gespielt mit einem Ping von {time_delta2}ms`
                             
@@ -52,7 +53,7 @@ async def function(self, interaction, farbe, t_1, t_3):
                     return await interaction.message.edit(content="", embed=embed, view=None)
                 else:
                     
-                    embed = discord.Embed(colour=discord.Colour.green(), title="⏱ Teste deine Schnelligkeit", description=f"""
+                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title="⏱ Teste deine Schnelligkeit", description=f"""
                                         
 `🤖 Gespielt mit einem Ping von {time_delta2}ms`
                             
@@ -133,7 +134,7 @@ class Speedgame(commands.Cog):
         """Teste deine Schnelligkeit und steige Ränge auf."""
         farben = [":black_circle:", ":blue_circle:", ":brown_circle:", ":green_circle:", ":orange_circle:", ":purple_circle:", ":red_circle:", ":white_circle:", ":yellow_circle:", ":cookie:"]
         farbe = random.choice(farben)
-        embed = discord.Embed(colour=random_color(), title="⏱ Teste deine Schnelligkeit", description="")
+        embed = discord.Embed(colour=await getcolour(self, interaction.user), title="⏱ Teste deine Schnelligkeit", description="")
         embed.set_thumbnail(url=interaction.user.avatar)
         embed.description = f"""
 **{interaction.user.mention}, es geht jetzt los, sei schnell und geschickt!** 
@@ -155,7 +156,7 @@ class Speedgame(commands.Cog):
                         return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du hast noch kein Match gespielt. Aufgrund dessen hast du auch keine Bestzeit. Du musst zuerst ein Match spielen.**", ephemeral=True)
                     return await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> {member.mention} hat noch kein Match gespielt. Aufgrund dessen hat er/sie auch keine Bestzeit. Er/Sie muss zuerst ein Match spielen.**", ephemeral=True)
                 else:
-                    embed = discord.Embed(color=random_color(), title="⚡️ **| __Speedgame Stats__ |** 💨", description=f"""
+                    embed = discord.Embed(color=await getcolour(self, interaction.user), title="⚡️ **| __Speedgame Stats__ |** 💨", description=f"""
 Aktuelle Stats von {member.mention}
 **Bestzeit**: `{result[0]}ms`""")
                     embed.set_thumbnail(url=member.avatar)

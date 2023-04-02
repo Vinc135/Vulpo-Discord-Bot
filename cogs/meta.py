@@ -9,6 +9,30 @@ import re
 import random
 from googletrans import Translator
 from info import discord_timestamp
+from openai.api_resources.chat_completion import ChatCompletion
+import openai
+from info import getcolour
+
+openai.api_key = "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"
+
+# with open("training_data.csv", "rb") as file:
+#     response = openai.Dataset.create(
+#         file=file,
+#         name="my_training_data",
+#         description="A dataset of training data for my GPT-3 model",
+#     )
+    
+async def generate_response(msg):
+    completion = ChatCompletion.create(
+        model="gpt-3.5-turbo", 
+        messages=[{"role": "user", "content": msg.content}],
+        instruction = f"Mein Name ist {msg.author.name}."
+    )
+    blacklist = ["<@&","<@","@everyone","@here"]
+    for word in blacklist:
+        if word in str(completion.choices[0].message["content"]):
+            return await msg.reply("Ich werde sicherlich niemanden hier pingen.")
+    await msg.reply(completion.choices[0].message["content"])
 
 class EmbedMaker(discord.ui.Modal, title="Embed-Maker"):
     def __init__(self, farbe: str, titel: str):
@@ -73,7 +97,7 @@ class meta(commands.Cog):
             if invite.inviter == member:
                 totalInvites += invite.uses
         
-        embed=discord.Embed(description=f"Das Mitglied {member.mention} hat insgesammt __**{totalInvites} Mitglied{'er' if totalInvites >= 2 else ''}**__ zum Server eingeladen!", color=discord.Color.orange())
+        embed=discord.Embed(description=f"Das Mitglied {member.mention} hat insgesammt __**{totalInvites} Mitglied{'er' if totalInvites >= 2 else ''}**__ zum Server eingeladen!", color=await getcolour(self, interaction.user))
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         embed.set_footer(text="Diese Zahl basiert auf allen Invites, seitdem du auf dem Server bist.", icon_url="https://cdn.discordapp.com/emojis/814202875387183145.png")
 
@@ -86,7 +110,7 @@ class meta(commands.Cog):
         """Zeigt das Profilbild eines Benutzers an."""
         if member is None:
             member = interaction.user
-        embed = discord.Embed(colour=discord.Colour.green(), description=f"Profilbild und Banner (wenn existent) von {member.mention}")
+        embed = discord.Embed(colour=await getcolour(self, interaction.user), description=f"Profilbild und Banner (wenn existent) von {member.mention}")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         user = await self.bot.fetch_user(member.id)
         if user.banner:
@@ -131,7 +155,7 @@ class meta(commands.Cog):
             if a == 10:
                 return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst nur maximal neun Antwortmöglichkeiten geben.**", ephemeral=True)
             desc += f":{c}: - {answer}\n"
-        embed = discord.Embed(color=discord.Color.orange(), title=frage, description=desc)
+        embed = discord.Embed(color=await getcolour(self, interaction.user), title=frage, description=desc)
         embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/925799559576322078/a2f839c85ee1dd3ef9a1b1fa511e332b.png?size=1024")
         embed.set_footer(text="Entscheide dich nur für eins!")
         message = await interaction.channel.send("**Neue Umfrage!**", embed=embed)
@@ -202,7 +226,7 @@ class meta(commands.Cog):
             channel = textkanal
             t1 = math.floor(channel.created_at.timestamp())
             t2 = datetime.datetime.fromtimestamp(int(t1))
-            embed = discord.Embed(colour=discord.Color.green())
+            embed = discord.Embed(colour=await getcolour(self, interaction.user))
             embed.add_field(name=f"🆔 ID", value=f"{channel.id}", inline=False)
             embed.add_field(name="⚙️ Erstellt", value=f"Der Kanal wurde {discord_timestamp(t2, 'R')} erstellt.",
                             inline=False)
@@ -221,7 +245,7 @@ class meta(commands.Cog):
             channel = sprachkanal
             t1 = math.floor(channel.created_at.timestamp())
             t2 = datetime.datetime.fromtimestamp(int(t1))
-            embed = discord.Embed(colour=discord.Color.green())
+            embed = discord.Embed(colour=await getcolour(self, interaction.user))
             embed.add_field(name=f"🆔 ID", value=f"{channel.id}", inline=False)
             embed.add_field(name="⏱️ Erstellt", value=f"Der Kanal wurde {discord_timestamp(t2, 'R')} erstellt.", inline=False)
             embed.add_field(name="🗂 Kategorie",
@@ -245,12 +269,12 @@ class meta(commands.Cog):
         t2 = datetime.datetime.fromtimestamp(int(t1))
         t3 = math.floor(member.joined_at.timestamp())
         t4= datetime.datetime.fromtimestamp(int(t3))
-        embed = discord.Embed(colour=member.color, description=f"Der Account wurde {discord_timestamp(t2, 'R')} erstellt.")
+        embed = discord.Embed(colour=await getcolour(self, interaction.user), description=f"Der Account wurde {discord_timestamp(t2, 'R')} erstellt.")
         embed.set_thumbnail(url=member.avatar)
         embed.add_field(name="ID", value=member.id, inline=False)
         embed.add_field(name="Beitritt", value=f"Der User ist {discord_timestamp(t4, 'R')} dem Server beigetreten.", inline=True)
         embed.add_field(name="Bot?", value='Ja' if member.bot else 'Nein', inline=False)
-        embed.add_field(name="Höchte Rolle", value=member.top_role.mention, inline=True)
+        embed.add_field(name="Höchste Rolle", value=member.top_role.mention, inline=True)
         if member.public_flags:
             flags = ""
             for flag in member.public_flags:
@@ -302,7 +326,7 @@ class meta(commands.Cog):
         """Zeigt viele Informationen von einem Server an."""
         t1 = math.floor(interaction.guild.created_at.timestamp())
         t2 = datetime.datetime.fromtimestamp(int(t1))
-        embed = discord.Embed(colour=discord.Colour.green(), description=f"Der Server wurde {discord_timestamp(t2, 'R')} erstellt.")
+        embed = discord.Embed(colour=await getcolour(self, interaction.user), description=f"Der Server wurde {discord_timestamp(t2, 'R')} erstellt.")
         embed.add_field(name="ID", value=interaction.guild.id, inline=True)
         embed.add_field(name="Owner", value=interaction.guild.owner, inline=True)
         if interaction.guild.description:
@@ -425,7 +449,7 @@ class meta(commands.Cog):
         guild = interaction.guild
         t1 = math.floor(rolle.created_at.timestamp())
         t2 = datetime.datetime.fromtimestamp(int(t1))
-        embed = discord.Embed(color=rolle.color, description=f"ℹ️ Rollen info für {rolle.name}")
+        embed = discord.Embed(color=await getcolour(self, interaction.user), description=f"ℹ️ Rollen info für {rolle.name}")
         embed.add_field(name=f"🆔 ID", value=f"{rolle.id}", inline=False)
         embed.add_field(name="⏱ Erstellt", value=f"Die Rolle wurde {discord_timestamp(t2, 'R')} erstellt.",inline=False)
         a = rolle.color.value
@@ -441,7 +465,7 @@ class meta(commands.Cog):
     async def servericon(self, interaction: discord.Interaction):
         """Zeigt das Profilbild vom Server an."""
         guild = interaction.user.guild
-        embed = discord.Embed(colour=discord.Colour.green(), description=f"Serverbild von {guild.name}")
+        embed = discord.Embed(colour=await getcolour(self, interaction.user), description=f"Serverbild von {guild.name}")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         embed.set_image(url=guild.icon)
         await interaction.response.send_message(embed=embed)
@@ -458,7 +482,7 @@ class meta(commands.Cog):
                             " ", "+")) as r:
                     data = await r.json()
                     icon = data['weather'][0]['icon']
-                    embed = discord.Embed(colour=discord.Colour.green(), title=f"Weather",
+                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"Weather",
                                             description=f"Mal gucken...")
                     embed.add_field(name=f"🗽 Location", value=f"{data['name']}")
                     embed.add_field(name=f"☁️ Wetter", value=f"{data['weather'][0]['main']} - {data['weather'][0]['description']}", inline=False)
@@ -469,7 +493,7 @@ class meta(commands.Cog):
                     embed.set_thumbnail(url=f"https://openweathermap.org/img/wn/{icon}@2x.png")
                     await interaction.response.send_message(embed=embed)
         except:
-            embed = discord.Embed(colour=discord.Colour.red(),
+            embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                     description=f"Stadt **{stadt}** nicht gefunden")
             embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
             await interaction.response.send_message(embed=embed)
@@ -484,7 +508,7 @@ class meta(commands.Cog):
             permissions = interaction.channel.permissions_for(interaction.user)
             user = interaction.user
         permissions = interaction.channel.permissions_for(user)
-        embed = discord.Embed(title=f':customs:  Berechtigungen von {user}', color=discord.Color.blue())
+        embed = discord.Embed(title=f':customs:  Berechtigungen von {user}', color=await getcolour(self, interaction.user))
         embed.add_field(name='Server', value=interaction.guild)
         embed.add_field(name='Kanal', value=interaction.channel, inline=False)
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
@@ -507,7 +531,7 @@ class meta(commands.Cog):
             emoj = discord.PartialEmoji.from_str(emoji)
             if emoj is None:
                 return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch in und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
-            embed = discord.Embed(colour=discord.Colour.green(),
+            embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                 description=f"Hier der Link: {emoj.url}")
             embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
             embed.set_image(url=f"{emoj.url}")
@@ -524,14 +548,14 @@ class meta(commands.Cog):
         try:
             emoj = discord.PartialEmoji.from_str(emoji)
             if emoj is None:
-                return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch in und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+                return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
             async with aiohttp.ClientSession() as session:
                 async with session.get(emoj.url) as response:
                     image_bytes = await response.read()
                     emo = await interaction.guild.create_custom_emoji(name=name, image=image_bytes, reason="stealemoji command")
         except:
-            return await interaction.response.send_message(content="**<:v_kreuz:1049388811353858069> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch in und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
-        embed = discord.Embed(colour=discord.Colour.green(),
+            return await interaction.response.send_message(content="**<:v_kreuz:1049388811353858069> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+        embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                 description=f"**Der Emoji {emo} wurde erstellt.**\nName: {name}")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         embed.set_image(url=f"{emoj.url}")
@@ -577,7 +601,7 @@ class meta(commands.Cog):
             lang += "ja"
         translator = Translator()
         translation = translator.translate(text, dest=lang)
-        embed = discord.Embed(colour=discord.Colour.blurple(), title="Übersetzer")
+        embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Übersetzer")
         embed.add_field(name="Vorher", value=translation.origin)
         embed.add_field(name="Nachher", value=translation.text)
         embed.set_thumbnail(url=interaction.user.avatar)
@@ -593,7 +617,7 @@ class meta(commands.Cog):
                 if system == "Economy":
                     await cursor.execute(f"SELECT bank, rucksack, userID FROM economy ORDER BY bank DESC, rucksack DESC")
                     leaderboard = await cursor.fetchall()
-                    embed = discord.Embed(title="Bestenliste (Economy)", color=discord.Color.orange())
+                    embed = discord.Embed(title="Bestenliste (Economy)", color=await getcolour(self, interaction.user))
                     for i, pos in enumerate(leaderboard, start=1):
                         bank, rucksack, userID = pos
                         total = bank + rucksack
@@ -613,7 +637,7 @@ class meta(commands.Cog):
                     await cursor.execute("SELECT anzahl, userID FROM eq_leaderboard ORDER BY anzahl DESC")
                     leaderboard = await cursor.fetchall()
                     
-                    embed = discord.Embed(title="Bestenliste (Emojiquiz)", color=discord.Color.yellow())
+                    embed = discord.Embed(title="Bestenliste (Emojiquiz)", color=await getcolour(self, interaction.user))
                     for i, pos in enumerate(leaderboard, start=1):
                         anzahl, userID = pos
                         name = self.bot.get_user(int(userID))
@@ -636,7 +660,7 @@ class meta(commands.Cog):
                         return
                     await cursor.execute(f"SELECT user_level, user_xp, client_id FROM levelsystem WHERE guild_id = {interaction.guild.id} ORDER BY user_level DESC, user_xp DESC")
                     leaderboard = await cursor.fetchall()
-                    embed = discord.Embed(title="Bestenliste (Levelsystem)", color=discord.Color.blue())
+                    embed = discord.Embed(title="Bestenliste (Levelsystem)", color=await getcolour(self, interaction.user))
                     i = 0
                     for eintrag in leaderboard:
                         lvl = eintrag[0]
@@ -658,7 +682,7 @@ class meta(commands.Cog):
                     await cursor.execute("SELECT wins, loses, ties, userID, rating FROM ttt ORDER BY rating DESC")
                     leaderboard = await cursor.fetchall()
                     
-                    embed = discord.Embed(title="Bestenliste (TicTacToe)", color=discord.Color.dark_magenta())
+                    embed = discord.Embed(title="Bestenliste (TicTacToe)", color=await getcolour(self, interaction.user))
                     for i, pos in enumerate(leaderboard, start=1):
                         wins, loses, ties, userID, rating = pos
                         name = self.bot.get_user(int(userID))
@@ -677,7 +701,7 @@ class meta(commands.Cog):
                 if system == "Speedgame":
                     await cursor.execute("SELECT zeit, userID, guildID FROM speedgame ORDER BY zeit ASC")
                     leaderboard = await cursor.fetchall()
-                    embed = discord.Embed(title="Bestenliste (Speedgame)", color=discord.Color.gold())
+                    embed = discord.Embed(title="Bestenliste (Speedgame)", color=await getcolour(self, interaction.user))
                     for i, pos in enumerate(leaderboard, start=1):
                         zeit, userID, guildID = pos
                         name = self.bot.get_user(int(userID))
@@ -696,7 +720,7 @@ class meta(commands.Cog):
                 if system == "Votes":
                     await cursor.execute("SELECT votes, userID FROM topgg ORDER BY votes DESC")
                     leaderboard = await cursor.fetchall()
-                    embed = discord.Embed(title="Bestenliste (Votes)", description="💎 [VOTE](https://top.gg/bot/925799559576322078/vote) auch du für Vulpo um vielleicht bald in der Top 10 zu sein. 💎", color=discord.Color.blurple())
+                    embed = discord.Embed(title="Bestenliste (Votes)", description="💎 [VOTE](https://top.gg/bot/925799559576322078/vote) auch du für Vulpo um vielleicht bald in der Top 10 zu sein. 💎", color=await getcolour(self, interaction.user))
                     for i, pos in enumerate(leaderboard, start=1):
                         votes, userID = pos
                         name = self.bot.get_user(int(userID))
@@ -710,6 +734,12 @@ class meta(commands.Cog):
                             break
                     if i != 10:
                         await interaction.response.send_message(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_message(self, msg: discord.Message):
+        if msg.channel.id == 1086941554654056531 and msg.author.bot == False:
+            async with msg.channel.typing():
+                await generate_response(msg)
 
 async def setup(bot):
     await bot.add_cog(meta(bot))

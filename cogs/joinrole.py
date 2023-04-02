@@ -2,6 +2,7 @@ import typing
 import discord
 from discord.ext import commands
 from discord import app_commands
+from info import getcolour
 ##########
 
 class joinrole(commands.Cog):
@@ -61,7 +62,7 @@ class joinrole(commands.Cog):
                         await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Diese Rolle ist bereits eingestellt.**", ephemeral=True)           
                         return
                     await cursor.execute("INSERT INTO joinroles (role_id, guild_id) VALUES (%s, %s)", (rolle.id, interaction.guild.id))
-                    embed = discord.Embed(colour=discord.Colour.orange(),
+                    embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                             description=f"{rolle.mention} wurde zu den Joinrollen für User hinzugefügt.")
                     embed.set_footer(text="Stell sicher, dass meine Rolle höher als die Joinrollen gelistet ist.", icon_url="https://cdn.discordapp.com/emojis/814202875387183145.png")
                     embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
@@ -75,7 +76,7 @@ class joinrole(commands.Cog):
                             r = discord.utils.get(interaction.guild.roles, id=int(r[0]))
                             if r is not None:
                                 rollen += f"{r.mention}\n"
-                        embed = discord.Embed(colour=discord.Colour.orange(),
+                        embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                             description=f"Aktuelle Joinrollen für User in diesem Server: \n{rollen}")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         embed.set_footer(text="Stell sicher, dass meine Rolle höher als die Joinrollen gelistet ist.",
@@ -83,7 +84,7 @@ class joinrole(commands.Cog):
                         await interaction.response.send_message(embed=embed)
                         return
                     if str(result) == "[]":
-                        embed = discord.Embed(colour=discord.Colour.orange(),
+                        embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                             description=f"Es wurde noch keine Joinrolle für User festgelegt. Füge eine mit **/joinrole <role/ID>** hinzu.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         embed.set_footer(text="Stell sicher, dass meine Rolle höher als die Joinrollen gelistet ist.",
@@ -113,7 +114,7 @@ class joinrole(commands.Cog):
                         await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Diese Rolle ist bereits eingestellt.**", ephemeral=True)           
                         return
                     await cursor.execute("INSERT INTO botroles (role_id, guild_id) VALUES (%s, %s)", (rolle.id, interaction.guild.id))
-                    embed = discord.Embed(colour=discord.Colour.orange(),
+                    embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                             description=f"{rolle.mention} wurde zu den Joinrollen für Bots hinzugefügt.")
                     embed.set_footer(text="Stell sicher, dass meine Rolle höher als die Joinrollen gelistet ist.", icon_url="https://cdn.discordapp.com/emojis/814202875387183145.png")
                     embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
@@ -127,7 +128,7 @@ class joinrole(commands.Cog):
                             r = discord.utils.get(interaction.guild.roles, id=int(r[0]))
                             if r is not None:
                                 rollen += f"{r.mention}\n"
-                        embed = discord.Embed(colour=discord.Colour.orange(),
+                        embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                             description=f"Aktuelle Joinrollen für Bots in diesem Server: \n{rollen}")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         embed.set_footer(text="Stell sicher, dass meine Rolle höher als die Joinrollen gelistet ist.",
@@ -135,7 +136,7 @@ class joinrole(commands.Cog):
                         await interaction.response.send_message(embed=embed)
                         return
                     if str(result) == "[]":
-                        embed = discord.Embed(colour=discord.Colour.orange(),
+                        embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                             description=f"Es wurde noch keine Joinrolle für Bots festgelegt. Füge eine mit **/joinrole <role/ID>** hinzu.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         embed.set_footer(text="Stell sicher, dass meine Rolle höher als die Joinrollen gelistet ist.",
