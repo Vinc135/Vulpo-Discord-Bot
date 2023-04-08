@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Vulpo - Premium</title>
+  <meta content="Die offizielle Webseite des Discord Bot's Vulpo." name="description">
+  <meta content="discord bot, discord, info webseite" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+  <link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+  <link rel= "icon" href= "{{ url_for('static', filename='assets/img/favicon.png') }}">
+  <link rel= "apple-touch-icon" href= "{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}">
+
+  <!-- Vendor CSS Files -->
+  <link rel= "stylesheet" href= "{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}">
+  <link rel= "stylesheet" href= "{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}">
+  <link rel= "stylesheet" href= "{{ url_for('static', filename='assets/vendor/aos/aos.css') }}">
+  <link rel= "stylesheet" href= "{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}">
+  <link rel= "stylesheet" href= "{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}">
+
+  <!-- Template Main CSS File -->
+  <link rel= "stylesheet" href= "{{ url_for('static', filename='assets/css/main.css') }}">
+
+  <!-- =======================================================
+  * Template Name: Impact - v1.1.1
+  * Template URL: https://bootstrapmade.com/impact-bootstrap-business-website-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+
+  <header id="header" class="header d-flex align-items-center">
+
+    <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+      <a href="/" class="logo d-flex align-items-center">
+        <img src="{{ url_for('static', filename='assets/img/favicon.png') }}" alt="">
+        <h1>Vulpo <span style="font-weight: bold; color: gold;">Premium</span></h1>
+      </a>
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a href="/">Hauptseite</a></li>
+          <li><a href="https://vulpo-bot.de/login" class="gold-button">Einloggen und Premium kaufen</a></li>
+        </ul>
+      </nav><!-- .navbar -->
+      
+
+      <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
+      <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
+
+    </div>
+  </header><!-- End Header -->
+  <section id="hero" class="hero">
+    <div class="container position-relative">
+      <div class="row gy-5" data-aos="fade-in">
+        <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center text-center text-lg-start">
+          <h2>Willkommen bei <span>Vulpo <span style="font-weight: bold; color: gold;">Premium</span></span></h2>
+          <p>Stell dir einen Premium-Bot vor, der perfekt auf die Verwaltung deines Servers abgestimmt ist. Er bietet eine Vielzahl von nützlichen Funktionen wie ein fortschrittliches Levelsystem, spannende Gewinnspiele und vieles mehr. Dieser Bot passt sich optimal deinen individuellen Bedürfnissen an und sorgt für ein erstklassiges Erlebnis auf deinem Server.</p>
+          <div class="d-flex justify-content-center justify-content-lg-start" data-aos-delay="200">
+            <a href="https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands" class="btn-get-started"></i><span>Einladen</span></a>
+            <a href="https://discord.gg/49jD3VXksp" class="btn-get-started"></i><span>Support</span></a>
+            <a href="https://vulpo-bot.de/login" class="btn-get-started"></i><span>Einloggen und Premium kaufen</span></a>
+          </div>
+        </div>
+        <div class="col-lg-6 order-1 order-lg-2">
+          <img src="{{ url_for('static', filename='assets/img/favicon.png') }}" class="img-fluid" alt="" data-aos="zoom-out" data-aos-delay="100">
+          </div>
+      </div>
+    </div>
+    <div class="icon-boxes position-relative">
+      <div class="container position-relative">
+        <div class="row gy-4 mt-5">
+
+          <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="icon-box">
+              <div class="icon"><i class="bi bi-easel"></i></div>
+              <h4 class="title"><a href="" class="stretched-link">Noch mehr anpassbar</a></h4>
+            </div>
+          </div>
+          <!--End Icon Box -->
+
+          <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="icon-box">
+              <div class="icon"><i class="bi bi-gem"></i></div>
+              <h4 class="title"><a href="" class="stretched-link">Noch schnellerer Support</a></h4>
+            </div>
+          </div>
+          <!--End Icon Box -->
+
+          <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="icon-box">
+              <div class="icon"><i class="bi bi-geo-alt"></i></div>
+              <h4 class="title"><a href="" class="stretched-link">Unendlich viele Rangkarten</a></h4>
+            </div>
+          </div>
+          <!--End Icon Box -->
+
+          <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="500">
+            <div class="icon-box">
+              <div class="icon"><i class="bi bi-command"></i></div>
+              <h4 class="title"><a href="" class="stretched-link">Unendlich viele Embedfarben</a></h4>
+            </div>
+          </div>
+          <!--End Icon Box -->
+
+        </div>
+      </div>
+    </div>
+
+    </div>
+  </section>
+  <main id="main">
+
+    <!-- ======= About Us Section ======= -->
+    <section id="about" class="about">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-header">
+          <h2>Über Vulpo <span style="font-weight: bold; color: gold;">Premium</span></h2>
+          <p>Vulpo Premium ist der erweiterte und personalisierte Discord Bot für deinen Server. Mit personalisierten Farben in Embeds und einer eigenen Rangkarte mit Hintergrundbild und Farbe der Fortschritts-Leiste wird dein Server individuell gestaltet. Außerdem erhältst du einen schnelleren Support und eine besondere Rolle auf dem Supportserver. Tausche dich im Premium Chat mit anderen Premium Nutzern und Admins aus und unterstütze uns bei den Serverkosten. Mit Vulpo Premium hast du den perfekten Begleiter für deinen Discord Server.</p>
+        </div>
+      </div>
+    </section><!-- End About Us Section -->
+
+    <!-- ======= Stats Counter Section ======= -->
+    <section id="stats-counter" class="stats-counter">
+      <div class="container" data-aos="fade-up">
+
+        <div class="row gy-4 align-items-center">
+
+          <div class="col-lg-6">
+            <img src="{{ url_for('static', filename='assets/img/stats.png') }}" alt="" class="img-fluid" height="400px" width="400px">
+          </div>
+
+          <div class="col-lg-6">
+
+            <div class="stats-item d-flex align-items-center">
+              <span data-purecounter-start="0" data-purecounter-end="10" data-purecounter-duration="1" class="purecounter"></span>
+              <p><strong>Benutzer</strong>, von Premium</p>
+            </div><!-- End Stats Item -->
+          </div>
+
+        </div>
+
+      </div>
+    </section><!-- End Stats Counter Section -->
+
+    <!-- ======= Our Services Section ======= -->
+    <section id="services" class="services sections-bg">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-header">
+          <h2>Mit <span style="font-weight: bold; color: gold;">Premium</span> kannst du...</h2>
+          <p>Dies sind alle Premium Funktionen, die das Abo bei Vulpo bietet.</p>
+        </div>
+
+        <div class="row gy-4" data-aos="fade-up" data-aos-delay="100">
+
+          <div class="col-lg-4 col-md-6">
+            <div class="service-item  position-relative">
+              <div class="icon">
+                <i class="bi bi-activity"></i>
+              </div>
+              <h3>Personalisierte Farbe in Embeds</h3>
+              <p>Du kannst eine Farbe auswählen, die in allen Embeds bei Vulpo für dich erscheint.</p>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6">
+            <div class="service-item position-relative">
+              <div class="icon">
+                <i class="bi bi-broadcast"></i>
+              </div>
+              <h3>Eigene Rangkarte mit eigener Farbe</h3>
+              <p>Du kannst ein eigenes Bild für den Hintergrund beim Rank-Befehl festlegen und auch eine eigene Farbe der Fortschritts-Leiste.</p>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6">
+            <div class="service-item position-relative">
+              <div class="icon">
+                <i class="bi bi-easel"></i>
+              </div>
+              <h3>Schnellerer Support</h3>
+              <p>Der Support ist viel schneller bei dir da und sogar die Entwickler und Admins kümmern sich um dich.</p>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6">
+            <div class="service-item position-relative">
+              <div class="icon">
+                <i class="bi bi-bounding-box-circles"></i>
+              </div>
+              <h3>Besondere Rolle auf dem Supportserver</h3>
+              <p>Du erhältst eine Rolle auf dem Supportserver, die dich höher listet.</p>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6">
+            <div class="service-item position-relative">
+              <div class="icon">
+                <i class="bi bi-calendar4-week"></i>
+              </div>
+              <h3>Premium Chat</h3>
+              <p>Tausche dich privat mit anderen Premium Nutzern und mit Admins aus.</p>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6">
+            <div class="service-item position-relative">
+              <div class="icon">
+                <i class="bi bi-chat-square-text"></i>
+              </div>
+              <h3>Unterstützung</h3>
+              <p>Du unterstützt uns beim Bezahlen der Severkosten.</p>
+            </div>
+          </div><!-- End Service Item -->
+
+        </div>
+
+      </div>
+    </section><!-- End Our Services Section -->
+  <!-- ======= Frequently Asked Questions Section ======= -->
+  <section id="faq" class="faq">
+    <div class="container" data-aos="fade-up">
+
+      <div class="row gy-4">
+
+        <div class="col-lg-4">
+          <div class="content px-xl-5">
+            <h3>Häufig gestellte <strong>Fragen</strong></h3>
+            <p>
+              Du hast eine Frage? Dann schau hier einfach mal nach, bevor du ein Ticket öffnest.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-lg-8">
+
+          <div class="accordion accordion-flush" id="faqlist" data-aos="fade-up" data-aos-delay="100">
+
+            <div class="accordion-item">
+              <h3 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-content-1">
+                  <span class="num">1.</span>
+                  ???
+                </button>
+              </h3>
+              <div id="faq-content-1" class="accordion-collapse collapse" data-bs-parent="#faqlist">
+                <div class="accordion-body">
+                  ???
+                </div>
+              </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section><!-- End Frequently Asked Questions Section -->
+  </main><!-- End #main -->
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+
+    <div class="container">
+      <div class="row gy-4">
+        <div class="col-lg-5 col-md-12 footer-info">
+          <a href="/" class="logo d-flex align-items-center">
+            <span>Vulpo</span>&nbsp;&nbsp;&nbsp;<span style="font-weight: bold; color: gold;">Premium</span>
+          </a>
+          <p>Stell dir einen Bot vor, der ideal deinen Server verwalten kann. Der nützliche Funktionen wie Levelsystem, Gewinnspiele und viele mehr hat. Ein Bot, der sich perfekt deinen Bedürfnissen anpasst.</p>
+          <div class="social-links d-flex mt-4">
+            <a href="https://discord.gg/49jD3VXksp" class="twitter"><i class="bi bi-discord"></i></a>
+          </div>
+        </div>
+
+        
+
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Weiterführende Links</h4>
+          <ul>
+            <li><a href="https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands">Einladen</a></li>
+            <li><a href="https://discord.gg/49jD3VXksp">Support Server</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Rechtliches</h4>
+          <ul>
+            <li><a href="impressum">Impressum</a></li>
+            <li><a href="datenschutz">Datenschutz</a></li>
+            <li><a href="formulare">Weiterführendes</a></li>
+        </div>
+      </div>
+    </div>
+
+    <div class="container mt-4">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Vulpo Developement</span></strong>. Alle Rechte reserviert
+      </div>
+      <div class="credits">
+        Designt von <a href="https://bootstrapmade.com/">BootstrapMade</a>
+      </div>
+    </div>
+
+  </footer><!-- End Footer -->
+
+  <a href="#" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/aos/aos.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/purecounter/purecounter_vanilla.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/php-email-form/validate.js') }}"></script>
+
+  <!-- Template Main JS File -->
+  <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+
+</body>
+
+</html>

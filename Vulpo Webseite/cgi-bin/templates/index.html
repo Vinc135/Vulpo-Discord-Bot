@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Vulpo - Hauptseite</title>
+  <meta content="Vulpo" name="title">
+  <meta content="{{ url_for('static', filename='assets/img/favicon.png') }}" name="og:image">
+  <meta content="#ff8800" name="theme-color">
+  <meta content="Die offizielle Webseite des Discord Bot's Vulpo." name="description">
+  <meta content="discord bot, discord, info webseite, beliebt, vulpo, 800+ server, alleskönner" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+  <link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+  <link rel= "icon" href= "{{ url_for('static', filename='assets/img/favicon.png') }}">
+  <link rel= "apple-touch-icon" href= "{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}">
+
+  <!-- Vendor CSS Files -->
+  <link rel= "stylesheet" href= "{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}">
+  <link rel= "stylesheet" href= "{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}">
+  <link rel= "stylesheet" href= "{{ url_for('static', filename='assets/vendor/aos/aos.css') }}">
+  <link rel= "stylesheet" href= "{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}">
+  <link rel= "stylesheet" href= "{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}">
+
+  <!-- Template Main CSS File -->
+  <link rel= "stylesheet" href= "{{ url_for('static', filename='assets/css/main.css') }}">
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+
+  <header id="header" class="header d-flex align-items-center">
+    <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+      <a href="/" class="logo d-flex align-items-center">
+        <img src="{{ url_for('static', filename='assets/img/favicon.png') }}" alt="">
+        <h1>Vulpo<span>.</span></h1>
+      </a>
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a href="/">Hauptseite</a></li>
+          <!-- <li><a href="premium">Premium</a></li> -->
+          <li><a href="#about">Über Vulpo</a></li>
+          <li><a href="#services">Funktionen</a></li>
+          <li><a href="#portfolio">Galerie</a></li>
+          <li><a href="#team">Team</a></li>
+          <li><a href="#testimonials">Bewertungen</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="login">Mit Discord einloggen</a></li>
+      </nav><!-- .navbar -->
+
+      <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
+      <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
+
+    </div>
+  </header><!-- End Header -->
+  <!-- End Header -->
+
+  <!-- ======= Hero Section ======= -->
+  <section id="hero" class="hero">
+    <div class="container position-relative">
+      <div class="row gy-5" data-aos="fade-in">
+        <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center text-center text-lg-start">
+          <h2>Willkommen bei <span>Vulpo</span></h2>
+          <p>Stell dir einen Bot vor, der ideal deinen Server verwalten kann. Der nützliche Funktionen wie Levelsystem, Gewinnspiele und viele mehr hat. Ein Bot, der sich perfekt deinen Bedürfnissen anpasst.</p>
+          <div class="d-flex justify-content-center justify-content-lg-start" data-aos-delay="200">
+            <a href="https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands" class="btn-get-started"></i><span>Einladen</span></a>
+            <a href="https://discord.gg/49jD3VXksp" class="btn-get-started"></i><span>Support</span></a>
+          </div>
+        </div>
+        <div class="col-lg-6 order-1 order-lg-2">
+          <img src="{{ url_for('static', filename='assets/img/favicon.png') }}" class="img-fluid" alt="" data-aos="zoom-out" data-aos-delay="100">
+        </div>
+      </div>
+    </div>
+
+    <div class="icon-boxes position-relative">
+      <div class="container position-relative">
+        <div class="row gy-4 mt-5">
+
+          <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="icon-box">
+              <div class="icon"><i class="bi bi-easel"></i></div>
+              <h4 class="title"><a href="" class="stretched-link">Leichtes Bedienen</a></h4>
+            </div>
+          </div>
+          <!--End Icon Box -->
+
+          <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="icon-box">
+              <div class="icon"><i class="bi bi-gem"></i></div>
+              <h4 class="title"><a href="" class="stretched-link">Gutes Design</a></h4>
+            </div>
+          </div>
+          <!--End Icon Box -->
+
+          <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="icon-box">
+              <div class="icon"><i class="bi bi-geo-alt"></i></div>
+              <h4 class="title"><a href="" class="stretched-link">Hebt sich von anderen ab</a></h4>
+            </div>
+          </div>
+          <!--End Icon Box -->
+
+          <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="500">
+            <div class="icon-box">
+              <div class="icon"><i class="bi bi-command"></i></div>
+              <h4 class="title"><a href="" class="stretched-link">Sehr beliebt</a></h4>
+            </div>
+          </div>
+          <!--End Icon Box -->
+
+        </div>
+      </div>
+    </div>
+
+    </div>
+  </section>
+  <!-- End Hero Section -->
+
+  <main id="main">
+
+    <!-- ======= About Us Section ======= -->
+    <section id="about" class="about">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-header">
+          <h2>Über Vulpo</h2>
+          <p>Vulpo ist ein einfach zu bedienender, kostenloser Discord Bot, der für jedermann und für deinen Discord Server entwickelt wurde. Er bietet eine Vielzahl an nützlichen und praktischen Funktionen. Vulpo ist der perfekte Begleiter für einen entspannten und unterhaltsamen Discord Server. Mit Vulpo bringst du mehr dynamik in deinen Discord Server. Durch die große Reichweite und das gute Design wird Vulpo für jedermann interessant.<br>Die vielen Systeme sorgen für eine lange Nutzbarkeit und durch die ständigen Updates bleibt der Bot gut entwickelt. Die professionelle Programmierung und Funktionen wie: Levelsystem, automatische Moderation, Economy und viele weitere machen Vulpo einzigartig.</p>
+        </div>
+      </div>
+    </section><!-- End About Us Section -->
+
+    <!-- ======= Stats Counter Section ======= -->
+    <section id="stats-counter" class="stats-counter">
+      <div class="container" data-aos="fade-up">
+
+        <div class="row gy-4 align-items-center">
+
+          <div class="col-lg-6">
+            <img src="{{ url_for('static', filename='assets/img/stats.png') }}" alt="" class="img-fluid" height="400px" width="400px">
+          </div>
+
+          <div class="col-lg-6">
+
+            <div class="stats-item d-flex align-items-center">
+              <span data-purecounter-start="0" data-purecounter-end="1202" data-purecounter-duration="1" class="purecounter"></span>
+              <p><strong>Server</strong>, auf denen Vulpo ist</p>
+            </div><!-- End Stats Item -->
+
+            <div class="stats-item d-flex align-items-center">
+              <span data-purecounter-start="0" data-purecounter-end="195976" data-purecounter-duration="2" class="purecounter"></span>
+              <p><strong>Benutzer</strong>, die Vulpo benutzen.</p>
+            </div><!-- End Stats Item -->
+
+            <div class="stats-item d-flex align-items-center">
+              <span data-purecounter-start="0" data-purecounter-end="342" data-purecounter-duration="3" class="purecounter"></span>
+              <p><strong>Bearbeitete Tickets</strong> auf dem Supportserver</p>
+            </div><!-- End Stats Item -->
+
+          </div>
+
+        </div>
+
+      </div>
+    </section><!-- End Stats Counter Section -->
+
+    <!-- ======= Our Services Section ======= -->
+    <section id="services" class="services sections-bg">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-header">
+          <h2>Beliebteste Funktionen</h2>
+          <p>Dies sind die beliebtesten Funktion von Vulpo. Viele andere Funktionen findest du im nächsten Bereich.</p>
+        </div>
+
+        <div class="row gy-4" data-aos="fade-up" data-aos-delay="100">
+
+          <div class="col-lg-4 col-md-6">
+            <div class="service-item  position-relative">
+              <div class="icon">
+                <i class="bi bi-activity"></i>
+              </div>
+              <h3>Automatische Moderation</h3>
+              <p>Es geht meist um Sekunden, bevor der ganze Chat zugespammt wurde. Vulpo erkennt diesen Spam und geht dagegen aktiv vor. Es können auch andere automatische Dinge eingestellt werden wie Kick, Ban und Timeouts, bei einer bestimmten Warn Anzahl. Zudem kann Vulpo Wörter blockieren und vieles mehr.</p>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6">
+            <div class="service-item position-relative">
+              <div class="icon">
+                <i class="bi bi-broadcast"></i>
+              </div>
+              <h3>Gewinnspiele</h3>
+              <p>Das hochmoderne Gewinnspielsystem ist allseits beliebt. Es bietet dir viele Einstellungsmöglichkeiten und flexible Befehle zum Konfigurieren. Anhand von Nachrichten, Leveln und Rollen kann Vulpo automatisch entscheiden wer teilnehmen darf und wer nicht.</p>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6">
+            <div class="service-item position-relative">
+              <div class="icon">
+                <i class="bi bi-easel"></i>
+              </div>
+              <h3>Stats</h3>
+              <p>Vulpo kann dir und deinem Server anzeigen, wieviele Nachrichten in bestimmten Zeitabständen geschrieben wurden und wie lange jemand im Sprachkanal war. Mithilfe von interaktiven Grafiken kannst du sehr schnell diese Daten einsehen und den 14-Tage Trend verfolgen.</p>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6">
+            <div class="service-item position-relative">
+              <div class="icon">
+                <i class="bi bi-bounding-box-circles"></i>
+              </div>
+              <h3>Temporäre Sprachkanäle</h3>
+              <p>Diese ermöglichen einem Benutzer einen eigenen Sorachkanal erstellen zu lassen. Außerdem kannst du ein Interface festlegen, mithilfe Benutzer über wenige Klicks die Eigenschaften ihres eigenen Sprachkanals ändern können.</p>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6">
+            <div class="service-item position-relative">
+              <div class="icon">
+                <i class="bi bi-calendar4-week"></i>
+              </div>
+              <h3>Levelsystem</h3>
+              <p>Steige in Servern Level auf, indem du Nachrichten sendest und sogar in Sprachkanälen aktiv bist. Man kann Levelrollen festlegen, die Benutzer ab einem bestimmten Level sofort erhalten.</p>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6">
+            <div class="service-item position-relative">
+              <div class="icon">
+                <i class="bi bi-chat-square-text"></i>
+              </div>
+              <h3>Economy</h3>
+              <p>Das globale Wirtschaftssystem bringt Schwung in deinen Server. Benutzer können Cookies sammeln und dafür arbeiten gehen. Sie steigen Jobs auf und können auch lokale Items kaufen.</p>
+            </div>
+          </div><!-- End Service Item -->
+
+        </div>
+
+      </div>
+    </section><!-- End Our Services Section -->
+
+    <!-- ======= Portfolio Section ======= -->
+    <section id="portfolio" class="portfolio sections-bg">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-header">
+          <h2>Galerie</h2>
+          <p>Erfahre hier mehr konkretes zu den einzelnen Funktionen und Systemen von Vulpo.</p>
+        </div>
+
+        <div class="portfolio-isotope" data-portfolio-filter="*" data-portfolio-layout="masonry" data-portfolio-sort="original-order" data-aos="fade-up" data-aos-delay="100">
+          <div class="row gy-4 portfolio-container">
+
+            <div class="col-xl-4 col-md-6 portfolio-item filter-app">
+              <div class="portfolio-wrap">
+                <a href="{{ url_for('static', filename='assets/galerie/rr.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/rr.png') }}" class="img-fluid" alt=""></a>
+                <div class="portfolio-info">
+                  <p>Reaktionsrollen mit Dropdown</p>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+            <div class="col-xl-4 col-md-6 portfolio-item filter-app">
+              <div class="portfolio-wrap">
+                <a href="{{ url_for('static', filename='assets/galerie/tempchannel_1.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/tempchannel_1.png') }}" class="img-fluid" alt=""></a>
+                <div class="portfolio-info">
+                  <p>Temporäre Sprachkanäle (Interface)</p>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+            <div class="col-xl-4 col-md-6 portfolio-item filter-app">
+              <div class="portfolio-wrap">
+                <a href="{{ url_for('static', filename='assets/galerie/tempchannel_2.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/tempchannel_2.png') }}" class="img-fluid" alt=""></a>
+                <div class="portfolio-info">
+                  <p>Temporäre Sprachkanäle (Sprachkanal)</p>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+            <div class="col-xl-4 col-md-6 portfolio-item filter-app">
+              <div class="portfolio-wrap">
+                <a href="{{ url_for('static', filename='assets/galerie/emojiquiz.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/emojiquiz.png') }}" class="img-fluid" alt=""></a>
+                <div class="portfolio-info">
+                  <p>Erraten von Emojis</p>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+            <div class="col-xl-4 col-md-6 portfolio-item filter-app">
+              <div class="portfolio-wrap">
+                <a href="{{ url_for('static', filename='assets/galerie/gewinnspiele.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/gewinnspiele.png') }}" class="img-fluid" alt=""></a>
+                <div class="portfolio-info">
+                  <p>Sehr moderne Gewinnspiele</p>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+            <div class="col-xl-4 col-md-6 portfolio-item filter-app">
+              <div class="portfolio-wrap">
+                <a href="{{ url_for('static', filename='assets/galerie/ticket.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/ticket.png') }}" class="img-fluid" alt=""></a>
+                <div class="portfolio-info">
+                  <p>Schnelle Tickets</p>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+            <div class="col-xl-4 col-md-6 portfolio-item filter-app">
+              <div class="portfolio-wrap">
+                <a href="{{ url_for('static', filename='assets/galerie/ttt.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/ttt.png') }}" class="img-fluid" alt=""></a>
+                <div class="portfolio-info">
+                  <p>Minispiele</p>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+            <div class="col-xl-4 col-md-6 portfolio-item filter-app">
+              <div class="portfolio-wrap">
+                <a href="{{ url_for('static', filename='assets/galerie/automod.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/automod.png') }}" class="img-fluid" alt=""></a>
+                <div class="portfolio-info">
+                  <p>Automatische Moderation</p>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+            <div class="col-xl-4 col-md-6 portfolio-item filter-app">
+              <div class="portfolio-wrap">
+                <a href="{{ url_for('static', filename='assets/galerie/welcome.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/welcome.png') }}" class="img-fluid" alt=""></a>
+                <div class="portfolio-info">
+                  <p>Begrüße neue Mitglieder</p>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+            <div class="col-xl-4 col-md-6 portfolio-item filter-app">
+              <div class="portfolio-wrap">
+                <a href="{{ url_for('static', filename='assets/galerie/stats.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/stats.png') }}" class="img-fluid" alt=""></a>
+                <div class="portfolio-info">
+                  <p>Statistiken für dich und deinen Server</p>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+            <div class="col-xl-4 col-md-6 portfolio-item filter-app">
+              <div class="portfolio-wrap">
+                <a href="{{ url_for('static', filename='assets/galerie/lvl.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/lvl.png') }}" class="img-fluid" alt=""></a>
+                <div class="portfolio-info">
+                  <p>Levelsystem</p>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+            <div class="col-xl-4 col-md-6 portfolio-item filter-app">
+              <div class="portfolio-wrap">
+                <a href="{{ url_for('static', filename='assets/galerie/eco.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/eco.png') }}" class="img-fluid" alt=""></a>
+                <div class="portfolio-info">
+                  <p>Sammle Cookies</p>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+            <div class="col-xl-4 col-md-6 portfolio-item filter-app">
+              <div class="portfolio-wrap">
+                <a href="{{ url_for('static', filename='assets/galerie/vcstats.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/vcstats.png') }}" class="img-fluid" alt=""></a>
+                <div class="portfolio-info">
+                  <p>Statistiken im Sprachkanal</p>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+            <div class="col-xl-4 col-md-6 portfolio-item filter-app">
+              <div class="portfolio-wrap">
+                <a href="{{ url_for('static', filename='assets/galerie/tag.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/tag.png') }}" class="img-fluid" alt=""></a>
+                <div class="portfolio-info">
+                  <p>Eigene Befehle</p>
+                </div>
+              </div>
+            </div><!-- End Portfolio Item -->
+
+          </div><!-- End Portfolio Container -->
+          <p>  </p>
+          <p><strong>Und noch sehr viel mehr. Tritt dem Supportserver bei um ALLES zu testen oder lade Vulpo gleich ein.</strong></p>
+        </div>
+      </div>
+    </section><!-- End Portfolio Section -->
+
+    <!-- ======= Our Team Section ======= -->
+    <section id="team" class="team">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-header">
+          <h2>Unser Team</h2>
+          <p>Dieses tolle Team, verwaltet Dinge in Vulpo, supportet auf dem Supportserver und übernimmt viele Sachen.</p>
+        </div>
+
+        <div class="row gy-4">
+
+          <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="400">
+            <div class="member">
+              <img src="{{ url_for('static', filename='assets/img/team/vinc.png') }}" class="img-fluid" alt="">
+              <h4>Vincent</h4>
+              <span>Entwickler & Marketing</span>
+              <div class="social">
+                <a href="https://discord.com/users/824378909985341451"><i class="bi bi-discord"></i></a>
+                <a href="https://github.com/Vinc135"><i class="bi bi-github"></i></a>
+              </div>
+            </div>
+          </div><!-- End Team Member -->
+
+          <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="100">
+            <div class="member">
+              <img src="" class="img-fluid" alt="">
+              <img src="{{ url_for('static', filename='assets/img/team/ensar.gif') }}" class="img-fluid" alt="">
+              <h4>Ensar</h4>
+              <span>Administration</span>
+              <div class="social">
+                <a href="https://discord.com/users/835782971235368960"><i class="bi bi-discord"></i></a>
+              </div>
+            </div>
+          </div><!-- End Team Member -->
+
+          <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="200">
+            <div class="member">
+              <img src="{{ url_for('static', filename='assets/img/team/philip.png') }}" class="img-fluid" alt="">
+              <h4>Philipp</h4>
+              <span>Support</span>
+              <div class="social">
+                <a href="https://discord.com/users/679706007219339376"><i class="bi bi-discord"></i></a>
+                <a href="https://www.snapchat.com/add/philu2005?share_id=hXmGWpp-z6w&locale=de-DE"><i class="bi bi-snapchat"></i></a>
+              </div>
+            </div>
+          </div><!-- End Team Member -->
+
+          <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="300">
+            <div class="member">
+              <img src="{{ url_for('static', filename='assets/img/team/fantasy.png') }}" class="img-fluid" alt="">
+              <h4>Fantasy</h4>
+              <span>Design & Moderation</span>
+              <div class="social">
+                <a href="https://discord.com/users/941750986551205930"><i class="bi bi-discord"></i></a>
+              </div>
+            </div>
+          </div><!-- End Team Member -->
+          <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="400">
+            <div class="member">
+              <img src="" class="img-fluid" alt="">
+              <img src="{{ url_for('static', filename='assets/img/team/tiri.gif') }}" class="img-fluid" alt="">
+              <h4>Tiri</h4>
+              <span>Entwickler Dashboard</span>
+              <div class="social">
+                <a href="https://discord.com/users/704629185808695338"><i class="bi bi-discord"></i></a>
+              </div>
+            </div>
+          </div><!-- End Team Member -->
+
+        </div>
+
+      </div>
+    </section><!-- End Our Team Section -->
+    <!-- ======= Testimonials Section ======= -->
+    <section id="testimonials" class="testimonials">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-header">
+          <h2>Bewertungen</h2>
+          <p>Diese Bewertungen wurden von Discord aus über Vulpo geschrieben.</p>
+        </div>
+
+        <div class="slides-3 swiper" data-aos="fade-up" data-aos-delay="100">
+          <div class="swiper-wrapper">
+
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>FreshDuc</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    Sehr guter Bot!
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>😈𝕿𝖔𝖝𝖎𝖈𝕲𝖆𝖒𝖊𝖗𝖃𝕯😈</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    Der beste Bot bisher den ich hatte, bis ich selbst mit Programmieren anfing 🥰
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>Dreamer🥤</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    Sehr cooler Bot nur noch Ticket fehlt dann volle 5 Sterne (wurde hinzugefügt)
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>Moritz ツ</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    Der bot ist richtig nice. Ich finde das erdet beste auf ganz discord ist. Er kann alles . Hut ab an Vinci
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>The_Moonlord</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    Einer der besten Bots weil man so viele Funktionen in nur einem Bot hat. Empfehle ich an alle!
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>Gojo ✓</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    Der Bot ist nice. Es gibt viele nice Feature, die ich bei kein anderem Bot gesehen hab. Verdiente 5 Sterne ^^
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>SyntaxError</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    Richtig guter Bot! Ist immer online und er hat echt abwechslungsreiche Commands und ein schönes HelpMenu!
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>derbesteking123pro_</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    Vulpo ist echt richtig cool! Er hat super Funktionen und ist eine riesen Bereicherung auf meinem DC Server! Der Developer ist auch richtig nett und leistet guten Support! Der Bot hat außerdem alles was man braucht: Leveling, Moderation, Fun commands und vieles Mehr
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>theravenstone</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    I like it 
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>MetalTooth</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    Sehr nicer bot. Viele commands und Möglichkeiten. Enconomy ist lustig. Finde cool dass er aber auch Managen kann wie zb Tickets und Logs etc. Sehr gute Arbeit!
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>Liͥzaͣrͫd 𝒪𝓂𝒶</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    Ein sehr guter bot hat fast alles was man braucht und der Inhaber bringt immer neue Updates und setzt die Vorschläge der User schnell zum 5/5Punkte
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>[ ZΞNIX ] ΛRealZenix</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    Meine Meinung nach ist der Bot einer der Besten, da man zum Beispiel Welcome Nachricht selbst bearbeiten kann. Und gibt sehr viele Commands, wo man eigentlich kaum weitere Bots mehr benötigt. Aber trotzdem, obwohl Vulpo nur 1 Dev hat, ist der Bot RICHTIG gut. Mfg ARealZenix
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>dwensday</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    Sehr guter bot und netter Developer
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>Tom Der Boss</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    Toller Bot
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>[CG] Big Bud</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    geil
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>Leruto🍂</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    Sehr guter All in one Bot, auch das Ticket System ist echt gut! Top Bot!
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>Hotdog</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    Coooler Bot
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>Fantasy 🚀</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    Ich liebe den Bot der ist einfach geil hoffe ich werde auch bald so gut wie du Vinc ;) btw gruß von deinem Lieblingsfreund Nakime#6003
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>D4RK👾Demon</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    Sehr guter Bot, dank ihm konnte ich von meinem Server 4 Bots kicken, weil Vulpo nunmal alle Befehle der 4 Bots auch (besser) kann! Kann den Bot nur empfehlen!
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>suhalo_351</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    Great bot. It would be much great if this bot also supports English. I think every command works properly. Everything including, utility, giveaway and much more are supported which is also great. I would recommend using this bot.
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>Joca79kk</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    Very nice Bot. This bot is good for everything. Thanks to the Dev VINC.
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>skye.cln</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    Wirklich ein perfekter Bot. Ich konnte damit alle meine bisherigen Bots mit Vulpo überflüssig machen und vom Server werfen. Zum ersten Mal hält eine Beschreibung, was sie verspricht
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>Utopia__13</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    Guter bot hab nichts daran auszusetzen
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>Resonanter</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    👍
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>TimNature</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    Also alles in einem ein sehr guter und einfach aufgebauter Bot bis auf das man bei manchen Befehlen noch net ganz weiß wie das funktioniert Wie z.b. bei Umfragen wie erstelle ich die ?
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>Lucky gamer</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    Ein sehr guter & übersichtlicher Bot der jeden Server auf ein ganz anderes Niveau hebt, Ich kann es jedem empfehlen Vulpo zu testen und wenn er/sie ihn nicht einladen möchte ihn auch dem Supportserver auszuprobieren
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial-item">
+                  <div class="d-flex align-items-center">
+                    <div>
+                      <h3>LeTeeno</h3>
+                      <h4>Benutzer</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <p>
+                    <i class="bi bi-quote quote-icon-left"></i>
+                    Viele nützliche Funktionen hat dieser Bot auf jeden Fall! Auch ein netter Developer, der auf die Wünsche der Bot user eingeht. Ein Muss für jeden Deutschen server!
+                    <i class="bi bi-quote quote-icon-right"></i>
+                  </p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+
+          </div>
+          <div class="swiper-pagination"></div>
+        </div>
+
+      </div>
+    </section><!-- End Testimonials Section -->
+  <!-- ======= Frequently Asked Questions Section ======= -->
+  <section id="faq" class="faq">
+    <div class="container" data-aos="fade-up">
+
+      <div class="row gy-4">
+
+        <div class="col-lg-4">
+          <div class="content px-xl-5">
+            <h3>Häufig gestellte <strong>Fragen</strong></h3>
+            <p>
+              Du hast eine Frage? Dann schau hier einfach mal nach, bevor du ein Ticket öffnest.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-lg-8">
+
+          <div class="accordion accordion-flush" id="faqlist" data-aos="fade-up" data-aos-delay="100">
+
+            <div class="accordion-item">
+              <h3 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-content-1">
+                  <span class="num">1.</span>
+                  Wie deaktiviere ich das Levelsystem?
+                </button>
+              </h3>
+              <div id="faq-content-1" class="accordion-collapse collapse" data-bs-parent="#faqlist">
+                <div class="accordion-body">
+                  Mit dem Befehl <strong>/levelsystem status</strong> kannst du ganz einfach das Levelsystem aktivieren und deaktivieren.
+                </div>
+              </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section><!-- End Frequently Asked Questions Section -->
+  </main><!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+
+    <div class="container">
+      <div class="row gy-4">
+        <div class="col-lg-5 col-md-12 footer-info">
+          <a href="/" class="logo d-flex align-items-center">
+            <span>Vulpo</span>
+          </a>
+          <p>Stell dir einen Bot vor, der ideal deinen Server verwalten kann. Der nützliche Funktionen wie Levelsystem, Gewinnspiele und viele mehr hat. Ein Bot, der sich perfekt deinen Bedürfnissen anpasst.</p>
+          <div class="social-links d-flex mt-4">
+            <a href="https://discord.gg/49jD3VXksp" class="twitter"><i class="bi bi-discord"></i></a>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Wichtige Links</h4>
+          <ul>
+            <li><a href="#hero">Hauptseite</a></li>
+            <li><a href="#about">Über Vulpo</a></li>
+            <li><a href="#services">Funktionen</a></li>
+        </div>
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>          </h4>
+          <ul>
+            <li><a href="#portfolio">Galerie</a></li>
+            <li><a href="#team">Team</a></li>
+            <li><a href="#testimonials">Bewertungen</a></li>
+            <li><a href="#faq">FAQ</a></li>
+        </div>
+
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Weiterführende Links</h4>
+          <ul>
+            <li><a href="https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands">Einladen</a></li>
+            <li><a href="https://discord.gg/49jD3VXksp">Support Server</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Rechtliches</h4>
+          <ul>
+            <li><a href="impressum">Impressum</a></li>
+            <li><a href="datenschutz">Datenschutz</a></li>
+            <li><a href="formulare">Weiterführendes</a></li>
+        </div>
+      </div>
+    </div>
+
+    <div class="container mt-4">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Vulpo Developement</span></strong>. Alle Rechte reserviert
+      </div>
+      <div class="credits">
+        Designt von <a href="https://bootstrapmade.com/">BootstrapMade</a>
+      </div>
+    </div>
+
+  </footer><!-- End Footer -->
+  <!-- End Footer -->
+
+  <a href="#" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/aos/aos.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/purecounter/purecounter_vanilla.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/php-email-form/validate.js') }}"></script>
+
+  <!-- Template Main JS File -->
+  <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+
+</body>
+
+</html>

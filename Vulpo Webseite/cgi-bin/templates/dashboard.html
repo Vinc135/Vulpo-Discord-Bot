@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Vulpo - Dashboard</title>
+  <meta content="Die offizielle Webseite des Discord Bot's Vulpo." name="description">
+  <meta content="discord bot, discord, info webseite" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+  <link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+  <link rel= "icon" href= "{{ url_for('static', filename='assets/img/favicon.png') }}">
+  <link rel= "apple-touch-icon" href= "{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}">
+
+  <!-- Vendor CSS Files -->
+  <link rel= "stylesheet" href= "{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}">
+  <link rel= "stylesheet" href= "{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}">
+  <link rel= "stylesheet" href= "{{ url_for('static', filename='assets/vendor/aos/aos.css') }}">
+  <link rel= "stylesheet" href= "{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}">
+  <link rel= "stylesheet" href= "{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}">
+
+  <!-- Template Main CSS File -->
+  <link rel= "stylesheet" href= "{{ url_for('static', filename='assets/css/main.css') }}">
+
+  <!-- =======================================================
+  * Template Name: Impact - v1.1.1
+  * Template URL: https://bootstrapmade.com/impact-bootstrap-business-website-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+
+  <header id="header" class="header d-flex align-items-center">
+
+    <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+      <a href="/" class="logo d-flex align-items-center">
+        <img src="{{ url_for('static', filename='assets/img/favicon.png') }}" alt="">
+        <h1>Vulpo <span style="font-weight: bold; color: gold;">Dashboard</span></h1>
+      </a>
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a href="/">Hauptseite</a></li>
+          <li><a href="https://vulpo-bot.de/logout" class="gold-button">Ausloggen</a></li>
+        </ul>
+      </nav><!-- .navbar -->
+      
+
+      <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
+      <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
+
+    </div>
+  </header><!-- End Header -->
+  <section id="hero" class="hero">
+    <div class="container position-relative">
+      <div class="row gy-5" data-aos="fade-in">
+        <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center text-center text-lg-start">
+          <h2>Erfolgreich eingeloggt als<span> <span style="font-weight: bold; color: gold;">{{ response["username"] }}#{{ response["discriminator"] }} ({{ response["id"] }})</span></span></h2>
+          <p>Stell dir einen Premium-Bot vor, der perfekt auf die Verwaltung deines Servers abgestimmt ist. Er bietet eine Vielzahl von nützlichen Funktionen wie ein fortschrittliches Levelsystem, spannende Gewinnspiele und vieles mehr. Dieser Bot passt sich optimal deinen individuellen Bedürfnissen an und sorgt für ein erstklassiges Erlebnis auf deinem Server.</p>
+          <div class="d-flex justify-content-center justify-content-lg-start" data-aos-delay="200">
+            <a href="https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands" class="btn-get-started"></i><span>Einladen</span></a>
+            <a href="https://discord.gg/49jD3VXksp" class="btn-get-started"></i><span>Support</span></a>
+            <a href="https://vulpo-bot.de/logout" class="btn-get-started"></i><span>Ausloggen</span></a>
+          </div>
+        </div>
+        <div class="col-lg-6 order-1 order-lg-2">
+          <img src="{{ url_for('static', filename='assets/img/favicon.png') }}" class="img-fluid" alt="" data-aos="zoom-out" data-aos-delay="100">
+          </div>
+      </div>
+    </div>
+    <div class="icon-boxes position-relative">
+      <div class="container position-relative">
+        <div class="row gy-4 mt-5">
+
+          <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="icon-box">
+              <div class="icon"><i class="bi bi-easel"></i></div>
+              <h4 class="title"><a href="" class="stretched-link"> </a></h4>
+            </div>
+          </div>
+          <!--End Icon Box -->
+
+          <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="icon-box">
+              <div class="icon"><i class="bi bi-gem"></i></div>
+              <h4 class="title"><a href="" class="stretched-link"> </a></h4>
+            </div>
+          </div>
+          <!--End Icon Box -->
+
+          <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="icon-box">
+              <div class="icon"><i class="bi bi-geo-alt"></i></div>
+              <h4 class="title"><a href="" class="stretched-link"> </a></h4>
+            </div>
+          </div>
+          <!--End Icon Box -->
+
+          <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="500">
+            <div class="icon-box">
+              <div class="icon"><i class="bi bi-command"></i></div>
+              <h4 class="title"><a href="" class="stretched-link"> </a></h4>
+            </div>
+          </div>
+          <!--End Icon Box -->
+
+          <div class="guild-container">
+            <h1>Diese Server teilst du mit uns.</h1>
+            {% for guild in guilds %}
+            <div class="guild">
+              <div class="guild-icon">
+                <img src="https://cdn.discordapp.com/icons/{{ guild['id'] }}/{{ guild['icon'] }}.png?size=128" alt="{{ guild['name'] }} icon">
+              </div>
+              <div class="guild-name">
+                <h3>{{ guild['name'] }}</h3>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+                 
+        </div>
+      </div>
+    </div>
+
+    </div>
+  </section>
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+
+    <div class="container">
+      <div class="row gy-4">
+        <div class="col-lg-5 col-md-12 footer-info">
+          <a href="/" class="logo d-flex align-items-center">
+            <span>Vulpo</span>&nbsp;&nbsp;&nbsp;<span style="font-weight: bold; color: gold;">Dashboard</span>
+          </a>
+          <p>Stell dir einen Bot vor, der ideal deinen Server verwalten kann. Der nützliche Funktionen wie Levelsystem, Gewinnspiele und viele mehr hat. Ein Bot, der sich perfekt deinen Bedürfnissen anpasst.</p>
+          <div class="social-links d-flex mt-4">
+            <a href="https://discord.gg/49jD3VXksp" class="twitter"><i class="bi bi-discord"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Weiterführende Links</h4>
+          <ul>
+            <li><a href="https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands">Einladen</a></li>
+            <li><a href="https://discord.gg/49jD3VXksp">Support Server</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Rechtliches</h4>
+          <ul>
+            <li><a href="impressum">Impressum</a></li>
+            <li><a href="datenschutz">Datenschutz</a></li>
+            <li><a href="formulare">Weiterführendes</a></li>
+        </div>
+      </div>
+    </div>
+
+    <div class="container mt-4">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Vulpo Developement</span></strong>. Alle Rechte reserviert
+      </div>
+      <div class="credits">
+        Designt von <a href="https://bootstrapmade.com/">BootstrapMade</a>
+      </div>
+    </div>
+
+  </footer><!-- End Footer -->
+
+  <a href="#" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/aos/aos.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/purecounter/purecounter_vanilla.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/php-email-form/validate.js') }}"></script>
+
+  <!-- Template Main JS File -->
+  <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+
+</body>
+
+</html>
