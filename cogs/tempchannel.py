@@ -53,7 +53,7 @@ class rename(discord.ui.Modal, title="Kanalname ändern"):
 class limit(discord.ui.Modal, title="Kanallimit ändern"):
     def __init__(self):
         super().__init__(custom_id="gwrtgrtgwrtg")
-        self.add_item(discord.ui.TextInput(label="Neues Limit", style=discord.TextStyle.short, required=True, placeholder="1"))
+        self.add_item(discord.ui.TextInput(label="Neues Limit", style=discord.TextStyle.short, required=True, placeholder="1", max_length=2))
 
     async def on_submit(self, interaction: discord.Interaction):
         try:

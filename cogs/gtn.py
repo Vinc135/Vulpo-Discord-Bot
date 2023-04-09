@@ -104,7 +104,7 @@ class Guessthenumber(commands.Cog):
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(kick_members=True)
-    async def guessthenumber(self, interaction: discord.Interaction, modus: typing.Literal["Anschalten", "Ausschalten"], kanal: discord.TextChannel):
+    async def guessthenumber(self, interaction: discord.Interaction, modus: typing.Literal["Anschalten", "Ausschalten"], kanal: typing.Union[discord.TextChannel, discord.ForumChannel, discord.Thread]):
         """Verwalte das Minispiel 'Guess the number' auf deinem Server."""
         a = random.randint(20, 100)
         b = random.randint(1, a)
