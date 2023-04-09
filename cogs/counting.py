@@ -3,6 +3,7 @@ from discord.ext import commands
 import expr
 import asyncio
 from discord import app_commands
+import typing
 
 class countconfirm(discord.ui.View):
     def __init__(self, kanal=None, bot=None):
@@ -36,7 +37,7 @@ class Counting(commands.Cog):
     @counting.command()
     @app_commands.checks.has_permissions(manage_messages=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
-    async def set(self, interaction: discord.Interaction, kanal: discord.TextChannel):
+    async def set(self, interaction: discord.Interaction, kanal: typing.Union[discord.TextChannel, discord.ForumChannel, discord.Thread]):
         """Lege einen Kanal fest, indem gezählt wird."""
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:

@@ -73,6 +73,7 @@ class moderation(commands.Cog):
     @app_commands.checks.has_permissions(ban_members=True)
     async def ban(self, interaction: discord.Interaction, user: discord.User, grund: str, nachrichten_löschen: typing.Literal["Keine löschen","Letzte 24 Stunden","Letzte 7 Tage"]):
         """Sperrt einen Benutzer. Wenn möglich."""
+        if interaction.user.id == user.id: return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst dich nicht selber bannen.**", ephemeral=True)
         embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                 description=f"Der Benutzer {user.mention} (**{user.id}**) wurde gebannt.")
         embed.add_field(name=f"🎛️ Server:", value=f"{interaction.guild.name}", inline=False)
@@ -109,7 +110,7 @@ class moderation(commands.Cog):
             except:
                 pass
         except:
-            await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Ich habe hier keine Brechtigungen dazu.**", ephemeral=True)
+            await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Ich habe hier keine Berechtigungen dazu.**", ephemeral=True)
 
     @app_commands.command()
     @app_commands.guild_only()

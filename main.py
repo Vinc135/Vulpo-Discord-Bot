@@ -126,14 +126,16 @@ class Vulpo(commands.AutoShardedBot):
         
         t1 = math.floor(guild.created_at.timestamp())
         t2 = datetime.datetime.fromtimestamp(int(t1))
-        
-        embed = discord.Embed(colour=discord.Colour.green(), title=f"Neuer server! ({len(bot.guilds)})",
-                            description="Hier gibt es detaillierte Informationen:")
-        embed.add_field(name="Name", value=guild.name)
-        embed.add_field(name="ID", value=guild.id)
-        embed.add_field(name="Erstellt", value=discord_timestamp(t2, 'R'), inline=False)
-        embed.add_field(name="Memberanzahl", value=guild.member_count, inline=False)
-        embed.add_field(name="Owner", value=guild.owner, inline=False)
+        msg = f"""
+        <:v_info:1037065915113676891> **Informationen**
+        <:v_cookie:1037065912492249259> {guild.name} ({guild.id})
+        <:v_krone:1037065917684789279> {guild.owner} ({guild.owner.id})
+        <:v_user:1037065935015653476> {guild.member_count}
+        <:v_zeit:1037065936643047516> {discord_timestamp(t2, 'R')}
+       	
+        <:v_info:1037065915113676891> **Vulpo ist jetzt auf {len(bot.guilds)} Servern drauf! Yay 🎉**
+        """
+        embed = discord.Embed(colour=discord.Colour.green(), title=f"Vulpo wurde auf {guild.name} eingeladen!", description=msg)
         embed.set_thumbnail(url=guild.icon if guild.icon else "https://cdn.discordapp.com/attachments/971092445435682907/973630982425047050/server_join.png")
         await channels.send(embed=embed)
 
@@ -144,14 +146,18 @@ class Vulpo(commands.AutoShardedBot):
             
             t1 = math.floor(guild.created_at.timestamp())
             t2 = datetime.datetime.fromtimestamp(int(t1))
-        
-            embed = discord.Embed(colour=discord.Colour.red(), title=f"Server verlassen! ({len(bot.guilds)})",
-                                    description="Hier ein paar Informationen:")
-            embed.add_field(name="Name", value=guild.name)
-            embed.add_field(name="ID", value=guild.id)
-            embed.add_field(name="Erstellt", value=discord_timestamp(t2, 'R'), inline=False)
-            embed.add_field(name="User count", value=guild.member_count, inline=False)
-            embed.add_field(name="Owner", value=guild.owner, inline=False)
+        	
+            msg = f"""
+            <:v_info:1037065915113676891> **Informationen**
+            <:v_cookie:1037065912492249259> {guild.name} ({guild.id})
+            <:v_krone:1037065917684789279> {guild.owner} ({guild.owner.id})
+            <:v_user:1037065935015653476> {guild.member_count}
+            <:v_zeit:1037065936643047516> {discord_timestamp(t2, 'R')}
+
+            <:v_info:1037065915113676891> **Vulpo ist jetzt auf {len(bot.guilds)} Servern drauf!**
+            """
+            
+            embed = discord.Embed(colour=discord.Colour.red(), title=f"Vulpo wurde aus {guild.name} rausgeschmissen!", description=msg)
             embed.set_thumbnail(url=guild.icon if guild.icon else 'https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549')
             await channels.send(embed=embed)
         except:

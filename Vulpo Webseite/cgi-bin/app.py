@@ -16,6 +16,16 @@ def index():
     """Umleitung zur Hauptseite."""
     return render_template('index.html')
 
+@app.route('/support')
+def support():
+    """Umleitung zum Supportserver."""
+    return redirect("https://discord.gg/49jD3VXksp")
+
+@app.route('/invite')
+def invite():
+    """Umleitung zum Einladen."""
+    return redirect("https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands")
+
 # @app.route('/premium')
 # def premium():
 #     """Umleitung zur Premium Seite."""
