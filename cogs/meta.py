@@ -126,7 +126,7 @@ class meta(commands.Cog):
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def umfrage(self, interaction: discord.Interaction, frage: str, antworten: str):
-        """Beispiel: /umfrage Testfrage <Antwort Nummer 1> <Hier die zweite Antwort>. Maximale Antowrten: 9"""
+        """Beispiel: /umfrage Testfrage <Antwort Nummer 1> <Hier die zweite Antwort>. Maximale Antworten: 9"""
         a = 0
         desc = ""
         pattern = "<.*?>"

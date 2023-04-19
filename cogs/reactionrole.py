@@ -229,7 +229,9 @@ class reactionrole(commands.Cog):
                 await cursor.execute("SELECT id, label, roleID, guildID FROM rr_select")
                 result = await cursor.fetchall()
                 if result != []:
-                    for i in range(len(result)):
+                    i = 0
+                    for a in result:
+                        i += 1
                         dict1 = {}
                         await cursor.execute("SELECT label, roleID, guildID FROM rr_select WHERE id = (%s)", (i))
                         result2 = await cursor.fetchall()
@@ -243,7 +245,9 @@ class reactionrole(commands.Cog):
                 await cursor.execute("SELECT id, label, roleID, guildID, custom_id FROM rr_buttons")
                 result = await cursor.fetchall()
                 if result != []:
-                    for i in range(len(result)):
+                    i = 0
+                    for a in result:
+                        i += 1
                         view = view_for_buttons()
                         await cursor.execute("SELECT label, roleID, guildID, custom_id FROM rr_buttons WHERE id = (%s)", (i))
                         result2 = await cursor.fetchall()

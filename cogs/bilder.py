@@ -9,6 +9,7 @@ from PIL import Image
 from io import BytesIO
 from discord import app_commands
 from info import getcolour
+import asyncio
 
 class bilder(commands.Cog):
     def __init__(self, bot):
@@ -19,22 +20,24 @@ class bilder(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def wanted(self, interaction, member: discord.Member=None):
         """Erstellt ein 'Gesucht' Plakat mit dem Profilbild eines Members."""
-        if member == None:
+        if member is None:
             member = interaction.user
-        if member != None:
+        if member is not None:
             wanted = Image.open("wanted.jpg")
             asset = member.avatar
             data = BytesIO(await asset.read())
             pfp = Image.open(data)
             pfp = pfp.resize((640,640))
-            wanted.paste(pfp, (335, 565))
-            wanted.save("profile.jpg")
+            loop = asyncio.get_event_loop()
+            await loop.run_in_executor(None, wanted.paste, pfp, (335, 565))
+            with BytesIO() as image_binary:
+                wanted.save(image_binary, 'JPEG')
+                image_binary.seek(0)
+                file = discord.File(fp=image_binary, filename='profile.jpg')
             embed = discord.Embed(title=" ", description=f"**{member} wird gesucht!**", colour=await getcolour(self, interaction.user))
             embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
-            file = discord.File("profile.jpg", filename="profile.jpg")
             embed.set_image(url="attachment://profile.jpg")
             await interaction.response.send_message(file=file, embed=embed)
-            os.remove("profile.jpg")
     
     @app_commands.command()
     @app_commands.guild_only()

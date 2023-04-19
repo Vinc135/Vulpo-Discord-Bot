@@ -79,7 +79,7 @@ class logging(commands.Cog):
                     await cursor.execute(f"SELECT channelid FROM messagelog WHERE guildid = {interaction.guild.id}")
                     result = await cursor.fetchone()
                     if result is None:
-                        embed = discord.Embed(colour=discord.Colour.red(), title="Messagelog", description=f"Der Nachrichtenlog ist nicht aktiviert auf diesem Server.")
+                        embed = discord.Embed(colour=discord.Colour.orange(), title="Messagelog", description=f"Der Nachrichtenlog ist nicht aktiviert auf diesem Server.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         await interaction.response.send_message(embed=embed)
                         return
@@ -87,7 +87,7 @@ class logging(commands.Cog):
                         await cursor.execute(f"DELETE FROM messagelog WHERE guildid = {interaction.guild.id}")
                         
 
-                        embed = discord.Embed(colour=discord.Colour.red(), title="Messagelog deaktiviert", description=f"Der Nachrichtenlog ist nun deaktiviert auf diesem Server.")
+                        embed = discord.Embed(colour=discord.Colour.orange(), title="Messagelog deaktiviert", description=f"Der Nachrichtenlog ist nun deaktiviert auf diesem Server.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         await interaction.response.send_message(embed=embed)
                         return
@@ -108,10 +108,10 @@ class logging(commands.Cog):
                         if channel is None:
                             return
                         else:
-                            embed = discord.Embed(title="Eine Nachricht wurde gelöscht", color=discord.Color.red(), timestamp=datetime.utcnow())
-                            embed.add_field(name="Autor", value=message.author)
-                            embed.add_field(name="Kanal", value=message.channel.mention)
-                            embed.add_field(name="Nachricht", value=message.content)
+                            embed = discord.Embed(title="Eine Nachricht wurde gelöscht", color=discord.Color.orange(), timestamp=datetime.utcnow())
+                            embed.add_field(name="<:v_user:1037065935015653476> Autor", value=message.author)
+                            embed.add_field(name="<:v_enthullen:1037124921685442591> Kanal", value=message.channel.mention)
+                            embed.add_field(name="<:v_chat:1037065910567055370> Nachricht", value=message.content)
 
                             await channel.send(embed=embed)
                 except:
@@ -132,7 +132,7 @@ class logging(commands.Cog):
                     if channel is None:
                         return
                     else:
-                        embed = discord.Embed(description=f"**{len(messages)} Nachrichten in {message.channel.mention} gelöscht**", color=discord.Color.red(), timestamp=datetime.utcnow())
+                        embed = discord.Embed(description=f"**{len(messages)} Nachrichten in {message.channel.mention} gelöscht**", color=discord.Color.orange(), timestamp=datetime.utcnow())
 
                         await channel.send(embed=embed)
 
@@ -170,16 +170,16 @@ class logging(commands.Cog):
                             if before.content != after.content:
                                 if before.pinned == True and after.pinned == True:
                                     embed = discord.Embed(description=f"**Die folgende angeheftete Nachricht({after.id}) wurde in {after.channel.mention} bearbeitet:*", color=discord.Color.gold(), timestamp=datetime.utcnow())
-                                    embed.add_field(name="Vorher", value=before.content, inline=False)
-                                    embed.add_field(name="Nachher", value=after.content, inline=False)
+                                    embed.add_field(name="<:v_pfeil_links:1048677593743888536> Vorher", value=before.content, inline=False)
+                                    embed.add_field(name="<:v_pfeil_rechts:1048677625876459562> Nachher", value=after.content, inline=False)
                                     embed.set_author(name=after.author, icon_url=after.author.avatar)
                                     embed.set_footer(text=f"Autor-ID: {after.author.id}")
 
                                     await channel.send(embed=embed)
                                 else:
                                     embed = discord.Embed(description=f"**Nachricht({after.id}) wurde in {after.channel.mention} bearbeitet**", color=discord.Color.gold(), timestamp=datetime.utcnow())
-                                    embed.add_field(name="Vorher", value=before.content, inline=False)
-                                    embed.add_field(name="Nachher", value=after.content, inline=False)
+                                    embed.add_field(name="<:v_pfeil_links:1048677593743888536> Vorher", value=before.content, inline=False)
+                                    embed.add_field(name="<:v_pfeil_rechts:1048677625876459562> Nachher", value=after.content, inline=False)
                                     embed.set_author(name=after.author, icon_url=after.author.avatar)
                                     embed.set_footer(text=f"Autor-ID: {after.author.id}")
 
@@ -248,10 +248,10 @@ class logging(commands.Cog):
                         return
                     else:
                         async for entry in guild.audit_logs(limit=1, action=discord.AuditLogAction.ban):
-                            embed = discord.Embed(title="Jemand wurde gebannt", color=discord.Color.red(), timestamp=datetime.utcnow())
-                            embed.add_field(name="User", value=f"{entry.target.mention}({entry.target})")
-                            embed.add_field(name="Moderator", value=f"{entry.user.mention}({entry.user})")
-                            embed.add_field(name="Grund", value=entry.reason if entry.reason else 'Kein grund angegeben')
+                            embed = discord.Embed(title="Jemand wurde gebannt", color=discord.Color.orange(), timestamp=datetime.utcnow())
+                            embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.target.mention}({entry.target})")
+                            embed.add_field(name="<:v_mod:1037065920704696420> Moderator", value=f"{entry.user.mention}({entry.user})")
+                            embed.add_field(name="<:v_warnung:1037124929944027226> Grund", value=entry.reason if entry.reason else 'Kein grund angegeben')
 
                             await channel.send(embed=embed)
                             break
@@ -270,10 +270,10 @@ class logging(commands.Cog):
                         return
                     else:
                         async for entry in guild.audit_logs(limit=1, action=discord.AuditLogAction.ban):
-                            embed = discord.Embed(title="Jemand wurde entbannt", color=discord.Color.green(), timestamp=datetime.utcnow())
-                            embed.add_field(name="User", value=f"{entry.target.mention}({entry.target})")
-                            embed.add_field(name="Moderator", value=f"{entry.user.mention}({entry.user})")
-                            embed.add_field(name="Grund", value=entry.reason if entry.reason else 'Kein grund angegeben')
+                            embed = discord.Embed(title="Jemand wurde entbannt", color=discord.Color.orange(), timestamp=datetime.utcnow())
+                            embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.target.mention}({entry.target})")
+                            embed.add_field(name="<:v_mod:1037065920704696420> Moderator", value=f"{entry.user.mention}({entry.user})")
+                            embed.add_field(name="<:v_warnung:1037124929944027226> Grund", value=entry.reason if entry.reason else 'Kein grund angegeben')
 
                             await channel.send(embed=embed)
                             break
@@ -292,10 +292,10 @@ class logging(commands.Cog):
                         return
                     else:
                         async for entry in channel.guild.audit_logs(limit=1, action=discord.AuditLogAction.channel_create):
-                            embed = discord.Embed(title=f"Ein {entry.target.type}kanal wurde erstellt", color=discord.Color.green(), timestamp=datetime.utcnow())
-                            embed.add_field(name="Name", value=f"{entry.target.mention}({entry.target.name})")
-                            embed.add_field(name="User", value=f"{entry.user.mention}({entry.user})")
-                            embed.add_field(name="Kategory", value=entry.target.category)
+                            embed = discord.Embed(title=f"Ein {entry.target.type}kanal wurde erstellt", color=discord.Color.orange(), timestamp=datetime.utcnow())
+                            embed.add_field(name="<:v_chat:1037065910567055370> Name", value=f"{entry.target.mention}({entry.target.name})")
+                            embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.user.mention}({entry.user})")
+                            embed.add_field(name="<:v_einstellungen:1037067521049759865> Kategorie", value=entry.target.category)
 
                             await chan.send(embed=embed)
                             break
@@ -316,18 +316,18 @@ class logging(commands.Cog):
                         else:
                             async for entry in after.guild.audit_logs(limit=1, action=discord.AuditLogAction.channel_update):
                                 if before.name != after.name:
-                                    embed = discord.Embed(title="Ein Kanal wurde umbenannt", color=discord.Color.green(), timestamp=datetime.utcnow())
-                                    embed.add_field(name="Alt", value=before.name)
-                                    embed.add_field(name="Neu", value=after.name)
-                                    embed.add_field(name="User", value=f"{entry.user.mention}({entry.user})")
+                                    embed = discord.Embed(title="Ein Kanal wurde umbenannt", color=discord.Color.orange(), timestamp=datetime.utcnow())
+                                    embed.add_field(name="<:v_pfeil_links:1048677593743888536> Alt", value=before.name)
+                                    embed.add_field(name="<:v_pfeil_rechts:1048677625876459562> Neu", value=after.name)
+                                    embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.user.mention}({entry.user})")
 
                                     await chan.send(embed=embed)
                                     break
                                 if before.topic != after.topic:
-                                    embed = discord.Embed(title="Eine Kanalbeschreibung wurde geändert", color=discord.Color.green(), timestamp=datetime.utcnow())
-                                    embed.add_field(name="Alt", value=before.topic if before.topic else 'Keine Beschreibung')
-                                    embed.add_field(name="Neu", value=after.topic if after.topic else 'Keine Beschreibung')
-                                    embed.add_field(name="User", value=f"{entry.user.mention}({entry.user})")
+                                    embed = discord.Embed(title="Eine Kanalbeschreibung wurde geändert", color=discord.Color.orange(), timestamp=datetime.utcnow())
+                                    embed.add_field(name="<:v_pfeil_links:1048677593743888536> Alt", value=before.topic if before.topic else 'Keine Beschreibung')
+                                    embed.add_field(name="<:v_pfeil_rechts:1048677625876459562> Neu", value=after.topic if after.topic else 'Keine Beschreibung')
+                                    embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.user.mention}({entry.user})")
 
                                     await chan.send(embed=embed)
                                     break
@@ -348,9 +348,9 @@ class logging(commands.Cog):
                         return
                     else:
                         async for entry in channel.guild.audit_logs(limit=1, action=discord.AuditLogAction.channel_delete):
-                            embed = discord.Embed(title=f"Ein {channel.type}kanal wurde gelöscht", color=discord.Color.red(), timestamp=datetime.utcnow())
-                            embed.add_field(name="Name", value=f"{channel.name}")
-                            embed.add_field(name="User", value=f"{entry.user.mention}({entry.user})")
+                            embed = discord.Embed(title=f"Ein {channel.type}kanal wurde gelöscht", color=discord.Color.orange(), timestamp=datetime.utcnow())
+                            embed.add_field(name="<:v_chat:1037065910567055370> Name", value=f"{channel.name}")
+                            embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.user.mention}({entry.user})")
 
                             await chan.send(embed=embed)
                             break
@@ -369,10 +369,9 @@ class logging(commands.Cog):
                         return
                     else:
                         async for entry in role.guild.audit_logs(limit=1, action=discord.AuditLogAction.role_create):
-                            embed = discord.Embed(title=f"Eine Rolle wurde erstellt", color=discord.Color.green(), timestamp=datetime.utcnow())
-                            embed.add_field(name="Name", value=f"{role.name}")
-                            embed.add_field(name="User", value=f"{entry.user.mention}({entry.user})")
-
+                            embed = discord.Embed(title=f"Eine Rolle wurde erstellt", color=discord.Color.orange(), timestamp=datetime.utcnow())
+                            embed.add_field(name="<:v_chat:1037065910567055370> Name", value=f"{role.name}")
+                            embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.user.mention}({entry.user})")
                             await chan.send(embed=embed)
                             break
 
@@ -390,10 +389,9 @@ class logging(commands.Cog):
                         return
                     else:
                         async for entry in role.guild.audit_logs(limit=1, action=discord.AuditLogAction.role_delete):
-                            embed = discord.Embed(title=f"Eine Rolle wurde gelöscht", color=discord.Color.red(), timestamp=datetime.utcnow())
-                            embed.add_field(name="Name", value=f"{role.name}")
-                            embed.add_field(name="User", value=f"{entry.user.mention}({entry.user})")
-
+                            embed = discord.Embed(title=f"Eine Rolle wurde gelöscht", color=discord.Color.orange(), timestamp=datetime.utcnow())
+                            embed.add_field(name="<:v_chat:1037065910567055370> Name", value=f"{role.name}")
+                            embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.user.mention}({entry.user})")
                             await chan.send(embed=embed)
                             break
 
@@ -420,8 +418,8 @@ class logging(commands.Cog):
                                 embed = discord.Embed(title="Mitglied wurde geändert", description=f"{entry.user.mention} hat eine Rolle von einem Mitglied entzogen.",
                                                     colour=discord.Colour.orange(), timestamp=discord.utils.utcnow())
 
-                                fields = [("Betroffenes Mitglied", before.mention, True),
-                                        ("Entzogende Rolle", role.mention, True)]
+                                fields = [("<:v_user:1037065935015653476> Betroffenes Mitglied", before.mention, True),
+                                        ("<:v_levelup:1037079572333735966> Entzogende Rolle", role.mention, True)]
 
                                 for name, value, inline in fields:
                                     embed.add_field(name=name, value=value, inline=inline)
@@ -434,8 +432,8 @@ class logging(commands.Cog):
                             embed = discord.Embed(title="Mitglied wurde geändert", description=f"{entry.user.mention} hat eine Rolle zu einem Mitglied hinzugefügt.",
                                                 colour=discord.Colour.orange(), timestamp=discord.utils.utcnow())
 
-                            fields = [("Betroffenes Mitglied", before.mention, True),
-                                    ("Hinzugefügte Rolle", role.mention, True)]
+                            fields = [("<:v_user:1037065935015653476> Betroffenes Mitglied", before.mention, True),
+                                    ("<:v_levelup:1037079572333735966> Hinzugefügte Rolle", role.mention, True)]
 
                             for name, value, inline in fields:
                                 embed.add_field(name=name, value=value, inline=inline)
@@ -443,11 +441,11 @@ class logging(commands.Cog):
                         else:
                             if before.nick != after.nick:
                                 if after.nick is None:
-                                    embed = discord.Embed(description=f"**Nickname**\n{before} hat seinen Spitznamen zurückgesetzt.", color=discord.Color.green(), timestamp=datetime.utcnow())
+                                    embed = discord.Embed(description=f"**Nickname**\n{before} hat seinen Spitznamen zurückgesetzt.", color=discord.Color.orange(), timestamp=datetime.utcnow())
 
                                     await chan.send(embed=embed)
                                 else:
-                                    embed = discord.Embed(description=f"**Nickname**\n{before} hat seinen Nicknamen zu {after.nick} geändert.", color=discord.Color.gold(), timestamp=datetime.utcnow())
+                                    embed = discord.Embed(description=f"**Nickname**\n{before} hat seinen Nicknamen zu {after.nick} geändert.", color=discord.Color.orange(), timestamp=datetime.utcnow())
 
                                     await chan.send(embed=embed)
                 except:

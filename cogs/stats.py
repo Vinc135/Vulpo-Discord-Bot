@@ -70,7 +70,7 @@ async def getuserstats(self, art, member, guild):
                                 if f"{letzter_monat}.{l_m}.{jahr}" in str(datum[1]):
                                     woche1 += int(datum[0])
                         #tages stats
-                        if f"{discord.utils.utcnow().__format__('%d')}." in str(datum[1]):
+                        if f"{discord.utils.utcnow().__format__('%d')}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
                             tag1 += int(datum[0])
                             
                     liste = [total1, jahr1, monat1, woche1, tag1]

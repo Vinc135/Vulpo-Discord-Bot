@@ -44,7 +44,25 @@
 
 .guild-name {
   text-align: center;
+  margin-top: 10px;
+  width: 100%;
 }
+
+.button-guild-dashboard {
+  color: white;
+  text-decoration: none;
+  background-color: #9c461b;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  transition: background-color 0.2s ease-in-out;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.button-guild-dashboard:hover {
+  background-color: #7b330e;
+}
+
 
 
 
