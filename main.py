@@ -289,7 +289,7 @@ class Vulpo(commands.AutoShardedBot):
     async def setup_hook(self):
         try:
             loop = asyncio.get_event_loop()
-            pool = await aiomysql.create_pool(host='142.132.233.69', port=3306, user='u64287_IF3HQ8wHRH', password='3oKMMVfuEqv^Xcvf@i!3bzw^', db='s64287_VulpoDB', loop=loop, autocommit=True, maxsize=25)
+            pool = await aiomysql.create_pool(host='142.132.233.69', port=3306, user='u64287_IF3HQ8wHRH', password='3oKMMVfuEqv^Xcvf@i!3bzw^', db='s64287_VulpoDB', loop=loop, autocommit=True, maxsize=100)
             bot.pool = pool
             print(f"✅ Pool erstellt")
         except:
