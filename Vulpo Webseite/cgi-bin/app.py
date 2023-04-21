@@ -5,6 +5,7 @@ from credentials import client_id, client_secret, base_discord_api_url, authoriz
 import requests
 import aiomysql
 import asyncio
+from flask_session import Session
 
 async def create_pool(loop):
     pool = await aiomysql.create_pool(
@@ -36,7 +37,10 @@ pool = loop.run_until_complete(create_pool(loop))
 #—————————————————————————————————————————————#
 #Flask Webserver App erstellen.
 app = Flask(__name__)
-app.secret_key = os.urandom(24)
+app.config['SECRET_KEY'] = os.urandom(24)
+app.config['SESSION_TYPE'] = 'filesystem'
+
+Session(app)
 
 #—————————————————————————————————————————————#
 #Die Umleitungen zu den Pages.
@@ -76,10 +80,30 @@ def formulare():
     """Umleitung zur Formulare Seite."""
     return render_template('formulare.html')
 
-@app.route('/authorizehallotest', methods=['POST'])
-def server():
-    return render_template('server.html')
+@app.route('/dashboard', methods=['GET', 'POST'])
+def dashboard():
+    try:
+        # Check if backend data is sent
+        if not all(key in request.form for key in ['guild_name', 'guild_id', 'guild_icon', 'user', 'user_id', 'user_avatar']):
+            return redirect("/login")
+        
+        guild_name = request.form.get('guild_name')
+        guild_id = request.form.get('guild_id')
+        guild_icon = request.form.get('guild_icon')
+        user = request.form.get('user')
+        user_name = request.form.get('user_name')
+        user_id = request.form.get('user_id')
+        user_avatar = request.form.get('user_avatar')
+        kennung = request.form.get('kennung')
+        if kennung == "None":
+            return render_template('dashboard.html', guild_name=guild_name, guild_id=guild_id, guild_icon=guild_icon, user=user, user_id=user_id, user_avatar=user_avatar, user_name=user_name)
+        if kennung == "1.1":
+            return "Erfolgreich"
+    except Exception as e:
+        return f"{e}"
 
+
+    
 #—————————————————————————————————————————————#
 #Backend, das abläuft, wenn bestimmte Routen eingegeben werden.
 #Beispiel: vulpo-bot.de/login leitet zum Discord Login weiter.
@@ -120,6 +144,7 @@ def oauth_callback():
         # Zugriff auf die verbundenen Server des Benutzers
         guilds = []
         guilds_response = discord1.get(base_discord_api_url + '/users/@me/guilds')
+        
         for guild in guilds_response.json():
             if int(guild["permissions"]) & 0x00000008:
                 headers = {
@@ -131,8 +156,7 @@ def oauth_callback():
                     continue
                 else:
                     guilds.append(guild)
-
-        return render_template('dashboard.html', guilds=guilds, response=response.json())
+        return render_template('server.html', guilds=guilds, response=response.json())
 
     except:
         session.clear()
