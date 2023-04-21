@@ -50,7 +50,9 @@ class buttons(discord.ui.View):
             async with conn.cursor() as cursor:
                 await cursor.execute("SELECT lösung FROM eqcurrent WHERE guildID = (%s)", (interaction.guild.id))
                 result = await cursor.fetchone()
-                await interaction.response.send_message(f"💡 Der erste Buchstabe des gesuchten Wortes ist __**{result[0][0]}**__. Mehr Tipps gebe ich aber nicht.", ephemeral=True)
+                if result is not None:
+                    return await interaction.response.send_message(f"💡 Der erste Buchstabe des gesuchten Wortes ist __**{result[0][0]}**__. Mehr Tipps gebe ich aber nicht.", ephemeral=True)
+                await interaction.response.send_message(f"❌ Es gibt aktuell keine Lösung. Das Emojiquiz wurde wahrscheinlich auf diesem Sevrer ausgeschalten.", ephemeral=True)
 
 async def open_acc(self, user):
     async with self.bot.pool.acquire() as conn:
@@ -158,9 +160,11 @@ class Emojiquiz(commands.Cog):
         else:
             tf2 = await check_word(self, msg)
             if tf2 == True:
-                await answer_correct(self, msg)
+                if msg:
+                    await answer_correct(self, msg)
             else:
-                await answer_incorrect(self, msg)
+                if msg:
+                    await answer_incorrect(self, msg)
     
     @app_commands.command()
     @app_commands.guild_only()

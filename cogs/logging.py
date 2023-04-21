@@ -282,23 +282,26 @@ class logging(commands.Cog):
     async def on_guild_channel_create(self, channel):
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
-                await cursor.execute(f"SELECT channelid FROM modlog WHERE guildid = {channel.guild.id}")
-                result = await cursor.fetchone()
-                if result is None:
-                    return
-                if result != None:
-                    chan = channel.guild.get_channel(int(result[0]))
-                    if chan is None:
+                try:
+                    await cursor.execute(f"SELECT channelid FROM modlog WHERE guildid = {channel.guild.id}")
+                    result = await cursor.fetchone()
+                    if result is None:
                         return
-                    else:
-                        async for entry in channel.guild.audit_logs(limit=1, action=discord.AuditLogAction.channel_create):
-                            embed = discord.Embed(title=f"Ein {entry.target.type}kanal wurde erstellt", color=discord.Color.orange(), timestamp=datetime.utcnow())
-                            embed.add_field(name="<:v_chat:1037065910567055370> Name", value=f"{entry.target.mention}({entry.target.name})")
-                            embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.user.mention}({entry.user})")
-                            embed.add_field(name="<:v_einstellungen:1037067521049759865> Kategorie", value=entry.target.category)
+                    if result != None:
+                        chan = channel.guild.get_channel(int(result[0]))
+                        if chan is None:
+                            return
+                        else:
+                            async for entry in channel.guild.audit_logs(limit=1, action=discord.AuditLogAction.channel_create):
+                                embed = discord.Embed(title=f"Ein {entry.target.type}kanal wurde erstellt", color=discord.Color.orange(), timestamp=datetime.utcnow())
+                                embed.add_field(name="<:v_chat:1037065910567055370> Name", value=f"{entry.target.mention}({entry.target.name})")
+                                embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.user.mention}({entry.user})")
+                                embed.add_field(name="<:v_einstellungen:1037067521049759865> Kategorie", value=entry.target.category)
 
-                            await chan.send(embed=embed)
-                            break
+                                await chan.send(embed=embed)
+                                break
+                except:
+                    pass
 
     @commands.Cog.listener()
     async def on_guild_channel_update(self, before, after):
@@ -338,22 +341,25 @@ class logging(commands.Cog):
     async def on_guild_channel_delete(self, channel):
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
-                await cursor.execute(f"SELECT channelid FROM modlog WHERE guildid = {channel.guild.id}")
-                result = await cursor.fetchone()
-                if result is None:
-                    return
-                if result != None:
-                    chan = channel.guild.get_channel(int(result[0]))
-                    if chan is None:
+                try:
+                    await cursor.execute(f"SELECT channelid FROM modlog WHERE guildid = {channel.guild.id}")
+                    result = await cursor.fetchone()
+                    if result is None:
                         return
-                    else:
-                        async for entry in channel.guild.audit_logs(limit=1, action=discord.AuditLogAction.channel_delete):
-                            embed = discord.Embed(title=f"Ein {channel.type}kanal wurde gelöscht", color=discord.Color.orange(), timestamp=datetime.utcnow())
-                            embed.add_field(name="<:v_chat:1037065910567055370> Name", value=f"{channel.name}")
-                            embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.user.mention}({entry.user})")
+                    if result != None:
+                        chan = channel.guild.get_channel(int(result[0]))
+                        if chan is None:
+                            return
+                        else:
+                            async for entry in channel.guild.audit_logs(limit=1, action=discord.AuditLogAction.channel_delete):
+                                embed = discord.Embed(title=f"Ein {channel.type}kanal wurde gelöscht", color=discord.Color.orange(), timestamp=datetime.utcnow())
+                                embed.add_field(name="<:v_chat:1037065910567055370> Name", value=f"{channel.name}")
+                                embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.user.mention}({entry.user})")
 
-                            await chan.send(embed=embed)
-                            break
+                                await chan.send(embed=embed)
+                                break
+                except:
+                    pass
 
     @commands.Cog.listener()
     async def on_guild_role_create(self, role):

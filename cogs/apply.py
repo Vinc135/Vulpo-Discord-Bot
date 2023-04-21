@@ -89,11 +89,14 @@ class frage_hinzufügen(discord.ui.Modal, title="Füge eine Frage hinzu"):
         self.add_item(discord.ui.TextInput(label="Kurze Beschreibung", style=discord.TextStyle.short, required=True))
 
     async def on_submit(self, interaction: discord.Interaction):
-        embed = interaction.message.embeds[0]
-        embed.add_field(name=self.children[0].value, value=self.children[1].value)
-        embed.color = await getcolour(self, interaction.user)
-        await interaction.message.edit(content="", embed=embed)
-        await interaction.response.send_message("**<:v_haken:1048677657040134195> Frage wurde hinzugefügt.**", ephemeral=True)
+        try:
+            embed = interaction.message.embeds[0]
+            embed.add_field(name=self.children[0].value, value=self.children[1].value)
+            embed.color = await getcolour(self, interaction.user)
+            await interaction.message.edit(content="", embed=embed)
+            await interaction.response.send_message("**<:v_haken:1048677657040134195> Frage wurde hinzugefügt.**", ephemeral=True)
+        except:
+            await interaction.response.send_message("❌ Dein angegebener Text ist zu lang.")
                 
 class setup_select(discord.ui.View):
     def __init__(self, bot=None, user=None, kanal=None):
