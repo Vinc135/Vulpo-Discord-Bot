@@ -93,7 +93,7 @@
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse">
-          <i class="bi bi-menu-button-wide"></i><span>Punkt 1</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-menu-button-wide"></i><span>Servereinstellungen</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
@@ -107,19 +107,53 @@
                 <input type="hidden" name="user_name" value="{{ user_name }}">
                 <input type="hidden" name="user" value="{{ user }}">
                 <input type="hidden" name="kennung" value="1.1">
+                <input type="hidden" name="token" value="{{ token }}">
+                <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+                <a>
+                  <i class="bi bi-circle"></i><span>Beitrittsrollen</span>
+                </a>
+              </button>
                 
               </form>
             
           </li>
           <li>
-            <a href="">
-              <i class="bi bi-circle"></i><span>2</span>
-            </a>
+            <form id="server-form" method="post" action="/dashboard">
+              <input type="hidden" name="guild_name" value="{{ guild_name }}">
+              <input type="hidden" name="guild_id" value="{{ guild_id }}">
+              <input type="hidden" name="guild_icon" value="{{ guild_icon }}">
+              <input type="hidden" name="user_id" value="{{ user_id }}">
+              <input type="hidden" name="user_avatar" value="{{ user_avatar }}">
+              <input type="hidden" name="user_name" value="{{ user_name }}">
+              <input type="hidden" name="user" value="{{ user }}">
+              <input type="hidden" name="kennung" value="1.2">
+              <input type="hidden" name="token" value="{{ token }}">
+              <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+              <a>
+                <i class="bi bi-circle"></i><span>Starboard</span>
+              </a>
+            </button>
+              
+            </form>
           </li>
           <li>
-            <a href="">
-              <i class="bi bi-circle"></i><span>3</span>
-            </a>
+            <form id="server-form" method="post" action="/dashboard">
+              <input type="hidden" name="guild_name" value="{{ guild_name }}">
+              <input type="hidden" name="guild_id" value="{{ guild_id }}">
+              <input type="hidden" name="guild_icon" value="{{ guild_icon }}">
+              <input type="hidden" name="user_id" value="{{ user_id }}">
+              <input type="hidden" name="user_avatar" value="{{ user_avatar }}">
+              <input type="hidden" name="user_name" value="{{ user_name }}">
+              <input type="hidden" name="user" value="{{ user }}">
+              <input type="hidden" name="kennung" value="1.3">
+              <input type="hidden" name="token" value="{{ token }}">
+              <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+              <a>
+                <i class="bi bi-circle"></i><span>1.3</span>
+              </a>
+            </button>
+              
+            </form>
           </li>
         </ul>
       </li><!-- End Components Nav -->
@@ -130,19 +164,61 @@
         </a>
         <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
-            <a href="">
-              <i class="bi bi-circle"></i><span>1</span>
-            </a>
+            <form id="server-form" method="post" action="/dashboard">
+              <input type="hidden" name="guild_name" value="{{ guild_name }}">
+              <input type="hidden" name="guild_id" value="{{ guild_id }}">
+              <input type="hidden" name="guild_icon" value="{{ guild_icon }}">
+              <input type="hidden" name="user_id" value="{{ user_id }}">
+              <input type="hidden" name="user_avatar" value="{{ user_avatar }}">
+              <input type="hidden" name="user_name" value="{{ user_name }}">
+              <input type="hidden" name="user" value="{{ user }}">
+              <input type="hidden" name="kennung" value="2.1">
+              <input type="hidden" name="token" value="{{ token }}">
+              <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+              <a>
+                <i class="bi bi-circle"></i><span>2.1</span>
+              </a>
+            </button>
+              
+            </form>
           </li>
           <li>
-            <a href="">
-              <i class="bi bi-circle"></i><span>2</span>
-            </a>
+            <form id="server-form" method="post" action="/dashboard">
+              <input type="hidden" name="guild_name" value="{{ guild_name }}">
+              <input type="hidden" name="guild_id" value="{{ guild_id }}">
+              <input type="hidden" name="guild_icon" value="{{ guild_icon }}">
+              <input type="hidden" name="user_id" value="{{ user_id }}">
+              <input type="hidden" name="user_avatar" value="{{ user_avatar }}">
+              <input type="hidden" name="user_name" value="{{ user_name }}">
+              <input type="hidden" name="user" value="{{ user }}">
+              <input type="hidden" name="kennung" value="2.2">
+              <input type="hidden" name="token" value="{{ token }}">
+              <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+              <a>
+                <i class="bi bi-circle"></i><span>2.2</span>
+              </a>
+            </button>
+              
+            </form>
           </li>
           <li>
-            <a href="">
-              <i class="bi bi-circle"></i><span>3</span>
-            </a>
+            <form id="server-form" method="post" action="/dashboard">
+              <input type="hidden" name="guild_name" value="{{ guild_name }}">
+              <input type="hidden" name="guild_id" value="{{ guild_id }}">
+              <input type="hidden" name="guild_icon" value="{{ guild_icon }}">
+              <input type="hidden" name="user_id" value="{{ user_id }}">
+              <input type="hidden" name="user_avatar" value="{{ user_avatar }}">
+              <input type="hidden" name="user_name" value="{{ user_name }}">
+              <input type="hidden" name="user" value="{{ user }}">
+              <input type="hidden" name="kennung" value="2.3">
+              <input type="hidden" name="token" value="{{ token }}">
+              <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+              <a>
+                <i class="bi bi-circle"></i><span>2.3</span>
+              </a>
+            </button>
+              
+            </form>
           </li>
         </ul>
       </li><!-- End Forms Nav -->
@@ -153,19 +229,61 @@
         </a>
         <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
-            <a href="">
-              <i class="bi bi-circle"></i><span>1</span>
-            </a>
+            <form id="server-form" method="post" action="/dashboard">
+              <input type="hidden" name="guild_name" value="{{ guild_name }}">
+              <input type="hidden" name="guild_id" value="{{ guild_id }}">
+              <input type="hidden" name="guild_icon" value="{{ guild_icon }}">
+              <input type="hidden" name="user_id" value="{{ user_id }}">
+              <input type="hidden" name="user_avatar" value="{{ user_avatar }}">
+              <input type="hidden" name="user_name" value="{{ user_name }}">
+              <input type="hidden" name="user" value="{{ user }}">
+              <input type="hidden" name="kennung" value="3.1">
+              <input type="hidden" name="token" value="{{ token }}">
+              <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+              <a>
+                <i class="bi bi-circle"></i><span>3.1</span>
+              </a>
+            </button>
+              
+            </form>
           </li>
           <li>
-            <a href="">
-              <i class="bi bi-circle"></i><span>2</span>
-            </a>
+            <form id="server-form" method="post" action="/dashboard">
+              <input type="hidden" name="guild_name" value="{{ guild_name }}">
+              <input type="hidden" name="guild_id" value="{{ guild_id }}">
+              <input type="hidden" name="guild_icon" value="{{ guild_icon }}">
+              <input type="hidden" name="user_id" value="{{ user_id }}">
+              <input type="hidden" name="user_avatar" value="{{ user_avatar }}">
+              <input type="hidden" name="user_name" value="{{ user_name }}">
+              <input type="hidden" name="user" value="{{ user }}">
+              <input type="hidden" name="kennung" value="3.2">
+              <input type="hidden" name="token" value="{{ token }}">
+              <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+              <a>
+                <i class="bi bi-circle"></i><span>3.2</span>
+              </a>
+            </button>
+              
+            </form>
           </li>
           <li>
-            <a href="">
-              <i class="bi bi-circle"></i><span>3</span>
-            </a>
+            <form id="server-form" method="post" action="/dashboard">
+              <input type="hidden" name="guild_name" value="{{ guild_name }}">
+              <input type="hidden" name="guild_id" value="{{ guild_id }}">
+              <input type="hidden" name="guild_icon" value="{{ guild_icon }}">
+              <input type="hidden" name="user_id" value="{{ user_id }}">
+              <input type="hidden" name="user_avatar" value="{{ user_avatar }}">
+              <input type="hidden" name="user_name" value="{{ user_name }}">
+              <input type="hidden" name="user" value="{{ user }}">
+              <input type="hidden" name="kennung" value="3.3">
+              <input type="hidden" name="token" value="{{ token }}">
+              <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+              <a>
+                <i class="bi bi-circle"></i><span>3.3</span>
+              </a>
+            </button>
+              
+            </form>
           </li>
         </ul>
       </li><!-- End Tables Nav -->
@@ -176,19 +294,61 @@
         </a>
         <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
-            <a href="">
-              <i class="bi bi-circle"></i><span>1</span>
-            </a>
+            <form id="server-form" method="post" action="/dashboard">
+              <input type="hidden" name="guild_name" value="{{ guild_name }}">
+              <input type="hidden" name="guild_id" value="{{ guild_id }}">
+              <input type="hidden" name="guild_icon" value="{{ guild_icon }}">
+              <input type="hidden" name="user_id" value="{{ user_id }}">
+              <input type="hidden" name="user_avatar" value="{{ user_avatar }}">
+              <input type="hidden" name="user_name" value="{{ user_name }}">
+              <input type="hidden" name="user" value="{{ user }}">
+              <input type="hidden" name="kennung" value="4.1">
+              <input type="hidden" name="token" value="{{ token }}">
+              <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+              <a>
+                <i class="bi bi-circle"></i><span>4.1</span>
+              </a>
+            </button>
+              
+            </form>
           </li>
           <li>
-            <a href="">
-              <i class="bi bi-circle"></i><span>2</span>
-            </a>
+            <form id="server-form" method="post" action="/dashboard">
+              <input type="hidden" name="guild_name" value="{{ guild_name }}">
+              <input type="hidden" name="guild_id" value="{{ guild_id }}">
+              <input type="hidden" name="guild_icon" value="{{ guild_icon }}">
+              <input type="hidden" name="user_id" value="{{ user_id }}">
+              <input type="hidden" name="user_avatar" value="{{ user_avatar }}">
+              <input type="hidden" name="user_name" value="{{ user_name }}">
+              <input type="hidden" name="user" value="{{ user }}">
+              <input type="hidden" name="kennung" value="4.2">
+              <input type="hidden" name="token" value="{{ token }}">
+              <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+              <a>
+                <i class="bi bi-circle"></i><span>4.2</span>
+              </a>
+            </button>
+              
+            </form>
           </li>
           <li>
-            <a href="">
-              <i class="bi bi-circle"></i><span>3</span>
-            </a>
+            <form id="server-form" method="post" action="/dashboard">
+              <input type="hidden" name="guild_name" value="{{ guild_name }}">
+              <input type="hidden" name="guild_id" value="{{ guild_id }}">
+              <input type="hidden" name="guild_icon" value="{{ guild_icon }}">
+              <input type="hidden" name="user_id" value="{{ user_id }}">
+              <input type="hidden" name="user_avatar" value="{{ user_avatar }}">
+              <input type="hidden" name="user_name" value="{{ user_name }}">
+              <input type="hidden" name="user" value="{{ user }}">
+              <input type="hidden" name="kennung" value="4.3">
+              <input type="hidden" name="token" value="{{ token }}">
+              <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+              <a>
+                <i class="bi bi-circle"></i><span>4.3</span>
+              </a>
+            </button>
+              
+            </form>
           </li>
         </ul>
       </li><!-- End Charts Nav -->
@@ -199,19 +359,61 @@
         </a>
         <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
-            <a href="">
-              <i class="bi bi-circle"></i><span>1</span>
-            </a>
+            <form id="server-form" method="post" action="/dashboard">
+              <input type="hidden" name="guild_name" value="{{ guild_name }}">
+              <input type="hidden" name="guild_id" value="{{ guild_id }}">
+              <input type="hidden" name="guild_icon" value="{{ guild_icon }}">
+              <input type="hidden" name="user_id" value="{{ user_id }}">
+              <input type="hidden" name="user_avatar" value="{{ user_avatar }}">
+              <input type="hidden" name="user_name" value="{{ user_name }}">
+              <input type="hidden" name="user" value="{{ user }}">
+              <input type="hidden" name="kennung" value="5.1">
+              <input type="hidden" name="token" value="{{ token }}">
+              <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+              <a>
+                <i class="bi bi-circle"></i><span>5.1</span>
+              </a>
+            </button>
+              
+            </form>
           </li>
           <li>
-            <a href="">
-              <i class="bi bi-circle"></i><span>2</span>
-            </a>
+            <form id="server-form" method="post" action="/dashboard">
+              <input type="hidden" name="guild_name" value="{{ guild_name }}">
+              <input type="hidden" name="guild_id" value="{{ guild_id }}">
+              <input type="hidden" name="guild_icon" value="{{ guild_icon }}">
+              <input type="hidden" name="user_id" value="{{ user_id }}">
+              <input type="hidden" name="user_avatar" value="{{ user_avatar }}">
+              <input type="hidden" name="user_name" value="{{ user_name }}">
+              <input type="hidden" name="user" value="{{ user }}">
+              <input type="hidden" name="kennung" value="5.2">
+              <input type="hidden" name="token" value="{{ token }}">
+              <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+              <a>
+                <i class="bi bi-circle"></i><span>5.2</span>
+              </a>
+            </button>
+              
+            </form>
           </li>
           <li>
-            <a href="">
-              <i class="bi bi-circle"></i><span>3</span>
-            </a>
+            <form id="server-form" method="post" action="/dashboard">
+              <input type="hidden" name="guild_name" value="{{ guild_name }}">
+              <input type="hidden" name="guild_id" value="{{ guild_id }}">
+              <input type="hidden" name="guild_icon" value="{{ guild_icon }}">
+              <input type="hidden" name="user_id" value="{{ user_id }}">
+              <input type="hidden" name="user_avatar" value="{{ user_avatar }}">
+              <input type="hidden" name="user_name" value="{{ user_name }}">
+              <input type="hidden" name="user" value="{{ user }}">
+              <input type="hidden" name="kennung" value="5.3">
+              <input type="hidden" name="token" value="{{ token }}">
+              <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+              <a>
+                <i class="bi bi-circle"></i><span>5.3</span>
+              </a>
+            </button>
+              
+            </form>
           </li>
         </ul>
       </li><!-- End Icons Nav -->

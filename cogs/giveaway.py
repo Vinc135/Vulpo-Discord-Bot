@@ -83,6 +83,12 @@ class Gewinnspiel_Teilnehmen(discord.ui.View):
         member = interaction.guild.get_member(interaction.user.id)
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
+                await cursor.execute("SELECT userID FROM gewinnspiel_teilnehmer WHERE guildID = (%s) AND channelID = (%s) AND msgID = (%s) AND userID = (%s)", (interaction.guild.id, interaction.channel.id, interaction.message.id, interaction.user.id))
+                result5 = await cursor.fetchone()
+                if result5 != None:
+                    await cursor.execute("DELETE FROM gewinnspiel_teilnehmer WHERE guildID = (%s) AND channelID = (%s) AND msgID = (%s) AND userID = (%s)", (interaction.guild.id, interaction.channel.id, interaction.message.id, interaction.user.id))
+                    return await teilnahme_abgelehnt(self, interaction, "`❌` Du warst bereits ein Teilnehmer, hast jedoch nochmal den Button gedrückt. Nun bist du kein Teilnehmer mehr.", result)
+                    #Mitglied ist kein Teilnehmer mehr
                 gründe = ""
                 #Genaue Informationen des Gewinnspiels aus der Datenbank holen
                 await cursor.execute("SELECT * FROM gewinnspiele WHERE guildID = (%s) AND channelID = (%s) AND msgID = (%s)", (interaction.guild.id, interaction.channel.id, interaction.message.id))
@@ -172,13 +178,6 @@ class Gewinnspiel_Teilnehmen(discord.ui.View):
                 if gründe != "":
                     return await teilnahme_abgelehnt(self, interaction, gründe, result)
                 #Wenn man bis hier gekommen ist, erfüllt man alle Anforderungen, falls es welche gab
-                #Das Mitglied als "möglichen Gewinner" eintragen
-                await cursor.execute("SELECT userID FROM gewinnspiel_teilnehmer WHERE guildID = (%s) AND channelID = (%s) AND msgID = (%s) AND userID = (%s)", (interaction.guild.id, interaction.channel.id, interaction.message.id, interaction.user.id))
-                result5 = await cursor.fetchone()
-                if result5 != None:
-                    await cursor.execute("DELETE FROM gewinnspiel_teilnehmer WHERE guildID = (%s) AND channelID = (%s) AND msgID = (%s) AND userID = (%s)", (interaction.guild.id, interaction.channel.id, interaction.message.id, interaction.user.id))
-                    return await teilnahme_abgelehnt(self, interaction, "`❌` Du warst bereits ein Teilnehmer, hast jedoch nochmal den Button gedrückt. Nun bist du kein Teilnehmer mehr.", result)
-                    #Mitglied ist kein Teilnehmer mehr
                 #Mitglied war noch kein Teilnehmer
                 await cursor.execute("INSERT INTO gewinnspiel_teilnehmer(guildID, channelID, msgID, userID) VALUES(%s, %s, %s, %s)", (interaction.guild.id, interaction.channel.id, interaction.message.id, interaction.user.id))
                 await teilnahme_angenommen(self, interaction, result)
