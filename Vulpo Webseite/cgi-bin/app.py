@@ -30,6 +30,24 @@ async def checkpremium(response, p):
             if status[0] == 0:
                 return False
             return True
+        
+async def insert_join_roles(type, guildid, roles, p):
+    async with p.get() as conn:
+        async with conn.cursor() as cursor:
+            if type == "Member":
+                await cursor.execute("DELETE FROM joinroles WHERE guild_id = (%s)", (guildid))
+                for role in roles:
+                    await cursor.execute("INSERT INTO joinroles(guild_id, role_id) VALUES(%s, %s)", (guildid, role))
+            if type == "Bot":
+                await cursor.execute("DELETE FROM botroles WHERE guild_id = (%s)", (guildid))
+                for role in roles:
+                    await cursor.execute("INSERT INTO botroles(guild_id, role_id) VALUES(%s, %s)", (guildid, role))
+
+async def insert_starboard(guildid, channel, p):
+    async with p.get() as conn:
+        async with conn.cursor() as cursor:
+            await cursor.execute("DELETE FROM starboard WHERE guildID = (%s)", (guildid))
+            await cursor.execute("INSERT INTO starboard(guildID, channelID) VALUES(%s, %s)", (guildid, channel))
 
 loop = asyncio.get_event_loop()
 pool = loop.run_until_complete(create_pool(loop))
@@ -80,10 +98,26 @@ def formulare():
     """Umleitung zur Formulare Seite."""
     return render_template('formulare.html')
 
+@app.route('/process', methods=['POST'])
+def process():
+    data = request.json
+    if data['kennung'] == 'Member':
+        task = loop.create_task(insert_join_roles("Member", data['guild_id'], data['selected_roles'], pool))
+        loop.run_until_complete(task)
+        return "OK"
+    if data['kennung'] == 'Bot':
+        task = loop.create_task(insert_join_roles("Bot", data['guild_id'], data['selected_roles'], pool))
+        loop.run_until_complete(task)
+        return "OK"
+    if data['kennung'] == 'Starboard':
+        task = loop.create_task(insert_starboard(data['guild_id'], data['channel_id'], pool))
+        loop.run_until_complete(task)
+        return "OK"
+
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
+    # Check if backend data is sent
     try:
-        # Check if backend data is sent
         if not all(key in request.form for key in ['guild_name', 'guild_id', 'guild_icon', 'user', 'user_id', 'user_avatar']):
             return redirect("/login")
         
@@ -95,14 +129,65 @@ def dashboard():
         user_id = request.form.get('user_id')
         user_avatar = request.form.get('user_avatar')
         kennung = request.form.get('kennung')
+
         if kennung == "None":
             return render_template('dashboard.html', guild_name=guild_name, guild_id=guild_id, guild_icon=guild_icon, user=user, user_id=user_id, user_avatar=user_avatar, user_name=user_name)
         if kennung == "1.1":
-            return "Erfolgreich"
+            try:
+                headers = {
+                        'Authorization': 'Bot OTI1Nzk5NTU5NTc2MzIyMDc4.GyWCpe.S8URCDJm8wlKVztJRYf_Njjy8NsfUU7iIK5nXk',
+                }
+
+                roles_response = requests.get(base_discord_api_url + f'/guilds/{guild_id}/roles', headers=headers)
+                roles = []
+                for role in roles_response.json():
+                    roles.append(role)
+                return render_template('1.1.html', guild_name=guild_name, guild_id=guild_id, guild_icon=guild_icon, user=user, user_id=user_id, user_avatar=user_avatar, user_name=user_name, roles=roles)
+            except Exception as e:
+                return f"fehler: {e}"
+        if kennung == "1.2":
+            try:
+                headers = {
+                        'Authorization': 'Bot OTI1Nzk5NTU5NTc2MzIyMDc4.GyWCpe.S8URCDJm8wlKVztJRYf_Njjy8NsfUU7iIK5nXk',
+                }
+
+                channels_response = requests.get(base_discord_api_url + f'/guilds/{guild_id}/channels', headers=headers)
+
+                channels = []
+                for channel in channels_response.json():
+                    if channel['type'] == 0:
+                        channels.append(channel)
+                return render_template('1.2.html', guild_name=guild_name, guild_id=guild_id, guild_icon=guild_icon, user=user, user_id=user_id, user_avatar=user_avatar, user_name=user_name, channels=channels)
+            except Exception as e:
+                return f"fehler: {e}"
+        if kennung == "1.3":
+            return "Erfolgreich 1.3"
+        if kennung == "2.1":
+            return "Erfolgreich 2.1"
+        if kennung == "2.2":
+            return "Erfolgreich 2.2"
+        if kennung == "2.3":
+            return "Erfolgreich 2.3"
+        if kennung == "3.1":
+            return "Erfolgreich 3.1"
+        if kennung == "3.2":
+            return "Erfolgreich 3.2"
+        if kennung == "3.3":
+            return "Erfolgreich 3.3"
+        if kennung == "4.1":
+            return "Erfolgreich 4.1"
+        if kennung == "4.2":
+            return "Erfolgreich 4.2"
+        if kennung == "4.3":
+            return "Erfolgreich 4.3"
+        if kennung == "5.1":
+            return "Erfolgreich 5.1"
+        if kennung == "5.2":
+            return "Erfolgreich 5.2"
+        if kennung == "5.3":
+            return "Erfolgreich 5.3"
     except Exception as e:
-        return f"{e}"
-
-
+        return f"fehler2: {e}\n{request.form}"
     
 #—————————————————————————————————————————————#
 #Backend, das abläuft, wenn bestimmte Routen eingegeben werden.
@@ -111,9 +196,30 @@ def dashboard():
 @app.route("/login")
 def login():
     try:
-        discord_authorization = OAuth2Session(client_id, token=session['discord_token'])
-        discord_authorization.get(base_discord_api_url + '/users/@me')
-        return redirect("/")
+        discord1 = OAuth2Session(client_id, token=session['discord_token'])
+        response = discord1.get(base_discord_api_url + '/users/@me')
+        task = loop.create_task(checkpremium(response, pool))
+        premium_status = loop.run_until_complete(task)
+        if premium_status == False:
+            return render_template('nopremium.html', response=response.json())
+        
+        # Zugriff auf die verbundenen Server des Benutzers
+        guilds = []
+        guilds_response = discord1.get(base_discord_api_url + '/users/@me/guilds')
+        
+        for guild in guilds_response.json():
+            if int(guild["permissions"]) & 0x00000008:
+                headers = {
+                    'Authorization': 'Bot OTI1Nzk5NTU5NTc2MzIyMDc4.GyWCpe.S8URCDJm8wlKVztJRYf_Njjy8NsfUU7iIK5nXk',
+                }
+
+                members_response = requests.get(base_discord_api_url + f'/guilds/{guild["id"]}/members/925799559576322078', headers=headers)
+                if "Unknown Guild" in str(members_response.json()):
+                    continue
+                else:
+                    guilds.append(guild)
+
+        return render_template('server.html', guilds=guilds, response=response.json())
     except:
         pass
 
@@ -156,6 +262,7 @@ def oauth_callback():
                     continue
                 else:
                     guilds.append(guild)
+
         return render_template('server.html', guilds=guilds, response=response.json())
 
     except:
