@@ -615,18 +615,19 @@ class meta(commands.Cog):
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 if system == "Economy":
-                    await cursor.execute(f"SELECT bank, rucksack, userID FROM economy ORDER BY bank DESC, rucksack DESC")
+                    await cursor.execute(f"SELECT bank, rucksack, userID FROM economy ORDER BY bank DESC")
                     leaderboard = await cursor.fetchall()
                     embed = discord.Embed(title="Bestenliste (Economy)", color=await getcolour(self, interaction.user))
                     for i, pos in enumerate(leaderboard, start=1):
                         bank, rucksack, userID = pos
-                        total = bank + rucksack
+                        total = int(bank)
+                        total += int(rucksack)
                         name = self.bot.get_user(int(userID))
                         if name is None:
                             name = await self.bot.fetch_user(int(userID))
                             if name is None:
                                 name = f"Nicht gefunden ({userID})"
-                        embed.add_field(name=f"{i}. {name}", value=f"Total: {total} 🍪", inline=False)
+                        embed.add_field(name=f"{i}. {name} {name.id}", value=f"Total: {total} 🍪", inline=False)
                         if i == 10:
                             await interaction.response.send_message(embed=embed)
                             break

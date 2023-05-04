@@ -25,10 +25,10 @@ async def teilnahme_angenommen(self, interaction: discord.Interaction, result):
         async with conn.cursor() as cursor:
             await cursor.execute("SELECT userID FROM gewinnspiel_teilnehmer WHERE guildID = (%s) AND channelID = (%s) AND msgID = (%s)", (interaction.guild.id, interaction.channel.id, interaction.message.id))
             teilnehmer = await cursor.fetchall()
-            embed = discord.Embed(title=f"🏆 {result[5]}", description=f"""                                      
+            embed = discord.Embed(title=f"🏆 {result[10]}", description=f"""                                      
 <:v_info:1037065915113676891> › __**Informationen**__
 <:v_play:1037065922134945853> Erstellt von {interaction.guild.get_member(int(result[3])).mention}
-<:v_play:1037065922134945853> **{result[6]}** Gewinner
+<:v_play:1037065922134945853> **{result[5]}** Gewinner
 <:v_play:1037065922134945853> Endet {discord_timestamp(t2, "R")}
 <:v_play:1037065922134945853> **{len(teilnehmer)}** Teilnehmer
 
@@ -36,19 +36,19 @@ async def teilnahme_angenommen(self, interaction: discord.Interaction, result):
 <:v_play:1037065922134945853> **Drücke** unten auf **den Button**, um teilzunehmen.""", color=discord.Color.orange())
             #guildID, channelID, msgID, hostID, endtime, preis, winners, status, nachrichten, rollenID, voicezeit, custom_status, jointime, level
             requirements = ""
-            if result[9]:
-                rolle = interaction.guild.get_role(int(result[9]))
-                requirements += f"\n<:v_play:1037065922134945853> Du benötigst die **Rolle {rolle.mention}**."
             if result[8]:
-                requirements += f"\n<:v_play:1037065922134945853> Du musst mindestens **{result[8]} neue Nachrichten** schreiben."
-            if result[10]:
-                requirements += f"\n<:v_play:1037065922134945853> Du musst mindestens **{result[10]} Minuten** in Sprachkanälen verbringen."
+                rolle = interaction.guild.get_role(int(result[8]))
+                requirements += f"\n<:v_play:1037065922134945853> Du benötigst die **Rolle {rolle.mention}**."
+            if result[6]:
+                requirements += f"\n<:v_play:1037065922134945853> Du musst mindestens **{result[6]} neue Nachrichten** schreiben."
+            if result[12]:
+                requirements += f"\n<:v_play:1037065922134945853> Du musst mindestens **{result[12]} Minuten** in Sprachkanälen verbringen."
             if result[11]:
                 requirements += f"\n<:v_play:1037065922134945853> Du musst **{result[11]}** im Status haben."
-            if result[12]:
-                requirements += f"\n<:v_play:1037065922134945853> Du musst mindestens seit dem **{result[12]}** auf diesem Server sein."
             if result[13]:
-                requirements += f"\n<:v_play:1037065922134945853> Du musst mindestens **Level {result[13]}** bei Vulpos Levelsystem sein."
+                requirements += f"\n<:v_play:1037065922134945853> Du musst mindestens seit dem **{result[13]}** auf diesem Server sein."
+            if result[7]:
+                requirements += f"\n<:v_play:1037065922134945853> Du musst mindestens **Level {result[7]}** bei Vulpos Levelsystem sein."
                 
             if requirements != "":
                 embed.description += requirements
@@ -59,7 +59,7 @@ async def teilnahme_angenommen(self, interaction: discord.Interaction, result):
            
 async def teilnahme_abgelehnt(self, interaction: discord.Interaction, grund, result):
     t2 = datetime.datetime.fromtimestamp(int(result[4]))
-    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=result[5], description=f"""
+    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=result[10], description=f"""
 `🤖` · [Lade den Bot hier ein](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands)
 
 `🎉` · Nicht erfolgreich teilgenommen auf [{interaction.guild.name}]({interaction.message.jump_url})
@@ -83,12 +83,6 @@ class Gewinnspiel_Teilnehmen(discord.ui.View):
         member = interaction.guild.get_member(interaction.user.id)
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
-                await cursor.execute("SELECT userID FROM gewinnspiel_teilnehmer WHERE guildID = (%s) AND channelID = (%s) AND msgID = (%s) AND userID = (%s)", (interaction.guild.id, interaction.channel.id, interaction.message.id, interaction.user.id))
-                result5 = await cursor.fetchone()
-                if result5 != None:
-                    await cursor.execute("DELETE FROM gewinnspiel_teilnehmer WHERE guildID = (%s) AND channelID = (%s) AND msgID = (%s) AND userID = (%s)", (interaction.guild.id, interaction.channel.id, interaction.message.id, interaction.user.id))
-                    return await teilnahme_abgelehnt(self, interaction, "`❌` Du warst bereits ein Teilnehmer, hast jedoch nochmal den Button gedrückt. Nun bist du kein Teilnehmer mehr.", result)
-                    #Mitglied ist kein Teilnehmer mehr
                 gründe = ""
                 #Genaue Informationen des Gewinnspiels aus der Datenbank holen
                 await cursor.execute("SELECT * FROM gewinnspiele WHERE guildID = (%s) AND channelID = (%s) AND msgID = (%s)", (interaction.guild.id, interaction.channel.id, interaction.message.id))
@@ -96,6 +90,13 @@ class Gewinnspiel_Teilnehmen(discord.ui.View):
                 #guildID, channelID, msgID, hostID, endtime, preis, winners, status, nachrichten, rollenID, voicezeit, custom_status, jointime
                 if result is None:
                     return
+                
+                await cursor.execute("SELECT userID FROM gewinnspiel_teilnehmer WHERE guildID = (%s) AND channelID = (%s) AND msgID = (%s) AND userID = (%s)", (interaction.guild.id, interaction.channel.id, interaction.message.id, interaction.user.id))
+                result5 = await cursor.fetchone()
+                if result5 != None:
+                    await cursor.execute("DELETE FROM gewinnspiel_teilnehmer WHERE guildID = (%s) AND channelID = (%s) AND msgID = (%s) AND userID = (%s)", (interaction.guild.id, interaction.channel.id, interaction.message.id, interaction.user.id))
+                    return await teilnahme_abgelehnt(self, interaction, "`❌` Du warst bereits ein Teilnehmer, hast jedoch nochmal den Button gedrückt. Nun bist du kein Teilnehmer mehr.", result)
+                    #Mitglied ist kein Teilnehmer mehr
 
                 #Die Gewinnspiel Blacklist überprüfen
                 await cursor.execute("SELECT id FROM gewinnspiel_blacklist WHERE guildID = (%s)", (interaction.guild.id))
@@ -129,32 +130,32 @@ class Gewinnspiel_Teilnehmen(discord.ui.View):
                         #Mitglied ist nun Teilnehmer
 
                 #Die Nachrichten Anforderung überprüfen
-                if result[8] != None:
+                if result[6] != None:
                     await cursor.execute("SELECT anzahl FROM gw_nachrichten WHERE gwID = (%s) AND userID = (%s) AND guildID = (%s)", (interaction.message.id, interaction.user.id, interaction.guild.id))
                     result2 = await cursor.fetchone()
                     if result2 == None:
                         gründe += f"\n`❌` Du hast bisher 0 Nachrichten geschrieben, benötigst jedoch {result[8]} Nachrichten um am Gewinnspiel teilzunehmen."
                     else:
                         nachrichten = result2[0]
-                        if nachrichten < int(result[8]):
+                        if nachrichten < int(result[6]):
                             gründe += f"\n`❌` Du hast bisher {nachrichten} Nachrichten geschrieben, benötigst jedoch {result[8]} Nachrichten um am Gewinnspiel teilzunehmen."
                 #Die Rollen Anforderung überprüfen
-                if result[9] != None:
-                    rolle2 = interaction.guild.get_role(int(result[9]))
+                if result[8] != None:
+                    rolle2 = interaction.guild.get_role(int(result[8]))
                     if rolle2 != None:
                         if rolle2 not in member.roles:
                             gründe += f"\n`❌` Du benötigst die Rolle {rolle2.name} um am Gewinnspiel teilzunehmen."
                 #Die Voicezeit Anforderung überprüfen
-                if result[10] != None:
+                if result[12] != None:
                     #anzahl == minuten
                     await cursor.execute("SELECT anzahl FROM gw_voice WHERE gwID = (%s) AND userID = (%s) AND guildID = (%s)", (interaction.message.id, interaction.user.id, interaction.guild.id))
                     result2 = await cursor.fetchone()
                     if result2 == None:
-                        gründe += f"\n`❌` Du hast bisher 0 Minuten in einem Sprachkanal verbracht, benötigst jedoch {result[10]} Minuten um am Gewinnspiel teilzunehmen."
+                        gründe += f"\n`❌` Du hast bisher 0 Minuten in einem Sprachkanal verbracht, benötigst jedoch {result[12]} Minuten um am Gewinnspiel teilzunehmen."
                     else:
                         minuten = int(result2[0])
-                        if minuten < int(result[10]):
-                            gründe += f"\n`❌` Du hast bisher {minuten} Minuten in einem Sprachkanal verbracht, benötigst jedoch {result[10]} Minuten um am Gewinnspiel teilzunehmen."
+                        if minuten < int(result[12]):
+                            gründe += f"\n`❌` Du hast bisher {minuten} Minuten in einem Sprachkanal verbracht, benötigst jedoch {result[12]} Minuten um am Gewinnspiel teilzunehmen."
                 if result[11] != None:
                     try:
                         member = interaction.guild.get_member(interaction.user.id)
@@ -162,19 +163,19 @@ class Gewinnspiel_Teilnehmen(discord.ui.View):
                             gründe += f"\n`❌` Du musst {result[11]} im Status haben."
                     except:
                         gründe += f"\n`❌` Du musst {result[11]} im Status haben."
-                if result[12] != None:
-                    join_date = interaction.user.joined_at.replace(tzinfo=pytz.UTC)
-                    check_date = datetime.datetime.strptime(result[12], '%d.%m.%Y').replace(tzinfo=pytz.UTC)
-                    if join_date > check_date:
-                        gründe += f"\n`❌` Du musst vor dem {result[12]} gejoint sein, bist aber am {join_date} gejoint."
                 if result[13] != None:
+                    join_date = interaction.user.joined_at.replace(tzinfo=pytz.UTC)
+                    check_date = datetime.datetime.strptime(result[13], '%d.%m.%Y').replace(tzinfo=pytz.UTC)
+                    if join_date > check_date:
+                        gründe += f"\n`❌` Du musst vor dem {result[13]} gejoint sein, bist aber am {join_date} gejoint."
+                if result[7] != None:
                     await cursor.execute("SELECT user_level FROM levelsystem WHERE client_id = (%s) AND guild_id = (%s)", (interaction.user.id, interaction.guild.id))
                     r = await cursor.fetchone()
                     if r is None:
-                        gründe += f"\n`❌` Du bist hier Level 0, benötigst jedoch Level {result[13]} um am Gewinnspiel teilzunehmen."
+                        gründe += f"\n`❌` Du bist hier Level 0, benötigst jedoch Level {result[7]} um am Gewinnspiel teilzunehmen."
                     else:
-                        if int(r[0]) < int(result[13]):
-                            gründe += f"\n`❌` Du bist hier Level {r[0]}, benötigst jedoch Level {result[13]} um am Gewinnspiel teilzunehmen."
+                        if int(r[0]) < int(result[7]):
+                            gründe += f"\n`❌` Du bist hier Level {r[0]}, benötigst jedoch Level {result[7]} um am Gewinnspiel teilzunehmen."
                 if gründe != "":
                     return await teilnahme_abgelehnt(self, interaction, gründe, result)
                 #Wenn man bis hier gekommen ist, erfüllt man alle Anforderungen, falls es welche gab

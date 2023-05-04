@@ -39,13 +39,13 @@
   <!-- ======= Header ======= -->
 
   <header id="header" class="header d-flex align-items-center">
-
+ 
     <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
       <a href="/" class="logo d-flex align-items-center">
         <img src="{{ url_for('static', filename='assets/img/favicon.png') }}" alt="">
-        <h1>Vulpo <span style="font-weight: bold; color: gold;">Dashboard</span></h1>
+        <h1>Vulpo <span style="font-weight: bold; color: gold;">Dashboard {{ user }}</span></h1>
       </a>
-      <nav id="navbar" class="navbar">
+      <nav id="navbar" class="navbar">  
         <ul>
           <li><a href="/">Hauptseite</a></li>
           <li><a href="https://vulpo-bot.de/logout" class="gold-button">Ausloggen</a></li>
@@ -59,23 +59,8 @@
     </div>
   </header><!-- End Header -->
   <section id="hero" class="hero">
-    <div class="container position-relative">
-      <div class="row gy-5" data-aos="fade-in">
-        <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center text-center text-lg-start">
-          <h2>Erfolgreich eingeloggt als<span> <span style="font-weight: bold; color: gold;">{{ response["username"] }}#{{ response["discriminator"] }} ({{ response["id"] }})</span></span></h2>
-          <p>Stell dir einen Bot vor, der ideal deinen Server verwalten kann. Der nützliche Funktionen wie Levelsystem, Gewinnspiele und viele mehr hat. Ein Bot, der sich perfekt deinen Bedürfnissen anpasst.</p>
-          <div class="d-flex justify-content-center justify-content-lg-start" data-aos-delay="200">
-            <a href="https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands" class="btn-get-started"></i><span>Einladen</span></a>
-            <a href="https://discord.gg/49jD3VXksp" class="btn-get-started"></i><span>Support</span></a>
-            <a href="https://vulpo-bot.de/logout" class="btn-get-started"></i><span>Ausloggen</span></a>
-          </div>
-        </div>
-        <div class="col-lg-6 order-1 order-lg-2">
-          <img src="{{ url_for('static', filename='assets/img/favicon.png') }}" class="img-fluid" alt="" data-aos="zoom-out" data-aos-delay="100">
-          </div>
-      </div>
-    </div>
     <div class="guild-container">
+      <h2>Wähle einen Server aus</h2>
       {% for guild in guilds %}
       <div class="guild">
         <div class="guild-icon">
@@ -132,7 +117,7 @@
 
     <div class="container mt-4">
       <div class="copyright">
-        &copy; Copyright <strong><span>Vulpo Developement</span></strong>. Alle Rechte reserviert
+        &copy; Copyright <strong><span>Vulpo</span></strong>. Alle Rechte reserviert
       </div>
       <div class="credits">
         Designt von <a href="https://bootstrapmade.com/">BootstrapMade</a>

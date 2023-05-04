@@ -418,7 +418,9 @@
           </select>
       </div> 
       <button type="button" id="submitBtn">Ausgewählten Kanal speichern</button>
+      <button type="button" id="deleteBtn" style="background-color: orangered">Starboard ausschalten</button>
   </form>
+  
   <script>
     document.querySelector('#submitBtn').addEventListener('click', function(e) {
       var selectedChannel = document.getElementById("channels").value;
@@ -437,7 +439,7 @@
           'channel_id': selectedChannel,
           'kennung': 'Starboard',
           }));
-          const guildName = '{{ guild_name }}';
+        const guildName = '{{ guild_name }}';
         const message = `Der Server ${guildName} hat nun einen neuen Starboard Kanal.`;
         const messageBox = document.createElement('div');
         messageBox.style.position = 'fixed';
@@ -452,45 +454,38 @@
         setTimeout(function() {
             messageBox.remove();
         }, 5000);
-        const progressBar = document.createElement('div');
-        progressBar.style.width = '100%';
-        progressBar.style.height = '10px';
-        progressBar.style.borderRadius = '5px';
-        progressBar.style.backgroundColor = 'orange';
-        progressBar.style.position = 'absolute';
-        progressBar.style.bottom = '0px';
-        progressBar.style.right = '0px';
-        progressBar.style.overflow = 'hidden';
+        });
 
-        // Erstelle eine Fortschrittsanzeige mit der Farbe "weiß"
-        const progressIndicator = document.createElement('div');
-        progressIndicator.style.width = '0%';
-        progressIndicator.style.height = '100%';
-        progressIndicator.style.backgroundColor = 'white';
-        progressIndicator.style.borderRadius = '5px';
-
-        progressBar.appendChild(progressIndicator);
-        messageBox.appendChild(progressBar);
-        const messageBoxWidth = messageBox.offsetWidth;
-        progressBar.style.width = `${messageBoxWidth}px`;
-        progressIndicator.style.width = `${messageBoxWidth}px`;
-        const animationDuration = 5000; // 5 Sekunden
-        let elapsedTime = 0;
-        let animationInterval = setInterval(function() {
-          elapsedTime += 100;
-          const progress = elapsedTime / animationDuration * 100;
-          progressIndicator.style.width = `${progress}%`;
-          if (elapsedTime >= animationDuration) {
-            clearInterval(animationInterval);
+    document.querySelector('#deleteBtn').addEventListener('click', function(e) {
+      const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/delete');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                console.log(xhr.responseText);
+            } else {
+                console.log('Request failed.  Returned status of ' + xhr.status);
+            }
+        };
+        xhr.send(JSON.stringify({
+          'guild_id': '{{ guild_id }}',
+          'kennung': 'Starboard',
+          }));
+        const guildName = '{{ guild_name }}';
+        const message = `Der Server ${guildName} hat nun keinen Starboard Kanal mehr.`;
+        const messageBox = document.createElement('div');
+        messageBox.style.position = 'fixed';
+        messageBox.style.bottom = '10px';
+        messageBox.style.right = '10px';
+        messageBox.style.backgroundColor = 'orange';
+        messageBox.style.color = 'white';
+        messageBox.style.padding = '10px';
+        messageBox.innerText = message;
+        document.body.appendChild(messageBox);
+  
+        setTimeout(function() {
             messageBox.remove();
-          }
-        }, 100);
-          // Starte die Fortschrittsanimation
-          progressBar.style.width = '100%';
-          setTimeout(function() {
-            progressBar.style.display = 'none';
-            messageBox.style.display = 'none';
-          }, 5000);
+        }, 5000);
         });
     
   </script>
@@ -532,7 +527,7 @@
 
     <div class="container mt-4">
       <div class="copyright">
-        &copy; Copyright <strong><span>Vulpo Developement</span></strong>. Alle Rechte reserviert
+        &copy; Copyright <strong><span>Vulpo</span></strong>. Alle Rechte reserviert
       </div>
       <div class="credits">
         Designt von <a href="https://bootstrapmade.com/">BootstrapMade</a>

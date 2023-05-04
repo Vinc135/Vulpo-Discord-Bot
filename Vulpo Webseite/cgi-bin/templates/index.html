@@ -43,7 +43,7 @@
       <nav id="navbar" class="navbar">
         <ul>
           <li><a href="/">Hauptseite</a></li>
-          <!-- <li><a href="premium">Premium</a></li> -->
+          <li><a href="premium" style="color: gold;">Premium</a></li>
           <li><a href="#about">Über Vulpo</a></li>
           <li><a href="#services">Funktionen</a></li>
           <li><a href="#portfolio">Galerie</a></li>
@@ -70,6 +70,7 @@
           <div class="d-flex justify-content-center justify-content-lg-start" data-aos-delay="200">
             <a href="https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands" class="btn-get-started"></i><span>Einladen</span></a>
             <a href="https://discord.gg/49jD3VXksp" class="btn-get-started"></i><span>Support</span></a>
+            <a href="premium" class="btn-get-started" style="color: gold"></i><span>Entdecke Premium!</span></a>
           </div>
         </div>
         <div class="col-lg-6 order-1 order-lg-2">
@@ -331,14 +332,6 @@
             </div><!-- End Portfolio Item -->
             <div class="col-xl-4 col-md-6 portfolio-item filter-app">
               <div class="portfolio-wrap">
-                <a href="{{ url_for('static', filename='assets/galerie/stats.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/stats.png') }}" class="img-fluid" alt=""></a>
-                <div class="portfolio-info">
-                  <p>Statistiken für dich und deinen Server</p>
-                </div>
-              </div>
-            </div><!-- End Portfolio Item -->
-            <div class="col-xl-4 col-md-6 portfolio-item filter-app">
-              <div class="portfolio-wrap">
                 <a href="{{ url_for('static', filename='assets/galerie/lvl.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/lvl.png') }}" class="img-fluid" alt=""></a>
                 <div class="portfolio-info">
                   <p>Levelsystem</p>
@@ -350,14 +343,6 @@
                 <a href="{{ url_for('static', filename='assets/galerie/eco.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/eco.png') }}" class="img-fluid" alt=""></a>
                 <div class="portfolio-info">
                   <p>Sammle Cookies</p>
-                </div>
-              </div>
-            </div><!-- End Portfolio Item -->
-            <div class="col-xl-4 col-md-6 portfolio-item filter-app">
-              <div class="portfolio-wrap">
-                <a href="{{ url_for('static', filename='assets/galerie/vcstats.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/vcstats.png') }}" class="img-fluid" alt=""></a>
-                <div class="portfolio-info">
-                  <p>Statistiken im Sprachkanal</p>
                 </div>
               </div>
             </div><!-- End Portfolio Item -->
@@ -392,7 +377,7 @@
             <div class="member">
               <img src="{{ url_for('static', filename='assets/img/team/vinc.png') }}" class="img-fluid" alt="">
               <h4>Vincent</h4>
-              <span>Besitzer, Entwickler</span>
+              <span>Besitzer, Entwickler, Design, Marketing</span>
               <div class="social">
                 <a href="https://discord.com/users/824378909985341451"><i class="bi bi-discord"></i></a>
                 <a href="https://github.com/Vinc135"><i class="bi bi-github"></i></a>
@@ -405,7 +390,7 @@
               <img src="" class="img-fluid" alt="">
               <img src="{{ url_for('static', filename='assets/img/team/ensar.png') }}" class="img-fluid" alt="">
               <h4>Ensar</h4>
-              <span>Administration, Mitwirkender</span>
+              <span>Administration, Mitwirkender, Support</span>
               <div class="social">
                 <a href="https://discord.com/users/835782971235368960"><i class="bi bi-discord"></i></a>
                 <a href="https://www.instagram.com/lxstmagic/"><i class="bi bi-instagram"></i></a>
@@ -417,7 +402,7 @@
             <div class="member">
               <img src="{{ url_for('static', filename='assets/img/team/erschrecken.png') }}" class="img-fluid" alt="">
               <h4>Erschrecken</h4>
-              <span>Moderation</span>
+              <span>Moderation, Support</span>
               <div class="social">
                 <a href="https://discord.com/users/976156443675873361"><i class="bi bi-discord"></i></a>
               </div>
@@ -1100,7 +1085,7 @@
 
     <div class="container mt-4">
       <div class="copyright">
-        &copy; Copyright <strong><span>Vulpo Developement</span></strong>. Alle Rechte reserviert
+        &copy; Copyright <strong><span>Vulpo</span></strong>. Alle Rechte reserviert
       </div>
       <div class="credits">
         Designt von <a href="https://bootstrapmade.com/">BootstrapMade</a>

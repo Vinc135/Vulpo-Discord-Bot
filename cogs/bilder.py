@@ -64,28 +64,6 @@ class bilder(commands.Cog):
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
-    async def wasted(self, interaction, *, member: discord.Member = None):
-        """Sendet ein Bild deines Avatars mit Effekten."""
-        if member is None:
-            member = interaction.user
-        async with interaction.channel.typing():
-            session = aiohttp.ClientSession()
-            async with session.get(
-                f"https://some-random-api.ml/canvas/wasted?avatar={member.avatar}") as r:
-                if r.status != 200:
-                    return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Fehler beim Laden es Bildes. Versuche es später erneut!**", ephemeral=True)
-                else:
-                    data = io.BytesIO(await r.read())
-                    file = discord.File(data, 'triggered.gif')
-                    embed = discord.Embed(title=" ", description="**Geliefert!**", colour=await getcolour(self, interaction.user))
-                    embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
-                    embed.set_image(url="attachment://triggered.gif")
-                    await interaction.response.send_message(file=file, embed=embed)
-                    await session.close()
-
-    @app_commands.command()
-    @app_commands.guild_only()
-    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def cat(self, interaction):
         """Ein zufälliges Bild einer Katze."""
         try:
@@ -101,69 +79,7 @@ class bilder(commands.Cog):
                         await interaction.response.send_message(embed=embed)
         except:
             return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Fehler beim Laden es Bildes. Versuche es später erneut!**", ephemeral=True)
-
-    @app_commands.command()
-    @app_commands.guild_only()
-    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
-    async def triggered(self, interaction, *, member: discord.Member=None):
-        """Sendet ein Bild deines Avatars mit Effekten."""
-        if member is None:
-            member = interaction.user
-        async with interaction.channel.typing():
-            session = aiohttp.ClientSession()
-            async with session.get(
-                f"https://some-random-api.ml/canvas/triggered?avatar={member.avatar}") as r:
-                if r.status != 200:
-                    return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Fehler beim Laden es Bildes. Versuche es später erneut!**", ephemeral=True)
-                else:
-                    data = io.BytesIO(await r.read())
-                    file=discord.File(data, 'triggered.gif')
-                    embed = discord.Embed(title=" ", description="**Genervt!!!**", colour=await getcolour(self, interaction.user))
-                    embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
-                    embed.set_image(url="attachment://triggered.gif")
-                    await interaction.response.send_message(file=file, embed=embed)
-                    await session.close()
-
-    @app_commands.command()
-    @app_commands.guild_only()
-    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
-    async def color(self, interaction, hexcode: str):
-        """Gib einen HEX-Code ein und die dazugehörige Farbe wird erscheinen."""
-        try:
-            link =f'https://some-random-api.ml/canvas/colorviewer?hex={hexcode}'
-
-            embed = discord.Embed(color=await getcolour(self, interaction.user), title=f"**Hier die Farbe** **#{hexcode}**")
-            embed.set_image(url=link)
-            embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-            embed.set_footer(text="HEX Code: (a-f, 1-9) up to 6 characters")
-
-            await interaction.response.send_message(embed=embed)
-        except:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Fehler beim Laden es Bildes. Versuche es später erneut!**", ephemeral=True)
-
-    @app_commands.command()
-    @app_commands.guild_only()
-    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
-    async def regenbogen(self, interaction, member: discord.Member=None):
-        """Sendet ein Bild deines Avatars mit Effekten."""
-        if member is None:
-            member = interaction.user
-
-        async with interaction.channel.typing():
-            session = aiohttp.ClientSession()
-            async with session.get(
-                    f"https://some-random-api.ml/canvas/gay?avatar={member.avatar}") as r:
-                if r.status != 200:
-                    return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Fehler beim Laden es Bildes. Versuche es später erneut!**", ephemeral=True)
-                else:
-                    data = io.BytesIO(await r.read())
-                    file=discord.File(data, 'triggered.gif')
-                    embed = discord.Embed(title=" ", description="**Schwul**!", colour=await getcolour(self, interaction.user))
-                    embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
-                    embed.set_image(url="attachment://triggered.gif")
-                    await interaction.response.send_message(file=file, embed=embed)
-                    await session.close()
-                    
+          
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
