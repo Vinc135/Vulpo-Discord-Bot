@@ -48,7 +48,7 @@
       <nav id="navbar" class="navbar">
         <ul>
           <li><a href="/">Hauptseite</a></li>
-          <li><a href="https://vulpo-bot.de/login" class="gold-button">Einloggen und Premium kaufen</a></li>
+          <!-- <li><a href="https://vulpo-bot.de/login" class="gold-button">Einloggen und Premium kaufen</a></li> -->
         </ul>
       </nav><!-- .navbar -->
       
@@ -67,7 +67,7 @@
           <div class="d-flex justify-content-center justify-content-lg-start" data-aos-delay="200">
             <a href="https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands" class="btn-get-started"></i><span>Einladen</span></a>
             <a href="https://discord.gg/49jD3VXksp" class="btn-get-started"></i><span>Support</span></a>
-            <a href="https://vulpo-bot.de/login" class="btn-get-started"></i><span>Einloggen und Premium kaufen</span></a>
+            <!-- <a href="https://vulpo-bot.de/login" class="btn-get-started"></i><span>Einloggen und Premium kaufen</span></a> -->
           </div>
         </div>
         <div class="col-lg-6 order-1 order-lg-2">
@@ -81,7 +81,7 @@
 
           <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
             <div class="icon-box">
-              <div class="icon"><i class="bi bi-easel"></i></div>
+              <div class="icon"><i class="bi bi-command"></i></div>
               <h4 class="title"><a href="" class="stretched-link">Noch mehr anpassbar</a></h4>
             </div>
           </div>
@@ -89,15 +89,15 @@
 
           <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
             <div class="icon-box">
-              <div class="icon"><i class="bi bi-gem"></i></div>
-              <h4 class="title"><a href="" class="stretched-link">Noch schnellerer Support</a></h4>
+              <div class="icon"><i class="bi bi-menu-button-wide"></i></div>
+              <h4 class="title"><a href="" class="stretched-link">Web-Dashboard</a></h4>
             </div>
           </div>
           <!--End Icon Box -->
 
           <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
             <div class="icon-box">
-              <div class="icon"><i class="bi bi-geo-alt"></i></div>
+              <div class="icon"><i class="bi bi-grid"></i></div>
               <h4 class="title"><a href="" class="stretched-link">Unendlich viele Rangkarten</a></h4>
             </div>
           </div>
@@ -105,12 +105,19 @@
 
           <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="500">
             <div class="icon-box">
-              <div class="icon"><i class="bi bi-command"></i></div>
+              <div class="icon"><i class="bi bi-easel"></i></div>
               <h4 class="title"><a href="" class="stretched-link">Unendlich viele Embedfarben</a></h4>
             </div>
           </div>
           <!--End Icon Box -->
-
+        
+          <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="500">
+            <div class="icon-box">
+              <div class="icon"><i class="bi bi-bar-chart"></i></div>
+              <h4 class="title"><a href="" class="stretched-link">Statistiken für dich und deinen Discord-Server</a></h4>
+            </div>
+          </div>
+          <!--End Icon Box -->
         </div>
       </div>
     </div>
@@ -189,8 +196,8 @@
               <div class="icon">
                 <i class="bi bi-easel"></i>
               </div>
-              <h3>Schnellerer Support</h3>
-              <p>Der Support ist viel schneller bei dir da und sogar die Entwickler und Admins kümmern sich um dich.</p>
+              <h3>Web-Dashboard</h3>
+              <p>Du kannst viele Funktionen noch leichter verwalten auf unserer Webseite.</p>
             </div>
           </div><!-- End Service Item -->
 
@@ -228,6 +235,71 @@
 
       </div>
     </section><!-- End Our Services Section -->
+  <!-- ======= Portfolio Section ======= -->
+  <section id="portfolio" class="portfolio sections-bg">
+    <div class="container" data-aos="fade-up">
+
+      <div class="section-header">
+        <h2>Galerie</h2>
+        <p>Erfahre hier mehr konkretes zu den einzelnen Funktionen und Systemen von Vulpo.</p>
+      </div>
+
+      <div class="portfolio-isotope" data-portfolio-filter="*" data-portfolio-layout="masonry" data-portfolio-sort="original-order" data-aos="fade-up" data-aos-delay="100">
+        <div class="row gy-4 portfolio-container">
+
+          <div class="col-xl-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <a href="{{ url_for('static', filename='assets/galerie/premium/rang.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/premium/rang.png') }}" class="img-fluid" alt=""></a>
+              <div class="portfolio-info">
+                <p>Benutzerdefinierte Rangkarten</p>
+              </div>
+            </div>
+          </div><!-- End Portfolio Item -->
+          <div class="col-xl-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <a href="{{ url_for('static', filename='assets/galerie/premium/embed.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/premium/embed.png') }}" class="img-fluid" alt=""></a>
+              <div class="portfolio-info">
+                <p>Benutzerdefinierte Embedfarben</p>
+              </div>
+            </div>
+          </div><!-- End Portfolio Item -->
+          <div class="col-xl-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <a href="{{ url_for('static', filename='assets/galerie/premium/vcstats.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/vcstats.png') }}" class="img-fluid" alt=""></a>
+              <div class="portfolio-info">
+                <p>Statistiken im Sprachkanal</p>
+              </div>
+            </div>
+          </div><!-- End Portfolio Item -->
+          <div class="col-xl-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <a href="{{ url_for('static', filename='assets/galerie/premium/stats.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/stats.png') }}" class="img-fluid" alt=""></a>
+              <div class="portfolio-info">
+                <p>Statistiken für dich und deinen Server</p>
+              </div>
+            </div>
+          </div><!-- End Portfolio Item -->
+          <div class="col-xl-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <a href="{{ url_for('static', filename='assets/galerie/premium/lookback.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/premium/lookback.png') }}" class="img-fluid" alt=""></a>
+              <div class="portfolio-info">
+                <p>Statistiken für dich und deinen Server</p>
+              </div>
+            </div>
+          </div><!-- End Portfolio Item -->
+          <div class="col-xl-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <a href="{{ url_for('static', filename='assets/galerie/premium/dash1.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/premium/dash1.png') }}" class="img-fluid" alt=""></a>
+              <a href="{{ url_for('static', filename='assets/galerie/premium/dash2.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/premium/dash2.png') }}" class="img-fluid" alt=""></a>
+              <div class="portfolio-info">
+                <p>Web Dashboard</p>
+              </div>
+            </div>
+          </div><!-- End Portfolio Item -->
+        </div><!-- End Portfolio Container -->
+      </div>
+    </div>
+  </section><!-- End Portfolio Section -->
   <!-- ======= Frequently Asked Questions Section ======= -->
   <section id="faq" class="faq">
     <div class="container" data-aos="fade-up">
@@ -251,12 +323,12 @@
               <h3 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-content-1">
                   <span class="num">1.</span>
-                  ???
+                  Wo kaufe ich Premium?
                 </button>
               </h3>
               <div id="faq-content-1" class="accordion-collapse collapse" data-bs-parent="#faqlist">
                 <div class="accordion-body">
-                  ???
+                  Premium wird noch fertig programmiert. Es kann noch dauern.
                 </div>
               </div>
           </div>
@@ -282,8 +354,6 @@
           </div>
         </div>
 
-        
-
         <div class="col-lg-2 col-6 footer-links">
           <h4>Weiterführende Links</h4>
           <ul>
@@ -303,7 +373,7 @@
 
     <div class="container mt-4">
       <div class="copyright">
-        &copy; Copyright <strong><span>Vulpo Developement</span></strong>. Alle Rechte reserviert
+        &copy; Copyright <strong><span>Vulpo</span></strong>. Alle Rechte reserviert
       </div>
       <div class="credits">
         Designt von <a href="https://bootstrapmade.com/">BootstrapMade</a>

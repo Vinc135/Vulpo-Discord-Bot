@@ -665,7 +665,7 @@ class Stats(commands.Cog):
         """Zeigt Stats für Member und Kanäle."""
         mydate = datetime.datetime.now()
         translator = Translator()
-        translation = translator.translate(mydate.strftime("%B") , dest="de")
+        translation = translator.translate(f'Month {mydate.strftime("%B")}' , dest="de")
         monat = translation.text
         
         if member == None and textkanal == None and sprachkanal == None:
@@ -709,7 +709,7 @@ class Stats(commands.Cog):
 <:v_chat:1037065910567055370> **Nachrichten Stats:**
 > Insgesammt: {stats1[0]} Nachrichten
 > Jahr {discord.utils.utcnow().__format__('%Y')}: {stats1[1]} Nachrichten
-> Monat {monat}: {stats1[2]} Nachrichten
+> {monat}: {stats1[2]} Nachrichten
 > Letzten 7 Tage: {stats1[3]} Nachrichten
 > Tag: {stats1[4]} Nachrichten
 
@@ -750,7 +750,7 @@ class Stats(commands.Cog):
 <:v_chat:1037065910567055370> **Nachrichten Stats:**
 > Insgesammt: {stats[0]} Nachrichten
 > Jahr {discord.utils.utcnow().__format__('%Y')}: {stats[1]} Nachrichten
-> Monat {monat}: {stats[2]} Nachrichten
+> {monat}: {stats[2]} Nachrichten
 > Letzten 7 Tage: {stats[3]} Nachrichten
 > Tag: {stats[4]} Nachrichten
 
@@ -779,7 +779,7 @@ class Stats(commands.Cog):
 <:v_mikrofon:1037065919282810910> **Aktivität im Sprachkanal:**
 > Insgesammt: {stats[0]} Minuten
 > Jahr {discord.utils.utcnow().__format__('%Y')}: {stats[1]} Minuten
-> Monat {monat}: {stats[2]} Minuten
+> {monat}: {stats[2]} Minuten
 > Letzten 7 Tage: {stats[3]} Minuten
 > Tag: {stats[4]} Minuten
 
@@ -1124,13 +1124,9 @@ class Stats(commands.Cog):
 
                     embed = discord.Embed(title="Stats Kanäle", description=f"Die aktuellen Stats Kanäle:", color=await getcolour(self, interaction.user))
                     for ergebnis in wel:
-                        g = self.bot.get_guild(int(ergebnis[0]))
-                        if g == None:
-                            return
-                        k = g.get_channel(int(ergebnis[1]))
-                        if k == None:
-                            return
-                        embed.add_field(name=ergebnis[2] if len(ergebnis[2]) > 7 else f"{str(ergebnis[2])[:7]}...", value=k.mention, inline=False)
+                        k = interaction.guild.get_channel(int(ergebnis[1]))
+                        if k != None:
+                            embed.add_field(name=ergebnis[2] if len(ergebnis[2]) > 7 else f"{str(ergebnis[2])[:7]}...", value=k.mention, inline=False)
                     await interaction.response.send_message(embed=embed)
 
                     

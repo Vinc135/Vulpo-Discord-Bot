@@ -226,8 +226,8 @@ class Vulpo(commands.AutoShardedBot):
                 votechannel = guild.get_channel(934036446271139860)
                 mydate = datetime.datetime.now()
                 translator = Translator()
-                translation = translator.translate(mydate.strftime("%B") , dest="de")
-                await votechannel.edit(name=f"Votes im {translation.text}: {votes}")
+                translation = translator.translate(f'Month {mydate.strftime("%B")}' , dest="de")
+                await votechannel.edit(name=f"Votes {translation.text}: {votes}")
                 try:
                     m = guild.get_member(userid)
                     if m is not None:

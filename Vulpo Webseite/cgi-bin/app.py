@@ -1,3 +1,4 @@
+import json
 import os
 from flask import Flask, redirect, request, render_template, session
 from requests_oauthlib import OAuth2Session
@@ -6,6 +7,7 @@ import requests
 import aiomysql
 import asyncio
 from flask_session import Session
+import paypalrestsdk
 
 async def create_pool(loop):
     pool = await aiomysql.create_pool(
@@ -49,6 +51,17 @@ async def insert_starboard(guildid, channel, p):
             await cursor.execute("DELETE FROM starboard WHERE guildID = (%s)", (guildid))
             await cursor.execute("INSERT INTO starboard(guildID, channelID) VALUES(%s, %s)", (guildid, channel))
 
+async def delete_starboard(guildid, p):
+    async with p.get() as conn:
+        async with conn.cursor() as cursor:
+            await cursor.execute("DELETE FROM starboard WHERE guildID = (%s)", (guildid))
+
+async def subscription(data, p):
+    async with p.get() as conn:
+        async with conn.cursor() as cursor:
+            await cursor.execute("CREATE TABLE IF NOT EXISTS test(test TEXT)")
+            await cursor.execute("INSERT INTO test(test) VALUES(%s)", (data))
+
 loop = asyncio.get_event_loop()
 pool = loop.run_until_complete(create_pool(loop))
 
@@ -57,9 +70,17 @@ pool = loop.run_until_complete(create_pool(loop))
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
 app.config['SESSION_TYPE'] = 'filesystem'
+app.config['PAYPAL_MODE'] = 'sandbox'
+app.config['PAYPAL_CLIENT_ID'] = 'YOUR_PAYPAL_CLIENT_ID'
+app.config['PAYPAL_CLIENT_SECRET'] = 'YOUR_PAYPAL_CLIENT_SECRET'
 
 Session(app)
 
+paypalrestsdk.configure({
+    'mode': app.config['PAYPAL_MODE'],
+    'client_id': app.config['PAYPAL_CLIENT_ID'],
+    'client_secret': app.config['PAYPAL_CLIENT_SECRET']
+})
 #—————————————————————————————————————————————#
 #Die Umleitungen zu den Pages.
 #Beispiel: vulpo-bot.de/premium anstatt /premium.html
@@ -78,10 +99,10 @@ def invite():
     """Umleitung zum Einladen."""
     return redirect("https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands")
 
-# @app.route('/premium')
-# def premium():
-#     """Umleitung zur Premium Seite."""
-#     return render_template('premium.html')
+@app.route('/premium')
+def premium():
+    """Umleitung zur Premium Seite."""
+    return render_template('premium.html')
 
 @app.route('/impressum')
 def impressum():
@@ -113,6 +134,30 @@ def process():
         task = loop.create_task(insert_starboard(data['guild_id'], data['channel_id'], pool))
         loop.run_until_complete(task)
         return "OK"
+    
+@app.route('/delete', methods=['POST'])
+def delete():
+    data = request.json
+    if data['kennung'] == 'Starboard':
+        task = loop.create_task(delete_starboard(data['guild_id'], pool))
+        loop.run_until_complete(task)
+        return "OK"
+
+@app.route('/gekauft', methods=['GET', 'POST'])
+def gekauft():
+    #user hat gekauft
+    data = request.json
+    payer_id = data['data']['payerID']
+    discord_user_id = data["userid"]
+    #dem discord nutzer premium hinzufügen
+    return f"{payer_id} {discord_user_id}"
+
+@app.route('/paypal/webhooks', methods=['POST'])
+def paypal_webhook():
+    event_type = request.headers.get('Paypal-Event-Type')
+    task = loop.create_task(subscription(event_type, pool))
+    loop.run_until_complete(task)
+    return '', 200
 
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
@@ -200,8 +245,11 @@ def login():
         response = discord1.get(base_discord_api_url + '/users/@me')
         task = loop.create_task(checkpremium(response, pool))
         premium_status = loop.run_until_complete(task)
-        if premium_status == False:
-            return render_template('nopremium.html', response=response.json())
+        if premium_status == False or str(response.json()['id']) == str(824378909985341451):
+            if str(response.json()['id']) != str(824378909985341451):
+                return render_template('nopremium copy.html', response=response.json())
+            else:
+                return render_template('nopremium.html', response=response.json())
         
         # Zugriff auf die verbundenen Server des Benutzers
         guilds = []
@@ -244,8 +292,11 @@ def oauth_callback():
         response = discord1.get(base_discord_api_url + '/users/@me')
         task = loop.create_task(checkpremium(response, pool))
         premium_status = loop.run_until_complete(task)
-        if premium_status == False:
-            return render_template('nopremium.html', response=response.json())
+        if premium_status == False or str(response.json()['id']) == str(824378909985341451):
+            if str(response.json()['id']) != str(824378909985341451):
+                return render_template('nopremium copy.html', response=response.json())
+            else:
+                return render_template('nopremium.html', response=response.json())
         
         # Zugriff auf die verbundenen Server des Benutzers
         guilds = []

@@ -19,9 +19,9 @@ async def checkstatus(self, guild):
             if enabled == None:
                 await cursor.execute("INSERT INTO levelstatus (guild_id, enabled) VALUES (%s, %s)", (guild.id, 0))
                 return False
-            if enabled[0] == 1:
+            if enabled[0] == "1":
                 return True
-            if enabled[0] == 0:
+            if enabled[0] == "0":
                 return False
 
 class levelsystem(commands.Cog):
@@ -546,14 +546,14 @@ class levelsystem(commands.Cog):
                     await cursor.execute(f"SELECT enabled FROM levelstatus WHERE guild_id = {interaction.guild.id}")
                     enabled = await cursor.fetchone()
                     if enabled == None:
-                        await cursor.execute(f"UPDATE levelstatus SET enabled = 1 WHERE guild_id = {interaction.guild.id}")
+                        await cursor.execute(f"INSERT INTO levelstatus(enabled, guild_id) VALUES(%s, %s)", (1, interaction.guild.id))
                         
                         await interaction.response.send_message("**<:v_haken:1048677657040134195> Das Levelsystem ist jetzt auf diesem Server aktiviert.**")
                         return
-                    if enabled[0] == 1:
+                    if enabled[0] == '1':
                         await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Das Levelsystem ist hier bereits aktiviert.**", ephemeral=True)
                         return
-                    if enabled[0] == 0:
+                    if enabled[0] == "0":
                         await cursor.execute(f"UPDATE levelstatus SET enabled = 1 WHERE guild_id = {interaction.guild.id}")
                         
                         await interaction.response.send_message("**<:v_haken:1048677657040134195> Das Levelsystem ist jetzt auf diesem Server aktiviert.**")
@@ -562,16 +562,16 @@ class levelsystem(commands.Cog):
                     await cursor.execute(f"SELECT enabled FROM levelstatus WHERE guild_id = {interaction.guild.id}")
                     enabled = await cursor.fetchone()
                     if enabled == None:
+                        await cursor.execute(f"INSERT INTO levelstatus(enabled, guild_id) VALUES(%s, %s)", (0, interaction.guild.id))
+                        
+                        await interaction.response.send_message("**<:v_haken:1048677657040134195> Das Levelsystem ist jetzt auf diesem Server deaktiviert.**")
+                        return
+                    if enabled[0] == "1":
                         await cursor.execute(f"UPDATE levelstatus SET enabled = 0 WHERE guild_id = {interaction.guild.id}")
                         
                         await interaction.response.send_message("**<:v_haken:1048677657040134195> Das Levelsystem ist jetzt auf diesem Server deaktiviert.**")
                         return
-                    if enabled[0] == 1:
-                        await cursor.execute(f"UPDATE levelstatus SET enabled = 0 WHERE guild_id = {interaction.guild.id}")
-                        
-                        await interaction.response.send_message("**<:v_haken:1048677657040134195> Das Levelsystem ist jetzt auf diesem Server deaktiviert.**")
-                        return
-                    if enabled[0] == 0:
+                    if enabled[0] == "0":
                         await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Das Levelsystem ist hier bereits deaktiviert.**", ephemeral=True)
 
     @app_commands.command()

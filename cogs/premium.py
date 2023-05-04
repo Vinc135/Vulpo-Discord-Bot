@@ -55,10 +55,8 @@ class premium(commands.Cog):
                 if neuefarbe:
                     if not re.match(r'^[0-9a-fA-F]+$', neuefarbe):
                         return await interaction.response.send_message(f"❌ **Ungültiger Hexcode: {neuefarbe}. [Hier kannst du Farben mit dem entsprechenden HEX-Code finden](https://encycolorpedia.de).**", ephemeral=True)
-                    link =f'https://some-random-api.ml/canvas/colorviewer?hex={neuefarbe}'
 
-                    embed = discord.Embed(color=discord.Color.light_gray(),title=f"Soll diese Farbe die neue Farbe aller Embeds sein?")
-                    embed.set_image(url=link)
+                    embed = discord.Embed(color=discord.Colour(int(neuefarbe, 16)),title=f"Soll diese Farbe die neue Farbe aller Embeds sein?")
                     embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                     embed.set_footer(text="HEX Code: (a-f, 1-9) bis zu 6 Ziffern")
 
