@@ -11,7 +11,7 @@ from info import getcolour
      
 async def teilnahme_angenommen(self, interaction: discord.Interaction, result):
     t2 = datetime.datetime.fromtimestamp(int(result[4]))
-    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=result[5], description=f"""
+    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=result[10], description=f"""
 `🤖` · [Lade den Bot hier ein](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands)
 
 `🎉` · Erfolgreich teilgenommen auf [{interaction.guild.name}]({interaction.message.jump_url})
@@ -134,11 +134,11 @@ class Gewinnspiel_Teilnehmen(discord.ui.View):
                     await cursor.execute("SELECT anzahl FROM gw_nachrichten WHERE gwID = (%s) AND userID = (%s) AND guildID = (%s)", (interaction.message.id, interaction.user.id, interaction.guild.id))
                     result2 = await cursor.fetchone()
                     if result2 == None:
-                        gründe += f"\n`❌` Du hast bisher 0 Nachrichten geschrieben, benötigst jedoch {result[8]} Nachrichten um am Gewinnspiel teilzunehmen."
+                        gründe += f"\n`❌` Du hast bisher 0 Nachrichten geschrieben, benötigst jedoch {result[6]} Nachrichten um am Gewinnspiel teilzunehmen."
                     else:
                         nachrichten = result2[0]
                         if nachrichten < int(result[6]):
-                            gründe += f"\n`❌` Du hast bisher {nachrichten} Nachrichten geschrieben, benötigst jedoch {result[8]} Nachrichten um am Gewinnspiel teilzunehmen."
+                            gründe += f"\n`❌` Du hast bisher {nachrichten} Nachrichten geschrieben, benötigst jedoch {result[6]} Nachrichten um am Gewinnspiel teilzunehmen."
                 #Die Rollen Anforderung überprüfen
                 if result[8] != None:
                     rolle2 = interaction.guild.get_role(int(result[8]))

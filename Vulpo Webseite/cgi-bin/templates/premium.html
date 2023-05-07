@@ -82,7 +82,7 @@
           <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
             <div class="icon-box">
               <div class="icon"><i class="bi bi-command"></i></div>
-              <h4 class="title"><a href="" class="stretched-link">Noch mehr anpassbar</a></h4>
+              <h4 class="title"><a href="" class="stretched-link">Erweiterte Anpassbarkeit</a></h4>
             </div>
           </div>
           <!--End Icon Box -->
@@ -90,7 +90,7 @@
           <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
             <div class="icon-box">
               <div class="icon"><i class="bi bi-menu-button-wide"></i></div>
-              <h4 class="title"><a href="" class="stretched-link">Web-Dashboard</a></h4>
+              <h4 class="title"><a href="" class="stretched-link">Mehr Möglichkeiten für Moderation</a></h4>
             </div>
           </div>
           <!--End Icon Box -->
@@ -98,7 +98,7 @@
           <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
             <div class="icon-box">
               <div class="icon"><i class="bi bi-grid"></i></div>
-              <h4 class="title"><a href="" class="stretched-link">Unendlich viele Rangkarten</a></h4>
+              <h4 class="title"><a href="" class="stretched-link">Erweiterte Statistiken</a></h4>
             </div>
           </div>
           <!--End Icon Box -->
@@ -106,15 +106,7 @@
           <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="500">
             <div class="icon-box">
               <div class="icon"><i class="bi bi-easel"></i></div>
-              <h4 class="title"><a href="" class="stretched-link">Unendlich viele Embedfarben</a></h4>
-            </div>
-          </div>
-          <!--End Icon Box -->
-        
-          <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="500">
-            <div class="icon-box">
-              <div class="icon"><i class="bi bi-bar-chart"></i></div>
-              <h4 class="title"><a href="" class="stretched-link">Statistiken für dich und deinen Discord-Server</a></h4>
+              <h4 class="title"><a href="" class="stretched-link">Bessere Unterstützung</a></h4>
             </div>
           </div>
           <!--End Icon Box -->
@@ -136,170 +128,124 @@
         </div>
       </div>
     </section><!-- End About Us Section -->
-
-    <!-- ======= Stats Counter Section ======= -->
-    <section id="stats-counter" class="stats-counter">
-      <div class="container" data-aos="fade-up">
-
-        <div class="row gy-4 align-items-center">
-
-          <div class="col-lg-6">
-            <img src="{{ url_for('static', filename='assets/img/stats.png') }}" alt="" class="img-fluid" height="400px" width="400px">
-          </div>
-
-          <div class="col-lg-6">
-
-            <div class="stats-item d-flex align-items-center">
-              <span data-purecounter-start="0" data-purecounter-end="10" data-purecounter-duration="1" class="purecounter"></span>
-              <p><strong>Benutzer</strong>, von Premium</p>
-            </div><!-- End Stats Item -->
-          </div>
-
+    <title>Unterschiede zum Premium Plan</title>
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 90%;
+        margin-left: 50px;
+      }
+      th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      .grey {
+        color: #999;
+      }
+      .green {
+        color: #8BC34A;
+        border-left: 5px solid #FFA500;
+        border-right: 5px solid #FFA500;
+      }
+      .red {
+        color: #FF5722;
+      }
+      .checkmark {
+        color: #8BC34A;
+        border-left: 5px solid #FFA500;
+        border-right: 5px solid #FFA500;
+      }
+      .cross {
+        color: #FF5722;
+      }
+      .checkmark2 {
+        color: #8BC34A;
+        border-left: 5px solid #FFA500;
+        border-right: 5px solid #FFA500;
+        border-bottom: 5px solid #FFA500;
+      }
+      .background-premium {
+        background-color: #ff8922;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="comparison-table">
+    <h1>Unterschiede zum Premium Plan</h1>
+    <table>
+      <tr>
+        <th> </th>
+        <th>Kostenloser Plan</th>
+        <div class="background-premium">
+        <th>👑</th>
         </div>
-
-      </div>
-    </section><!-- End Stats Counter Section -->
-
-    <!-- ======= Our Services Section ======= -->
-    <section id="services" class="services sections-bg">
-      <div class="container" data-aos="fade-up">
-
-        <div class="section-header">
-          <h2>Mit <span style="font-weight: bold; color: gold;">Premium</span> kannst du...</h2>
-          <p>Dies sind alle Premium Funktionen, die das Abo bei Vulpo bietet.</p>
-        </div>
-
-        <div class="row gy-4" data-aos="fade-up" data-aos-delay="100">
-
-          <div class="col-lg-4 col-md-6">
-            <div class="service-item  position-relative">
-              <div class="icon">
-                <i class="bi bi-activity"></i>
-              </div>
-              <h3>Personalisierte Farbe in Embeds</h3>
-              <p>Du kannst eine Farbe auswählen, die in allen Embeds bei Vulpo für dich erscheint.</p>
-            </div>
-          </div><!-- End Service Item -->
-
-          <div class="col-lg-4 col-md-6">
-            <div class="service-item position-relative">
-              <div class="icon">
-                <i class="bi bi-broadcast"></i>
-              </div>
-              <h3>Eigene Rangkarte mit eigener Farbe</h3>
-              <p>Du kannst ein eigenes Bild für den Hintergrund beim Rank-Befehl festlegen und auch eine eigene Farbe der Fortschritts-Leiste.</p>
-            </div>
-          </div><!-- End Service Item -->
-
-          <div class="col-lg-4 col-md-6">
-            <div class="service-item position-relative">
-              <div class="icon">
-                <i class="bi bi-easel"></i>
-              </div>
-              <h3>Web-Dashboard</h3>
-              <p>Du kannst viele Funktionen noch leichter verwalten auf unserer Webseite.</p>
-            </div>
-          </div><!-- End Service Item -->
-
-          <div class="col-lg-4 col-md-6">
-            <div class="service-item position-relative">
-              <div class="icon">
-                <i class="bi bi-bounding-box-circles"></i>
-              </div>
-              <h3>Besondere Rolle auf dem Supportserver</h3>
-              <p>Du erhältst eine Rolle auf dem Supportserver, die dich höher listet.</p>
-            </div>
-          </div><!-- End Service Item -->
-
-          <div class="col-lg-4 col-md-6">
-            <div class="service-item position-relative">
-              <div class="icon">
-                <i class="bi bi-calendar4-week"></i>
-              </div>
-              <h3>Premium Chat</h3>
-              <p>Tausche dich privat mit anderen Premium Nutzern und mit Admins aus.</p>
-            </div>
-          </div><!-- End Service Item -->
-
-          <div class="col-lg-4 col-md-6">
-            <div class="service-item position-relative">
-              <div class="icon">
-                <i class="bi bi-chat-square-text"></i>
-              </div>
-              <h3>Unterstützung</h3>
-              <p>Du unterstützt uns beim Bezahlen der Severkosten.</p>
-            </div>
-          </div><!-- End Service Item -->
-
-        </div>
-
-      </div>
-    </section><!-- End Our Services Section -->
-  <!-- ======= Portfolio Section ======= -->
-  <section id="portfolio" class="portfolio sections-bg">
-    <div class="container" data-aos="fade-up">
-
-      <div class="section-header">
-        <h2>Galerie</h2>
-        <p>Erfahre hier mehr konkretes zu den einzelnen Funktionen und Systemen von Vulpo.</p>
-      </div>
-
-      <div class="portfolio-isotope" data-portfolio-filter="*" data-portfolio-layout="masonry" data-portfolio-sort="original-order" data-aos="fade-up" data-aos-delay="100">
-        <div class="row gy-4 portfolio-container">
-
-          <div class="col-xl-4 col-md-6 portfolio-item filter-app">
-            <div class="portfolio-wrap">
-              <a href="{{ url_for('static', filename='assets/galerie/premium/rang.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/premium/rang.png') }}" class="img-fluid" alt=""></a>
-              <div class="portfolio-info">
-                <p>Benutzerdefinierte Rangkarten</p>
-              </div>
-            </div>
-          </div><!-- End Portfolio Item -->
-          <div class="col-xl-4 col-md-6 portfolio-item filter-app">
-            <div class="portfolio-wrap">
-              <a href="{{ url_for('static', filename='assets/galerie/premium/embed.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/premium/embed.png') }}" class="img-fluid" alt=""></a>
-              <div class="portfolio-info">
-                <p>Benutzerdefinierte Embedfarben</p>
-              </div>
-            </div>
-          </div><!-- End Portfolio Item -->
-          <div class="col-xl-4 col-md-6 portfolio-item filter-app">
-            <div class="portfolio-wrap">
-              <a href="{{ url_for('static', filename='assets/galerie/premium/vcstats.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/vcstats.png') }}" class="img-fluid" alt=""></a>
-              <div class="portfolio-info">
-                <p>Statistiken im Sprachkanal</p>
-              </div>
-            </div>
-          </div><!-- End Portfolio Item -->
-          <div class="col-xl-4 col-md-6 portfolio-item filter-app">
-            <div class="portfolio-wrap">
-              <a href="{{ url_for('static', filename='assets/galerie/premium/stats.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/stats.png') }}" class="img-fluid" alt=""></a>
-              <div class="portfolio-info">
-                <p>Statistiken für dich und deinen Server</p>
-              </div>
-            </div>
-          </div><!-- End Portfolio Item -->
-          <div class="col-xl-4 col-md-6 portfolio-item filter-app">
-            <div class="portfolio-wrap">
-              <a href="{{ url_for('static', filename='assets/galerie/premium/lookback.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/premium/lookback.png') }}" class="img-fluid" alt=""></a>
-              <div class="portfolio-info">
-                <p>Statistiken für dich und deinen Server</p>
-              </div>
-            </div>
-          </div><!-- End Portfolio Item -->
-          <div class="col-xl-4 col-md-6 portfolio-item filter-app">
-            <div class="portfolio-wrap">
-              <a href="{{ url_for('static', filename='assets/galerie/premium/dash1.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/premium/dash1.png') }}" class="img-fluid" alt=""></a>
-              <a href="{{ url_for('static', filename='assets/galerie/premium/dash2.png') }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="{{ url_for('static', filename='assets/galerie/premium/dash2.png') }}" class="img-fluid" alt=""></a>
-              <div class="portfolio-info">
-                <p>Web Dashboard</p>
-              </div>
-            </div>
-          </div><!-- End Portfolio Item -->
-        </div><!-- End Portfolio Container -->
-      </div>
-    </div>
-  </section><!-- End Portfolio Section -->
+      </tr>
+      <tr>
+        <td>Benutzerdefinierte Befehle:</td>
+        <td class="grey">1</td>
+        <td class="green">500</td>
+      </tr>
+      <tr>
+        <td>Konfigurierbare automatische Moderations-Aktionen:</td>
+        <td class="grey">1</td>
+        <td class="green">10</td>
+      </tr>
+      <tr>
+        <td>Maximale Anzahl von Schaltflächen auf einer Reaktionsrollenmeldung:</td>
+        <td class="grey">2</td>
+        <td class="green">25</td>
+      </tr>
+      <tr>
+        <td>Maximale Dropdown-Optionen in einer Reaktionsrollenmeldung:</td>
+        <td class="grey">2</td>
+        <td class="green">25</td>
+      </tr>
+      <tr>
+        <td>Transkripte von gelöschten Tickets aktivieren:</td>
+        <td class="cross">X</td>
+        <td class="checkmark">&#10003;</td>
+      </tr>
+      <tr>
+        <td>Temporäre Kanäle:</td>
+        <td class="grey">1</td>
+        <td class="green">10</td>
+      </tr>
+      <tr>
+        <td>Jobs im Economy Plugin:</td>
+        <td class="grey">53</td>
+        <td class="green">70</td>
+      </tr>
+      <tr>
+        <td>Rollenbelohnungen basierend auf Level:</td>
+        <td class="grey">2</td>
+        <td class="green">30</td>
+      </tr>
+      <tr>
+        <td>XP Boost für deinen Server:</td>
+        <td class="cross">X</td>
+        <td class="checkmark">&#10003;</td>
+      </tr>
+      <tr>
+        <td>Statistik System:</td>
+        <td class="cross">X</td>
+        <td class="checkmark">&#10003;</td>
+      </tr>
+      <tr>
+        <td>Embedfarben anpassbar:</td>
+        <td class="cross">X</td>
+        <td class="checkmark">&#10003;</td>
+      </tr>
+      <tr>
+        <td>Rangkarten anpassbar:</td>
+        <td class="cross">X</td>
+        <td class="checkmark2">&#10003;</td>
+      </tr>
+</table>
+</div>
   <!-- ======= Frequently Asked Questions Section ======= -->
   <section id="faq" class="faq">
     <div class="container" data-aos="fade-up">
@@ -328,7 +274,7 @@
               </h3>
               <div id="faq-content-1" class="accordion-collapse collapse" data-bs-parent="#faqlist">
                 <div class="accordion-body">
-                  Premium wird noch fertig programmiert. Es kann noch dauern.
+                  Du findest 
                 </div>
               </div>
           </div>

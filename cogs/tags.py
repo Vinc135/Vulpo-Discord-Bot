@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from info import getcolour
+from info import getcolour, haspremium_forserver
 
 class Tags(commands.Cog):
     def __init__(self, bot):
@@ -16,6 +16,13 @@ class Tags(commands.Cog):
         """Füge einen Tag hinzu."""
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
+                await cursor.execute("SELECT name FROM tags WHERE guildID = (%s)", (interaction.guild.id))
+                a = await cursor.fetchall()
+                premium_status = await haspremium_forserver(self, interaction.guild)
+                if premium_status == False:
+                    if len(a) >= 1:
+                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst keine weiteren Befehle erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+
                 await cursor.execute("SELECT name FROM tags WHERE guildID = (%s) AND name = (%s)", (interaction.guild.id, name))
                 result = await cursor.fetchone()
                 if result != None:
