@@ -2,7 +2,7 @@ import typing
 import discord
 from discord.ext import commands
 from discord import app_commands
-from info import getcolour
+from info import getcolour, haspremium_forserver
 #########
 
 class Dropdown(discord.ui.Select):
@@ -90,6 +90,11 @@ class option_hinzufügen(discord.ui.Modal, title="Füge eine Option hinzu"):
 
     async def on_submit(self, interaction: discord.Interaction):
         embed = interaction.message.embeds[0]
+        premium_status = await haspremium_forserver(self, interaction.guild)
+        if premium_status == False:
+            if len(embed.fields) >= 2:
+                return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst keine weiteren Optionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+
         embed.add_field(name=self.children[0].value, value=self.roleID)
         embed.color = await getcolour(self, interaction.user)
         await interaction.message.edit(content="", embed=embed)
@@ -151,6 +156,11 @@ class option_hinzufügen_2(discord.ui.Modal, title="Füge eine Option hinzu"):
 
     async def on_submit(self, interaction: discord.Interaction):
         embed = interaction.message.embeds[0]
+        premium_status = await haspremium_forserver(self, interaction.guild)
+        if premium_status == False:
+            if len(embed.fields) >= 2:
+                return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst keine weiteren Optionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+
         embed.add_field(name=self.children[0].value, value=self.roleID)
         embed.color = await getcolour(self, interaction.user)
         await interaction.message.edit(content="", embed=embed)

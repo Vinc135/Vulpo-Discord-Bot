@@ -3,7 +3,7 @@ from discord.ext import commands
 from discord import app_commands
 from datetime import datetime
 import typing
-from info import getcolour
+from info import getcolour, haspremium_forserver
 
 class logging(commands.Cog):
     def __init__(self, bot):
@@ -465,6 +465,10 @@ class logging(commands.Cog):
         """Setze den Ticketlog."""
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
+                premium_status = await haspremium_forserver(self, interaction.guild)
+                if premium_status == False:
+                    return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst dies nicht tun, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+
                 if modus == "An":
                     await cursor.execute("SELECT channelid FROM ticketlog WHERE guildid = (%s)", (interaction.guild.id))
                     result = await cursor.fetchone()

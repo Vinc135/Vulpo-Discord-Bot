@@ -341,15 +341,18 @@ async def work(self, user):
             await cursor.execute("UPDATE economy SET stunden = (%s) WHERE userID = (%s)", (int(result[0]) + 1, user.id))
 
 #SHOP
-async def addshopitem(self, guild, titel, beschreibung, preis):
+async def addshopitem(self, guild, titel, beschreibung, preis, rolle):
     async with self.bot.pool.acquire() as conn:
         async with conn.cursor() as cursor:
+            if rolle:
+                return await cursor.execute("INSERT INTO economy_shop(guildID, titel, beschreibung, preis, roleID) VALUES(%s, %s, %s, %s, %s)", (guild.id, titel, beschreibung, preis, rolle.id))
             await cursor.execute("INSERT INTO economy_shop(guildID, titel, beschreibung, preis) VALUES(%s, %s, %s, %s)", (guild.id, titel, beschreibung, preis))
+
 
 async def getshopitem(self, guild, titel):
     async with self.bot.pool.acquire() as conn:
         async with conn.cursor() as cursor:
-            await cursor.execute("SELECT titel, beschreibung, preis FROM economy_shop WHERE guildID = (%s) AND titel = (%s)", (guild.id, titel))
+            await cursor.execute("SELECT titel, beschreibung, preis, roleID FROM economy_shop WHERE guildID = (%s) AND titel = (%s)", (guild.id, titel))
             result = await cursor.fetchone()
             if result is None:
                 return False
@@ -375,17 +378,32 @@ async def listshopitems(self, guild):
 async def buyitem(self, user, guild, titel):
     async with self.bot.pool.acquire() as conn:
         async with conn.cursor() as cursor:
-            await cursor.execute("SELECT titel, beschreibung, preis FROM economy_shop WHERE guildID = (%s) AND titel = (%s)", (guild.id, titel))
+            await cursor.execute("SELECT titel, beschreibung, preis, roleID FROM economy_shop WHERE guildID = (%s) AND titel = (%s)", (guild.id, titel))
             item = await cursor.fetchone()
             if item is None:
                 return False
             if item is not None:
-                await cursor.execute("INSERT INTO economy_items(userID, titel, beschreibung, preis, guildID) VALUES(%s, %s, %s, %s, %s)", (user.id, titel, item[1], item[2], guild.id))
+                if item[3] == None:
+                    await cursor.execute("INSERT INTO economy_items(userID, titel, beschreibung, preis, guildID) VALUES(%s, %s, %s, %s, %s)", (user.id, titel, item[1], item[2], guild.id))
+                else:
+                    rolle = guild.get_role(int(item[3]))
+                    await user.add_roles(rolle)
+                    await cursor.execute("INSERT INTO economy_items(userID, titel, beschreibung, preis, guildID, roleID) VALUES(%s, %s, %s, %s, %s, %s)", (user.id, titel, item[1], item[2], guild.id, item[3]))
 
 async def sellitem(self, user, titel):
     async with self.bot.pool.acquire() as conn:
         async with conn.cursor() as cursor:
-            await cursor.execute("DELETE FROM economy_items WHERE userID = (%s) AND titel = (%s) AND guildID = (%s)", (user.id, titel, user.guild.id))
+            await cursor.execute("SELECT titel, beschreibung, preis, roleID FROM economy_shop WHERE guildID = (%s) AND titel = (%s)", (user.guild.id, titel))
+            item = await cursor.fetchone()
+            if item is None:
+                return False
+            if item is not None:
+                if item[3] == None:
+                    await cursor.execute("DELETE FROM economy_items WHERE userID = (%s) AND titel = (%s) AND guildID = (%s)", (user.id, titel, user.guild.id))
+                else:
+                    rolle = user.guild.get_role(int(item[3]))
+                    await user.remove_roles(rolle)
+                    await cursor.execute("DELETE FROM economy_items WHERE userID = (%s) AND titel = (%s) AND guildID = (%s)", (user.id, titel, user.guild.id))
 
 async def checkbalance(self, user, preis):
     async with self.bot.pool.acquire() as conn:
@@ -824,11 +842,11 @@ class economy(commands.Cog):
     
     @item.command()
     @app_commands.checks.has_permissions(administrator=True)
-    async def hinzufügen(self, interaction: discord.Interaction, titel: str, kaufpreis: int, beschreibung: str):
+    async def hinzufügen(self, interaction: discord.Interaction, titel: str, kaufpreis: int, beschreibung: str, rolle: discord.Role=None):
         """Füge ein Item dem Shop hinzu."""
         item = await getshopitem(self, interaction.guild, titel)
         if item is False:
-            await addshopitem(self, interaction.guild, titel, beschreibung, kaufpreis)
+            await addshopitem(self, interaction.guild, titel, beschreibung, kaufpreis, rolle)
             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item hinzugefügt", description=f"Das Item {titel} wurde zum Shop dieses Servers hinzugefügt.")
             await interaction.response.send_message(embed=embed)
             return
@@ -863,8 +881,13 @@ class economy(commands.Cog):
             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Alle Items dieses Servers", description=f"Dieser Server hat ein paar Items im Shop.")
             for item in items:
                 a += 1
-                #guildID, titel, beschreibung, preis
-                embed.add_field(name=item[1], value=f"{item[2]}\n**Preis:** {item[3]}")
+                #guildID, titel, beschreibung, preis, roleID
+                if item[4]:
+                    rolle = interaction.guild.get_role(int(item[4]))
+                    embed.add_field(name=item[1], value=f"{item[2]}\n**Preis:** {item[3]}\n**Rolle:** {rolle.mention}")
+                else:
+                    embed.add_field(name=item[1], value=f"{item[2]}\n**Preis:** {item[3]}")
+
             if a == 0:
                 embed = discord.Embed(color=await getcolour(self, interaction.user), title="Keine Items vorhanden", description=f"Es gibt keine Items in dem Shop dieses Servers.\nFüge Items hinzu mit dem Command `/shop item hinzufügen`")
                 await interaction.response.send_message(embed=embed, ephemeral=True)

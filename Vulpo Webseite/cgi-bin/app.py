@@ -55,13 +55,12 @@ async def delete_starboard(guildid, p):
     async with p.get() as conn:
         async with conn.cursor() as cursor:
             await cursor.execute("DELETE FROM starboard WHERE guildID = (%s)", (guildid))
-
-async def subscription(data, p):
+        
+async def add_premium(orderID, subscriptionID, userID, p):
     async with p.get() as conn:
         async with conn.cursor() as cursor:
-            await cursor.execute("CREATE TABLE IF NOT EXISTS test(test TEXT)")
-            await cursor.execute("INSERT INTO test(test) VALUES(%s)", (data))
-
+            await cursor.execute("INSERT INTO premium(orderID ,subscriptionID, userID, status) VALUES(%s, %s, %s, %s)", (orderID, subscriptionID, userID, 1))
+    
 loop = asyncio.get_event_loop()
 pool = loop.run_until_complete(create_pool(loop))
 
@@ -70,9 +69,9 @@ pool = loop.run_until_complete(create_pool(loop))
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
 app.config['SESSION_TYPE'] = 'filesystem'
-app.config['PAYPAL_MODE'] = 'sandbox'
-app.config['PAYPAL_CLIENT_ID'] = 'YOUR_PAYPAL_CLIENT_ID'
-app.config['PAYPAL_CLIENT_SECRET'] = 'YOUR_PAYPAL_CLIENT_SECRET'
+app.config['PAYPAL_MODE'] = 'live'
+app.config['PAYPAL_CLIENT_ID'] = 'AdNZxDHdmW7iJebIw1XY-YuwXHhI5VN7sGeuL-GfgSekyNw93QzQnsCin5A6BjWzE_SGOog1AnH-Id1t'
+app.config['PAYPAL_CLIENT_SECRET'] = 'EATcxSp0L9b6-W7QyuoOE7pYzbmI3RkFstVuDG1_B4imPa2qRLhHEC6bezP-2rck9FSmmM-ZgYUES_Bx'
 
 Session(app)
 
@@ -143,21 +142,42 @@ def delete():
         loop.run_until_complete(task)
         return "OK"
 
-@app.route('/gekauft', methods=['GET', 'POST'])
+@app.route('/paypal/gekauft', methods=['GET', 'POST'])
 def gekauft():
-    #user hat gekauft
-    data = request.json
-    payer_id = data['data']['payerID']
-    discord_user_id = data["userid"]
-    #dem discord nutzer premium hinzufügen
-    return f"{payer_id} {discord_user_id}"
+    try:
+        data = request.json
+        orderID = data['data']['orderID']
+        subscriptionID = data['data']['subscriptionID']
+        userID = data['userid']
+        task = loop.create_task(add_premium(orderID, subscriptionID, userID, pool))
+        loop.run_until_complete(task)
+        render_template("index.html")
+        return "OK"
+    except Exception as e:
+        return f"{e}\n{data}"
 
-@app.route('/paypal/webhooks', methods=['POST'])
-def paypal_webhook():
-    event_type = request.headers.get('Paypal-Event-Type')
-    task = loop.create_task(subscription(event_type, pool))
-    loop.run_until_complete(task)
-    return '', 200
+# @app.route('/paypal/webhooks', methods=['POST'])
+# def paypal_webhook():
+#     # Überprüfen, ob die Anfrage von PayPal kommt
+#     auth_header = request.headers.get('Authorization')
+#     if not auth_header or not auth_header.startswith('Bearer '):
+#         return 'Unauthorized', 401
+    
+#     data = json.loads(request.data)
+#     try:
+#         task = loop.create_task(test(data, pool))
+#         loop.run_until_complete(task)
+#     except:
+#         pass
+#     try:
+#         task = loop.create_task(get_discord_userid_from_subscriptionID(data["resource"]["id"], pool))
+#         userid = loop.run_until_complete(task)
+#         task = loop.create_task(cancel_premium(userid, pool))
+#         loop.run_until_complete(task)
+#     except Exception as e:
+#         task = loop.create_task(test(f"fehler1: {e}", pool))
+#         loop.run_until_complete(task)
+#     return 'OK', 200
 
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():

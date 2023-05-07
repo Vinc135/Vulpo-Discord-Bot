@@ -75,98 +75,51 @@
           </div>
       </div>
     </div>
-    <div id="paypal-button-container-P-9XP515378D850443EMRHLMDY"></div>
+  </body>
+</html>
+    <style>
+      .paypalbutton {
+        margin-left: 140px; /* füge einen rechten Abstand von 20 Pixeln hinzu */
+      }
+    </style>
+        <div class="paypalbutton">
 
-    <script data-sdk-integration-source="integrationbuilder_ac"></script>
-    	    <div id="paypal-button-container"></div>
-    	    <script src="https://www.paypal.com/sdk/js?client-id=AUC0uyigPNM5BWhqHMi3kG-w0Zvh8494ygm33MRly0iKv3UlI4FkwWpYnDXcsjCojYpD28zAm2-gMa7D"></script>
-    	    <script>
-    	      const fundingSources = [
-    	        paypal.FUNDING.PAYPAL,
-    	        paypal.FUNDING.PAYLATER,
-  	        paypal.FUNDING.VENMO,
-    	      ];
-    	
-    	      for (const fundingSource of fundingSources) {
-    	        
-    	        paypal
-    	        .Buttons({
-    	           fundingSource,
-    	          
-    	           style: {
-    	             layout: 'vertical',
-    	             shape: 'pill'
-    	           },
-    	       
-    	           createOrder: function (data, actions) {
-    	             const createOrderPayload = {
-    	               purchase_units: [
-    	                 {
-  	                   amount: {
-    	                     value: "5",
-    	                   },
-    	                 },
-    	               ],
-    	             };
-    	       
-    	             return actions.order.create(createOrderPayload);
-    	           },
-    	           
-    	           onApprove: function (data, actions) {
-                  const xhr = new XMLHttpRequest();
-                  xhr.open('POST', '/gekauft');
-                  xhr.setRequestHeader('Content-Type', 'application/json');
-                  xhr.onload = function() {
-                      if (xhr.status === 200) {
-                          console.log(xhr.responseText);
-                      } else {
-                          console.log('Request failed.  Returned status of ' + xhr.status);
-                      }
-                  };
-                  xhr.send(JSON.stringify({
-                      'data': data,
-                      'userid' : "{{ response['id'] }}"
-                  }));
-    	           },
-  	        })
-    	        .render("#paypal-button-container");
-  	       }
-    	
-    	    </script>
-          <!-- <div id="paypal-button-container-P-0BS684597U834425CMRH5C7Y"></div>
-          <script src="https://www.paypal.com/sdk/js?client-id=AXK4AkVPvfoxQ3ZUF0_EX2OAKqkZxTH2Tol1oVp47Kn3SNvPCRc1YZX1koNJwBiJVcshYEFZc6kemhBt&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
-          <script>
-            paypal.Buttons({
-                style: {
-                    shape: 'pill',
-                    color: 'gold',
-                    layout: 'vertical',
-                    label: 'subscribe'
-                },
-                createSubscription: function(data, actions) {
-                  return actions.subscription.create({
-                    /* Creates the subscription */
-                    plan_id: 'P-0BS684597U834425CMRH5C7Y'
-                  });
-                },
-                onApprove: function(data, actions) {
-                  alert(data.subscriptionID); // You can add optional success message for the subscriber here
-                  const xhr = new XMLHttpRequest();
-                  xhr.open('POST', '/gekauft');
-                  xhr.setRequestHeader('Content-Type', 'application/json');
-                  xhr.onload = function() {
-                      if (xhr.status === 200) {
-                          console.log(xhr.responseText);
-                      } else {
-                          console.log('Request failed.  Returned status of ' + xhr.status);
-                      }
-                  };
-                  xhr.send(JSON.stringify({
-                      'data': data
-                  }));
+    <div id="paypal-button-container-P-0BS684597U834425CMRH5C7Y"></div>
+    <script src="https://www.paypal.com/sdk/js?client-id=AdNZxDHdmW7iJebIw1XY-YuwXHhI5VN7sGeuL-GfgSekyNw93QzQnsCin5A6BjWzE_SGOog1AnH-Id1t&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
+    <script>
+      paypal.Buttons({
+          style: {
+              shape: 'pill',
+              color: 'gold',
+              layout: 'vertical',
+              label: 'subscribe'
+          },
+          createSubscription: function(data, actions) {
+            return actions.subscription.create({
+              /* Creates the subscription */
+              plan_id: 'P-0BS684597U834425CMRH5C7Y'
+            });
+          },
+          onApprove: function(data, actions) {
+            alert(data.subscriptionID); // You can add optional success message for the subscriber here
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/paypal/gekauft');
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    console.log(xhr.responseText);
+                } else {
+                    console.log('Request failed.  Returned status of ' + xhr.status);
                 }
-            }).render('#paypal-button-container-P-0BS684597U834425CMRH5C7Y'); // Renders the PayPal button
-          </script> -->
+            };
+            xhr.send(JSON.stringify({
+                'data': data,
+                'userid' : "{{ response['id'] }}"
+            }));
+          }
+      }).render('#paypal-button-container-P-0BS684597U834425CMRH5C7Y'); // Renders the PayPal button
+    </script>
+    </div>
   </section>
 
   <!-- ======= Footer ======= -->

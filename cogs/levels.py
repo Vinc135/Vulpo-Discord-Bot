@@ -9,7 +9,7 @@ import math
 from discord import app_commands
 import typing
 from easy_pil import Editor, Canvas, load_image_async, Font
-from info import getcolour
+from info import getcolour, haspremium_forserver
 
 async def checkstatus(self, guild):
     async with self.bot.pool.acquire() as conn:
@@ -127,6 +127,13 @@ class levelsystem(commands.Cog):
         """Setze eine neue Levelrolle."""
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
+                await cursor.execute("SELECT level FROM levelroles WHERE guild_id = (%s)", (interaction.guild.id))
+                a = await cursor.fetchall()
+                premium_status = await haspremium_forserver(self, interaction.guild)
+                if premium_status == False:
+                    if len(a) >= 2:
+                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst keine weiteren Levelrollen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+
                 if await checkstatus(self, interaction.guild) == False:
                     await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
                     return
@@ -336,7 +343,7 @@ class levelsystem(commands.Cog):
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
-    async def rank(self, interaction: discord.Interaction, member: discord.Member=None):
+    async def rang(self, interaction: discord.Interaction, member: discord.Member=None):
         """Dieser Befehl zeigt dein Level und deine Erfahrungspunkte."""
         if await checkstatus(self, interaction.guild) == False:
             return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
@@ -601,6 +608,10 @@ class levelsystem(commands.Cog):
         """Starte einen XP Boost auf deinem Server."""
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
+                premium_status = await haspremium_forserver(self, interaction.guild)
+                if premium_status == False:
+                    return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst keinen XP Boost verwalten, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+
                 if await checkstatus(self, interaction.guild) == False:
                     await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
                     return

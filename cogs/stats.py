@@ -7,7 +7,7 @@ from googletrans import Translator
 import datetime
 import matplotlib.pyplot as plt
 import os
-from info import getcolour
+from info import getcolour, haspremium_forserver
 
 class StatsKanal(discord.ui.Modal, title="Stats Kanal"):
     def __init__(self, bot, kanal=None):
@@ -663,6 +663,9 @@ class Stats(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def anzeigen(self, interaction: discord.Interaction, member: discord.Member=None, textkanal: discord.TextChannel=None, sprachkanal: discord.VoiceChannel=None):
         """Zeigt Stats für Member und Kanäle."""
+        status = await haspremium_forserver(self, interaction.guild)
+        if status == False:
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
         mydate = datetime.datetime.now()
         translator = Translator()
         translation = translator.translate(f'Month {mydate.strftime("%B")}' , dest="de")
@@ -792,6 +795,9 @@ class Stats(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def lookback(self, interaction: discord.Interaction, tage: typing.Literal[7,14,21,28]):
         """Zeigt Stats für Member und Kanäle für eine Zeitspanne."""
+        status = await haspremium_forserver(self, interaction.guild)
+        if status == False:
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
         await interaction.response.defer(thinking=True, ephemeral=False)
         lookback_messages_members = await lookback_messages(self, tage, interaction.guild, "Mitglieder")
         lookback_messages_channels = await lookback_messages(self, tage, interaction.guild, "Kanäle")
@@ -882,6 +888,9 @@ class Stats(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def blacklist(self, interaction: discord.Interaction, kanal: discord.TextChannel):
         """Setze Kanäle auf die Blacklist für Nachrichten."""
+        status = await haspremium_forserver(self, interaction.guild)
+        if status == False:
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 await cursor.execute("SELECT channelID FROM stats_blacklist WHERE guildID = (%s) AND channelID = (%s)", (interaction.guild.id, kanal.id))
@@ -897,6 +906,9 @@ class Stats(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def reset(self, interaction: discord.Interaction, bestätigung: typing.Literal["Ich verstehe dass diese Aktion unumkehrbar ist und dadurch alle Stats dieses Server gelöscht werden."]):
         """Setze alle Stats auf 0 zurück."""
+        status = await haspremium_forserver(self, interaction.guild)
+        if status == False:
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 await cursor.execute("DELETE FROM nachrichten WHERE guildID = (%s)", (interaction.guild.id))
@@ -906,6 +918,9 @@ class Stats(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def top(self, interaction: discord.Interaction, art: typing.Literal["Mitglieder", "Kanäle"]):
         """Lass dir die besten Stats dieses Servers anzeigen."""
+        status = await haspremium_forserver(self, interaction.guild)
+        if status == False:
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
         await interaction.response.send_message("**<:v_einstellungen:1037067521049759865> Ich generiere die Embeds und die Graphen. Einen kleinen Moment bitte.**", ephemeral=True)
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
@@ -1099,6 +1114,9 @@ class Stats(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def statschannel(self, interaction: discord.Interaction, argument: typing.Literal["Einrichten","Anzeigen","Ausschalten"], kanal: discord.abc.GuildChannel=None):
         """Richte einen Stats Kanal ein."""
+        status = await haspremium_forserver(self, interaction.guild)
+        if status == False:
+            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 if argument == "Ausschalten":
