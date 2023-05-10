@@ -386,6 +386,10 @@ class Vulpo(commands.AutoShardedBot):
 
 bot = Vulpo()
 
+@bot.event
+async def on_error():
+    return 
+
 @bot.tree.error
 async def on_app_command_error(interaction: discord.Interaction, error: AppCommandError):
     if isinstance(error, app_commands.MissingPermissions):
@@ -508,4 +512,4 @@ Der User {interaction.user.mention} hat eine Nachricht von {message.author.menti
                 return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Kanal des Reportlogs existiert nicht mehr. Bitte melde dies dem lokalen Serverteam.**", ephemeral=True)
 
 
-bot.run("OTI1Nzk5NTU5NTc2MzIyMDc4.GyWCpe.S8URCDJm8wlKVztJRYf_Njjy8NsfUU7iIK5nXk", reconnect=True)
+bot.run("OTI1Nzk5NTU5NTc2MzIyMDc4.GcwvXN.EkMMDxTqykR8em6L4lJqOouGfvAvH1J1rq9nJQ", reconnect=True)
