@@ -200,7 +200,7 @@ def dashboard():
         if kennung == "1.1":
             try:
                 headers = {
-                        'Authorization': 'Bot OTI1Nzk5NTU5NTc2MzIyMDc4.GyWCpe.S8URCDJm8wlKVztJRYf_Njjy8NsfUU7iIK5nXk',
+                        'Authorization': 'Bot OTI1Nzk5NTU5NTc2MzIyMDc4.GcwvXN.EkMMDxTqykR8em6L4lJqOouGfvAvH1J1rq9nJQ',
                 }
 
                 roles_response = requests.get(base_discord_api_url + f'/guilds/{guild_id}/roles', headers=headers)
@@ -213,7 +213,7 @@ def dashboard():
         if kennung == "1.2":
             try:
                 headers = {
-                        'Authorization': 'Bot OTI1Nzk5NTU5NTc2MzIyMDc4.GyWCpe.S8URCDJm8wlKVztJRYf_Njjy8NsfUU7iIK5nXk',
+                        'Authorization': 'Bot OTI1Nzk5NTU5NTc2MzIyMDc4.GcwvXN.EkMMDxTqykR8em6L4lJqOouGfvAvH1J1rq9nJQ',
                 }
 
                 channels_response = requests.get(base_discord_api_url + f'/guilds/{guild_id}/channels', headers=headers)
@@ -278,7 +278,7 @@ def login():
         for guild in guilds_response.json():
             if int(guild["permissions"]) & 0x00000008:
                 headers = {
-                    'Authorization': 'Bot OTI1Nzk5NTU5NTc2MzIyMDc4.GyWCpe.S8URCDJm8wlKVztJRYf_Njjy8NsfUU7iIK5nXk',
+                    'Authorization': 'Bot OTI1Nzk5NTU5NTc2MzIyMDc4.GcwvXN.EkMMDxTqykR8em6L4lJqOouGfvAvH1J1rq9nJQ',
                 }
 
                 members_response = requests.get(base_discord_api_url + f'/guilds/{guild["id"]}/members/925799559576322078', headers=headers)
@@ -325,7 +325,7 @@ def oauth_callback():
         for guild in guilds_response.json():
             if int(guild["permissions"]) & 0x00000008:
                 headers = {
-                    'Authorization': 'Bot OTI1Nzk5NTU5NTc2MzIyMDc4.GyWCpe.S8URCDJm8wlKVztJRYf_Njjy8NsfUU7iIK5nXk',
+                    'Authorization': 'Bot OTI1Nzk5NTU5NTc2MzIyMDc4.GcwvXN.EkMMDxTqykR8em6L4lJqOouGfvAvH1J1rq9nJQ',
                 }
 
                 members_response = requests.get(base_discord_api_url + f'/guilds/{guild["id"]}/members/925799559576322078', headers=headers)
