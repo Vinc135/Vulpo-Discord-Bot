@@ -387,7 +387,7 @@ class Vulpo(commands.AutoShardedBot):
 bot = Vulpo()
 
 @bot.event
-async def on_error():
+async def on_error(ctx, error):
     return 
 
 @bot.tree.error
