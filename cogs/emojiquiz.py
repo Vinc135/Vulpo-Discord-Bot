@@ -108,35 +108,41 @@ async def check_word(self, msg: discord.Message):
                 return False
                 
 async def answer_correct(self, msg):
-    await msg.channel.send(f"{msg.author.mention} hat den gesuchten Begriff erraten. (+10 🍪)")
-    await update_acc(self, msg.author, "rucksack", 10, 0)
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute("SELECT emojis, lösung, tipp FROM eqdb")
-            result = await cursor.fetchall()
-            a = random.randint(1, int(len(result)))
-            b = 0
-            for quiz in result:
-                if a == b:
-                    embed = discord.Embed(color=await getcolour(self, msg.author), title="Emojiquiz", description="Solltest du Probleme beim Lösen haben, kannst du die Buttons dieser Nachricht benutzen.")
-                    embed.add_field(name="❓ Gesuchter Begriff", value=quiz[0])
-                    embed.add_field(name="❗️ Tipp", value=quiz[2])
-                    embed.set_footer(text=f"Das letzte Quiz wurde gelöst von {msg.author}.", icon_url=msg.author.avatar)
-                    await asyncio.sleep(2)
-                    m2 = await msg.channel.send(embed=embed, view=buttons(self.bot))
-                    await cursor.execute("INSERT INTO eqcurrent(guildID, lösung, msgID) VALUES(%s, %s, %s)", (msg.guild.id, quiz[1], m2.id))
-                    await cursor.execute("SELECT anzahl FROM eq_leaderboard WHERE userID = (%s)", (msg.author.id))
-                    r = await cursor.fetchone()
-                    if r != None:
-                        await cursor.execute("UPDATE eq_leaderboard SET anzahl = (%s) WHERE userID = (%s)", (int(r[0]) + 1, msg.author.id))
-                    if r == None:
-                        await cursor.execute("INSERT INTO eq_leaderboard(userID, anzahl) VALUES(%s, %s)", (msg.author.id, 1))
-                    b += 100000
-                else:
-                    b += 1
+    try:
+        await msg.channel.send(f"{msg.author.mention} hat den gesuchten Begriff erraten. (+10 🍪)")
+        await update_acc(self, msg.author, "rucksack", 10, 0)
+        async with self.bot.pool.acquire() as conn:
+            async with conn.cursor() as cursor:
+                await cursor.execute("SELECT emojis, lösung, tipp FROM eqdb")
+                result = await cursor.fetchall()
+                a = random.randint(1, int(len(result)))
+                b = 0
+                for quiz in result:
+                    if a == b:
+                        embed = discord.Embed(color=await getcolour(self, msg.author), title="Emojiquiz", description="Solltest du Probleme beim Lösen haben, kannst du die Buttons dieser Nachricht benutzen.")
+                        embed.add_field(name="❓ Gesuchter Begriff", value=quiz[0])
+                        embed.add_field(name="❗️ Tipp", value=quiz[2])
+                        embed.set_footer(text=f"Das letzte Quiz wurde gelöst von {msg.author}.", icon_url=msg.author.avatar)
+                        await asyncio.sleep(2)
+                        m2 = await msg.channel.send(embed=embed, view=buttons(self.bot))
+                        await cursor.execute("INSERT INTO eqcurrent(guildID, lösung, msgID) VALUES(%s, %s, %s)", (msg.guild.id, quiz[1], m2.id))
+                        await cursor.execute("SELECT anzahl FROM eq_leaderboard WHERE userID = (%s)", (msg.author.id))
+                        r = await cursor.fetchone()
+                        if r != None:
+                            await cursor.execute("UPDATE eq_leaderboard SET anzahl = (%s) WHERE userID = (%s)", (int(r[0]) + 1, msg.author.id))
+                        if r == None:
+                            await cursor.execute("INSERT INTO eq_leaderboard(userID, anzahl) VALUES(%s, %s)", (msg.author.id, 1))
+                        b += 100000
+                    else:
+                        b += 1
+    except:
+        pass
 
 async def answer_incorrect(self, msg):
-    await msg.add_reaction("<:v_kreuz:1049388811353858069>")
+    try:
+        await msg.add_reaction("<:v_kreuz:1049388811353858069>")
+    except:
+        pass
             
 class Emojiquiz(commands.Cog):
     def __init__(self, bot):
