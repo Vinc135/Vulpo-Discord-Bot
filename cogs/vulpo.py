@@ -47,6 +47,7 @@ __<:v_ticket:1037065933014958230> Premium erhalten__
 Premium ist heiß begehrt. Du kannst es bekommen, indem du ein Patron wirst: https://patreon.com/Vulpo. Um dir deine Vorteile zu sichern, musst du im Supportserver ein Ticket öffnen, mit dem Nachweis dass du es gekauft hast."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
+            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Stats":
             anzeige = """
@@ -62,6 +63,7 @@ __<:v_einstellungen:1037067521049759865> Team Befehle__
 `/stats reset` Setze alle Stats auf 0 zurück.
 `/statschannel` Richte einen Stats-Kanal ein."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
+            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Auto Moderation":
@@ -89,6 +91,7 @@ __<:v_einstellungen:1037067521049759865> Team Befehle__
 `/blacklist add` Füge ein Wort der Blacklist hinzu.
 `/blacklist remove` Entferne ein Wort von der Blacklist."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
+            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Ticketsystem":
@@ -102,6 +105,7 @@ __<:v_einstellungen:1037067521049759865> Team Befehle__
 `/createpanel` Erstelle ein Panel, womit User ein Ticket öffnen können.
 `/ticketlog` Richte einen Ticketlog ein."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
+            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Nachrichten":
@@ -130,6 +134,7 @@ Jeder Nutzer kann die Custom Befehle des Tags System nutzen. Wenn erstmal ein Ta
 
 ❓ Du suchst nach Stats? Sieh dir die Kategorie Stats an! ;)"""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
+            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Information":
@@ -159,6 +164,7 @@ __<:v_user:1037065935015653476> User Befehle__
 __<:v_einstellungen:1037067521049759865> Team Befehle__
 Keine Team Befehle."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
+            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Settings & Setup":
@@ -178,6 +184,7 @@ __<:v_einstellungen:1037067521049759865> Team Befehle__
 `/voicesetup` Erstelle einen "Join to Create" Kanal.
 `/reactionrole` Erstelle Reaktionsrollen."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
+            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Basic Moderation":
@@ -197,6 +204,7 @@ __<:v_einstellungen:1037067521049759865> Team Befehle__
 
 ❓ Du suchst nach Verwarnungs Befehlen? Guck mal in der Kategorie Auto Moderation nach! ;)"""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
+            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Levelsystem":
@@ -215,6 +223,7 @@ __<:v_einstellungen:1037067521049759865> Team Befehle__
 `/setlevel` Setze einen User zu einem bestimmten Level.
 `/xpboost` Starte einen XP Boost auf deinem Server."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
+            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Giveaway":
@@ -231,6 +240,7 @@ __<:v_einstellungen:1037067521049759865> Team Befehle__
 `/gewinnspiel bypassrolle` Bearbeite Rollen, die die Bedingungen umgehen. 
 `/gewinnspiel blacklist` Setze Member und Rollen auf die Blacklist."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
+            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Fun":
@@ -262,6 +272,7 @@ __<:v_user:1037065935015653476> User Befehle__
 __<:v_einstellungen:1037067521049759865> Team Befehle__
 Keine Team Befehle."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
+            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Minispiele":
@@ -278,6 +289,7 @@ __<:v_einstellungen:1037067521049759865> Team Befehle__
 `/counting disable` Deaktiviere das Minispiel.
 `/guessthenumber` Verwalte das Minispiel 'Guess the number' auf deinem Server."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
+            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Economy":
@@ -314,6 +326,7 @@ __<:v_einstellungen:1037067521049759865> Team Befehle__
 `/shop item hinzufügen` Füge ein Item dem Shop hinzu.
 `/shop item entfernen` Entferne ein Item aus dem Shop."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
+            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             return await interaction.response.edit_message(embed=embed)
 
@@ -365,6 +378,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
 **Links**
 [Einladen](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands) **|** [Support](https://discord.gg/49jD3VXksp) **|** [Voten](https://top.gg/bot/925799559576322078/vote)
 """, color=farbe)
+        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         embed.set_author(name="Vulpo", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
         embed.set_thumbnail(url=interaction.guild.icon)
         await interaction.response.send_message(embed=embed, view=DropdownView(interaction.user, farbe))
@@ -437,7 +451,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
 <:v_discordpy:1037073431969140798> Library: discord.py: {discord.__version__}
 🎛 CPU: {psutil.cpu_percent()}%
 """)
-
+        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command()
@@ -446,6 +460,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
     async def invite(self, interaction: discord.Interaction):
         """Zeigt einen Link um mich einzuladen."""
         embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"Vulpo auf anderen Servern verwenden", description=f"Du kannst Vulpo mit [diesem Link](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands) zu deinem Server hinzufügen.", url="https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands")
+        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         await interaction.response.send_message(embed=embed)
 
@@ -455,6 +470,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
     async def support(self, interaction: discord.Interaction):
         """Zeigt einen Link für den Support-Server."""
         embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"Bekomme Hilfe", description=f"Wenn du Hilfe benötigst, kannst du meinem Supportserver über [diesen Link](https://discord.gg/49jD3VXksp) beitreten.", url="https://discord.gg/49jD3VXksp")
+        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         await interaction.response.send_message(embed=embed)
 
@@ -476,6 +492,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
         bot = round(self.bot.latency * 1000)
         t_3 = time.perf_counter()
         embed = discord.Embed(title="Internetgeschwindigkeit", description=f"```Bot: {bot} ms\nDatenbank: {time_delta1} ms```", color=await getcolour(self, interaction.user))
+        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         await interaction.response.send_message(embed=embed)
 
@@ -483,6 +500,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
         t_4 = time.perf_counter()
         time_delta2 = round((t_4 - t_3) * 1000)
         embed = discord.Embed(title="Internetgeschwindigkeit", description=f"```Bot: {bot} ms\nDatenbank: {time_delta1} ms\nDiscord-Api: {time_delta2} ms```", color=await getcolour(self, interaction.user))
+        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         await interaction.edit_original_response(embed=embed)
 

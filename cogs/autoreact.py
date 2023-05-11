@@ -74,6 +74,7 @@ class Autoreact(commands.Cog):
                     await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Hier gibt es keine autoemojis. Füge eine mit `/autoreact add <kanal> <emoji>` hinzu**", ephemeral=True)
                     return
                 embed = discord.Embed(title="Alle automatische Emojis in Kanälen", description="Hier nähere Infos:", color=await getcolour(self, interaction.user))
+                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                 for i in result:
                     k = interaction.guild.get_channel(int(i[1]))
                     if k is not None:

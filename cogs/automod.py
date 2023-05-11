@@ -67,6 +67,7 @@ class Automod(commands.Cog):
                 embed = discord.Embed(title="Alle Aktionen vom Automod", description="Hier nähere Infos:", color=await getcolour(self, interaction.user))
                 for i in result:
                     embed.add_field(name=i[0], value=f"Verwarnungen benötigt: {i[1]}")
+                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                 await interaction.response.send_message(embed=embed)
 
     @app_commands.command()
@@ -89,6 +90,8 @@ class Automod(commands.Cog):
         dm.add_field(name=f"👮 Moderator:", value=f"{interaction.user.mention}", inline=False)
         dm.add_field(name=f"📄 Grund:", value=f"{grund}", inline=False)
         dm.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+        dm.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         try:
             await user.send(embed=dm)
             await interaction.response.send_message(embed=embed)
@@ -112,6 +115,7 @@ class Automod(commands.Cog):
         
         embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                 description=f"Die Verwarnung mit der ID {warnid} von {user} (**{user.id}**) wurde entfernt.")
+        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         embed.add_field(name=f"🎛️ Server:", value=f"{interaction.guild.name}", inline=False)
         embed.add_field(name=f"👮 Moderator:", value=f"{interaction.user} (**{interaction.user.id}**)", inline=False)
         embed.add_field(name=f"📄 Verwarnung:", value=f"{result[0]}", inline=False)
@@ -133,6 +137,7 @@ class Automod(commands.Cog):
             return
         warnembed = discord.Embed(colour=await getcolour(self, interaction.user), description=f"Alle Verwarnungen von {user} (**{user.id}**).")
         warnembed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+        warnembed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         a = 0
         for warn in result:
             a += 1
@@ -162,6 +167,7 @@ class Automod(commands.Cog):
                 if desc == "":
                     desc = f"Die Blacklist dieses Servers ist leer.\nWort der Blacklist hinzufügen: `/blacklist add <wort>\n`Wort von der Blacklist entfernen: `/blacklist remove <wort>`"
                 embed = discord.Embed(title="Die Blacklist", description=desc + f"\nWort der Blacklist hinzufügen: `/blacklist add <wort>\n`Wort von der Blacklist entfernen: `/blacklist remove <wort>`", color=await getcolour(self, interaction.user))
+                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                 await interaction.response.send_message(embed=embed)
 
     @blacklist.command()
@@ -271,6 +277,7 @@ class Automod(commands.Cog):
                                     if chan:
                                         embed = discord.Embed(colour=await getcolour(self, msg.author),
                                                         description=f"Der Benutzer {msg.author} (**{msg.author.id}**) wurde verwarnt.")
+                                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                                         embed.add_field(name=f"🎛️ Server:", value=f"{msg.guild.name}", inline=False)
                                         embed.add_field(name=f"👮 Moderator:", value=f"Vulpo#3749", inline=False)
                                         embed.add_field(name=f"📄 Grund:", value=f"Hat die Spam Grenze von 5 Nachrichten innerhalb 2,5 Sekunden überschritten.", inline=False)
@@ -304,6 +311,7 @@ class Automod(commands.Cog):
                                     if chan:
                                         embed = discord.Embed(colour=await getcolour(self, msg.author),
                                                         description=f"Der Benutzer {msg.author} (**{msg.author.id}**) wurde verwarnt.")
+                                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                                         embed.add_field(name=f"🎛️ Server:", value=f"{msg.guild.name}", inline=False)
                                         embed.add_field(name=f"👮 Moderator:", value=f"Vulpo#3749", inline=False)
                                         embed.add_field(name=f"📄 Grund:", value=f"Hat die Caps Sperre von {prozent[0]}% überschritten. Die Nachricht beinhaltete {procent}% Caps.", inline=False)
@@ -328,6 +336,7 @@ class Automod(commands.Cog):
                                     if chan != None:
                                         embed = discord.Embed(colour=await getcolour(self, msg.author),
                                                         description=f"Der Benutzer {msg.author} (**{msg.author.id}**) wurde verwarnt.")
+                                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                                         embed.add_field(name=f"🎛️ Server:", value=f"{msg.guild.name}", inline=False)
                                         embed.add_field(name=f"👮 Moderator:", value=f"Vulpo#3749", inline=False)
                                         embed.add_field(name=f"📄 Grund:", value=f"Hat ein verbotenes Wort gesendet. ||{msg.content}||", inline=False)

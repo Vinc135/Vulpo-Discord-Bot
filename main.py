@@ -136,6 +136,7 @@ class Vulpo(commands.AutoShardedBot):
         <:v_info:1037065915113676891> **Vulpo ist jetzt auf {len(bot.guilds)} Servern drauf! Yay 🎉**
         """
         embed = discord.Embed(colour=discord.Colour.green(), title=f"Vulpo wurde auf {guild.name} eingeladen!", description=msg)
+        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         embed.set_thumbnail(url=guild.icon if guild.icon else "https://cdn.discordapp.com/attachments/971092445435682907/973630982425047050/server_join.png")
         await channels.send(embed=embed)
 
@@ -158,6 +159,7 @@ class Vulpo(commands.AutoShardedBot):
             """
             
             embed = discord.Embed(colour=discord.Colour.red(), title=f"Vulpo wurde aus {guild.name} rausgeschmissen!", description=msg)
+            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_thumbnail(url=guild.icon if guild.icon else 'https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549')
             await channels.send(embed=embed)
         except:
@@ -459,7 +461,6 @@ async def on_app_command_error(interaction: discord.Interaction, error: AppComma
         embed.add_field(name="<:v_pfeil_rechts:1048677625876459562> Error", value=f"```py\n" + limit_characters(''.join(traceback_string[-1]), 1010) + "```", inline=False)
         embed.add_field(name="<:v_pfeil_rechts:1048677625876459562> Traceback", value=f"```py\n" + limit_characters(''.join(traceback_string), 1010) + "```", inline=False)
         embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/811730903822368833/823531509461942294/2000px-Dialog-error-round.svg.png")
-
         await channels.send(embed=embed)
         return
 
@@ -504,6 +505,7 @@ Der User {interaction.user.mention} hat eine Nachricht von {message.author.menti
 
 `Nachricht`: {message.content}
 """, color=discord.Color.red())
+                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                     embed.set_thumbnail(url=interaction.guild.icon)
                     embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                     await channel.send(embed=embed, view=reportmsg(message, bot))
