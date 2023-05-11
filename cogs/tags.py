@@ -61,6 +61,7 @@ class Tags(commands.Cog):
                     await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Hier wurden keine Tags gefunden. Füge einen Tag mit `/tag add <name> <output>` hinzu**", ephemeral=True)
                     return
                 embed = discord.Embed(title="Alle Tags des Servers", description="Hier nähere Infos:", color=await getcolour(self, interaction.user))
+                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                 for i in result:
                     embed.add_field(name=i[0], value=f"Output: *{i[1]}*")
                 await interaction.response.send_message(embed=embed)
@@ -82,6 +83,7 @@ class Tags(commands.Cog):
                         return
                     if f"!tag {str(message[0]).lower()}" == msg.content.lower():
                         embed = discord.Embed(title=f"__{message[0].upper()}__", description=message[1], color=await getcolour(self, msg.author))
+                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                         embed.set_thumbnail(url=msg.guild.icon)
                         embed.set_author(name=msg.author, icon_url=msg.author.avatar)
                         await msg.reply(embed=embed)

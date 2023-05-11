@@ -153,6 +153,7 @@ async def reminder_end(when: datetime.datetime, bot, user_id, id):
                 result = await cursor.fetchone()
                 await cursor.execute("DELETE FROM erinnerungen WHERE userID = (%s) AND id = (%s)", (user_id, id))
                 embed = discord.Embed(title="<:v_zeit:1037065936643047516> Timer abgelaufen", description=result[0], color=discord.Color.green())
+                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                 try:
                     await user.send(embed=embed)
                 except:
@@ -227,6 +228,7 @@ async def giveaway_end(when: datetime.datetime, bot, msgID, status=None):
 <:v_play:1037065922134945853> Das Gewinnspiel endete {discord_timestamp(t2, 'R')}
 <:v_play:1037065922134945853> Es gab 0 Teilnehmer.""", color=discord.Color.red())
                     embed.set_thumbnail(url=msg.guild.icon)
+                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                     return await msg.edit(content="**⛔️ Gewinnspiel beendet ⛔️**", embed=embed, view=None)
 
                 participants = [userid[0] for userid in result2]
@@ -239,6 +241,7 @@ async def giveaway_end(when: datetime.datetime, bot, msgID, status=None):
     `⏰` · Das Gewinnspiel endete {discord_timestamp(t2, 'R')}
     """)
                     embed.set_thumbnail(url=guild.icon)
+                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                     try:
                         await member.send("Du hast ein Gewinnspiel **gewonnen**!", embed=embed)
                     except:
@@ -314,6 +317,7 @@ async def levelup_role_check(botobject, guildobjekt, userobjekt, newlevel):
 async def send_error(title, description, interaction):
     embed = discord.Embed(colour=discord.Colour.red(), title=title, description=description)
     embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
     try:
         await interaction.response.send_message(embed=embed, ephemeral=True)
     except:

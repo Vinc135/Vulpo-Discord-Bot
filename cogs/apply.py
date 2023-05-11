@@ -23,6 +23,7 @@ class Modal(discord.ui.Modal, title="Modal"):
                     for answer in self.children:
                         embed.add_field(name=answer.label, value=answer.value, inline=False)
                     embed.set_thumbnail(url=interaction.user.avatar)
+                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                     await channel.send(embed=embed)
                     await interaction.response.send_message("**<:v_haken:1048677657040134195> Dein Formular wurde gesendet.**", ephemeral=True)
                 else:
@@ -62,6 +63,7 @@ class fertig(discord.ui.Modal, title="Erstelle ein Embed"):
             embed.set_thumbnail(url=self.children[2].value)
         if self.children[3].value:
             embed.set_image(url=self.children[3].value)
+        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         
         dict = {}
         async with self.bot.pool.acquire() as conn:
@@ -154,6 +156,7 @@ class modal(commands.Cog):
     async def modal(self, interaction: discord.Interaction, empfangskanal: discord.TextChannel):
         """Erstelle Modals."""
         embed = discord.Embed(color=await getcolour(self, interaction.user), title="Modal Setup", description="Hier kannst du mithilfe von Buttons, Fragen zum Modal hinzufügen.")
+        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         await interaction.response.send_message(embed=embed, view=setup_select(self.bot, interaction.user, empfangskanal.id))
 
 async def setup(bot):

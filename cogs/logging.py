@@ -45,6 +45,7 @@ class logging(commands.Cog):
                         return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Kanal des Reportlogs existiert nicht mehr. Bitte deaktiviere den Reportlog und richte ihn erneut ein.**", ephemeral=True)
 
                     embed = discord.Embed(title="Reportlog", description=f"Der aktuelle Reportlog ist aktiv in {channel.mention}", color=await getcolour(self, interaction.user))
+                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                     await interaction.response.send_message(embed=embed)
     #messagelog
 
@@ -65,12 +66,14 @@ class logging(commands.Cog):
 
                         embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Nachrichtenlog", description=f"Der Nachrichtenlog ist nun aktiv in {kanal.mention}.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                         await interaction.response.send_message(embed=embed)
                         return
                     if result != None:
                         await cursor.execute(f"UPDATE messagelog SET channelid = {kanal.id} WHERE guildid = {interaction.guild.id}")
                         
                         embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Nachrichtenlog", description=f"Der Nachrichtenlog ist nun aktiv in {kanal.mention}.")
+                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         await interaction.response.send_message(embed=embed)
                         return
@@ -81,6 +84,7 @@ class logging(commands.Cog):
                     if result is None:
                         embed = discord.Embed(colour=discord.Colour.orange(), title="Messagelog", description=f"Der Nachrichtenlog ist nicht aktiviert auf diesem Server.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                         await interaction.response.send_message(embed=embed)
                         return
                     if result != None:
@@ -89,6 +93,7 @@ class logging(commands.Cog):
 
                         embed = discord.Embed(colour=discord.Colour.orange(), title="Messagelog deaktiviert", description=f"Der Nachrichtenlog ist nun deaktiviert auf diesem Server.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                         await interaction.response.send_message(embed=embed)
                         return
         
@@ -112,7 +117,7 @@ class logging(commands.Cog):
                             embed.add_field(name="<:v_user:1037065935015653476> Autor", value=message.author)
                             embed.add_field(name="<:v_enthullen:1037124921685442591> Kanal", value=message.channel.mention)
                             embed.add_field(name="<:v_chat:1037065910567055370> Nachricht", value=message.content)
-
+                            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                             await channel.send(embed=embed)
                 except:
                     pass
@@ -133,7 +138,7 @@ class logging(commands.Cog):
                         return
                     else:
                         embed = discord.Embed(description=f"**{len(messages)} Nachrichten in {message.channel.mention} gelöscht**", color=discord.Color.orange(), timestamp=datetime.utcnow())
-
+                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                         await channel.send(embed=embed)
 
     @commands.Cog.listener()
@@ -206,6 +211,7 @@ class logging(commands.Cog):
 
                         embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Modlog", description=f"Der Modlog ist nun aktiv in {kanal.mention}.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                         await interaction.response.send_message(embed=embed)
                         return
                     if result != None:
@@ -214,6 +220,7 @@ class logging(commands.Cog):
 
                         embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Modlog", description=f"Der Modlog ist nun aktiv in {kanal.mention}.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                         await interaction.response.send_message(embed=embed)
                         return
                 
@@ -223,6 +230,7 @@ class logging(commands.Cog):
                     if result is None:
                         embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Modlog", description=f"Der Modlog ist nicht aktiviert auf diesem Server.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                         await interaction.response.send_message(embed=embed)
                         return
                     if result != None:
@@ -231,6 +239,7 @@ class logging(commands.Cog):
 
                         embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Modlog deaktiviert", description=f"Der Modlog ist auf diesem Server nun deaktiviert.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                         await interaction.response.send_message(embed=embed)
                         return
 
@@ -252,7 +261,7 @@ class logging(commands.Cog):
                             embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.target.mention}({entry.target})")
                             embed.add_field(name="<:v_mod:1037065920704696420> Moderator", value=f"{entry.user.mention}({entry.user})")
                             embed.add_field(name="<:v_warnung:1037124929944027226> Grund", value=entry.reason if entry.reason else 'Kein grund angegeben')
-
+                            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                             await channel.send(embed=embed)
                             break
 
@@ -274,7 +283,7 @@ class logging(commands.Cog):
                             embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.target.mention}({entry.target})")
                             embed.add_field(name="<:v_mod:1037065920704696420> Moderator", value=f"{entry.user.mention}({entry.user})")
                             embed.add_field(name="<:v_warnung:1037124929944027226> Grund", value=entry.reason if entry.reason else 'Kein grund angegeben')
-
+                            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                             await channel.send(embed=embed)
                             break
 
@@ -297,7 +306,7 @@ class logging(commands.Cog):
                                 embed.add_field(name="<:v_chat:1037065910567055370> Name", value=f"{entry.target.mention}({entry.target.name})")
                                 embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.user.mention}({entry.user})")
                                 embed.add_field(name="<:v_einstellungen:1037067521049759865> Kategorie", value=entry.target.category)
-
+                                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                                 await chan.send(embed=embed)
                                 break
                 except:
@@ -323,7 +332,7 @@ class logging(commands.Cog):
                                     embed.add_field(name="<:v_pfeil_links:1048677593743888536> Alt", value=before.name)
                                     embed.add_field(name="<:v_pfeil_rechts:1048677625876459562> Neu", value=after.name)
                                     embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.user.mention}({entry.user})")
-
+                                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                                     await chan.send(embed=embed)
                                     break
                                 if before.topic != after.topic:
@@ -331,7 +340,7 @@ class logging(commands.Cog):
                                     embed.add_field(name="<:v_pfeil_links:1048677593743888536> Alt", value=before.topic if before.topic else 'Keine Beschreibung')
                                     embed.add_field(name="<:v_pfeil_rechts:1048677625876459562> Neu", value=after.topic if after.topic else 'Keine Beschreibung')
                                     embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.user.mention}({entry.user})")
-
+                                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                                     await chan.send(embed=embed)
                                     break
                 except:
@@ -355,7 +364,7 @@ class logging(commands.Cog):
                                 embed = discord.Embed(title=f"Ein {channel.type}kanal wurde gelöscht", color=discord.Color.orange(), timestamp=datetime.utcnow())
                                 embed.add_field(name="<:v_chat:1037065910567055370> Name", value=f"{channel.name}")
                                 embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.user.mention}({entry.user})")
-
+                                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                                 await chan.send(embed=embed)
                                 break
                 except:
@@ -378,6 +387,7 @@ class logging(commands.Cog):
                             embed = discord.Embed(title=f"Eine Rolle wurde erstellt", color=discord.Color.orange(), timestamp=datetime.utcnow())
                             embed.add_field(name="<:v_chat:1037065910567055370> Name", value=f"{role.name}")
                             embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.user.mention}({entry.user})")
+                            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                             await chan.send(embed=embed)
                             break
 
@@ -398,6 +408,7 @@ class logging(commands.Cog):
                             embed = discord.Embed(title=f"Eine Rolle wurde gelöscht", color=discord.Color.orange(), timestamp=datetime.utcnow())
                             embed.add_field(name="<:v_chat:1037065910567055370> Name", value=f"{role.name}")
                             embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.user.mention}({entry.user})")
+                            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                             await chan.send(embed=embed)
                             break
 
@@ -423,7 +434,7 @@ class logging(commands.Cog):
 
                                 embed = discord.Embed(title="Mitglied wurde geändert", description=f"{entry.user.mention} hat eine Rolle von einem Mitglied entzogen.",
                                                     colour=discord.Colour.orange(), timestamp=discord.utils.utcnow())
-
+                                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                                 fields = [("<:v_user:1037065935015653476> Betroffenes Mitglied", before.mention, True),
                                         ("<:v_levelup:1037079572333735966> Entzogende Rolle", role.mention, True)]
 
@@ -437,7 +448,7 @@ class logging(commands.Cog):
 
                             embed = discord.Embed(title="Mitglied wurde geändert", description=f"{entry.user.mention} hat eine Rolle zu einem Mitglied hinzugefügt.",
                                                 colour=discord.Colour.orange(), timestamp=discord.utils.utcnow())
-
+                            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                             fields = [("<:v_user:1037065935015653476> Betroffenes Mitglied", before.mention, True),
                                     ("<:v_levelup:1037079572333735966> Hinzugefügte Rolle", role.mention, True)]
 
@@ -448,11 +459,11 @@ class logging(commands.Cog):
                             if before.nick != after.nick:
                                 if after.nick is None:
                                     embed = discord.Embed(description=f"**Nickname**\n{before} hat seinen Spitznamen zurückgesetzt.", color=discord.Color.orange(), timestamp=datetime.utcnow())
-
+                                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                                     await chan.send(embed=embed)
                                 else:
                                     embed = discord.Embed(description=f"**Nickname**\n{before} hat seinen Nicknamen zu {after.nick} geändert.", color=discord.Color.orange(), timestamp=datetime.utcnow())
-
+                                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                                     await chan.send(embed=embed)
                 except:
                     pass
@@ -478,6 +489,7 @@ class logging(commands.Cog):
 
                         embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Ticketlog", description=f"Der Ticketlog ist nun aktiv in {kanal.mention}.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                         await interaction.response.send_message(embed=embed)
                         return
                     if result != None:
@@ -486,6 +498,7 @@ class logging(commands.Cog):
 
                         embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Ticketlog", description=f"Der Ticketlog ist nun aktiv in {kanal.mention}.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                         await interaction.response.send_message(embed=embed)
                         return
                 
@@ -495,6 +508,7 @@ class logging(commands.Cog):
                     if result is None:
                         embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Ticketlog", description=f"Der Ticketlog ist nicht aktiviert auf diesem Server.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                         await interaction.response.send_message(embed=embed)
                         return
                     if result != None:
@@ -503,6 +517,7 @@ class logging(commands.Cog):
 
                         embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Ticketlog deaktiviert", description=f"Der Ticketlog ist auf diesem Server nun deaktiviert.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                         await interaction.response.send_message(embed=embed)
                         return
         

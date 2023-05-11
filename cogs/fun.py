@@ -19,6 +19,7 @@ class fun(commands.Cog):
             user = interaction.user
         x = random.randint(1, 100)
         embed = discord.Embed(colour=await getcolour(self, interaction.user), description=f"{user.mention} is LOST zu {x}%.")
+        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         await interaction.response.send_message(embed=embed)
 
@@ -42,6 +43,7 @@ class fun(commands.Cog):
             iq = "ein **SUPERBRAIN**!"
         embed = discord.Embed(colour=await getcolour(self, interaction.user), description=f"Mit einem IQ von {x} ist {member.mention} {iq}")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command()
@@ -89,6 +91,7 @@ class fun(commands.Cog):
                               description=f"Mal sehen, wie sehr sich {member.mention} und {user.mention} lieben ... <3")
         embed.add_field(name="❤️ Loverator", value="💌 Ich berechne Liebe ...")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         message = await interaction.channel.send(embed=embed)
         await asyncio.sleep(3)
 
@@ -98,6 +101,7 @@ class fun(commands.Cog):
         embed2.add_field(name="❤️ Loverator",
                          value=f"{member.mention} und {user.mention} lieben sich zu **{love_per}%**.")
         embed2.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+        embed2.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         await message.edit(embed=embed2)
 
     @app_commands.command()
@@ -150,6 +154,7 @@ class fun(commands.Cog):
             description += "Sieht hier echt langweilig aus. Zurzeit spielt niemand ein Spiel."
         embed = discord.Embed(title="Aktuell gespielte Spiele auf diesem Server", description=description, color=await getcolour(self, interaction.user))
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command()
@@ -187,6 +192,7 @@ class fun(commands.Cog):
         embed = discord.Embed(colour=await getcolour(self, interaction.user), title="🔐 Passwort", description=f"**Nicht anderen Personen zeigen, falls du dieses Passwort verwenden solltest!**")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         embed.add_field(name="Vorgschlagenes Passwort:", value=result)
+        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         await user.send(embed=embed)
         await interaction.response.send_message(f"{user.mention}, ich habe dir ein zufällig generiertes Passwort in deine Dm's geschickt!")
         return

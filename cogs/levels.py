@@ -188,6 +188,7 @@ class levelsystem(commands.Cog):
                 await cursor.execute(f"SELECT roleid, level FROM levelroles WHERE guild_id = {interaction.guild.id}")
                 result = await cursor.fetchall()
                 embed = discord.Embed(title="Alle Levelrollen", description="Hier kannst du alle Levelrollen auf diesem Server sehen.", color=await getcolour(self, interaction.user))
+                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                 a = 0
                 for i in result:
                     t = ""

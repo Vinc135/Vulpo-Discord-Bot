@@ -22,6 +22,7 @@ class joblist(discord.ui.View):
             new_page = 11
         embed = discord.Embed(title=':dividers: Jobliste', description=f"Hier siehst du alle verfügbaren Jobs.\nDu kannst dich für einen Job bewerben mit `/job apply <job>`\n\n" + await job_list(self.s, interaction, new_page),
                             colour=await getcolour(self, interaction.user)).set_footer(text=f'Seite {new_page} von 11')
+        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         await interaction.response.edit_message(embed=embed, content="")
     
     @discord.ui.button(label='Weiter', style=discord.ButtonStyle.green, custom_id="fewgwrgwrtgtg", emoji="➡️")
@@ -32,6 +33,7 @@ class joblist(discord.ui.View):
             new_page = 1
         embed = discord.Embed(title=':dividers: Jobliste', description=f"Hier siehst du alle verfügbaren Jobs.\nDu kannst dich für einen Job bewerben mit `/job apply <job>`\n\n" + await job_list(self.s, interaction, new_page),
                             colour=await getcolour(self, interaction.user)).set_footer(text=f'Seite {new_page} von 11')
+        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         await interaction.response.edit_message(embed=embed, content="")
 
 ##########
@@ -107,6 +109,7 @@ def same(userchoice, botchoice, betrag):
         description=f"Deine Entscheidung: {userchoice}\nMeine Entscheidung: {botchoice}"
     )
     e.add_field(name="💰 Nichts", value=f"Du behältst {betrag} 🍪")
+    e.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
     return e
 
 def win(userchoice, botchoice, betrag):
@@ -116,6 +119,7 @@ def win(userchoice, botchoice, betrag):
         description=f"Deine Entscheidung: {userchoice}\nMeine Entscheidung: {botchoice}"
     )
     e.add_field(name="💰 Gewinn", value=f"Du gewinnst {betrag * 2} 🍪")
+    e.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
     return e
 
 def loose(userchoice, botchoice, betrag):
@@ -125,6 +129,7 @@ def loose(userchoice, botchoice, betrag):
         description=f"Deine Entscheidung: {userchoice}\nMeine Entscheidung: {botchoice}"
     )
     e.add_field(name="💰 Verlust", value=f"Du verlierst {betrag} 🍪")
+    e.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
     return e
         
 class rps(discord.ui.View):
@@ -564,6 +569,7 @@ class economy(commands.Cog):
                         earnings = 50
                         await update_acc(self, interaction.user, "rucksack", earnings, 0)
                         embed = discord.Embed(title="Täglicher Bonus", description=f"Du hast deinen täglichen Bonus eingefordert und dafür **{earnings} 🍪** bekommen. Leider warst du zu spät und dein Daily Streak von **{streak}🔥** wurde auf **1** zurückgesetzt.", color=await getcolour(self, interaction.user))
+                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                         await interaction.response.send_message(embed=embed)
                         return
                     else:
@@ -648,6 +654,7 @@ class economy(commands.Cog):
                 embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Guter Versuch!",
                                         description=f"Du wurdest beim Ausrauben von {user} erwischt! Du musst **{strafe} 🍪** als Strafe zahlen.")
                 embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                 await update_acc(self, interaction.user, "rucksack", 0, strafe)
                 await interaction.response.send_message(embed=embed)
                 return
@@ -657,6 +664,7 @@ class economy(commands.Cog):
                 embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Glück gehabt!",
                                         description=f"Du hast {user} erfolgreich ausgeraubt und **{earnings} 🍪** bekommen.")
                 embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                 await update_acc(self, interaction.user, "rucksack", earnings, 0)
                 await update_acc(self, user, "rucksack", 0, earnings)
                 await interaction.response.send_message(embed=embed)
@@ -691,6 +699,7 @@ class economy(commands.Cog):
                          inline=False)
         embed1.add_field(name="💰 Einsatz", value=f"{betrag} 🍪", inline=False)
         embed1.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+        embed1.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
 
         # embed2
         embed2 = discord.Embed(colour=await getcolour(self, interaction.user),
@@ -699,6 +708,7 @@ class economy(commands.Cog):
                          inline=False)
         embed2.add_field(name="💰 Einsatz", value=f"{betrag} 🍪", inline=False)
         embed2.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+        embed2.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
 
         # embed3
         embed3 = discord.Embed(colour=await getcolour(self, interaction.user),
@@ -706,6 +716,7 @@ class economy(commands.Cog):
         embed3.add_field(name=f"Slots", value=f"[{e1} {e2} <a:slot:1037066744105291918>]", inline=False)
         embed3.add_field(name="💰 Einsatz", value=f"{betrag} 🍪", inline=False)
         embed3.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+        embed3.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         # ergebnisse überprüfen
         # embedchanges
         await interaction.response.send_message(embed=embed1)
@@ -717,6 +728,7 @@ class economy(commands.Cog):
             await asyncio.sleep(1.5)
             embed4 = discord.Embed(colour=await getcolour(self, interaction.user),
                                     description="🎰 Slots")
+            embed4.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed4.add_field(name=f"Slots", value=f"[{e1} {e2} {e3}]", inline=False)
             embed4.add_field(name="🏆 Gewinn", value=f"Du gewinnst {betrag * 3} 🍪",
                                 inline=False)
@@ -732,6 +744,7 @@ class economy(commands.Cog):
             embed4.add_field(name="💰 Unentschieden", value=f"Du behältst {betrag} 🍪",
                                 inline=False)
             embed4.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+            embed4.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             await interaction.edit_original_response(embed=embed4)
             return
         else:
@@ -742,6 +755,7 @@ class economy(commands.Cog):
             embed4.add_field(name="💰 Verloren", value=f"Du verlierst {betrag} 🍪",
                                 inline=False)
             embed4.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+            embed4.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             await update_acc(self, interaction.user, "rucksack", 0, betrag)
             await interaction.edit_original_response(embed=embed4)
             return
@@ -770,6 +784,7 @@ class economy(commands.Cog):
             description=f"✊ Schere, Stein oder Papier?\nEinsatz: {betrag} 🍪",
             timestamp=datetime.utcnow()
         )
+        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         emojis = ["✌️", "✊", "✋"]
         choice = random.choice(emojis)
@@ -795,15 +810,18 @@ class economy(commands.Cog):
                         success_embed = discord.Embed(description=f'Herzlichen Glückwunsch! Deine Bewerbung als **{beruf}** wurde angenommen.',
                                                         colour=await getcolour(self, interaction.user))
                         await interaction.response.send_message(embed=success_embed)
+                        success_embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                         return
                     else:
                         not_enough_hours_error_embed = discord.Embed(description=f'Um sich als {beruf} zu bewerben, musst du mindestens **{job["req"]}** Stunden gearbeitet haben.',
                                                                         color=await getcolour(self, interaction.user))
+                        not_enough_hours_error_embed(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                         await interaction.response.send_message(embed=not_enough_hours_error_embed)
                         return
             if a >= 53:
                 not_a_job_error_embed = discord.Embed(description=f"Der Job **{beruf}** existiert nicht. Schau dir alle Jobs mit dem Command `/job list` an.",
                                                     colour=await getcolour(self, interaction.user))
+                not_a_job_error_embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                 await interaction.response.send_message(embed=not_a_job_error_embed)
                 return
         else:
@@ -811,6 +829,7 @@ class economy(commands.Cog):
             active_job_error_embed = discord.Embed(description=f'Du bist derzeit noch als **{active_job}** angestellt!\n'
                                                                 f'Beende deinen Job als **{active_job}** mit `/job quit`',
                                                     colour=await getcolour(self, interaction.user))
+            active_job_error_embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             await interaction.response.send_message(embed=active_job_error_embed)
             return
 
@@ -823,10 +842,12 @@ class economy(commands.Cog):
             success_embed = discord.Embed(description=f'Du hast deinen Job als **{job}** gekündigt.',
                                           colour=await getcolour(self, interaction.user))
             await set_job(self, interaction.user, "Kein Job")
+            success_embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             await interaction.response.send_message(embed=success_embed)
             return
         else:
             error_embed = discord.Embed(description=f"Du hast keinen Job, also kannst du nicht kündigen.\nBewerbe dich für einen Job mit `/job apply <job>`", color=discord.Colour.red())
+            error_embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             await interaction.response.send_message(embed=error_embed)
 
     @job.command()
@@ -836,7 +857,7 @@ class economy(commands.Cog):
         await interaction.response.send_message(embed=discord.Embed(title=':dividers: Jobliste',
                                                                     description=f"Hier siehst du alle verfügbaren Jobs.\nDu kannst dich für einen Job bewerben mit `/job apply <job>`\n\n" + await job_list(self, interaction, 1),
                                                                     colour=await getcolour(self, interaction.user)).set_footer(text='Seite 1 von 11'), view=joblist(interaction, self.bot, self))
-    
+
     shop = app_commands.Group(name='shop', description='Erstelle Items für deinen Server. Nutzer können diese kaufen.', guild_only=True)
     item = app_commands.Group(name='item', description='Erstelle Items für deinen Server. Nutzer können diese kaufen.', parent=shop, guild_only=True)
     
@@ -848,10 +869,12 @@ class economy(commands.Cog):
         if item is False:
             await addshopitem(self, interaction.guild, titel, beschreibung, kaufpreis, rolle)
             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item hinzugefügt", description=f"Das Item {titel} wurde zum Shop dieses Servers hinzugefügt.")
+            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             await interaction.response.send_message(embed=embed)
             return
         if item is True:
             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item bereits vorhanden", description=f"Das Item {titel} gibt es bereits im Shop dieses Servers. Bitte wähle einen anderen Namen für das Item.")
+            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @item.command()
@@ -862,10 +885,12 @@ class economy(commands.Cog):
         if item is True:
             await removeshopitem(self, interaction.guild, titel)
             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item gelöscht", description=f"Das Item {titel} wurde aus dem Shop dieses Servers gelöscht.")
+            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             await interaction.response.send_message(embed=embed)
             return
         if item is False:
             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item nicht vorhanden", description=f"Das Item {titel} gibt es nicht im Shop dieses Servers. Bitte gib den korrekten Namen für das Item an.")
+            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @shop.command()
@@ -874,11 +899,13 @@ class economy(commands.Cog):
         items = await listshopitems(self, interaction.guild)
         if items == False:
             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Keine Items vorhanden", description=f"Es gibt keine Items in dem Shop dieses Servers.\nFüge Items hinzu mit dem Command `/shop item hinzufügen`")
+            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             await interaction.response.send_message(embed=embed, ephemeral=True)
             return
         else:
             a = 0
             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Alle Items dieses Servers", description=f"Dieser Server hat ein paar Items im Shop.")
+            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             for item in items:
                 a += 1
                 #guildID, titel, beschreibung, preis, roleID
@@ -890,6 +917,7 @@ class economy(commands.Cog):
 
             if a == 0:
                 embed = discord.Embed(color=await getcolour(self, interaction.user), title="Keine Items vorhanden", description=f"Es gibt keine Items in dem Shop dieses Servers.\nFüge Items hinzu mit dem Command `/shop item hinzufügen`")
+                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                 await interaction.response.send_message(embed=embed, ephemeral=True)
                 return
             await interaction.response.send_message(embed=embed)
@@ -900,6 +928,7 @@ class economy(commands.Cog):
         i = await getshopitem(self, interaction.guild, item)
         if i == False:
             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item nicht vorhanden", description=f"Das Item {item} gibt es nicht im Shop dieses Servers. Bitte gib den korrekten Namen für das Item an.")
+            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             await interaction.response.send_message(embed=embed)
             return
         if i == True:
@@ -909,6 +938,7 @@ class economy(commands.Cog):
                     result = await cursor.fetchone()
                     if result is None:
                         embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item nicht vorhanden", description=f"Das Item {item} gibt es nicht im Shop dieses Servers. Bitte gib den korrekten Namen für das Item an.")
+                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                         await interaction.response.send_message(embed=embed, ephemeral=True)
                         return
                     else:
@@ -917,10 +947,12 @@ class economy(commands.Cog):
                             await buyitem(self, interaction.user, interaction.guild, item)
                             await update_acc(self, interaction.user, "rucksack", 0, result[0])
                             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item gekauft", description=f"Das Item {item} wurde von dir gekauft. Ich habe es für dich in deinen Rucksack getan!")
+                            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                             await interaction.response.send_message(embed=embed)
                             return
                         if canbuy == False:
                             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item nicht gekauft", description=f"Das Item {item} wurde von dir nicht gekauft. Du hast zu wenig Geld in deinem Rucksack!")
+                            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                             await interaction.response.send_message(embed=embed, ephemeral=True)
                             return
 
@@ -930,16 +962,19 @@ class economy(commands.Cog):
         items = await getuseritems(self, interaction.user)
         if items == False:
             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Keine Items vorhanden", description=f"Es gibt keine Items in deinem Rucksack.\nKaufe Items mit dem Command `/shop item kaufen`")
+            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             await interaction.response.send_message(embed=embed, ephemeral=True)
             return
         else:
             a = 0
             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Alle Items in deinem Rucksack", description=f"In deinem Rucksack sind ein paar Items.")
+            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             for item in items:
                 a += 1
                 embed.add_field(name=item[1], value=f"{item[2]}\n**Hat gekostet:** {item[3]}")
             if a == 0:
                 embed = discord.Embed(color=await getcolour(self, interaction.user), title="Keine Items vorhanden", description=f"Es gibt keine Items in deinem Rucksack.\nKaufe Items mit dem Command `/shop item meine`")
+                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                 await interaction.response.send_message(embed=embed, ephemeral=True)
                 return
             await interaction.response.send_message(embed=embed)
@@ -950,6 +985,7 @@ class economy(commands.Cog):
         items = await getuseritems(self, interaction.user)
         if items == False:
             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Keine Items vorhanden", description=f"Es gibt keine Items in deinem Rucksack.\nKaufe Items mit dem Command `/shop item kaufen`")
+            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             await interaction.response.send_message(embed=embed, ephemeral=True)
             return
         else:
@@ -962,6 +998,7 @@ class economy(commands.Cog):
                     await sellitem(self, interaction.user, item)
                     await update_acc(self, interaction.user, "rucksack", verkaufspreis, 0)
                     embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item verkauft", description=f"Das Item {item} wurde für {verkaufspreis} 🍪 verkauft. Du hast es nun nicht mehr im Rucksack.")
+                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                     await interaction.response.send_message(embed=embed)
             
 async def setup(bot):
