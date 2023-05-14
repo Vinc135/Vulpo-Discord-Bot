@@ -93,7 +93,7 @@ class option_hinzufügen(discord.ui.Modal, title="Füge eine Option hinzu"):
         embed = interaction.message.embeds[0]
         premium_status = await haspremium_forserver(self, interaction.guild)
         if premium_status == False:
-            if len(embed.fields) >= 2:
+            if len(embed.fields) >= 3:
                 return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst keine weiteren Optionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
         embed.add_field(name=self.children[0].value, value=self.roleID)
@@ -159,7 +159,7 @@ class option_hinzufügen_2(discord.ui.Modal, title="Füge eine Option hinzu"):
         embed = interaction.message.embeds[0]
         premium_status = await haspremium_forserver(self, interaction.guild)
         if premium_status == False:
-            if len(embed.fields) >= 2:
+            if len(embed.fields) >= 3:
                 return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst keine weiteren Optionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
         embed.add_field(name=self.children[0].value, value=self.roleID)

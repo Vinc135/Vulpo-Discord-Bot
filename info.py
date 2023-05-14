@@ -213,7 +213,7 @@ async def giveaway_end(when: datetime.datetime, bot, msgID, status=None):
 
                 await cursor.execute("UPDATE gewinnspiele SET status = (%s) WHERE guildID = (%s) AND channelID = (%s) AND msgID = (%s)", ("Inaktiv", guild.id, kanal.id, msgID))
                 
-                t1 = int(datetime.datetime.utcnow().timestamp())
+                t1 = int(datetime.datetime.now().timestamp())
                 t2 = datetime.datetime.fromtimestamp(int(t1))
                 
                 await cursor.execute("SELECT userID FROM gewinnspiel_teilnehmer WHERE guildID = (%s) AND channelID = (%s) AND msgID = (%s)", (guild.id, kanal.id, msgID))

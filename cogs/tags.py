@@ -20,7 +20,7 @@ class Tags(commands.Cog):
                 a = await cursor.fetchall()
                 premium_status = await haspremium_forserver(self, interaction.guild)
                 if premium_status == False:
-                    if len(a) >= 1:
+                    if len(a) >= 3:
                         return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst keine weiteren Befehle erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
                 await cursor.execute("SELECT name FROM tags WHERE guildID = (%s) AND name = (%s)", (interaction.guild.id, name))

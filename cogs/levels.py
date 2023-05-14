@@ -131,7 +131,7 @@ class levelsystem(commands.Cog):
                 a = await cursor.fetchall()
                 premium_status = await haspremium_forserver(self, interaction.guild)
                 if premium_status == False:
-                    if len(a) >= 2:
+                    if len(a) >= 5:
                         return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst keine weiteren Levelrollen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
                 if await checkstatus(self, interaction.guild) == False:

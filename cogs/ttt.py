@@ -352,7 +352,7 @@ class Ttt(commands.Cog):
                     if result2 == None:
                         await cursor.execute("INSERT INTO ttt (userID, wins, loses, ties) VALUES (%s, %s, %s, %s)", (spieler2.id, 0, 0, 0))
             
-            t1 = math.floor(datetime.datetime.utcnow().timestamp() + 300)
+            t1 = math.floor(datetime.datetime.now().timestamp() + 300)
             t2 = datetime.datetime.fromtimestamp(int(t1))
             await interaction.response.send_message(f'**Tik-Tak-Toe**\n{spieler2.mention}, du wurdest von {interaction.user.mention} herausgefordert.\n*Die Herausforderung läuft {discord_timestamp(t2, "R")} aus.*', view=tictactoeherausforderung(spieler2, interaction.user, self.bot))
             await asyncio.sleep(300)
@@ -374,7 +374,7 @@ class Ttt(commands.Cog):
                     if result2 == None:
                         await cursor.execute("INSERT INTO ttt (userID, wins, loses, ties) VALUES (%s, %s, %s, %s)", (spieler2.id, 0, 0, 0))
             
-            t1 = math.floor(datetime.datetime.utcnow().timestamp() + 300)
+            t1 = math.floor(datetime.datetime.now().timestamp() + 300)
             t2 = datetime.datetime.fromtimestamp(int(t1))
             await interaction.response.send_message(f'**Tik-Tak-Toe**\n{spieler2.mention}, du wurdest von {interaction.user.mention} herausgefordert.\n*Die Herausforderung läuft {discord_timestamp(t2, "R")} aus.*', view=tictactoeherausforderung2(spieler2, interaction.user, self.bot))
             await asyncio.sleep(300)
