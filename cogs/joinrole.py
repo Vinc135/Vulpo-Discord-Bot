@@ -2,7 +2,7 @@ import typing
 import discord
 from discord.ext import commands
 from discord import app_commands
-from info import getcolour
+from info import getcolour, haspremium_forserver
 ##########
 
 class joinrole(commands.Cog):
@@ -56,6 +56,15 @@ class joinrole(commands.Cog):
                     if rolle is None:
                         await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Eine Rollen-Angabe ist erforderlich beim Einrichten.**", ephemeral=True)           
                         return
+                    
+                    await cursor.execute(f"SELECT role_id FROM joinroles WHERE guild_id = {interaction.guild.id}")
+                    a = await cursor.fetchall()
+
+                    premium_status = await haspremium_forserver(self, interaction.guild)
+                    if premium_status == False:
+                        if len(a) >= 3:
+                            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst keine weiteren Joinrollen für Mitglieder erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+
                     await cursor.execute(f"SELECT guild_id FROM joinroles WHERE role_id = {rolle.id}")
                     result = await cursor.fetchone()
                     if result:
@@ -108,6 +117,15 @@ class joinrole(commands.Cog):
                     if rolle is None:
                         await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Eine Rollen-Angabe ist erforderlich beim Einrichten.**", ephemeral=True)           
                         return
+                    
+                    await cursor.execute(f"SELECT role_id FROM botroles WHERE guild_id = {interaction.guild.id}")
+                    a = await cursor.fetchall()
+
+                    premium_status = await haspremium_forserver(self, interaction.guild)
+                    if premium_status == False:
+                        if len(a) >= 3:
+                            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst keine weiteren Joinrollen für Bots erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+
                     await cursor.execute(f"SELECT guild_id FROM botroles WHERE role_id = {rolle.id}")
                     result = await cursor.fetchone()
                     if result:

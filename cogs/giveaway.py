@@ -230,7 +230,7 @@ class giveaway(commands.Cog):
                 if joindatum:
                     join_date = interaction.user.joined_at.replace(tzinfo=pytz.UTC)
                     try:
-                        check_date = datetime.datetime.strptime(joindatum, '%d.%m.%Y').replace(tzinfo=pytz.UTC)
+                        check_date = datetime.datetime.strptime(join_date, '%d.%m.%Y').replace(tzinfo=pytz.UTC)
                     except:
                         return await interaction.response.send_message("**Bitte gib ein Datum an. Bsp: 12.6.2023**", ephemeral=True)
 
@@ -243,7 +243,7 @@ class giveaway(commands.Cog):
                 zeit = convert(endzeit)
                 if zeit == None:
                     return await interaction.response.send_message("**Du musst auch eine Zeit angeben, wann das Gewinnspiel enden soll. Du kannst s, m, h, d, w verwenden, um den Zeitraum zu definieren. Beispiel: '1w 3d 5h' oder '2d 45s'.**", ephemeral=True)
-                t1 = math.floor(datetime.datetime.utcnow().timestamp() + zeit)
+                t1 = math.floor(datetime.datetime.now().timestamp() + zeit)
                 t2 = datetime.datetime.fromtimestamp(int(t1))
 
                 #giveaway nachricht (public)
@@ -311,7 +311,7 @@ class giveaway(commands.Cog):
                     nachricht = await kanal.fetch_message(int(nachrichtenid))
                     if nachricht == None:
                         return await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Es wurde kein aktives Gewinnspiel mit der ID {nachrichtenid} auf diesem Server gefunden. Beachte, dass es sich bei der ID um die ID der Nachricht von einem aktiven Gewinnspiel handelt**", ephemeral=True)
-                    t1 = math.floor(datetime.datetime.utcnow().timestamp() + 1)
+                    t1 = math.floor(datetime.datetime.now().timestamp() + 1)
                     t2 = datetime.datetime.fromtimestamp(int(t1))
                     await interaction.response.send_message("**<:v_haken:1048677657040134195> Gewinnspiel wird beendet.**")
                     await giveaway_end(t2, self.bot, nachricht.id, "Beenden")
@@ -329,7 +329,7 @@ class giveaway(commands.Cog):
                     nachricht2 = await kanal2.fetch_message(int(nachrichtenid))
                     if nachricht2 == None:
                         return await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Es wurde kein inaktives Gewinnspiel mit der ID {nachrichtenid} auf diesem Server gefunden. Beachte, dass es sich bei der ID um die ID der Nachricht von einem inaktiven Gewinnspiel handelt**", ephemeral=True)
-                    t1 = math.floor(datetime.datetime.utcnow().timestamp() + 1)
+                    t1 = math.floor(datetime.datetime.now().timestamp() + 1)
                     t2 = datetime.datetime.fromtimestamp(int(t1))
                     await interaction.response.send_message("**<:v_haken:1048677657040134195> Gewinnspiel wird neu ausgelost.**")
                     await giveaway_end(t2, self.bot, nachricht2.id, "Reroll")

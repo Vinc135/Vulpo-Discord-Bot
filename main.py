@@ -185,7 +185,7 @@ class Vulpo(commands.AutoShardedBot):
                     
                     times = int(result[0]) + 1
 
-                time_to_convert = math.floor(datetime.datetime.utcnow().timestamp() + 43200)
+                time_to_convert = math.floor(datetime.datetime.now().timestamp() + 43200)
                 time_converted = datetime.datetime.fromtimestamp(int(time_to_convert))
                 asyncio.create_task(vote_reminder(time_converted, bot, userid))
                 await cursor.execute("INSERT INTO vote(userid, endtime) VALUES(%s, %s)", (userid, time_to_convert))

@@ -31,7 +31,7 @@ class Reminder(commands.Cog):
                 if zeit_als_string == "":
                     return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du musst auch eine Zeit angeben, wann du erinnert werden möchtest ;D**", ephemeral=True)
                 zeit = convert(zeit_als_string)
-                t1 = math.floor(datetime.datetime.utcnow().timestamp() + zeit)
+                t1 = math.floor(datetime.datetime.now().timestamp() + zeit)
                 t2 = datetime.datetime.fromtimestamp(int(t1))
                 await cursor.execute("SELECT id FROM erinnerungen ORDER BY id DESC")
                 result = await cursor.fetchone()

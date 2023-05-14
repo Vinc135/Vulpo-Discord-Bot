@@ -9,6 +9,27 @@ import asyncio
 from flask_session import Session
 import paypalrestsdk
 
+async def open_acc(userid, p):
+    async with p.acquire() as conn:
+        async with conn.cursor() as cursor:
+            await cursor.execute("SELECT rucksack, bank, job, stunden FROM economy WHERE userID = (%s)", (userid))
+            result = await cursor.fetchone()
+            if result is None:
+                await cursor.execute("INSERT INTO economy(rucksack, bank, job, stunden, userID) VALUES(%s, %s, %s, %s, %s)",("0", "0", "Kein Job", "0", userid))
+                
+                liste = ["0","0","Kein Job","0",userid]
+                return liste
+            else:
+                return result
+            
+async def addcookies(userid, p):
+    await open_acc(userid, p)
+    async with p.acquire() as conn:
+        async with conn.cursor() as cursor:
+            await cursor.execute("SELECT stunden FROM economy WHERE userID = (%s)", (userid))
+            result = await cursor.fetchone()
+            await cursor.execute("UPDATE economy SET stunden = (%s) WHERE userID = (%s)", (int(result[0]) + 1, userid))
+
 async def create_pool(loop):
     pool = await aiomysql.create_pool(
         host='142.132.233.69',
@@ -60,6 +81,7 @@ async def add_premium(orderID, subscriptionID, userID, p):
     async with p.get() as conn:
         async with conn.cursor() as cursor:
             await cursor.execute("INSERT INTO premium(orderID ,subscriptionID, userID, status) VALUES(%s, %s, %s, %s)", (orderID, subscriptionID, userID, 1))
+            await addcookies(userID, p)
     
 loop = asyncio.get_event_loop()
 pool = loop.run_until_complete(create_pool(loop))
@@ -117,6 +139,11 @@ def datenschutz():
 def formulare():
     """Umleitung zur Formulare Seite."""
     return render_template('formulare.html')
+
+@app.route('/agb')
+def formulare():
+    """Umleitung zur AGB Seite."""
+    return render_template('agb.html')
 
 @app.route('/process', methods=['POST'])
 def process():
@@ -263,40 +290,35 @@ def login():
     try:
         discord1 = OAuth2Session(client_id, token=session['discord_token'])
         response = discord1.get(base_discord_api_url + '/users/@me')
-        task = loop.create_task(checkpremium(response, pool))
-        premium_status = loop.run_until_complete(task)
-        if premium_status == False or str(response.json()['id']) == str(824378909985341451):
-            if str(response.json()['id']) != str(824378909985341451):
-                return render_template('nopremium copy.html', response=response.json())
-            else:
-                return render_template('nopremium.html', response=response.json())
+        render_template('nopremium.html', response=response.json())
         
         # Zugriff auf die verbundenen Server des Benutzers
-        guilds = []
-        guilds_response = discord1.get(base_discord_api_url + '/users/@me/guilds')
+    #     guilds = []
+    #     guilds_response = discord1.get(base_discord_api_url + '/users/@me/guilds')
         
-        for guild in guilds_response.json():
-            if int(guild["permissions"]) & 0x00000008:
-                headers = {
-                    'Authorization': 'Bot OTI1Nzk5NTU5NTc2MzIyMDc4.GcwvXN.EkMMDxTqykR8em6L4lJqOouGfvAvH1J1rq9nJQ',
-                }
+    #     for guild in guilds_response.json():
+    #         if int(guild["permissions"]) & 0x00000008:
+    #             headers = {
+    #                 'Authorization': 'Bot OTI1Nzk5NTU5NTc2MzIyMDc4.GcwvXN.EkMMDxTqykR8em6L4lJqOouGfvAvH1J1rq9nJQ',
+    #             }
 
-                members_response = requests.get(base_discord_api_url + f'/guilds/{guild["id"]}/members/925799559576322078', headers=headers)
-                if "Unknown Guild" in str(members_response.json()):
-                    continue
-                else:
-                    guilds.append(guild)
+    #             members_response = requests.get(base_discord_api_url + f'/guilds/{guild["id"]}/members/925799559576322078', headers=headers)
+    #             if "Unknown Guild" in str(members_response.json()):
+    #                 continue
+    #             else:
+    #                 guilds.append(guild)
 
-        return render_template('server.html', guilds=guilds, response=response.json())
+    #     return render_template('server.html', guilds=guilds, response=response.json())
     except:
-        pass
+        session.clear()
+        return redirect("/logout")
 
-    oauth = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
-    login_url, state = oauth.authorization_url(authorize_url)
+    # oauth = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
+    # login_url, state = oauth.authorization_url(authorize_url)
 
-    session["state"] = f"{state}"
+    # session["state"] = f"{state}"
 
-    return redirect(f"{login_url}")
+    # return redirect(f"{login_url}")
 
 @app.route("/oauth_callback")
 def oauth_callback():
@@ -310,31 +332,25 @@ def oauth_callback():
         session['discord_token'] = token
         discord1 = OAuth2Session(client_id, token=session['discord_token'])
         response = discord1.get(base_discord_api_url + '/users/@me')
-        task = loop.create_task(checkpremium(response, pool))
-        premium_status = loop.run_until_complete(task)
-        if premium_status == False or str(response.json()['id']) == str(824378909985341451):
-            if str(response.json()['id']) != str(824378909985341451):
-                return render_template('nopremium copy.html', response=response.json())
-            else:
-                return render_template('nopremium.html', response=response.json())
+        render_template('nopremium.html', response=response.json())
         
         # Zugriff auf die verbundenen Server des Benutzers
-        guilds = []
-        guilds_response = discord1.get(base_discord_api_url + '/users/@me/guilds')
+        # guilds = []
+        # guilds_response = discord1.get(base_discord_api_url + '/users/@me/guilds')
         
-        for guild in guilds_response.json():
-            if int(guild["permissions"]) & 0x00000008:
-                headers = {
-                    'Authorization': 'Bot OTI1Nzk5NTU5NTc2MzIyMDc4.GcwvXN.EkMMDxTqykR8em6L4lJqOouGfvAvH1J1rq9nJQ',
-                }
+        # for guild in guilds_response.json():
+        #     if int(guild["permissions"]) & 0x00000008:
+        #         headers = {
+        #             'Authorization': 'Bot OTI1Nzk5NTU5NTc2MzIyMDc4.GcwvXN.EkMMDxTqykR8em6L4lJqOouGfvAvH1J1rq9nJQ',
+        #         }
 
-                members_response = requests.get(base_discord_api_url + f'/guilds/{guild["id"]}/members/925799559576322078', headers=headers)
-                if "Unknown Guild" in str(members_response.json()):
-                    continue
-                else:
-                    guilds.append(guild)
+        #         members_response = requests.get(base_discord_api_url + f'/guilds/{guild["id"]}/members/925799559576322078', headers=headers)
+        #         if "Unknown Guild" in str(members_response.json()):
+        #             continue
+        #         else:
+        #             guilds.append(guild)
 
-        return render_template('server.html', guilds=guilds, response=response.json())
+        # return render_template('server.html', guilds=guilds, response=response.json())
 
     except:
         session.clear()

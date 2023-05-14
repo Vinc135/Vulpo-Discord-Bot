@@ -24,7 +24,7 @@ class Automod(commands.Cog):
                 a = await cursor.fetchall()
                 premium_status = await haspremium_forserver(self, interaction.guild)
                 if premium_status == False:
-                    if len(a) >= 1:
+                    if len(a) >= 3:
                         return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst keine weiteren Aktionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
                 await cursor.execute("SELECT aktion FROM automod WHERE guildID = (%s) AND warnanzahl = (%s)", (interaction.guild.id, warnanzahl))
@@ -183,6 +183,14 @@ class Automod(commands.Cog):
                     await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Das Wort `{wort}` existiert bereits in der Blacklist.**", ephemeral=True)
                     return
                 
+                await cursor.execute("SELECT word FROM blacklist WHERE guildID = (%s)", (interaction.guild.id))
+                a = await cursor.fetchall()
+                premium_status = await haspremium_forserver(self, interaction.guild)
+                if premium_status == False:
+                    if len(a) >= 15:
+                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst keine weiteren Wörter hinzufügen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+
+                
                 await cursor.execute("INSERT INTO blacklist(guildID, word) VALUES(%s, %s)", (interaction.guild.id, wort))
                 await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Das Wort `{wort}` ist nun auf der Blacklist.**")
 
@@ -265,7 +273,7 @@ class Automod(commands.Cog):
                         if result:
                             if result[0] == 1:
                                 time_end = discord.utils.utcnow()
-                                dt = time_end + datetime.timedelta(minutes=1)
+                                dt = time_end + datetime.timedelta(minutes=1, seconds=7200)
                                 await msg.author.timeout(dt ,reason="Hat die Spam Grenze von 5 Nachrichten innerhalb 2,5 Sekunden überschritten.")
                                 await msg.channel.send(f"{msg.author.mention} Bitte unterlasse Nachrichten-Spam. Du wurdest verwarnt!")
                                 await addwarn(self, msg.author, msg, f"Hat die Spam Grenze von 5 Nachrichten innerhalb 2,5 Sekunden überschritten.")

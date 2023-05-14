@@ -77,7 +77,7 @@ Ich habe deinen AFK-Status entfernt. AFK gegangen {discord_timestamp(t2, 'R')}."
                         for mention in msg.mentions:
                             if int(mention.id) == int(member.id):
                                 t2 = datetime.datetime.fromtimestamp(int(r[2]))
-                                t1 = math.floor(datetime.datetime.utcnow().timestamp())
+                                t1 = math.floor(datetime.datetime.now().timestamp())
                                 await cursor.execute("INSERT INTO afk_nachrichten(userID, guildID, authorID, msgID, channelID, time) VALUES(%s, %s, %s, %s, %s, %s)", (member.id, msg.guild.id, msg.author.id, msg.id, msg.channel.id, t1))
                                 embed = discord.Embed(title=f"<:v_afk:1037073922849517618> **{mention.name}, ist AFK**", color=await getcolour(self, msg.author), description=f"""
 *Grund: {r[1]}*
@@ -96,7 +96,7 @@ AFK gegangen {discord_timestamp(t2, 'R')}.""")
                 await cursor.execute("SELECT userID, grund, time FROM afk WHERE guildID = (%s) AND userID = (%s)", (interaction.guild.id, interaction.user.id))
                 result = await cursor.fetchone()
                 if result == None:
-                    t1 = math.floor(datetime.datetime.utcnow().timestamp())
+                    t1 = math.floor(datetime.datetime.now().timestamp())
                     t2 = datetime.datetime.fromtimestamp(t1)
                     await cursor.execute("INSERT INTO afk (guildID, userID, grund, time) VALUES (%s, %s, %s, %s)", (interaction.guild.id, interaction.user.id, grund, t1))
                     try:

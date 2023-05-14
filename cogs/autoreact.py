@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from info import getcolour
+from info import getcolour, haspremium_forserver
 
 class Autoreact(commands.Cog):
     def __init__(self, bot):
@@ -41,6 +41,14 @@ class Autoreact(commands.Cog):
                 return await interaction.followup.send("**<:v_kreuz:1049388811353858069> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
             async with self.bot.pool.acquire() as conn:
                 async with conn.cursor() as cursor:
+                    await cursor.execute(f"SELECT emoji FROM autoreact WHERE channelID = {kanal.id} AND guildID = {interaction.guild.id}")
+                    a = await cursor.fetchall()
+
+                    premium_status = await haspremium_forserver(self, interaction.guild)
+                    if premium_status == False:
+                        if len(a) >= 2:
+                            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst keine weiteren Reaktionen für diesen Kanal erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+
                     await cursor.execute("INSERT INTO autoreact(guildID, channelID, emoji) VALUES(%s,%s,%s)", (interaction.guild.id, kanal.id, emoji))
                     await interaction.followup.send(f"**<:v_haken:1048677657040134195> Eintrag erstellt. Jede Nachricht aus dem Kanal {kanal.mention} erhält das Emoji {emoj}.**")
         except:

@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="de">
 
+<script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="4201f56a-66a9-4e81-b252-16665dafb20b" data-blockingmode="auto" type="text/javascript"></script>
+<meta http-equiv="refresh" content="1; URL=https://vulpo-bot.de/nopremium">
+
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -75,52 +78,92 @@
           </div>
       </div>
     </div>
-  </body>
-</html>
+    </section>
+    <main id="main">
     <style>
       .paypalbutton {
-        margin-left: 140px; /* füge einen rechten Abstand von 20 Pixeln hinzu */
+        max-width: 2000px;
+        margin-right:auto;
+        margin-left:auto;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        min-height:100vh;
       }
     </style>
-        <div class="paypalbutton">
-
-    <div id="paypal-button-container-P-0BS684597U834425CMRH5C7Y"></div>
+    <div class="paypalbutton">
+      <form>
+        <div>
+          <input type="checkbox" id="agb-checkbox" required>
+          <label for="agb-checkbox">Ich habe die AGB gelesen und bin damit einverstanden.</label>
+        </div>
+        <div>
+          <h3><a href="/agb">Weitere Informationen zu den AGBs</a></h3>
+        </div>
+        <br>
+        <div id="paypal-button-container-P-0BS684597U834425CMRH5C7Y" style="display: none;"></div>
+      </form>
+    </div>
+    
     <script src="https://www.paypal.com/sdk/js?client-id=AdNZxDHdmW7iJebIw1XY-YuwXHhI5VN7sGeuL-GfgSekyNw93QzQnsCin5A6BjWzE_SGOog1AnH-Id1t&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
     <script>
-      paypal.Buttons({
-          style: {
-              shape: 'pill',
-              color: 'gold',
-              layout: 'vertical',
-              label: 'subscribe'
-          },
-          createSubscription: function(data, actions) {
-            return actions.subscription.create({
-              /* Creates the subscription */
-              plan_id: 'P-0BS684597U834425CMRH5C7Y'
-            });
-          },
-          onApprove: function(data, actions) {
-            alert(data.subscriptionID); // You can add optional success message for the subscriber here
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', '/paypal/gekauft');
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.onload = function() {
-                if (xhr.status === 200) {
+      var checkbox = document.getElementById('agb-checkbox');
+      var paypalButtonContainer = document.getElementById('paypal-button-container-P-0BS684597U834425CMRH5C7Y');
+      var paypalButtonsRendered = false;
+    
+      checkbox.addEventListener('change', function() {
+        if (checkbox.checked) {
+          if (!paypalButtonsRendered) {
+            paypal.Buttons({
+              style: {
+                shape: 'pill',
+                color: 'gold',
+                layout: 'vertical',
+                label: 'subscribe',
+                fundingicons: 'false',
+                tagline: 'false'
+              },
+              createSubscription: function(data, actions) {
+                return actions.subscription.create({
+                  /* Creates the subscription */
+                  plan_id: 'P-0BS684597U834425CMRH5C7Y',
+                  overrides: {
+                    offer_type: 'NO_INTEREST'
+                  }
+                });
+              },
+              onApprove: function(data, actions) {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', '/paypal/gekauft');
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.onload = function() {
+                  if (xhr.status === 200) {
                     console.log(xhr.responseText);
-                } else {
+                  } else {
                     console.log('Request failed.  Returned status of ' + xhr.status);
-                }
-            };
-            xhr.send(JSON.stringify({
-                'data': data,
-                'userid' : "{{ response['id'] }}"
-            }));
+                  }
+                };
+                xhr.send(JSON.stringify({
+                  'data': data,
+                  'userid': "{{ response['id'] }}"
+                }));
+                alert('Dein Abonnement ist nun aktiv. Du kannst Vulpo Premium mit dem Discord Account der ID {{ response["id"] }} nutzen.');
+              }
+            }).render('#paypal-button-container-P-0BS684597U834425CMRH5C7Y'); // Renders the PayPal button
+    
+            paypalButtonsRendered = true;
           }
-      }).render('#paypal-button-container-P-0BS684597U834425CMRH5C7Y'); // Renders the PayPal button
+    
+          paypalButtonContainer.style.display = 'block';
+        } else {
+          paypalButtonContainer.style.display = 'none';
+        }
+      });
     </script>
+    
     </div>
-  </section>
+
+</main>
 
   <!-- ======= Footer ======= -->
   <footer id="footer" class="footer">

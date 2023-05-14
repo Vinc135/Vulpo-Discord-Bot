@@ -782,7 +782,7 @@ class economy(commands.Cog):
         embed = discord.Embed(
             color=await getcolour(self, interaction.user),
             description=f"✊ Schere, Stein oder Papier?\nEinsatz: {betrag} 🍪",
-            timestamp=datetime.utcnow()
+            timestamp=datetime.now()
         )
         embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)

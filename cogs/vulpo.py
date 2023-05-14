@@ -338,7 +338,7 @@ class DropdownView(discord.ui.View):
 class vulpo(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.t1 = math.floor(datetime.utcnow().timestamp())
+        self.t1 = math.floor(datetime.now().timestamp())
         self.t2 = datetime.fromtimestamp(int(self.t1))
     
     @commands.Cog.listener()
