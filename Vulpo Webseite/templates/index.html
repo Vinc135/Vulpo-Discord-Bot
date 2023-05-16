@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="4201f56a-66a9-4e81-b252-16665dafb20b" data-blockingmode="auto" type="text/javascript"></script>
+
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Vulpo - Beste Lösung für deinen Discord Server</title>
+  <meta content="Vulpo ist ein vielseitiger Deutscher Discord Bot, der deinen Server sehr gut verwalten kann." name="description">
+  <meta content="discord, bot, discord bot, bester discord bot, deutscher discord bot, economy, levelsystem, gewinnspiele, stats, vulpo premium, premium, günstig, free, gratis" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{{ url_for('static', filename='assets/img/favicon.webp') }}" rel="icon">
+  <link href="{{ url_for('static', filename='assets/img/apple-touch-icon.webp') }}" rel="apple-touch-icon">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+  
+  <!-- Template Main CSS File -->
+  <link href="{{ url_for('static', filename='assets/css/style.css') }}" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: Arsha
+  * Updated: Mar 10 2023 with Bootstrap v5.2.3
+  * Template URL: https://bootstrapmade.com/arsha-free-bootstrap-html-template-corporate/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top ">
+    <div class="container d-flex align-items-center">
+
+      <h1 class="logo me-auto"><a href="{{ url_for('static', filename='index.html') }}">Vulpo</a></h1>
+      <!-- Uncomment below if you prefer to use an image logo -->
+      <!-- <a {{ url_for('static', filename='index.html') }} class="logo me-auto"><img src="assets/img/logo.webp" alt="" class="img-fluid"></a>-->
+
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link scrollto active" href="https://vulpo-bot.de/#hero">Hauptseite</a></li>
+          <li><a class="nav-link scrollto" href="https://vulpo-bot.de/#about">Über Vulpo</a></li>
+          <li><a class="nav-link scrollto" href="https://vulpo-bot.de/#services">Funktionen</a></li>
+          <li><a class="nav-link scrollto" href="https://vulpo-bot.de/#portfolio">Galerie</a></li>
+          <li><a class="nav-link scrollto" href="https://vulpo-bot.de/#team">Team</a></li>
+          <li class="dropdown"><a href="#"><span>Premium</span> <i class="bi bi-chevron-down"></i></a>
+            <ul>
+              <li><a href="https://vulpo-bot.de/premium">Mehr Informationen</a></li>
+              <li><a href="https://vulpo-bot.de/login">Mit Discord einloggen & kaufen</a></li>
+            </ul>
+          </li>
+          <li><a class="nav-link scrollto" href="https://vulpo-bot.de/#contact">Kontakt</a></li>
+          <li><a class="getstarted scrollto" href="https://vulpo-bot.de/invite">Einladen</a></li>
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav><!-- .navbar -->
+
+    </div>
+  </header><!-- End Header -->
+
+  <!-- ======= Hero Section ======= -->
+  <section id="hero" class="d-flex align-items-center">
+
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 d-flex flex-column justify-content-center pt-4 pt-lg-0 order-2 order-lg-1" data-aos="fade-up" data-aos-delay="200">
+          <h1>Beste Lösung für deinen Discord Server</h1>
+          <h2>Vulpo ist ein moderner Discord Bot, der dir eine einfache und effiziente Lösung zur Verwaltung deines Discord Servers bietet.</h2>
+          <div class="d-flex justify-content-center justify-content-lg-start">
+            <a href="https://vulpo-bot.de/invite" class="btn-get-started scrollto">Einladen</a>
+            <a href="https://vulpo-bot.de/support" class="glightbox btn-watch-video"><i class="bi bi-link"></i><span>Supportserver</span></a>
+          </div>
+        </div>
+        <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-in" data-aos-delay="200">
+          <img src="{{ url_for('static', filename='assets/img/hero-img.webp') }}" class="img-fluid animated" alt="">
+        </div>
+      </div>
+    </div>
+
+  </section><!-- End Hero -->
+
+  <main id="main">
+
+    <!-- ======= Clients Section ======= -->
+    <section id="clients" class="clients section-bg">
+      <div class="container">
+
+        <div class="row" data-aos="zoom-in">
+
+          <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center">
+            <img src="{{ url_for('static', filename='assets/img/clients/client-1.webp') }}" class="img-fluid" alt="">
+          </div>
+
+          <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center">
+            <img src="{{ url_for('static', filename='assets/img/clients/client-2.webp') }}" class="img-fluid" alt="">
+          </div>
+
+          <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center">
+            <img src="{{ url_for('static', filename='assets/img/clients/client-3.webp') }}" class="img-fluid" alt="">
+          </div>
+
+          <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center">
+            <img src="{{ url_for('static', filename='assets/img/clients/client-4.webp') }}" class="img-fluid" alt="">
+          </div>
+
+          <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center">
+            <img src="{{ url_for('static', filename='assets/img/clients/client-5.webp') }}" class="img-fluid" alt="">
+          </div>
+
+          <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center">
+            <img src="{{ url_for('static', filename='assets/img/clients/client-6.webp') }}" class="img-fluid" alt="">
+          </div>
+
+        </div>
+
+      </div>
+    </section><!-- End Cliens Section -->
+
+    <!-- ======= About Us Section ======= -->
+    <section id="about" class="about">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+          <h2>Über Vulpo</h2>
+        </div>
+
+        <div class="row content">
+          <div class="col-lg-6">
+            <p>
+              Vulpo ist ein Discord-Bot, der entwickelt wurde, um deinen Discord-Server zu bereichern. Mit einer Vielzahl von Funktionen bringt Vulpo Dynamik und Unterhaltung in deine Community.
+            </p>
+            <ul>
+              <li><i class="ri-check-double-line"></i> Große Reichweite und ansprechendes Design</li>
+              <li><i class="ri-check-double-line"></i> Bringt Dynamik und Unterhaltung in deinen Discord-Server</li>
+              <li><i class="ri-check-double-line"></i> Zu 99,99% online</li>
+              <li><i class="ri-check-double-line"></i> Einzigartiges Statistik-System, das Verhalten deiner Mitglieder analysiert.</li>
+            </ul>
+          </div>
+          <div class="col-lg-6 pt-4 pt-lg-0">
+            <p>
+              Egal, ob du Spiele, Spaß oder nützliche Tools für deinen Server möchtest, Vulpo hat alles, was du brauchst. Sein benutzerfreundliches Design und seine hohe Reichweite machen ihn für jeden interessant.
+            </p>
+            <p>Mit Funktionen wie einem Levelsystem, automatischer Moderation und vielem mehr hebt sich Vulpo von anderen Bots ab. Er wird kontinuierlich weiterentwickelt, um sicherzustellen, dass du immer die besten Funktionen zur Verfügung hast.</p>
+          </div>
+        </div>
+
+      </div>
+    </section><!-- End About Us Section -->
+
+    <!-- ======= Why Us Section ======= -->
+    <section id="why-us" class="why-us section-bg">
+      <div class="container-fluid" data-aos="fade-up">
+
+        <div class="row">
+
+          <div class="col-lg-7 d-flex flex-column justify-content-center align-items-stretch  order-2 order-lg-1">
+
+            <div class="content">
+              <h3>Warum solltest du gerade <strong>Vulpo</strong> nehmen?</h3>
+              <p>
+                Du bist dir unsicher ob Vulpo etwas für dich ist? Hier erfährst du warum ja!
+              </p>
+            </div>
+
+            <div class="accordion-list">
+              <ul>
+                <li>
+                  <a data-bs-toggle="collapse" class="collapse" data-bs-target="#accordion-list-1"><span>01</span> Vielseitigkeit <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+                  <div id="accordion-list-1" class="collapse show" data-bs-parent=".accordion-list">
+                    <p>
+                      Warum Vulpo nutzen? Vulpo bietet eine breite Palette an Funktionen, die deinen Discord-Server dynamisch und unterhaltsam machen. Mit Features wie einem Levelsystem, automatischer Moderation und vielen weiteren Tools bietet Vulpo eine vielseitige Lösung, um deine Community zu begeistern und zu engagieren.
+                    </p>
+                  </div>
+                </li>
+
+                <li>
+                  <a data-bs-toggle="collapse" data-bs-target="#accordion-list-2" class="collapsed"><span>02</span> Benutzerfreundlichkeit <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+                  <div id="accordion-list-2" class="collapse" data-bs-parent=".accordion-list">
+                    <p>
+                      Warum ist Vulpo die richtige Wahl? Vulpo zeichnet sich durch eine benutzerfreundliche Oberfläche und eine einfache Bedienung aus. Egal, ob du ein erfahrener Discord-Administrator oder ein Einsteiger bist, Vulpo ermöglicht es dir, die Funktionen mühelos zu nutzen und das Beste aus deinem Server herauszuholen.
+                    </p>
+                  </div>
+                </li>
+
+                <li>
+                  <a data-bs-toggle="collapse" data-bs-target="#accordion-list-3" class="collapsed"><span>03</span> Aktive Entwicklung <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+                  <div id="accordion-list-3" class="collapse" data-bs-parent=".accordion-list">
+                    <p>
+                      Warum sollte man auf Vulpo setzen? Vulpo wird kontinuierlich weiterentwickelt, um neue Funktionen, Verbesserungen und Updates bereitzustellen. Dies bedeutet, dass du immer Zugriff auf die neuesten und besten Tools hast, um deinen Discord-Server stets auf dem neuesten Stand zu halten und deine Community zu begeistern.
+                    </p>
+                  </div>
+                </li>
+
+              </ul>
+            </div>
+
+          </div>
+          
+          {% set url_for_static = url_for('static', filename='assets/img/why-us.webp') %}
+          <div class="col-lg-5 align-items-stretch order-1 order-lg-2 img" style="background-image: url('{{ url_for_static }}');" data-aos="zoom-in" data-aos-delay="150">&nbsp;</div>
+        </div>
+
+      </div>
+    </section><!-- End Why Us Section -->
+
+    <!-- ======= Skills Section ======= -->
+    <!-- <section id="skills" class="skills">
+      <div class="container" data-aos="fade-up">
+
+        <div class="row">
+          <div class="col-lg-6 d-flex align-items-center" data-aos="fade-right" data-aos-delay="100">
+            <img src="assets/img/skills.webp" class="img-fluid" alt="">
+          </div>
+          <div class="col-lg-6 pt-4 pt-lg-0 content" data-aos="fade-left" data-aos-delay="100">
+            <h3>Voluptatem dignissimos provident quasi corporis voluptates</h3>
+            <p class="fst-italic">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+              magna aliqua.
+            </p>
+
+            <div class="skills-content">
+
+              <div class="progress">
+                <span class="skill">HTML <i class="val">100%</i></span>
+                <div class="progress-bar-wrap">
+                  <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+
+              <div class="progress">
+                <span class="skill">CSS <i class="val">90%</i></span>
+                <div class="progress-bar-wrap">
+                  <div class="progress-bar" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+
+              <div class="progress">
+                <span class="skill">JavaScript <i class="val">75%</i></span>
+                <div class="progress-bar-wrap">
+                  <div class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+
+              <div class="progress">
+                <span class="skill">Photoshop <i class="val">55%</i></span>
+                <div class="progress-bar-wrap">
+                  <div class="progress-bar" role="progressbar" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div> -->
+    <!-- </section>End Skills Section -->
+
+    <!-- ======= Services Section ======= -->
+    <section id="services" class="services section-bg">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+          <h2>Funktionen</h2>
+          <p>Vulpo bietet sehr viele Funktionen. Hier sind die Highlights.</p>
+        </div>
+
+        <div class="row">
+          <div class="col-xl-3 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
+            <div class="icon-box">
+              <div class="icon"><i class="bx bxl-dribbble"></i></div>
+              <h4><a href="">Interaktives Levelsystem</a></h4>
+              <p>Belohne deine Community und schaffe Engagement mit unserem interaktiven Levelsystem. Lass die Mitglieder durch Aktivität und Interaktion im Server aufsteigen und schalte coole Belohnungen frei.</p>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-md-6 d-flex align-items-stretch mt-4 mt-md-0" data-aos="zoom-in" data-aos-delay="200">
+            <div class="icon-box">
+              <div class="icon"><i class="bx bx-file"></i></div>
+              <h4><a href="">Automatische Moderation</a></h4>
+              <p>Halte deinen Server sicher und frei von Regelverstößen mit unserer fortschrittlichen automatischen Moderationsfunktion. Vulpo überwacht den Chat, filtert unangemessene Inhalte und setzt automatisch Maßnahmen gegen Spam, Beleidigungen und andere Verstöße.</p>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-md-6 d-flex align-items-stretch mt-4 mt-xl-0" data-aos="zoom-in" data-aos-delay="300">
+            <div class="icon-box">
+              <div class="icon"><i class="bx bx-tachometer"></i></div>
+              <h4><a href="">Wirtschaftssystem</a></h4>
+              <p>Erstelle eine lebendige Wirtschaft in deinem Server mit unserem umfangreichen Wirtschaftssystem. Lass deine Mitglieder virtuelles Geld verdienen, handeln und einflussreiche Positionen erreichen, um eine aktive und engagierte Community zu schaffen.</p>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-md-6 d-flex align-items-stretch mt-4 mt-xl-0" data-aos="zoom-in" data-aos-delay="400">
+            <div class="icon-box">
+              <div class="icon"><i class="bx bx-layer"></i></div>
+              <h4><a href="">Moderne Gewinnspiele</a></h4>
+              <p>Steigere die Aufregung und Interaktion in deinem Discord-Server mit unseren benutzerdefinierten Gewinnspielaktionen. Ermittle automatisch Gewinner, setze Teilnahmebedingungen und belohne engagierte Mitglieder. Erwecke deinen Server mit Vulpo zum Leben!</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section><!-- End Services Section -->
+
+    <!-- ======= Cta Section ======= -->
+    <section id="cta" class="cta">
+      <div class="container" data-aos="zoom-in">
+
+        <div class="row">
+          <div class="col-lg-9 text-center text-lg-start">
+            <h3>Na schon überzeugt? Starte jetzt.</h3>
+            <p> Starte mit der Nutzung von Vulpo in nur wenigen Klicks und werde zum Meister deines Discord-Servers.</p>
+          </div>
+          <div class="col-lg-3 cta-btn-container text-center">
+            <a class="cta-btn align-middle" href="https://vulpo-bot.de/invite">Vulpo einladen</a>
+          </div>
+        </div>
+
+      </div>
+    </section><!-- End Cta Section -->
+
+    <!-- ======= Portfolio Section ======= -->
+    <section id="portfolio" class="portfolio">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+          <h2>Portfolio</h2>
+          <p>Hier erfährst du mehr Details und siehst Beispiele für diverese Funktionen.</p>
+        </div>
+
+        <div class="row portfolio-container" data-aos="fade-up" data-aos-delay="200">
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/automod.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-info">
+              <h4>Automatische Moderation</h4>
+              <a href="{{ url_for('static', filename='assets/img/portfolio/automod.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Automatische Moderation"><i class="bx bx-plus"></i></a>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-web">
+            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/eco.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-info">
+              <h4>Globales Wirtschaftssystem</h4>
+              <a href="{{ url_for('static', filename='assets/img/portfolio/eco.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Globales Wirtschaftssystem"><i class="bx bx-plus"></i></a>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-web">
+            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/emojiquiz.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-info">
+              <h4>Emojiquiz</h4>
+              <a href="{{ url_for('static', filename='assets/img/portfolio/emojiquiz.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Emojiquiz"><i class="bx bx-plus"></i></a>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-web">
+            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/gewinnspiele.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-info">
+              <h4>Gewinnspiele</h4>
+              <a href="{{ url_for('static', filename='assets/img/portfolio/gewinnspiele.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Gewinnspiele"><i class="bx bx-plus"></i></a>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-web">
+            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/lvl.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-info">
+              <h4>Levelsystem</h4>
+              <a href="{{ url_for('static', filename='assets/img/portfolio/lvl.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Levelsystem"><i class="bx bx-plus"></i></a>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-web">
+            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/minispiele.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-info">
+              <h4>Minispiele</h4>
+              <a href="{{ url_for('static', filename='assets/img/portfolio/minispiele.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Minispiele"><i class="bx bx-plus"></i></a>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-web">
+            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/rr.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-info">
+              <h4>Reaktionsrollen</h4>
+              <a href="{{ url_for('static', filename='assets/img/portfolio/rr.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Reaktionsrollen"><i class="bx bx-plus"></i></a>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-web">
+            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/stats-1.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/stats-2.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-info">
+              <h4>Statistiken</h4>
+              <a href="{{ url_for('static', filename='assets/img/portfolio/stats-1.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Statistiken 1"><i class="bx bx-plus"></i></a>
+              <a href="{{ url_for('static', filename='assets/img/portfolio/stats-2.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Statistiken 1"><i class="bx bx-plus"></i></a>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-web">
+            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/tag.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-info">
+              <h4>Custom Commands (Tags)</h4>
+              <a href="{{ url_for('static', filename='assets/img/portfolio/tag.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Custom Commands (Tags)"><i class="bx bx-plus"></i></a>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-web">
+            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/tempchannel_1.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/tempchannel_2.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-info">
+              <h4>Temporäre Sprachkanäle</h4>
+              <a href="{{ url_for('static', filename='assets/img/portfolio/tempchannel_1.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Temporäre Sprachkanäle 1"><i class="bx bx-plus"></i></a>
+              <a href="{{ url_for('static', filename='assets/img/portfolio/tempchannel_2.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Temporäre Sprachkanäle 2"><i class="bx bx-plus"></i></a>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-web">
+            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/ticket.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-info">
+              <h4>Ticketsystem</h4>
+              <a href="{{ url_for('static', filename='assets/img/portfolio/ticket.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Ticketsystem"><i class="bx bx-plus"></i></a>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-web">
+            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/ttt.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-info">
+              <h4>Tictactoe</h4>
+              <a href="{{ url_for('static', filename='assets/img/portfolio/ttt.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Tictactoe"><i class="bx bx-plus"></i></a>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-web">
+            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/welcome.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-info">
+              <h4>Willkommensnachrichten</h4>
+              <a href="{{ url_for('static', filename='assets/img/portfolio/welcome.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Willkommensnachrichten"><i class="bx bx-plus"></i></a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section><!-- End Portfolio Section -->
+
+    <!-- ======= Team Section ======= -->
+    <section id="team" class="team section-bg">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+          <h2>Team</h2>
+          <p> Unser engagiertes Team steht bereit, um dir bei allen Fragen und Anliegen rund um Vulpo zur Seite zu stehen. Wir sind stolz auf unsere Expertise und arbeiten kontinuierlich daran, Vulpo zu verbessern und neue Funktionen hinzuzufügen. Verlass dich auf unser erfahrenes Team, um dir den bestmöglichen Support zu bieten und sicherzustellen, dass dein Discord-Erlebnis mit Vulpo reibungslos verläuft.
+        </div>
+
+        <div class="row">
+
+          <div class="col-lg-6" data-aos="zoom-in" data-aos-delay="100">
+            <div class="member d-flex align-items-start">
+              <div class="pic"><img src="{{ url_for('static', filename='assets/img/team/team-1.webp') }}" class="img-fluid" alt=""></div>
+              <div class="member-info">
+                <h4>Vincent L.</h4>
+                <span>CEO, Softwareingenieur</span>
+                <p>Unser visionärer Gründer und CEO, der Vulpo mit strategischer Führung vorantreibt und das Unternehmen zu neuen Höhen führt.</p>
+                <div class="social">
+                  <a href=""><i class="ri-twitter-fill"></i></a>
+                  <a href=""><i class="ri-facebook-fill"></i></a>
+                  <a href=""><i class="ri-instagram-fill"></i></a>
+                  <a href=""> <i class="ri-linkedin-box-fill"></i> </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6 mt-4 mt-lg-0" data-aos="zoom-in" data-aos-delay="200">
+            <div class="member d-flex align-items-start">
+              <div class="pic"><img src="{{ url_for('static', filename='assets/img/team/team-2.webp') }}" class="img-fluid" alt=""></div>
+              <div class="member-info">
+                <h4>Ensar S.</h4>
+                <span>Administrative Fachkraft, Teamleitung</span>
+                <p>Erfahren und engagiert, kümmert sich Ensar um die reibungslose Verwaltung und Organisation des Servers. Mit Fachkenntnis und Organisationstalent sorgt er für ein angenehmes und gut funktionierendes Umfeld für die Community.</p>
+                <div class="social">
+                  <a href=""><i class="ri-twitter-fill"></i></a>
+                  <a href=""><i class="ri-facebook-fill"></i></a>
+                  <a href=""><i class="ri-instagram-fill"></i></a>
+                  <a href=""> <i class="ri-linkedin-box-fill"></i> </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-lg-6 mt-4" data-aos="zoom-in" data-aos-delay="300">
+            <div class="member d-flex align-items-start">
+              <div class="pic"><img src="{{ url_for('static', filename='assets/img/team/team-3.webp') }}" class="img-fluid" alt=""></div>
+              <div class="member-info">
+                <h4>Hugo W.</h4>
+                <span>Moderation</span>
+                <p>Unser engagierter Moderator, der für Harmonie und Respekt im Server sorgt. Er ist immer bereit zu helfen und Fragen zu beantworten, um sicherzustellen, dass alle Mitglieder eine positive Erfahrung machen.</p>
+                <div class="social">
+                  <a href=""><i class="ri-twitter-fill"></i></a>
+                  <a href=""><i class="ri-facebook-fill"></i></a>
+                  <a href=""><i class="ri-instagram-fill"></i></a>
+                  <a href=""> <i class="ri-linkedin-box-fill"></i> </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6 mt-4" data-aos="zoom-in" data-aos-delay="300">
+            <div class="member d-flex align-items-start">
+              <div class="pic"><img src="{{ url_for('static', filename='assets/img/team/team-4.webp') }}" class="img-fluid" alt=""></div>
+              <div class="member-info">
+                <h4>Fabio</h4>
+                <span>Moderation</span>
+                <p>Unser engagierter Moderator, der für eine freundliche und respektvolle Atmosphäre im Server sorgt. Konfliktlösung und Durchsetzung der Regeln sind seine Stärken.</p>
+                <div class="social">
+                  <a href=""><i class="ri-twitter-fill"></i></a>
+                  <a href=""><i class="ri-facebook-fill"></i></a>
+                  <a href=""><i class="ri-instagram-fill"></i></a>
+                  <a href=""> <i class="ri-linkedin-box-fill"></i> </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6 mt-4" data-aos="zoom-in" data-aos-delay="400">
+            <div class="member d-flex align-items-start">
+              <div class="pic"><img src="{{ url_for('static', filename='assets/img/team/team-5.webp') }}" class="img-fluid" alt=""></div>
+              <div class="member-info">
+                <h4>Skye C.</h4>
+                <span>Support</span>
+                <p>Unsere zuverlässige Support-Mitarbeiterin, die dir mit freundlichem Service und fundiertem Wissen zur Seite steht. Sie ist bemüht, deine Anliegen schnell und effizient zu bearbeiten und sicherzustellen, dass du die bestmögliche Unterstützung erhältst.</p>
+                <div class="social">
+                  <a href=""><i class="ri-twitter-fill"></i></a>
+                  <a href=""><i class="ri-facebook-fill"></i></a>
+                  <a href=""><i class="ri-instagram-fill"></i></a>
+                  <a href=""> <i class="ri-linkedin-box-fill"></i> </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6 mt-4" data-aos="zoom-in" data-aos-delay="400">
+            <div class="member d-flex align-items-start">
+              <div class="pic"><img src="{{ url_for('static', filename='assets/img/team/team-6.webp') }}" class="img-fluid" alt=""></div>
+              <div class="member-info">
+                <h4>Leon E.</h4>
+                <span>Technik</span>
+                <p>Unser VPS-Server-Experte, der für eine reibungslose technische Leistung von Vulpo sorgt.</p>
+                <div class="social">
+                  <a href=""><i class="ri-twitter-fill"></i></a>
+                  <a href=""><i class="ri-facebook-fill"></i></a>
+                  <a href=""><i class="ri-instagram-fill"></i></a>
+                  <a href=""> <i class="ri-linkedin-box-fill"></i> </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section><!-- End Team Section -->
+
+    <!-- ======= Frequently Asked Questions Section ======= -->
+    <section id="faq" class="faq section-bg">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+          <h2>Häufig gestellte Fragen</h2>
+          <p>In unserer FAQ-Sektion findest du Antworten auf die am häufigsten gestellten Fragen zu Vulpo. Wir haben die wichtigsten Informationen und Lösungen für dich zusammengestellt, um dir bei der Nutzung und dem Verständnis von Vulpo zu helfen. Durchstöbere unsere FAQ, um schnell und einfach Antworten auf deine Fragen zu finden und das Beste aus deinem Vulpo-Erlebnis herauszuholen.
+          </p>
+        </div>
+
+        <div class="faq-list">
+          <ul>
+            <li data-aos="fade-up" data-aos-delay="100">
+              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" class="collapse" data-bs-target="#faq-list-1">Wie deaktiviere/aktiviere ich das Levelsystem? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <div id="faq-list-1" class="collapse show" data-bs-parent=".faq-list">
+                <p>
+                  Mit dem Befehl <strong>/levelsystem status</strong> kannst du das Levelsystem ganz einfach deaktivieren und aktivieren.
+                </p>
+              </div>
+            </li>
+
+            <li data-aos="fade-up" data-aos-delay="200">
+              <i class="bx bx-help-circle icon-help"></i> <a data-bs-toggle="collapse" data-bs-target="#faq-list-2" class="collapsed">Wo kann man Premium kaufen? <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+              <div id="faq-list-2" class="collapse" data-bs-parent=".faq-list">
+                <p>
+                  Du kannst <strong>Premium</strong> hier kaufen: <a href="https://vulpo-bot.de/premium">Premium Produktseite</a>
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </section><!-- End Frequently Asked Questions Section -->
+
+    <!-- ======= Contact Section ======= -->
+    <section id="contact" class="contact">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+          <h2>Kontakt</h2>
+          <p>Bei Fragen, Anregungen oder Problemen steht unser Team gerne zur Verfügung. Du kannst uns über Discord erreichen oder uns direkt per E-Mail kontaktieren. Wir freuen uns darauf, von dir zu hören und helfen dir gerne weiter. Zögere nicht, uns zu kontaktieren, wenn du Unterstützung benötigst oder weitere Informationen wünschst.</p>
+        </div>
+
+        <div class="row">
+
+          <div class="col-lg-20 d-flex align-items-stretch">
+            <div class="info">
+              <div class="email">
+                <i class="bi bi-envelope"></i>
+                <h4>Email:</h4>
+                <p>kontakt@vulpo-bot.de</p>
+              </div>
+
+              <div class="phone">
+                <i class="bi bi-link"></i>
+                <h4>Discord:</h4>
+                <p>https://vulpo-bot.de/support</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section><!-- End Contact Section -->
+
+  </main><!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer">
+
+    <div class="footer-newsletter">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-6">
+            <h4>Erhalte den <strong>vollen Zugang</strong> zu Vulpo mit <strong>Vulpo Premium</strong></h4>
+            <p>Exklusive Vorteile und erweiterte Funktionen für ein verbessertes Discord-Erlebnis. Erweiterte Moderation, personalisierbare Einstellungen und vieles mehr.</p>
+            <h5><strong><a href="https://vulpo-bot.de/premium" class="btn-get-started scrollto">Premium entdecken</a></strong></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-top">
+      <div class="container">
+        <div class="row">
+
+          <div class="col-lg-3 col-md-6 footer-contact">
+            <h3>Vulpo</h3>
+            <p>
+              Stell dir einen Bot vor, der ideal deinen Server verwalten kann. Der nützliche Funktionen wie Levelsystem, Gewinnspiele und viele mehr hat. Ein Bot, der sich perfekt deinen Bedürfnissen anpasst.
+            </p>
+          </div>
+
+          <div class="col-lg-3 col-md-6 footer-links">
+            <h4>Nützliche Links</h4>
+            <ul>
+              <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/#hero">Hauptseite</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/#about">Über Vulpo</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/#services">Funktionen</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/#portfolio">Galerie</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/#team">Team</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/premium">Premium Informationen</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/login">Mit Discord einloggen & Premium kaufen</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/#contact">Kontakt</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-3 col-md-6 footer-links">
+            <h4>Weiterführende Links</h4>
+            <ul>
+              <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/invite">Einladen</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/support">Supportserver</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/formulare">Weiterführendes</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-3 col-md-6 footer-links">
+            <h4>Rechtliches</h4>
+            <ul>
+              <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/impressum">Impressum</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/datenschutz">Datenschutz</a></li>
+            </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container footer-bottom clearfix">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Vulpo</span></strong>. Alle Rechte reserviert
+      </div>
+      <div class="credits">
+        <!-- All the links in the footer should remain intact. -->
+        <!-- You can delete the links only if you purchased the pro version. -->
+        <!-- Licensing information: https://bootstrapmade.com/license/ -->
+        <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/arsha-free-bootstrap-html-template-corporate/ -->
+        Designt von <a href="https://bootstrapmade.com/">BootstrapMade</a>
+      </div>
+    </div>
+  </div>
+  </footer><!-- End Footer -->
+
+  <div id="preloader"></div>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="{{ url_for('static', filename='assets/vendor/aos/aos.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/waypoints/noframework.waypoints.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/php-email-form/validate.js') }}"></script>
+
+  <!-- Template Main JS File -->
+  <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+
+</body>
+
+</html>

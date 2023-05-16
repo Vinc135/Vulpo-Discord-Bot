@@ -136,7 +136,6 @@ class Vulpo(commands.AutoShardedBot):
         <:v_info:1037065915113676891> **Vulpo ist jetzt auf {len(bot.guilds)} Servern drauf! Yay 🎉**
         """
         embed = discord.Embed(colour=discord.Colour.green(), title=f"Vulpo wurde auf {guild.name} eingeladen!", description=msg)
-        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         embed.set_thumbnail(url=guild.icon if guild.icon else "https://cdn.discordapp.com/attachments/971092445435682907/973630982425047050/server_join.png")
         await channels.send(embed=embed)
 
@@ -159,7 +158,6 @@ class Vulpo(commands.AutoShardedBot):
             """
             
             embed = discord.Embed(colour=discord.Colour.red(), title=f"Vulpo wurde aus {guild.name} rausgeschmissen!", description=msg)
-            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_thumbnail(url=guild.icon if guild.icon else 'https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549')
             await channels.send(embed=embed)
         except:
@@ -300,7 +298,7 @@ class Vulpo(commands.AutoShardedBot):
             async with conn.cursor() as cursor:
                 try:
                     topgg_webhook = topgg.WebhookManager(bot).dbl_webhook("/dblwebhook", "Vulpo123321")
-                    await topgg_webhook.run(25505)
+                    await topgg_webhook.run(22)
                     print("✅ Verbunden mit der topgg api")
                 except:
                     print("❌ Verbindung zur topgg api fehlgeschlagen")

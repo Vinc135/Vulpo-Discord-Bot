@@ -45,9 +45,9 @@ class premium(commands.Cog):
                 await cursor.execute("SELECT status FROM premium WHERE userID = (%s)", (interaction.user.id))
                 status = await cursor.fetchone()
                 if status == None:
-                    return await interaction.response.send_message("❌ **Du hast kein Premium.**", ephemeral=True)
+                    return await interaction.response.send_message("❌ **Du hast kein Premium. Premium ist heiß begehrt. Du kannst es bekommen, indem du ein Abonnement wirst: https://vulpo-bot.de/premium.**", ephemeral=True)
                 if status[0] == 0:
-                    return await interaction.response.send_message("❌ **Du hast kein Premium.**", ephemeral=True)
+                    return await interaction.response.send_message("❌ **Du hast kein Premium. Premium ist heiß begehrt. Du kannst es bekommen, indem du ein Abonnement wirst: https://vulpo-bot.de/premium.**", ephemeral=True)
                 if neuefarbe is None:
                     embed = discord.Embed(title="Farbe", description="Dies ist deine aktuelle Farbe, sie wird bei allen Embeds, die für dich bestimmt sind, verwendet.", color=await getcolour(self, interaction.user))
                     await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -79,9 +79,9 @@ class premium(commands.Cog):
                 await cursor.execute("SELECT status FROM premium WHERE userID = (%s)", (interaction.user.id))
                 status = await cursor.fetchone()
                 if status == None:
-                    return await interaction.response.send_message("❌ **Du hast kein Premium.**", ephemeral=True)
+                    return await interaction.response.send_message("❌ **Du hast kein Premium. Premium ist heiß begehrt. Du kannst es bekommen, indem du ein Abonnement wirst: https://vulpo-bot.de/premium.**", ephemeral=True)
                 if status[0] == 0:
-                    return await interaction.response.send_message("❌ **Du hast kein Premium.**", ephemeral=True)
+                    return await interaction.response.send_message("❌ **Du hast kein Premium. Premium ist heiß begehrt. Du kannst es bekommen, indem du ein Abonnement wirst: https://vulpo-bot.de/premium.**", ephemeral=True)
                 bild.save(f"Rank_Bilder/{interaction.user.id}.png")
                 fullpath = os.path.join("Rank_Bilder/", f"{interaction.user.id}.png")
                 image.save(fullpath)
