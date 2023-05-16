@@ -1,3 +1,0 @@
-greenletio
-flask>=2
-uvicorn

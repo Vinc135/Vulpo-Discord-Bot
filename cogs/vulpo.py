@@ -44,7 +44,7 @@ __<:v_user:1037065935015653476> User Befehle__
 `/premium rangkarte` Ändere das Bild deiner Rangkarte.
 
 __<:v_ticket:1037065933014958230> Premium erhalten__
-Premium ist heiß begehrt. Du kannst es bekommen, indem du ein Patron wirst: https://patreon.com/Vulpo. Um dir deine Vorteile zu sichern, musst du im Supportserver ein Ticket öffnen, mit dem Nachweis dass du es gekauft hast."""
+Premium ist heiß begehrt. Du kannst es bekommen, indem du ein Abonnement wirst: https://vulpo-bot.de/premium."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
