@@ -1,13 +1,20 @@
-import json
 import os
 from flask import Flask, redirect, request, render_template, session
 from requests_oauthlib import OAuth2Session
 from credentials import client_id, client_secret, base_discord_api_url, authorize_url, token_url, redirect_uri, scope
-import requests
 import aiomysql
 import asyncio
-from flask_session import Session
 import paypalrestsdk
+from datetime import datetime, timedelta
+import discord
+import requests
+import math
+
+VERIFY_URL_PROD = 'https://ipnpb.paypal.com/cgi-bin/webscr'
+VERIFY_URL_TEST = 'https://ipnpb.sandbox.paypal.com/cgi-bin/webscr'
+VERIFY_URL = VERIFY_URL_PROD
+
+# App is behind one proxy that sets the -For and -Host headers.
 
 async def open_acc(userid, p):
     async with p.acquire() as conn:
@@ -26,16 +33,16 @@ async def addcookies(userid, p):
     await open_acc(userid, p)
     async with p.acquire() as conn:
         async with conn.cursor() as cursor:
-            await cursor.execute("SELECT stunden FROM economy WHERE userID = (%s)", (userid))
+            await cursor.execute("SELECT bank FROM economy WHERE userID = (%s)", (userid))
             result = await cursor.fetchone()
-            await cursor.execute("UPDATE economy SET stunden = (%s) WHERE userID = (%s)", (int(result[0]) + 1, userid))
+            await cursor.execute("UPDATE economy SET bank = (%s) WHERE userID = (%s)", (int(result[0]) + 100000, userid))
 
 async def create_pool(loop):
     pool = await aiomysql.create_pool(
-        host='142.132.233.69',
-        user='u64287_IF3HQ8wHRH',
-        password='3oKMMVfuEqv^Xcvf@i!3bzw^',
-        db='s64287_VulpoDB',
+        host='157.90.72.7',
+        user='databaseAdmin',
+        password='OkUyBflP3l3i8ax$*A4',
+        db='VulpoDB',
         autocommit=True,
         port=3306,
         loop=loop,
@@ -44,7 +51,7 @@ async def create_pool(loop):
     return pool
 
 async def checkpremium(response, p):
-    async with p.get() as conn:
+    async with p.acquire() as conn:
         async with conn.cursor() as cursor:
             await cursor.execute("SELECT status FROM premium WHERE userID = (%s)", (response.json()["id"]))
             status = await cursor.fetchone()
@@ -54,37 +61,93 @@ async def checkpremium(response, p):
                 return False
             return True
         
-async def insert_join_roles(type, guildid, roles, p):
-    async with p.get() as conn:
-        async with conn.cursor() as cursor:
-            if type == "Member":
-                await cursor.execute("DELETE FROM joinroles WHERE guild_id = (%s)", (guildid))
-                for role in roles:
-                    await cursor.execute("INSERT INTO joinroles(guild_id, role_id) VALUES(%s, %s)", (guildid, role))
-            if type == "Bot":
-                await cursor.execute("DELETE FROM botroles WHERE guild_id = (%s)", (guildid))
-                for role in roles:
-                    await cursor.execute("INSERT INTO botroles(guild_id, role_id) VALUES(%s, %s)", (guildid, role))
+# async def insert_join_roles(type, guildid, roles, p):
+#     async with p.acquire() as conn:
+#         async with conn.cursor() as cursor:
+#             if type == "Member":
+#                 await cursor.execute("DELETE FROM joinroles WHERE guild_id = (%s)", (guildid))
+#                 for role in roles:
+#                     await cursor.execute("INSERT INTO joinroles(guild_id, role_id) VALUES(%s, %s)", (guildid, role))
+#             if type == "Bot":
+#                 await cursor.execute("DELETE FROM botroles WHERE guild_id = (%s)", (guildid))
+#                 for role in roles:
+#                     await cursor.execute("INSERT INTO botroles(guild_id, role_id) VALUES(%s, %s)", (guildid, role))
 
-async def insert_starboard(guildid, channel, p):
-    async with p.get() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute("DELETE FROM starboard WHERE guildID = (%s)", (guildid))
-            await cursor.execute("INSERT INTO starboard(guildID, channelID) VALUES(%s, %s)", (guildid, channel))
+# async def insert_starboard(guildid, channel, p):
+#     async with p.acquire() as conn:
+#         async with conn.cursor() as cursor:
+#             await cursor.execute("DELETE FROM starboard WHERE guildID = (%s)", (guildid))
+#             await cursor.execute("INSERT INTO starboard(guildID, channelID) VALUES(%s, %s)", (guildid, channel))
 
-async def delete_starboard(guildid, p):
-    async with p.get() as conn:
+# async def delete_starboard(guildid, p):
+#     async with p.acquire() as conn:
+#         async with conn.cursor() as cursor:
+#             await cursor.execute("DELETE FROM starboard WHERE guildID = (%s)", (guildid))
+
+async def remove_premium(userID, p):
+    async with p.acquire() as conn:
         async with conn.cursor() as cursor:
-            await cursor.execute("DELETE FROM starboard WHERE guildID = (%s)", (guildid))
-        
-async def add_premium(orderID, subscriptionID, userID, p):
-    async with p.get() as conn:
+            await cursor.execute("DELETE FROM premium WHERE userID = (%s)", (userID))
+
+async def asyncio_task(userID, when: datetime, p):
+    await discord.utils.sleep_until(when=when)
+    await remove_premium(userID, p)
+
+async def new_payment(first_name, last_name, payer_email, payer_id, txn_id, userID, item_name, p):
+    async with p.acquire() as conn:
         async with conn.cursor() as cursor:
-            await cursor.execute("INSERT INTO premium(orderID ,subscriptionID, userID, status) VALUES(%s, %s, %s, %s)", (orderID, subscriptionID, userID, 1))
-            await addcookies(userID, p)
-    
-loop = asyncio.get_event_loop()
-pool = loop.run_until_complete(create_pool(loop))
+            await cursor.execute("INSERT INTO zahlungen(first_name, last_name, payer_email, payer_id, txn_id, userID, item_name) VALUES(%s, %s, %s, %s, %s, %s, %s)", (first_name, last_name, payer_email, payer_id, txn_id, userID, item_name))
+            await cursor.execute("SELECT endtime FROM premium WHERE userID = (%s)", (userID))
+            endtime = await cursor.fetchone()
+            if endtime is not None:
+                alte_endzeit_timestamp = int(endtime[0])
+                neue_endzeit_timestamp = alte_endzeit_timestamp  # Setze den initialen Wert auf alte_endzeit_timestamp
+                if item_name == "1 Monat":
+                    neue_endzeit_timestamp += 2419200
+                if item_name == "3 Monate":
+                    neue_endzeit_timestamp += 7862400
+                if item_name == "6 Monate":
+                    neue_endzeit_timestamp += 15724800
+                if item_name == "12 Monate":
+                    neue_endzeit_timestamp += 31449600
+                
+                neue_endzeit_datetime = datetime.fromtimestamp(neue_endzeit_timestamp)
+                await cursor.execute("UPDATE premium SET endtime = (%s) WHERE userID = (%s)", (neue_endzeit_timestamp, userID))
+                
+                # Vorhandene Task mit dem Namen userID suchen und um x Monate verlängern
+                existing_task = asyncio.all_tasks()
+                for task in existing_task:
+                    if str(task.get_name()) == str(userID):
+                        task.cancel()
+                        break
+                
+                asyncio.create_task(asyncio_task(userID, neue_endzeit_datetime, p), name=f"{userID}")
+            else:
+                alte_endzeit_timestamp = math.floor(datetime.now().timestamp())
+                neue_endzeit_timestamp = alte_endzeit_timestamp
+                if item_name == "1 Monat":
+                    neue_endzeit_timestamp += 2419200
+                if item_name == "3 Monate":
+                    neue_endzeit_timestamp += 7862400
+                if item_name == "6 Monate":
+                    neue_endzeit_timestamp += 15724800
+                if item_name == "12 Monate":
+                    neue_endzeit_timestamp += 31449600
+                
+                neue_endzeit_datetime = datetime.fromtimestamp(neue_endzeit_timestamp)
+                await cursor.execute("INSERT INTO premium(endtime, userID, status) VALUES(%s, %s, %s)", (neue_endzeit_timestamp, userID, 1))
+                await addcookies(userID, p)
+                asyncio.create_task(asyncio_task(userID, neue_endzeit_datetime, p), name=f"{userID}")
+
+async def start_all_tasks(p):
+    async with p.acquire() as conn:
+        async with conn.cursor() as cursor:
+            await cursor.execute("SELECT endtime, userID FROM premium")
+            result = await cursor.fetchall()
+            if result != [] or result != () or result != []:
+                for endtime in result:
+                    neue_endzeit_datetime = datetime.fromtimestamp(endtime[0])
+                    asyncio.create_task(asyncio_task(endtime[1], neue_endzeit_datetime, p), name=f"{endtime[1]}")
 
 #—————————————————————————————————————————————#
 #Flask Webserver App erstellen.
@@ -95,7 +158,9 @@ app.config['PAYPAL_MODE'] = 'live'
 app.config['PAYPAL_CLIENT_ID'] = 'AdNZxDHdmW7iJebIw1XY-YuwXHhI5VN7sGeuL-GfgSekyNw93QzQnsCin5A6BjWzE_SGOog1AnH-Id1t'
 app.config['PAYPAL_CLIENT_SECRET'] = 'EATcxSp0L9b6-W7QyuoOE7pYzbmI3RkFstVuDG1_B4imPa2qRLhHEC6bezP-2rck9FSmmM-ZgYUES_Bx'
 
-Session(app)
+aiomysql_loop = asyncio.new_event_loop()
+asyncio.set_event_loop(aiomysql_loop)
+pool = aiomysql_loop.run_until_complete(create_pool(aiomysql_loop))
 
 paypalrestsdk.configure({
     'mode': app.config['PAYPAL_MODE'],
@@ -105,6 +170,7 @@ paypalrestsdk.configure({
 #—————————————————————————————————————————————#
 #Die Umleitungen zu den Pages.
 #Beispiel: vulpo-bot.de/premium anstatt /premium.html
+
 @app.route('/')
 def index():
     """Umleitung zur Hauptseite."""
@@ -145,43 +211,50 @@ def agb():
     """Umleitung zur AGB Seite."""
     return render_template('agb.html')
 
-@app.route('/process', methods=['POST'])
-def process():
-    data = request.json
-    if data['kennung'] == 'Member':
-        task = loop.create_task(insert_join_roles("Member", data['guild_id'], data['selected_roles'], pool))
-        loop.run_until_complete(task)
-        return "OK"
-    if data['kennung'] == 'Bot':
-        task = loop.create_task(insert_join_roles("Bot", data['guild_id'], data['selected_roles'], pool))
-        loop.run_until_complete(task)
-        return "OK"
-    if data['kennung'] == 'Starboard':
-        task = loop.create_task(insert_starboard(data['guild_id'], data['channel_id'], pool))
-        loop.run_until_complete(task)
-        return "OK"
+# @app.route('/process', methods=['POST'])
+# def process():
+#     data = request.json
+#     if data['kennung'] == 'Member':
+#         task = loop.create_task(insert_join_roles("Member", data['guild_id'], data['selected_roles'], pool))
+#         loop.run_until_complete(task)
+#         return "OK"
+#     if data['kennung'] == 'Bot':
+#         task = loop.create_task(insert_join_roles("Bot", data['guild_id'], data['selected_roles'], pool))
+#         loop.run_until_complete(task)
+#         return "OK"
+#     if data['kennung'] == 'Starboard':
+#         task = loop.create_task(insert_starboard(data['guild_id'], data['channel_id'], pool))
+#         loop.run_until_complete(task)
+#         return "OK"
     
-@app.route('/delete', methods=['POST'])
-def delete():
-    data = request.json
-    if data['kennung'] == 'Starboard':
-        task = loop.create_task(delete_starboard(data['guild_id'], pool))
-        loop.run_until_complete(task)
-        return "OK"
+# @app.route('/delete', methods=['POST'])
+# def delete():
+#     data = request.json
+#     if data['kennung'] == 'Starboard':
+#         task = loop.create_task(delete_starboard(data['guild_id'], pool))
+#         loop.run_until_complete(task)
+#         return "OK"
 
-@app.route('/paypal/gekauft', methods=['GET', 'POST'])
-def gekauft():
-    try:
-        data = request.json
-        orderID = data['data']['orderID']
-        subscriptionID = data['data']['subscriptionID']
-        userID = data['userid']
-        task = loop.create_task(add_premium(orderID, subscriptionID, userID, pool))
-        loop.run_until_complete(task)
-        render_template("index.html")
-        return "OK"
-    except Exception as e:
-        return f"{e}\n{data}"
+@app.route('/paypal/ipn', methods=['POST'])
+def paypal_ipn():
+    # Sending message as-is with the notify-validate request
+    params = request.form.to_dict()
+    params['cmd'] = '_notify-validate'
+    headers = {'content-type': 'application/x-www-form-urlencoded',
+            'user-agent': 'Paypal-devdungeon-tester'}
+    response = requests.post(VERIFY_URL, params=params, headers=headers, verify=True)
+    response.raise_for_status()
+
+    # See if PayPal confirms the validity of the IPN received
+    userID = params['custom']
+    first_name = params['first_name']
+    last_name = params['last_name']
+    payer_email = params['payer_email']
+    payer_id = params['payer_id']
+    txn_id = params['txn_id']
+    item_name = params['option_selection1']
+    aiomysql_loop.run_until_complete(new_payment(first_name, last_name, payer_email, payer_id, txn_id, userID, item_name, pool))
+    return "OK", 200
 
 # @app.route('/paypal/webhooks', methods=['POST'])
 # def paypal_webhook():
@@ -206,128 +279,38 @@ def gekauft():
 #         loop.run_until_complete(task)
 #     return 'OK', 200
 
-@app.route('/dashboard', methods=['GET', 'POST'])
-def dashboard():
-    # Check if backend data is sent
-    try:
-        if not all(key in request.form for key in ['guild_name', 'guild_id', 'guild_icon', 'user', 'user_id', 'user_avatar']):
-            return redirect("/login")
-        
-        guild_name = request.form.get('guild_name')
-        guild_id = request.form.get('guild_id')
-        guild_icon = request.form.get('guild_icon')
-        user = request.form.get('user')
-        user_name = request.form.get('user_name')
-        user_id = request.form.get('user_id')
-        user_avatar = request.form.get('user_avatar')
-        kennung = request.form.get('kennung')
-
-        if kennung == "None":
-            return render_template('dashboard.html', guild_name=guild_name, guild_id=guild_id, guild_icon=guild_icon, user=user, user_id=user_id, user_avatar=user_avatar, user_name=user_name)
-        if kennung == "1.1":
-            try:
-                headers = {
-                        'Authorization': 'Bot OTI1Nzk5NTU5NTc2MzIyMDc4.GcwvXN.EkMMDxTqykR8em6L4lJqOouGfvAvH1J1rq9nJQ',
-                }
-
-                roles_response = requests.get(base_discord_api_url + f'/guilds/{guild_id}/roles', headers=headers)
-                roles = []
-                for role in roles_response.json():
-                    roles.append(role)
-                return render_template('1.1.html', guild_name=guild_name, guild_id=guild_id, guild_icon=guild_icon, user=user, user_id=user_id, user_avatar=user_avatar, user_name=user_name, roles=roles)
-            except Exception as e:
-                return f"fehler: {e}"
-        if kennung == "1.2":
-            try:
-                headers = {
-                        'Authorization': 'Bot OTI1Nzk5NTU5NTc2MzIyMDc4.GcwvXN.EkMMDxTqykR8em6L4lJqOouGfvAvH1J1rq9nJQ',
-                }
-
-                channels_response = requests.get(base_discord_api_url + f'/guilds/{guild_id}/channels', headers=headers)
-
-                channels = []
-                for channel in channels_response.json():
-                    if channel['type'] == 0:
-                        channels.append(channel)
-                return render_template('1.2.html', guild_name=guild_name, guild_id=guild_id, guild_icon=guild_icon, user=user, user_id=user_id, user_avatar=user_avatar, user_name=user_name, channels=channels)
-            except Exception as e:
-                return f"fehler: {e}"
-        if kennung == "1.3":
-            return "Erfolgreich 1.3"
-        if kennung == "2.1":
-            return "Erfolgreich 2.1"
-        if kennung == "2.2":
-            return "Erfolgreich 2.2"
-        if kennung == "2.3":
-            return "Erfolgreich 2.3"
-        if kennung == "3.1":
-            return "Erfolgreich 3.1"
-        if kennung == "3.2":
-            return "Erfolgreich 3.2"
-        if kennung == "3.3":
-            return "Erfolgreich 3.3"
-        if kennung == "4.1":
-            return "Erfolgreich 4.1"
-        if kennung == "4.2":
-            return "Erfolgreich 4.2"
-        if kennung == "4.3":
-            return "Erfolgreich 4.3"
-        if kennung == "5.1":
-            return "Erfolgreich 5.1"
-        if kennung == "5.2":
-            return "Erfolgreich 5.2"
-        if kennung == "5.3":
-            return "Erfolgreich 5.3"
-    except Exception as e:
-        return f"fehler2: {e}\n{request.form}"
-    
 #—————————————————————————————————————————————#
 #Backend, das abläuft, wenn bestimmte Routen eingegeben werden.
 #Beispiel: vulpo-bot.de/login leitet zum Discord Login weiter.
 
 @app.route("/login")
 def login():
-    oauth = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
-    login_url, state = oauth.authorization_url(authorize_url)
+    try:
+        oauth = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
+        login_url, state = oauth.authorization_url(authorize_url)
 
-    session["state"] = f"{state}"
-
-    return redirect(f"{login_url}")
-
+        session["state"] = f"{state}"
+        return redirect(f"{login_url}")
+    except:
+        session.clear()
+        return redirect("/logout")
+    
 @app.route("/oauth_callback")
 def oauth_callback():
     try:
         discord = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
+        url = request.url
+        https_url = str(url).replace("http","https")
         token = discord.fetch_token(
             token_url,
             client_secret=client_secret,
-            authorization_response=request.url,
+            authorization_response=https_url,
         )
         session['discord_token'] = token
         discord1 = OAuth2Session(client_id, token=session['discord_token'])
         response = discord1.get(base_discord_api_url + '/users/@me')
         return render_template('nopremium.html', response=response.json())
-        
-        # Zugriff auf die verbundenen Server des Benutzers
-        # guilds = []
-        # guilds_response = discord1.get(base_discord_api_url + '/users/@me/guilds')
-        
-        # for guild in guilds_response.json():
-        #     if int(guild["permissions"]) & 0x00000008:
-        #         headers = {
-        #             'Authorization': 'Bot OTI1Nzk5NTU5NTc2MzIyMDc4.GcwvXN.EkMMDxTqykR8em6L4lJqOouGfvAvH1J1rq9nJQ',
-        #         }
-
-        #         members_response = requests.get(base_discord_api_url + f'/guilds/{guild["id"]}/members/925799559576322078', headers=headers)
-        #         if "Unknown Guild" in str(members_response.json()):
-        #             continue
-        #         else:
-        #             guilds.append(guild)
-
-        # return render_template('server.html', guilds=guilds, response=response.json())
-
     except Exception as e:
-        return f"{e}"
         session.clear()
         return redirect("/logout")
 
@@ -337,6 +320,8 @@ def logout():
     session.clear()
     return redirect("/")
 #—————————————————————————————————————————————#
-#Starten des Webservers.
+# Starten des Webservers.
 if __name__ == "__main__":
-    app.run()
+    asyncio.run(start_all_tasks(pool))
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+    app.run(host="0.0.0.0")

@@ -298,7 +298,7 @@ class Vulpo(commands.AutoShardedBot):
             async with conn.cursor() as cursor:
                 try:
                     topgg_webhook = topgg.WebhookManager(bot).dbl_webhook("/dblwebhook", "Vulpo123321")
-                    await topgg_webhook.run(22)
+                    await topgg_webhook.run(5000)
                     print("✅ Verbunden mit der topgg api")
                 except:
                     print("❌ Verbindung zur topgg api fehlgeschlagen")
