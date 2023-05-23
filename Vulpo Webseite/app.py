@@ -241,7 +241,7 @@ def paypal_ipn():
     params = request.form.to_dict()
     params['cmd'] = '_notify-validate'
     headers = {'content-type': 'application/x-www-form-urlencoded',
-            'user-agent': 'Paypal-devdungeon-tester'}
+            'user-agent': 'Vulpo-IPN'}
     response = requests.post(VERIFY_URL, params=params, headers=headers, verify=True)
     response.raise_for_status()
 
