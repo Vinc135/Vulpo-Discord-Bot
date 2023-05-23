@@ -159,31 +159,31 @@ class rps(discord.ui.View):
         if str(botchoice) == "✌️":
             if str(userchoice) == "✋":
                 x = loose(userchoice, botchoice, betrag)
-                await update_acc(self, interaction.user, "rucksack", 0, betrag)
+                await update_account(self, interaction.user, "rucksack", 0, betrag)
                 await interaction.edit_original_response(embed=x, view=None)
             if str(userchoice) == "✊":
                 x = win(userchoice, botchoice, betrag)
-                await update_acc(self, interaction.user, "rucksack", 2 * betrag, 0)
+                await update_account(self, interaction.user, "rucksack", 2 * betrag, 0)
                 await interaction.edit_original_response(embed=x, view=None)
 
         if str(botchoice) == "✊":
             if str(userchoice) == "✌️":
                 x = loose(userchoice, botchoice, betrag)
-                await update_acc(self, interaction.user, "rucksack", 0, betrag)
+                await update_account(self, interaction.user, "rucksack", 0, betrag)
                 await interaction.edit_original_response(embed=x, view=None)
             if str(userchoice) == "✋":
                 x = win(userchoice, botchoice, betrag)
-                await update_acc(self, interaction.user, "rucksack", 2 * betrag, 0)
+                await update_account(self, interaction.user, "rucksack", 2 * betrag, 0)
                 await interaction.edit_original_response(embed=x, view=None)
 
         if str(botchoice) == "✋":
             if str(userchoice) == "✊":
                 x = loose(userchoice, botchoice, betrag)
-                await update_acc(self, interaction.user, "rucksack", 0, betrag)
+                await update_account(self, interaction.user, "rucksack", 0, betrag)
                 await interaction.edit_original_response(embed=x, view=None)
             if str(userchoice) == "✌️":
                 x = win(userchoice, botchoice, betrag)
-                await update_acc(self, interaction.user, "rucksack", 2 * betrag, 0)
+                await update_account(self, interaction.user, "rucksack", 2 * betrag, 0)
                 await interaction.edit_original_response(embed=x, view=None)
 
     @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="flwehrbfvwejrhgfvweurhfk", emoji="✊")
@@ -204,31 +204,31 @@ class rps(discord.ui.View):
         if botchoice == "✌️":
             if userchoice == "✋":
                 x = loose(userchoice, botchoice, betrag)
-                await update_acc(self, interaction.user, "rucksack", 0, betrag)
+                await update_account(self, interaction.user, "rucksack", 0, betrag)
                 await interaction.edit_original_response(embed=x, view=None)
             if userchoice== "✊":
                 x = win(userchoice, botchoice, betrag)
-                await update_acc(self, interaction.user, "rucksack", 2 * betrag, 0)
+                await update_account(self, interaction.user, "rucksack", 2 * betrag, 0)
                 await interaction.edit_original_response(embed=x, view=None)
 
         if botchoice == "✊":
             if userchoice == "✌️":
                 x = loose(userchoice, botchoice, betrag)
-                await update_acc(self, interaction.user, "rucksack", 0, betrag)
+                await update_account(self, interaction.user, "rucksack", 0, betrag)
                 await interaction.edit_original_response(embed=x, view=None)
             if userchoice == "✋":
                 x = win(userchoice, botchoice, betrag)
-                await update_acc(self, interaction.user, "rucksack", 2 * betrag, 0)
+                await update_account(self, interaction.user, "rucksack", 2 * betrag, 0)
                 await interaction.edit_original_response(embed=x, view=None)
 
         if botchoice == "✋":
             if userchoice == "✊":
                 x = loose(userchoice, botchoice, betrag)
-                await update_acc(self, interaction.user, "rucksack", 0, betrag)
+                await update_account(self, interaction.user, "rucksack", 0, betrag)
                 await interaction.edit_original_response(embed=x, view=None)
             if userchoice == "✌️":
                 x = win(userchoice, botchoice, betrag)
-                await update_acc(self, interaction.user, "rucksack", 2 * betrag, 0)
+                await update_account(self, interaction.user, "rucksack", 2 * betrag, 0)
                 await interaction.edit_original_response(embed=x, view=None)
 
     @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="ebwkfuzgqewriufgiwuezrgfiu", emoji="✋")
@@ -249,31 +249,31 @@ class rps(discord.ui.View):
         if botchoice == "✌️":
             if userchoice == "✋":
                 x = loose(userchoice, botchoice, betrag)
-                await update_acc(self, interaction.user, "rucksack", 0, betrag)
+                await update_account(self, interaction.user, "rucksack", 0, betrag)
                 await interaction.edit_original_response(embed=x, view=None)
             if userchoice== "✊":
                 x = win(userchoice, botchoice, betrag)
-                await update_acc(self, interaction.user, "rucksack", 2 * betrag, 0)
+                await update_account(self, interaction.user, "rucksack", 2 * betrag, 0)
                 await interaction.edit_original_response(embed=x, view=None)
 
         if botchoice == "✊":
             if userchoice == "✌️":
                 x = loose(userchoice, botchoice, betrag)
-                await update_acc(self, interaction.user, "rucksack", 0, betrag)
+                await update_account(self, interaction.user, "rucksack", 0, betrag)
                 await interaction.edit_original_response(embed=x, view=None)
             if userchoice == "✋":
                 x = win(userchoice, botchoice, betrag)
-                await update_acc(self, interaction.user, "rucksack", 2 * betrag, 0)
+                await update_account(self, interaction.user, "rucksack", 2 * betrag, 0)
                 await interaction.edit_original_response(embed=x, view=None)
 
         if botchoice == "✋":
             if userchoice == "✊":
                 x = loose(userchoice, botchoice, betrag)
-                await update_acc(self, interaction.user, "rucksack", 0, betrag)
+                await update_account(self, interaction.user, "rucksack", 0, betrag)
                 await interaction.edit_original_response(embed=x, view=None)
             if userchoice == "✌️":
                 x = win(userchoice, botchoice, betrag)
-                await update_acc(self, interaction.user, "rucksack", 2 * betrag, 0)
+                await update_account(self, interaction.user, "rucksack", 2 * betrag, 0)
                 await interaction.edit_original_response(embed=x, view=None)
 
 #####
@@ -310,19 +310,22 @@ async def open_acc(self, user):
             else:
                 return result
 
-async def update_acc(self, user, mode, sum, dif):
+async def update_account(self, user, mode, sum, dif):
     acc = await open_acc(self, user)
     async with self.bot.pool.acquire() as conn:
         async with conn.cursor() as cursor:
+            print(user)
+            print(user.id)
             if mode == "rucksack":
                 bal = acc[0]
                 new = int(bal) + int(sum) - int(dif)
-                await cursor.execute("UPDATE economy SET rucksack = (%s) WHERE userID = (%s)", (new, user.id))
+                print(new)
+                await cursor.execute(f"UPDATE economy SET rucksack = {new} WHERE userID = {user.id}")
                 
             if mode == "bank":
                 bal = acc[1]
                 new = int(bal) + int(sum) - int(dif)
-                await cursor.execute("UPDATE economy SET bank = (%s) WHERE userID = (%s)", (new, user.id))
+                await cursor.execute(f"UPDATE economy SET bank = {new} WHERE userID = {user.id}")
             
 
 async def get_job(self, user):
@@ -477,8 +480,8 @@ class economy(commands.Cog):
             await interaction.response.send_message(f"<:v_kreuz:1049388811353858069> Der Betrag muss eine positive Zahl sein. Beispiel: `/balance withdraw {bank}`", ephemeral=True)
             return
 
-        await update_acc(self, interaction.user, "bank", 0, betrag)
-        await update_acc(self, interaction.user, "rucksack", betrag, 0)
+        await update_account(self, interaction.user, "bank", 0, betrag)
+        await update_account(self, interaction.user, "rucksack", betrag, 0)
 
         await interaction.response.send_message(f"<:v_haken:1048677657040134195> Ich habe **{betrag} 🍪** von deiner Bank abgehoben. Du hast nun **{rucksack + betrag} 🍪** in deinem Rucksack und **{bank - betrag} 🍪** auf deiner Bank.")
     
@@ -496,8 +499,8 @@ class economy(commands.Cog):
             await interaction.response.send_message(f"<:v_kreuz:1049388811353858069> Der Betrag muss eine positive Zahl sein. Beispiel: `/balance withdraw {rucksack}`", ephemeral=True)
             return
 
-        await update_acc(self, interaction.user, "rucksack", 0, betrag)
-        await update_acc(self, interaction.user, "bank", betrag, 0)
+        await update_account(self, interaction.user, "rucksack", 0, betrag)
+        await update_account(self, interaction.user, "bank", betrag, 0)
 
         await interaction.response.send_message(f"<:v_haken:1048677657040134195> Ich habe **{betrag} 🍪** auf deine Bank überwiesen. Du hast nun **{rucksack - betrag} 🍪** in deinem Rucksack und **{bank + betrag} 🍪** auf deiner Bank.")
 
@@ -513,7 +516,7 @@ class economy(commands.Cog):
             em.set_footer(text="Du kannst mit dem Command work schneller Geld verdienen.",
                           icon_url="https://cdn.discordapp.com/emojis/814202875387183145.png")
             em.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-            await update_acc(self, interaction.user, "rucksack", earnings, 0)
+            await update_account(self, interaction.user, "rucksack", earnings, 0)
             await interaction.response.send_message(embed=em)
             return
         if int(x) <= 900:
@@ -524,7 +527,7 @@ class economy(commands.Cog):
             em.set_footer(text="Du kannst mit dem Command work schneller Geld verdienen.",
                           icon_url="https://cdn.discordapp.com/emojis/814202875387183145.png")
             em.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-            await update_acc(self, interaction.user, "rucksack", earnings, 0)
+            await update_account(self, interaction.user, "rucksack", earnings, 0)
             await interaction.response.send_message(embed=em)
             return
         if int(x) <= 999:
@@ -544,7 +547,7 @@ class economy(commands.Cog):
             em.set_footer(text="Du kannst mit dem Command work schneller Geld verdienen.",
                           icon_url="https://cdn.discordapp.com/emojis/814202875387183145.png")
             em.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-            await update_acc(self, interaction.user, "rucksack", earnings, 0)
+            await update_account(self, interaction.user, "rucksack", earnings, 0)
             await interaction.response.send_message(embed=em)
             return
 
@@ -567,7 +570,7 @@ class economy(commands.Cog):
                         await cursor.execute("UPDATE economy_streak SET streak = (%s) WHERE userID = (%s)", (1, interaction.user.id))
                         await cursor.execute("UPDATE economy_streak SET timestamp = (%s) WHERE userID = (%s)", (str(now.timestamp()), interaction.user.id))
                         earnings = 50
-                        await update_acc(self, interaction.user, "rucksack", earnings, 0)
+                        await update_account(self, interaction.user, "rucksack", earnings, 0)
                         embed = discord.Embed(title="Täglicher Bonus", description=f"Du hast deinen täglichen Bonus eingefordert und dafür **{earnings} 🍪** bekommen. Leider warst du zu spät und dein Daily Streak von **{streak}🔥** wurde auf **1** zurückgesetzt.", color=await getcolour(self, interaction.user))
                         embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                         await interaction.response.send_message(embed=embed)
@@ -576,7 +579,7 @@ class economy(commands.Cog):
                         await cursor.execute("UPDATE economy_streak SET streak = (%s) WHERE userID = (%s)", (int(streak) + 1, interaction.user.id))
                         await cursor.execute("UPDATE economy_streak SET timestamp = (%s) WHERE userID = (%s)", (str(now.timestamp()), interaction.user.id))
                         earnings = 50 + ((streak + 1) * 5)
-                        await update_acc(self, interaction.user, "rucksack", earnings, 0)
+                        await update_account(self, interaction.user, "rucksack", earnings, 0)
                         embed = discord.Embed(title="Täglicher Bonus", description=f"Du hast deinen täglichen Bonus eingefordert und dafür **{earnings} 🍪** bekommen. Du kamst rechtzeitig und hast deinen Streak erhöht.", color=await getcolour(self, interaction.user))
                         embed.set_footer(text=f"Er liegt nun bei {streak + 1}🔥", icon_url="https://cdn.discordapp.com/emojis/814202875387183145.png")
                         await interaction.response.send_message(embed=embed)
@@ -584,7 +587,7 @@ class economy(commands.Cog):
                 if result is None:
                     await cursor.execute("INSERT INTO economy_streak(streak, timestamp, userID) VALUES(%s,%s,%s)", (1, str(now.timestamp()), interaction.user.id))
                     earnings = 50
-                    await update_acc(self, interaction.user, "rucksack", earnings, 0)
+                    await update_account(self, interaction.user, "rucksack", earnings, 0)
                     embed = discord.Embed(title="Täglicher Bonus", description=f"Du hast deinen täglichen Bonus eingefordert und dafür **{earnings} 🍪** bekommen. Oh, du bist neu 🔎! Wenn du innerhalb von 48 Stunden diesen Befehl erneut ausführst, bekommst du immer mehr Cookies.", color=await getcolour(self, interaction.user))
                     embed.set_footer(text=f"Er liegt nun bei 1🔥", icon_url="https://cdn.discordapp.com/emojis/814202875387183145.png")
                     await interaction.response.send_message(embed=embed)
@@ -603,7 +606,7 @@ class economy(commands.Cog):
                         await work(self, interaction.user)
                         text = [f"Du hast als **{beruf}** gearbeitet und hast dafür **{earnings} 🍪** bekommen!", f"Eine erfolgreiche Arbeitsstunde als **{beruf}** hat dir **{earnings} 🍪** gebracht!", f"Nach einer harten Arbeitsstunde als **{beruf}** hat dich dein Chef mit **{earnings} 🍪** bezahlt!"]
                         endtext = random.choice(text)
-                        await update_acc(self, interaction.user, "bank", earnings, 0)
+                        await update_account(self, interaction.user, "bank", earnings, 0)
                         embed = discord.Embed(title="Du hast gearbeitet", description=endtext, color=await getcolour(self, interaction.user))
                         acc = await open_acc(self, interaction.user)
                         embed.set_footer(text=f"Deine Arbeitsstunden: {acc[3]}", icon_url="https://cdn.discordapp.com/emojis/814202875387183145.png")
@@ -630,8 +633,8 @@ class economy(commands.Cog):
             await interaction.response.send_message(f"<:v_kreuz:1049388811353858069> Der Betrag muss eine positive Zahl sein. Beispiel: `/send @Vinc {betrag}`", ephemeral=True)
             return
 
-        await update_acc(self, interaction.user, "rucksack", 0, betrag)
-        await update_acc(self, user, "rucksack", betrag, 0)
+        await update_account(self, interaction.user, "rucksack", 0, betrag)
+        await update_account(self, user, "rucksack", betrag, 0)
         await interaction.response.send_message(f"<:v_haken:1048677657040134195> {user.mention} hat **{betrag} 🍪** von dir erhalten. Du hast nun **{rucksack - betrag} 🍪** in deinem Rucksack.")
 
     @app_commands.command()
@@ -655,7 +658,7 @@ class economy(commands.Cog):
                                         description=f"Du wurdest beim Ausrauben von {user} erwischt! Du musst **{strafe} 🍪** als Strafe zahlen.")
                 embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                 embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
-                await update_acc(self, interaction.user, "rucksack", 0, strafe)
+                await update_account(self, interaction.user, "rucksack", 0, strafe)
                 await interaction.response.send_message(embed=embed)
                 return
 
@@ -665,8 +668,8 @@ class economy(commands.Cog):
                                         description=f"Du hast {user} erfolgreich ausgeraubt und **{earnings} 🍪** bekommen.")
                 embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                 embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
-                await update_acc(self, interaction.user, "rucksack", earnings, 0)
-                await update_acc(self, user, "rucksack", 0, earnings)
+                await update_account(self, interaction.user, "rucksack", earnings, 0)
+                await update_account(self, user, "rucksack", 0, earnings)
                 await interaction.response.send_message(embed=embed)
                 return
 
@@ -733,7 +736,7 @@ class economy(commands.Cog):
             embed4.add_field(name="🏆 Gewinn", value=f"Du gewinnst {betrag * 3} 🍪",
                                 inline=False)
             embed4.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-            await update_acc(self, interaction.user, "rucksack", 3 * betrag, 0)
+            await update_account(self, interaction.user, "rucksack", 3 * betrag, 0)
             await interaction.edit_original_response(embed=embed4)
             return
         if e1 == e3 != e2 or e1 == e2 != e3 or e2 == e1 != e3 or e2 == e3 != e1 or e3 == e1 != e2 or e3 == e2 != e1:
@@ -756,7 +759,7 @@ class economy(commands.Cog):
                                 inline=False)
             embed4.set_author(name=interaction.user, icon_url=interaction.user.avatar)
             embed4.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
-            await update_acc(self, interaction.user, "rucksack", 0, betrag)
+            await update_account(self, interaction.user, "rucksack", 0, betrag)
             await interaction.edit_original_response(embed=embed4)
             return
 
@@ -815,7 +818,7 @@ class economy(commands.Cog):
                     else:
                         not_enough_hours_error_embed = discord.Embed(description=f'Um sich als {beruf} zu bewerben, musst du mindestens **{job["req"]}** Stunden gearbeitet haben.',
                                                                         color=await getcolour(self, interaction.user))
-                        not_enough_hours_error_embed(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                        not_enough_hours_error_embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                         await interaction.response.send_message(embed=not_enough_hours_error_embed)
                         return
             if a >= 53:
@@ -945,7 +948,7 @@ class economy(commands.Cog):
                         canbuy = await checkbalance(self, interaction.user, result[0])
                         if canbuy == True:
                             await buyitem(self, interaction.user, interaction.guild, item)
-                            await update_acc(self, interaction.user, "rucksack", 0, result[0])
+                            await update_account(self, interaction.user, "rucksack", 0, result[0])
                             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item gekauft", description=f"Das Item {item} wurde von dir gekauft. Ich habe es für dich in deinen Rucksack getan!")
                             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                             await interaction.response.send_message(embed=embed)
@@ -996,7 +999,7 @@ class economy(commands.Cog):
                     Prozente = random.uniform(0.65, 1.15)
                     verkaufspreis = round(Prozente * int(preis[0]))
                     await sellitem(self, interaction.user, item)
-                    await update_acc(self, interaction.user, "rucksack", verkaufspreis, 0)
+                    await update_account(self, interaction.user, "rucksack", verkaufspreis, 0)
                     embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item verkauft", description=f"Das Item {item} wurde für {verkaufspreis} 🍪 verkauft. Du hast es nun nicht mehr im Rucksack.")
                     embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                     await interaction.response.send_message(embed=embed)

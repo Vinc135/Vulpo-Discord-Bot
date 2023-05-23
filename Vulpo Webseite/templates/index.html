@@ -12,20 +12,20 @@
   <meta content="discord, bot, discord bot, bester discord bot, deutscher discord bot, economy, levelsystem, gewinnspiele, stats, vulpo premium, premium, günstig, free, gratis" name="keywords">
 
   <!-- Favicons -->
-  <link href="{{ url_for('static', filename='assets/img/favicon.webp') }}" rel="icon">
-  <link href="{{ url_for('static', filename='assets/img/apple-touch-icon.webp') }}" rel="apple-touch-icon">
+  <link href="static/assets/img/favicon.webp" rel="icon">
+  <link href="static/assets/img/apple-touch-icon.webp" rel="apple-touch-icon">
 
   <!-- Vendor CSS Files -->
-  <link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
-  <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-  <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
-  <link href="{{ url_for('static', filename='assets/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
-  <link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
-  <link href="{{ url_for('static', filename='assets/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
-  <link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+  <link href="static/assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="static/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="static/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="static/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="static/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="static/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="static/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
   
   <!-- Template Main CSS File -->
-  <link href="{{ url_for('static', filename='assets/css/style.css') }}" rel="stylesheet">
+  <link href="static/assets/css/style.css" rel="stylesheet">
 
   <!-- =======================================================
   * Template Name: Arsha
@@ -41,10 +41,8 @@
   <!-- ======= Header ======= -->
   <header id="header" class="fixed-top ">
     <div class="container d-flex align-items-center">
-
-      <h1 class="logo me-auto"><a href="{{ url_for('static', filename='index.html') }}">Vulpo</a></h1>
-      <!-- Uncomment below if you prefer to use an image logo -->
-      <!-- <a {{ url_for('static', filename='index.html') }} class="logo me-auto"><img src="assets/img/logo.webp" alt="" class="img-fluid"></a>-->
+      <h1 class="logo me-auto"><a href="static/assets/img/favicon.webp">Vulpo</a></h1>
+      <a class="logo me-auto"><img src="static/assets/img/favicon.webp" alt="" class="img-fluid"></a>
 
       <nav id="navbar" class="navbar">
         <ul>
@@ -82,7 +80,7 @@
           </div>
         </div>
         <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-in" data-aos-delay="200">
-          <img src="{{ url_for('static', filename='assets/img/hero-img.webp') }}" class="img-fluid animated" alt="">
+          <img src="static/assets/img/hero-img.webp" class="img-fluid animated" alt="">
         </div>
       </div>
     </div>
@@ -92,39 +90,39 @@
   <main id="main">
 
     <!-- ======= Clients Section ======= -->
-    <section id="clients" class="clients section-bg">
+    <!-- <section id="clients" class="clients section-bg">
       <div class="container">
 
         <div class="row" data-aos="zoom-in">
 
           <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center">
-            <img src="{{ url_for('static', filename='assets/img/clients/client-1.webp') }}" class="img-fluid" alt="">
+            <img src="static/assets/img/clients/client-1.webp" class="img-fluid" alt="">
           </div>
 
           <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center">
-            <img src="{{ url_for('static', filename='assets/img/clients/client-2.webp') }}" class="img-fluid" alt="">
+            <img src="static/assets/img/clients/client-2.webp" class="img-fluid" alt="">
           </div>
 
           <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center">
-            <img src="{{ url_for('static', filename='assets/img/clients/client-3.webp') }}" class="img-fluid" alt="">
+            <img src="static/assets/img/clients/client-3.webp" class="img-fluid" alt="">
           </div>
 
           <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center">
-            <img src="{{ url_for('static', filename='assets/img/clients/client-4.webp') }}" class="img-fluid" alt="">
+            <img src="static/assets/img/clients/client-4.webp" class="img-fluid" alt="">
           </div>
 
           <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center">
-            <img src="{{ url_for('static', filename='assets/img/clients/client-5.webp') }}" class="img-fluid" alt="">
+            <img src="static/assets/img/clients/client-5.webp" class="img-fluid" alt="">
           </div>
 
           <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center justify-content-center">
-            <img src="{{ url_for('static', filename='assets/img/clients/client-6.webp') }}" class="img-fluid" alt="">
+            <img src="static/assets/img/clients/client-6.webp" class="img-fluid" alt="">
           </div>
 
         </div>
 
       </div>
-    </section><!-- End Cliens Section -->
+    </section>End Cliens Section -->
 
     <!-- ======= About Us Section ======= -->
     <section id="about" class="about">
@@ -206,8 +204,7 @@
 
           </div>
           
-          {% set url_for_static = url_for('static', filename='assets/img/why-us.webp') %}
-          <div class="col-lg-5 align-items-stretch order-1 order-lg-2 img" style="background-image: url('{{ url_for_static }}');" data-aos="zoom-in" data-aos-delay="150">&nbsp;</div>
+          <div class="col-lg-5 align-items-stretch order-1 order-lg-2 img" style="background-image: url('static/assets/img/why-us.webp');" data-aos="zoom-in" data-aos-delay="150">&nbsp;</div>
         </div>
 
       </div>
@@ -342,110 +339,110 @@
         <div class="row portfolio-container" data-aos="fade-up" data-aos-delay="200">
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-app">
-            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/automod.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-img"><img src="static/assets/img/portfolio/automod.webp" class="img-fluid" alt=""></div>
             <div class="portfolio-info">
               <h4>Automatische Moderation</h4>
-              <a href="{{ url_for('static', filename='assets/img/portfolio/automod.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Automatische Moderation"><i class="bx bx-plus"></i></a>
+              <a href="static/assets/img/portfolio/automod.webp" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Automatische Moderation"><i class="bx bx-plus"></i></a>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-web">
-            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/eco.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-img"><img src="static/assets/img/portfolio/eco.webp" class="img-fluid" alt=""></div>
             <div class="portfolio-info">
               <h4>Globales Wirtschaftssystem</h4>
-              <a href="{{ url_for('static', filename='assets/img/portfolio/eco.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Globales Wirtschaftssystem"><i class="bx bx-plus"></i></a>
+              <a href="static/assets/img/portfolio/eco.webp" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Globales Wirtschaftssystem"><i class="bx bx-plus"></i></a>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-web">
-            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/emojiquiz.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-img"><img src="static/assets/img/portfolio/emojiquiz.webp" class="img-fluid" alt=""></div>
             <div class="portfolio-info">
               <h4>Emojiquiz</h4>
-              <a href="{{ url_for('static', filename='assets/img/portfolio/emojiquiz.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Emojiquiz"><i class="bx bx-plus"></i></a>
+              <a href="static/assets/img/portfolio/emojiquiz.webp" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Emojiquiz"><i class="bx bx-plus"></i></a>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-web">
-            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/gewinnspiele.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-img"><img src="static/assets/img/portfolio/gewinnspiele.webp" class="img-fluid" alt=""></div>
             <div class="portfolio-info">
               <h4>Gewinnspiele</h4>
-              <a href="{{ url_for('static', filename='assets/img/portfolio/gewinnspiele.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Gewinnspiele"><i class="bx bx-plus"></i></a>
+              <a href="static/assets/img/portfolio/gewinnspiele.webp" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Gewinnspiele"><i class="bx bx-plus"></i></a>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-web">
-            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/lvl.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-img"><img src="static/assets/img/portfolio/lvl.webp" class="img-fluid" alt=""></div>
             <div class="portfolio-info">
               <h4>Levelsystem</h4>
-              <a href="{{ url_for('static', filename='assets/img/portfolio/lvl.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Levelsystem"><i class="bx bx-plus"></i></a>
+              <a href="static/assets/img/portfolio/lvl.webp" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Levelsystem"><i class="bx bx-plus"></i></a>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-web">
-            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/minispiele.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-img"><img src="static/assets/img/portfolio/minispiele.webp" class="img-fluid" alt=""></div>
             <div class="portfolio-info">
               <h4>Minispiele</h4>
-              <a href="{{ url_for('static', filename='assets/img/portfolio/minispiele.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Minispiele"><i class="bx bx-plus"></i></a>
+              <a href="static/assets/img/portfolio/minispiele.webp" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Minispiele"><i class="bx bx-plus"></i></a>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-web">
-            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/rr.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-img"><img src="static/assets/img/portfolio/rr.webp" class="img-fluid" alt=""></div>
             <div class="portfolio-info">
               <h4>Reaktionsrollen</h4>
-              <a href="{{ url_for('static', filename='assets/img/portfolio/rr.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Reaktionsrollen"><i class="bx bx-plus"></i></a>
+              <a href="static/assets/img/portfolio/rr.webp" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Reaktionsrollen"><i class="bx bx-plus"></i></a>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-web">
-            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/stats-1.webp') }}" class="img-fluid" alt=""></div>
-            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/stats-2.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-img"><img src="static/assets/img/portfolio/stats-1.webp" class="img-fluid" alt=""></div>
+            <div class="portfolio-img"><img src="static/assets/img/portfolio/stats-2.webp" class="img-fluid" alt=""></div>
             <div class="portfolio-info">
               <h4>Statistiken</h4>
-              <a href="{{ url_for('static', filename='assets/img/portfolio/stats-1.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Statistiken 1"><i class="bx bx-plus"></i></a>
-              <a href="{{ url_for('static', filename='assets/img/portfolio/stats-2.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Statistiken 1"><i class="bx bx-plus"></i></a>
+              <a href="static/assets/img/portfolio/stats-1.webp" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Statistiken 1"><i class="bx bx-plus"></i></a>
+              <a href="static/assets/img/portfolio/stats-2.webp" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Statistiken 1"><i class="bx bx-plus"></i></a>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-web">
-            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/tag.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-img"><img src="static/assets/img/portfolio/tag.webp" class="img-fluid" alt=""></div>
             <div class="portfolio-info">
               <h4>Custom Commands (Tags)</h4>
-              <a href="{{ url_for('static', filename='assets/img/portfolio/tag.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Custom Commands (Tags)"><i class="bx bx-plus"></i></a>
+              <a href="static/assets/img/portfolio/tag.webp" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Custom Commands (Tags)"><i class="bx bx-plus"></i></a>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-web">
-            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/tempchannel_1.webp') }}" class="img-fluid" alt=""></div>
-            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/tempchannel_2.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-img"><img src="static/assets/img/portfolio/tempchannel-1.webp" class="img-fluid" alt=""></div>
+            <div class="portfolio-img"><img src="static/assets/img/portfolio/tempchannel-2.webp" class="img-fluid" alt=""></div>
             <div class="portfolio-info">
               <h4>Temporäre Sprachkanäle</h4>
-              <a href="{{ url_for('static', filename='assets/img/portfolio/tempchannel_1.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Temporäre Sprachkanäle 1"><i class="bx bx-plus"></i></a>
-              <a href="{{ url_for('static', filename='assets/img/portfolio/tempchannel_2.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Temporäre Sprachkanäle 2"><i class="bx bx-plus"></i></a>
+              <a href="static/assets/img/portfolio/tempchannel-1.webp" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Temporäre Sprachkanäle 1"><i class="bx bx-plus"></i></a>
+              <a href="static/assets/img/portfolio/tempchannel-2.webp" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Temporäre Sprachkanäle 2"><i class="bx bx-plus"></i></a>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-web">
-            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/ticket.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-img"><img src="static/assets/img/portfolio/ticket.webp" class="img-fluid" alt=""></div>
             <div class="portfolio-info">
               <h4>Ticketsystem</h4>
-              <a href="{{ url_for('static', filename='assets/img/portfolio/ticket.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Ticketsystem"><i class="bx bx-plus"></i></a>
+              <a href="static/assets/img/portfolio/ticket.webp" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Ticketsystem"><i class="bx bx-plus"></i></a>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-web">
-            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/ttt.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-img"><img src="static/assets/img/portfolio/ttt.webp" class="img-fluid" alt=""></div>
             <div class="portfolio-info">
               <h4>Tictactoe</h4>
-              <a href="{{ url_for('static', filename='assets/img/portfolio/ttt.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Tictactoe"><i class="bx bx-plus"></i></a>
+              <a href="static/assets/img/portfolio/ttt.webp" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Tictactoe"><i class="bx bx-plus"></i></a>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-web">
-            <div class="portfolio-img"><img src="{{ url_for('static', filename='assets/img/portfolio/welcome.webp') }}" class="img-fluid" alt=""></div>
+            <div class="portfolio-img"><img src="static/assets/img/portfolio/welcome.webp" class="img-fluid" alt=""></div>
             <div class="portfolio-info">
               <h4>Willkommensnachrichten</h4>
-              <a href="{{ url_for('static', filename='assets/img/portfolio/welcome.webp') }}" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Willkommensnachrichten"><i class="bx bx-plus"></i></a>
+              <a href="static/assets/img/portfolio/welcome.webp" data-gallery="portfolioGallery" class="portfolio-lightbox preview-link" title="Willkommensnachrichten"><i class="bx bx-plus"></i></a>
             </div>
           </div>
         </div>
@@ -466,7 +463,7 @@
 
           <div class="col-lg-6" data-aos="zoom-in" data-aos-delay="100">
             <div class="member d-flex align-items-start">
-              <div class="pic"><img src="{{ url_for('static', filename='assets/img/team/team-1.webp') }}" class="img-fluid" alt=""></div>
+              <div class="pic"><img src="static/assets/img/team/team-1.webp" class="img-fluid" alt=""></div>
               <div class="member-info">
                 <h4>Vincent L.</h4>
                 <span>CEO, Softwareingenieur</span>
@@ -483,7 +480,7 @@
 
           <div class="col-lg-6 mt-4 mt-lg-0" data-aos="zoom-in" data-aos-delay="200">
             <div class="member d-flex align-items-start">
-              <div class="pic"><img src="{{ url_for('static', filename='assets/img/team/team-2.webp') }}" class="img-fluid" alt=""></div>
+              <div class="pic"><img src="static/assets/img/team/team-2.webp" class="img-fluid" alt=""></div>
               <div class="member-info">
                 <h4>Ensar S.</h4>
                 <span>Administrative Fachkraft, Teamleitung</span>
@@ -500,7 +497,7 @@
           
           <div class="col-lg-6 mt-4" data-aos="zoom-in" data-aos-delay="300">
             <div class="member d-flex align-items-start">
-              <div class="pic"><img src="{{ url_for('static', filename='assets/img/team/team-3.webp') }}" class="img-fluid" alt=""></div>
+              <div class="pic"><img src="static/assets/img/team/team-3.webp" class="img-fluid" alt=""></div>
               <div class="member-info">
                 <h4>Hugo W.</h4>
                 <span>Moderation</span>
@@ -517,9 +514,9 @@
 
           <div class="col-lg-6 mt-4" data-aos="zoom-in" data-aos-delay="300">
             <div class="member d-flex align-items-start">
-              <div class="pic"><img src="{{ url_for('static', filename='assets/img/team/team-4.webp') }}" class="img-fluid" alt=""></div>
+              <div class="pic"><img src="static/assets/img/team/team-4.webp" class="img-fluid" alt=""></div>
               <div class="member-info">
-                <h4>Fabio</h4>
+                <h4>Fabio H.</h4>
                 <span>Moderation</span>
                 <p>Unser engagierter Moderator, der für eine freundliche und respektvolle Atmosphäre im Server sorgt. Konfliktlösung und Durchsetzung der Regeln sind seine Stärken.</p>
                 <div class="social">
@@ -534,7 +531,7 @@
 
           <div class="col-lg-6 mt-4" data-aos="zoom-in" data-aos-delay="400">
             <div class="member d-flex align-items-start">
-              <div class="pic"><img src="{{ url_for('static', filename='assets/img/team/team-5.webp') }}" class="img-fluid" alt=""></div>
+              <div class="pic"><img src="static/assets/img/team/team-5.webp" class="img-fluid" alt=""></div>
               <div class="member-info">
                 <h4>Skye C.</h4>
                 <span>Support</span>
@@ -551,7 +548,7 @@
 
           <div class="col-lg-6 mt-4" data-aos="zoom-in" data-aos-delay="400">
             <div class="member d-flex align-items-start">
-              <div class="pic"><img src="{{ url_for('static', filename='assets/img/team/team-6.webp') }}" class="img-fluid" alt=""></div>
+              <div class="pic"><img src="static/assets/img/team/team-6.webp" class="img-fluid" alt=""></div>
               <div class="member-info">
                 <h4>Leon E.</h4>
                 <span>Technik</span>
@@ -716,16 +713,16 @@
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
   <!-- Vendor JS Files -->
-  <script src="{{ url_for('static', filename='assets/vendor/aos/aos.js') }}"></script>
-  <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='assets/vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='assets/vendor/waypoints/noframework.waypoints.js') }}"></script>
-  <script src="{{ url_for('static', filename='assets/vendor/php-email-form/validate.js') }}"></script>
+  <script src="static/assets/vendor/aos/aos.js"></script>
+  <script src="static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="static/assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="static/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="static/assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="static/assets/vendor/waypoints/noframework.waypoints.js"></script>
+  <script src="static/assets/vendor/php-email-form/validate.js"></script>
 
   <!-- Template Main JS File -->
-  <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+  <script src="static/assets/js/main.js"></script>
 
 </body>
 
