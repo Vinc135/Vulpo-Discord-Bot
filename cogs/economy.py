@@ -22,7 +22,6 @@ class joblist(discord.ui.View):
             new_page = 11
         embed = discord.Embed(title=':dividers: Jobliste', description=f"Hier siehst du alle verfügbaren Jobs.\nDu kannst dich für einen Job bewerben mit `/job apply <job>`\n\n" + await job_list(self.s, interaction, new_page),
                             colour=await getcolour(self, interaction.user)).set_footer(text=f'Seite {new_page} von 11')
-        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         await interaction.response.edit_message(embed=embed, content="")
     
     @discord.ui.button(label='Weiter', style=discord.ButtonStyle.green, custom_id="fewgwrgwrtgtg", emoji="➡️")
@@ -33,7 +32,6 @@ class joblist(discord.ui.View):
             new_page = 1
         embed = discord.Embed(title=':dividers: Jobliste', description=f"Hier siehst du alle verfügbaren Jobs.\nDu kannst dich für einen Job bewerben mit `/job apply <job>`\n\n" + await job_list(self.s, interaction, new_page),
                             colour=await getcolour(self, interaction.user)).set_footer(text=f'Seite {new_page} von 11')
-        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         await interaction.response.edit_message(embed=embed, content="")
 
 ##########
@@ -143,9 +141,6 @@ class rps(discord.ui.View):
 
     @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="ljhgdfiugegrfwiuegrfiu", emoji="✌️")
     async def schere(self, interaction: discord.Interaction, button: discord.ui.Button):
-        print(f"""
-        Userchoice: ✌️
-        Botchoice: {self.botchoice}""")
         await interaction.response.defer(thinking=False, ephemeral=True)
         botchoice = self.botchoice
         userchoice = button.emoji
@@ -188,9 +183,6 @@ class rps(discord.ui.View):
 
     @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="flwehrbfvwejrhgfvweurhfk", emoji="✊")
     async def stein(self, interaction: discord.Interaction, button: discord.ui.Button):
-        print(f"""
-        Userchoice: ✊
-        Botchoice: {self.botchoice}""")
         await interaction.response.defer(thinking=False, ephemeral=True)
         botchoice = self.botchoice
         userchoice = button.emoji
@@ -233,9 +225,6 @@ class rps(discord.ui.View):
 
     @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="ebwkfuzgqewriufgiwuezrgfiu", emoji="✋")
     async def papier(self, interaction: discord.Interaction, button: discord.ui.Button):
-        print(f"""
-        Userchoice: ✋
-        Botchoice: {self.botchoice}""")
         await interaction.response.defer(thinking=False, ephemeral=True)
         botchoice = self.botchoice
         userchoice = button.emoji
@@ -314,12 +303,9 @@ async def update_account(self, user, mode, sum, dif):
     acc = await open_acc(self, user)
     async with self.bot.pool.acquire() as conn:
         async with conn.cursor() as cursor:
-            print(user)
-            print(user.id)
             if mode == "rucksack":
                 bal = acc[0]
                 new = int(bal) + int(sum) - int(dif)
-                print(new)
                 await cursor.execute(f"UPDATE economy SET rucksack = {new} WHERE userID = {user.id}")
                 
             if mode == "bank":
@@ -442,14 +428,15 @@ class economy(commands.Cog):
         
     @cookies.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
-    async def anzeigen(self, interaction: discord.Interaction):
-        """Verwalte dein Geld."""            
-        acc = await open_acc(self, interaction.user)
-        em = discord.Embed(title=f"Dein supertolles Konto", color=await getcolour(self, interaction.user), description="> Dein Rucksack hat viel Platz. Dort findest du deine Items und deine Cookies.")
+    async def anzeigen(self, interaction: discord.Interaction, member: discord.User=None):
+        """Verwalte dein Geld."""
+        member = member or interaction.user  
+        acc = await open_acc(self, member)
+        em = discord.Embed(title=f"{member.name}'s supertolles Konto", color=await getcolour(self, member), description="> Dein Rucksack hat viel Platz. Dort findest du deine Items und deine Cookies.")
         em.add_field(name="Rucksack", value=f"{acc[0]} 🍪")
         em.add_field(name="Bank", value=f"{acc[1]} 🍪")
         em.add_field(name='Beruf', value=f"{acc[2]}, :stopwatch: {acc[3]} Stunden")
-        items = await getuseritems(self, interaction.user)
+        items = await getuseritems(self, member)
         if items != False:
             string = ""
             wert = 0
@@ -772,7 +759,6 @@ class economy(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def rps(self, interaction: discord.Interaction, betrag: int):
         """Game, Schere Stein Papier. Deine Reaktion ist deine Entscheidung."""
-        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Befehl ist zurzeit nicht verfügbar.**", ephemeral=True)
         # überprüfen ob er geld hat
         acc = await open_acc(self, interaction.user)
         rucksack = int(acc[0])
