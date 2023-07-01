@@ -22,10 +22,10 @@ class StatsKanal(discord.ui.Modal, title="Stats Kanal"):
                 if self.kanal == None:
                     new_channel = await interaction.guild.create_voice_channel(name="[erstellen] circa 10 Minuten")
                     await cursor.execute("INSERT INTO upstats (guildID, channelID, text) VALUES (%s, %s, %s)", (interaction.guild.id, new_channel.id, self.children[0].value))
-                    return await interaction.response.send_message("**<:v_haken:1048677657040134195> Der Stats Kanal wird nun erstellt. Es dauert bis zu 10 Minuten, bis der Kanal zum ersten Male geupdated wird.**")
+                    return await interaction.response.send_message("**<:v_haken:1119579684057907251> Der Stats Kanal wird nun erstellt. Es dauert bis zu 10 Minuten, bis der Kanal zum ersten Male geupdated wird.**")
                 if self.kanal != None:
                     await cursor.execute("INSERT INTO upstats (guildID, channelID, text) VALUES (%s, %s, %s)", (interaction.guild.id, self.kanal.id, self.children[0].value))
-                    return await interaction.response.send_message("**<:v_haken:1048677657040134195> Der Stats Kanal wird nun bearbeitet. Es dauert bis zu 10 Minuten, bis der Kanal zum ersten Male geupdated wird.**")
+                    return await interaction.response.send_message("**<:v_haken:1119579684057907251> Der Stats Kanal wird nun bearbeitet. Es dauert bis zu 10 Minuten, bis der Kanal zum ersten Male geupdated wird.**")
 
 async def getuserstats(self, art, member, guild):
     async with self.bot.pool.acquire() as conn:
@@ -665,16 +665,16 @@ class Stats(commands.Cog):
         """Zeigt Stats für Member und Kanäle."""
         status = await haspremium_forserver(self, interaction.guild)
         if status == False:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
         mydate = datetime.datetime.now()
         translator = Translator()
         translation = translator.translate(f'Month {mydate.strftime("%B")}' , dest="de")
         monat = translation.text
         
         if member == None and textkanal == None and sprachkanal == None:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Bitte gib beim nächsten Male an für welchen Kanal oder für welchen Member du die Stats einsehen willst.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Bitte gib beim nächsten Male an für welchen Kanal oder für welchen Member du die Stats einsehen willst.**", ephemeral=True)
         if member != None and textkanal != None or member != None and sprachkanal != None or textkanal != None and sprachkanal != None:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst dich nur für eines entscheiden. Entweder für die Stats eines Members oder für die Stats eines Kanals.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst dich nur für eines entscheiden. Entweder für die Stats eines Members oder für die Stats eines Kanals.**", ephemeral=True)
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 if member != None:
@@ -708,26 +708,26 @@ class Stats(commands.Cog):
                     except:
                         text2 += "Keine Daten"
                     
-                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1037065930284474398> Statistiken von {member.name}", description=f"""
-<:v_chat:1037065910567055370> **Nachrichten Stats:**
+                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1119583678083895346> Statistiken von {member.name}", description=f"""
+<:v_chat:1119577968457568327> **Nachrichten Stats:**
 > Insgesammt: {stats1[0]} Nachrichten
 > Jahr {discord.utils.utcnow().__format__('%Y')}: {stats1[1]} Nachrichten
 > {monat}: {stats1[2]} Nachrichten
 > Letzten 7 Tage: {stats1[3]} Nachrichten
 > Tag: {stats1[4]} Nachrichten
 
-<:v_chat:1037065910567055370> **Aktivste Kanäle des Nutzers:**
+<:v_chat:1119577968457568327> **Aktivste Kanäle des Nutzers:**
 {text1}
 
 
-<:v_mikrofon:1037065919282810910> **Sprachkanal Stats:**
+<:v_mikrofon:1119581634216329266> **Sprachkanal Stats:**
 > Insgesammt: {stats2[0]} Minuten
 > Jahr: {stats2[1]} Minuten
 > Monat: {stats2[2]} Minuten
 > Letzten 7 Tage: {stats2[3]} Minuten
 > Tag: {stats2[4]} Minuten
 
-<:v_mikrofon:1037065919282810910> **Aktivste Sprachkanäle des Nutzers:**
+<:v_mikrofon:1119581634216329266> **Aktivste Sprachkanäle des Nutzers:**
 {text2}""")
                     embed.set_thumbnail(url=member.avatar)
                     return await interaction.response.send_message(embed=embed)
@@ -749,15 +749,15 @@ class Stats(commands.Cog):
                         text += "Keine Daten"
                         
                     stats = await getchannelstats(self, "Textkanal", textkanal, interaction.guild)
-                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1037065930284474398> Statistiken von {textkanal.name}", description=f"""
-<:v_chat:1037065910567055370> **Nachrichten Stats:**
+                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1119583678083895346> Statistiken von {textkanal.name}", description=f"""
+<:v_chat:1119577968457568327> **Nachrichten Stats:**
 > Insgesammt: {stats[0]} Nachrichten
 > Jahr {discord.utils.utcnow().__format__('%Y')}: {stats[1]} Nachrichten
 > {monat}: {stats[2]} Nachrichten
 > Letzten 7 Tage: {stats[3]} Nachrichten
 > Tag: {stats[4]} Nachrichten
 
-<:v_chat:1037065910567055370> **Aktivste Nutzer des Kanals:**
+<:v_chat:1119577968457568327> **Aktivste Nutzer des Kanals:**
 {text}""")
                     embed.set_thumbnail(url=interaction.guild.icon)
                     return await interaction.response.send_message(embed=embed)
@@ -778,15 +778,15 @@ class Stats(commands.Cog):
                         text += "Keine Daten"
                         
                     stats = await getchannelstats(self, "Sprachkanal", sprachkanal, interaction.guild)
-                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1037065930284474398> Statistiken von {sprachkanal.name}", description=f"""
-<:v_mikrofon:1037065919282810910> **Aktivität im Sprachkanal:**
+                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1119583678083895346> Statistiken von {sprachkanal.name}", description=f"""
+<:v_mikrofon:1119581634216329266> **Aktivität im Sprachkanal:**
 > Insgesammt: {stats[0]} Minuten
 > Jahr {discord.utils.utcnow().__format__('%Y')}: {stats[1]} Minuten
 > {monat}: {stats[2]} Minuten
 > Letzten 7 Tage: {stats[3]} Minuten
 > Tag: {stats[4]} Minuten
 
-<:v_mikrofon:1037065919282810910> **Aktivste Nutzer des Kanals:**
+<:v_mikrofon:1119581634216329266> **Aktivste Nutzer des Kanals:**
 {text}""")
                     embed.set_thumbnail(url=interaction.guild.icon)
                     return await interaction.response.send_message(embed=embed) 
@@ -797,7 +797,7 @@ class Stats(commands.Cog):
         """Zeigt Stats für Member und Kanäle für eine Zeitspanne."""
         status = await haspremium_forserver(self, interaction.guild)
         if status == False:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
         await interaction.response.defer(thinking=True, ephemeral=False)
         lookback_messages_members = await lookback_messages(self, tage, interaction.guild, "Mitglieder")
         lookback_messages_channels = await lookback_messages(self, tage, interaction.guild, "Kanäle")
@@ -867,17 +867,17 @@ class Stats(commands.Cog):
         except:
             text4 += f"Keine Daten"
         
-        embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1037065930284474398> Statistiken der letzten {tage} Tage", description=f"""
-<:v_chat:1037065910567055370> **Aktivste Nutzer in Textkanälen:**
+        embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1119583678083895346> Statistiken der letzten {tage} Tage", description=f"""
+<:v_chat:1119577968457568327> **Aktivste Nutzer in Textkanälen:**
 {text}
 
-<:v_chat:1037065910567055370> **Aktivste Textkanäle:**
+<:v_chat:1119577968457568327> **Aktivste Textkanäle:**
 {text2}
 
-<:v_mikrofon:1037065919282810910> **Aktivste Nutzer in Sprachkanälen:**
+<:v_mikrofon:1119581634216329266> **Aktivste Nutzer in Sprachkanälen:**
 {text3}
 
-<:v_mikrofon:1037065919282810910> **Aktivste Sprachkanäle:**
+<:v_mikrofon:1119581634216329266> **Aktivste Sprachkanäle:**
 {text4}
 """)
         embed.set_thumbnail(url=interaction.guild.icon)
@@ -890,16 +890,16 @@ class Stats(commands.Cog):
         """Setze Kanäle auf die Blacklist für Nachrichten."""
         status = await haspremium_forserver(self, interaction.guild)
         if status == False:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 await cursor.execute("SELECT channelID FROM stats_blacklist WHERE guildID = (%s) AND channelID = (%s)", (interaction.guild.id, kanal.id))
                 result = await cursor.fetchone()
                 if result == None:
                     await cursor.execute("INSERT INTO stats_blacklist(guildID, channelID) VALUES(%s, %s)", (interaction.guild.id, kanal.id))
-                    return await interaction.response.send_message(f"**<:v_haken:1048677657040134195> {kanal.mention} ist nun auf der Blacklist.**")
+                    return await interaction.response.send_message(f"**<:v_haken:1119579684057907251> {kanal.mention} ist nun auf der Blacklist.**")
                 await cursor.execute("DELETE FROM stats_blacklist WHERE guildID = (%s) AND channelID = (%s)", (interaction.guild.id, kanal.id))
-                return await interaction.response.send_message(f"**<:v_haken:1048677657040134195> {kanal.mention} ist nun nicht mehr auf der Blacklist.**")
+                return await interaction.response.send_message(f"**<:v_haken:1119579684057907251> {kanal.mention} ist nun nicht mehr auf der Blacklist.**")
     
     @stats.command()
     @app_commands.checks.has_permissions(administrator=True)
@@ -908,11 +908,11 @@ class Stats(commands.Cog):
         """Setze alle Stats auf 0 zurück."""
         status = await haspremium_forserver(self, interaction.guild)
         if status == False:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 await cursor.execute("DELETE FROM nachrichten WHERE guildID = (%s)", (interaction.guild.id))
-                await interaction.response.send_message("**<:v_haken:1048677657040134195> Alle Stats dieses Servers wurden gelöscht.**")
+                await interaction.response.send_message("**<:v_haken:1119579684057907251> Alle Stats dieses Servers wurden gelöscht.**")
     
     @stats.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -920,8 +920,8 @@ class Stats(commands.Cog):
         """Lass dir die besten Stats dieses Servers anzeigen."""
         status = await haspremium_forserver(self, interaction.guild)
         if status == False:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
-        await interaction.response.send_message("**<:v_einstellungen:1037067521049759865> Ich generiere die Embeds und die Graphen. Einen kleinen Moment bitte.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
+        await interaction.response.send_message("**<:v_einstellungen:1119578559086874636> Ich generiere die Embeds und die Graphen. Einen kleinen Moment bitte.**", ephemeral=True)
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 if art == "Mitglieder":
@@ -1003,11 +1003,11 @@ class Stats(commands.Cog):
                     plt.xticks(rotation=45)
                     plt.savefig("stats.png")
                     plt.close()
-                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1037065930284474398> Statistiken der aktivsten {art}", description=f"""
-<:v_chat:1037065910567055370> **Aktivste Nutzer in Textkanälen:**
+                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1119583678083895346> Statistiken der aktivsten {art}", description=f"""
+<:v_chat:1119577968457568327> **Aktivste Nutzer in Textkanälen:**
 {text}
 
-<:v_mikrofon:1037065919282810910> **Aktivste Nutzer in Sprachkanälen:**
+<:v_mikrofon:1119581634216329266> **Aktivste Nutzer in Sprachkanälen:**
 {text2}""")
                     embed.set_thumbnail(url=interaction.guild.icon)
                     embed.set_image(url="attachment://stats.png")
@@ -1094,11 +1094,11 @@ class Stats(commands.Cog):
                     plt.xticks(rotation=45)
                     plt.savefig("stats.png")
                     plt.close()
-                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1037065930284474398> Statistiken der aktivsten {art}", description=f"""
-<:v_chat:1037065910567055370> **Aktivste Textkanäle:**
+                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1119583678083895346> Statistiken der aktivsten {art}", description=f"""
+<:v_chat:1119577968457568327> **Aktivste Textkanäle:**
 {text}
 
-<:v_mikrofon:1037065919282810910> **Aktivste Sprachkanäle:**
+<:v_mikrofon:1119581634216329266> **Aktivste Sprachkanäle:**
 {text2}""")
                     embed.set_thumbnail(url=interaction.guild.icon)
                     embed.set_image(url="attachment://stats.png")
@@ -1116,29 +1116,29 @@ class Stats(commands.Cog):
         """Richte einen Stats Kanal ein."""
         status = await haspremium_forserver(self, interaction.guild)
         if status == False:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 if argument == "Ausschalten":
                     await cursor.execute(f"SELECT channelID, text FROM upstats WHERE guildID = {interaction.guild.id}")
                     result = await cursor.fetchone()
                     if result == None:
-                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Auf diesem Server ist kein Stats-Kanal eingerichtet.**", ephemeral=True)
+                        return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Auf diesem Server ist kein Stats-Kanal eingerichtet.**", ephemeral=True)
                     await cursor.execute("DELETE FROM upstats WHERE guildID = (%s)", (interaction.guild.id))
-                    return await interaction.response.send_message("**<:v_haken:1048677657040134195> Die Stats-Kanäle wurden ausgeschaltet.**")
+                    return await interaction.response.send_message("**<:v_haken:1119579684057907251> Die Stats-Kanäle wurden ausgeschaltet.**")
                 if argument == "Einrichten":
                     if kanal:
                         await cursor.execute("SELECT text FROM upstats WHERE guildID = (%s) AND channelID = (%s)", (interaction.guild.id, kanal.id))
                         result = await cursor.fetchone()
                         if result:
-                            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Kanal ist bereits ein Stats-Kanal.**", ephemeral=True)
+                            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Kanal ist bereits ein Stats-Kanal.**", ephemeral=True)
 
                     await interaction.response.send_modal(StatsKanal(self.bot, kanal))
                 if argument == "Anzeigen":
                     await cursor.execute(f"SELECT guildID, channelID, text FROM upstats WHERE guildID = {interaction.guild.id}")
                     wel = await cursor.fetchall()
                     if wel == []:
-                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Auf diesem Server ist kein Stats-Kanal eingerichtet.**", ephemeral=True)
+                        return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Auf diesem Server ist kein Stats-Kanal eingerichtet.**", ephemeral=True)
 
                     embed = discord.Embed(title="Stats Kanäle", description=f"Die aktuellen Stats Kanäle:", color=await getcolour(self, interaction.user))
                     for ergebnis in wel:

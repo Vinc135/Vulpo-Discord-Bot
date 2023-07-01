@@ -29,7 +29,7 @@ class Reminder(commands.Cog):
                 if minuten:
                     zeit_als_string += f" {minuten}"
                 if zeit_als_string == "":
-                    return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du musst auch eine Zeit angeben, wann du erinnert werden möchtest ;D**", ephemeral=True)
+                    return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du musst auch eine Zeit angeben, wann du erinnert werden möchtest ;D**", ephemeral=True)
                 zeit = convert(zeit_als_string)
                 t1 = math.floor(datetime.datetime.now().timestamp() + zeit)
                 t2 = datetime.datetime.fromtimestamp(int(t1))
@@ -43,8 +43,8 @@ class Reminder(commands.Cog):
                 await cursor.execute("INSERT INTO erinnerungen(userID, endtime, beschreibung, id) VALUES(%s, %s, %s, %s)", (interaction.user.id, t1, beschreibung, id))
                 
                 embed = discord.Embed(color=await getcolour(self, interaction.user), title=f"Erinnerung gestellt (ID {id})", description=f"""
-<:v_info:1037065915113676891> Erinnerung gesetzt auf {discord_timestamp(t2, 'f')}
-<:v_play:1037065922134945853> {beschreibung}""")
+<:v_info:1119579853092552715> Erinnerung gesetzt auf {discord_timestamp(t2, 'f')}
+ <:v_play:1119582324166770708> {beschreibung}""")
                 embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                 asyncio.create_task(reminder_end(t2, self.bot, interaction.user.id, id), name=f"Erinnerung - {id}")
                 await interaction.response.send_message(embed=embed)
@@ -58,16 +58,16 @@ class Reminder(commands.Cog):
                 await cursor.execute("SELECT beschreibung FROM erinnerungen WHERE userID = (%s) AND id = (%s)", (interaction.user.id, id))
                 result = await cursor.fetchone()
                 if result is None:
-                    await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Die Erinnerung mit der ID {id} von dir wurde nicht gefunden.**", ephemeral=True)
+                    await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> Die Erinnerung mit der ID {id} von dir wurde nicht gefunden.**", ephemeral=True)
                     return
                 await cursor.execute("DELETE FROM erinnerungen WHERE userID = (%s) AND id = (%s)", (interaction.user.id, id))
                 for task in asyncio.all_tasks():
                     name = str(task.get_name())
                     if name == f"Erinnerung - {id}":
                         task.cancel()
-                        return await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Die Erinnerung mit der ID {id} von dir wurde entfernt.**")
+                        return await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Die Erinnerung mit der ID {id} von dir wurde entfernt.**")
                     
-                await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Die Erinnerung mit der ID {id} von dir wurde nicht gefunden.**", ephemeral=True)
+                await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> Die Erinnerung mit der ID {id} von dir wurde nicht gefunden.**", ephemeral=True)
         
     @erinnerung.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -78,13 +78,13 @@ class Reminder(commands.Cog):
                 await cursor.execute("SELECT beschreibung, id, endtime FROM erinnerungen WHERE userID = (%s)", (interaction.user.id))
                 result = await cursor.fetchall()
                 if result == ():
-                    return await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Du hast keine Erninnerungen gestellt.**", ephemeral=True) 
+                    return await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> Du hast keine Erninnerungen gestellt.**", ephemeral=True) 
                 embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"Alle Erinnerungen von {interaction.user}.")
                 embed.set_thumbnail(url=interaction.user.avatar)
                 embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                 for er in result:
                     t2 = datetime.datetime.fromtimestamp(int(er[2]))
-                    embed.add_field(name=f"ID {er[1]}", value=f"<:v_play:1037065922134945853> {er[0]}\n<:v_info:1037065915113676891> Ende: {discord_timestamp(t2, 'f')}", inline=False)
+                    embed.add_field(name=f"ID {er[1]}", value=f" <:v_play:1119582324166770708> {er[0]}\n<:v_info:1119579853092552715> Ende: {discord_timestamp(t2, 'f')}", inline=False)
                 await interaction.response.send_message(embed=embed)
 
 async def setup(bot):

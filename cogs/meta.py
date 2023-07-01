@@ -67,9 +67,9 @@ class EmbedMaker(discord.ui.Modal, title="Embed-Maker"):
             if self.image.value != None:
                 embed.set_image(url=self.image.value)
             await interaction.channel.send(embed=embed)
-            await interaction.response.send_message("**<:v_haken:1048677657040134195> Das Embed wurde erfolgreich erstellt und gesendet.**", ephemeral=True)
+            await interaction.response.send_message("**<:v_haken:1119579684057907251> Das Embed wurde erfolgreich erstellt und gesendet.**", ephemeral=True)
         except:
-            await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Etwas mit deinen Angaben stimmt nicht überein. Bitte versuche es erneut.**", ephemeral=True)
+            await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Etwas mit deinen Angaben stimmt nicht überein. Bitte versuche es erneut.**", ephemeral=True)
 
 class meta(commands.Cog):
     def __init__(self, bot):
@@ -154,7 +154,7 @@ class meta(commands.Cog):
             if a == 9:
                 c += "nine"
             if a == 10:
-                return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst nur maximal neun Antwortmöglichkeiten geben.**", ephemeral=True)
+                return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst nur maximal neun Antwortmöglichkeiten geben.**", ephemeral=True)
             desc += f":{c}: - {answer}\n"
         embed = discord.Embed(color=await getcolour(self, interaction.user), title=frage, description=desc)
         embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/925799559576322078/a2f839c85ee1dd3ef9a1b1fa511e332b.png?size=1024")
@@ -215,7 +215,7 @@ class meta(commands.Cog):
             await message.add_reaction("8️⃣")
             await message.add_reaction("9️⃣")
 
-        await interaction.response.send_message("**<:v_haken:1048677657040134195> Die Umfrage wurde geschickt.**", ephemeral=True)
+        await interaction.response.send_message("**<:v_haken:1119579684057907251> Die Umfrage wurde geschickt.**", ephemeral=True)
 
     info = app_commands.Group(name='info', description='Bekomme Infos zu bestimmten Usern, Rollen und Kanälen.', guild_only=True)
 
@@ -260,7 +260,7 @@ class meta(commands.Cog):
             await interaction.response.send_message(embed=embed)
             return
         else:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Eine Kanalangabe ist erforderlich.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Eine Kanalangabe ist erforderlich.**", ephemeral=True)
     
     @info.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -304,7 +304,7 @@ class meta(commands.Cog):
                     if flag[0] == "verified_bot_developer":
                         flags += "<:v_verifiedbotdeveloper:1037070049539788851>"
                     if flag[0] == "discord_certified_moderator":
-                        flags += "<:v_mod:1037070124164857867> "
+                        flags += "<:v_mod:1119581819122241621>"
             if flags != "":
                 embed.add_field(name="🎖 Abzeichen", value=flags, inline=False)
 
@@ -341,11 +341,11 @@ class meta(commands.Cog):
             if member.status.name == "online":
                 online += 1
         embed.add_field(name="Mitglieder", value=f"<:v_statusonline:1037071233902182491> {online} Online **|** <:v_statusoffline:1037071732474921080> {interaction.guild.member_count} Mitglieder", inline=False)
-        embed.add_field(name="Kanäle", value=f"<:v_chat:1037065910567055370> {len(interaction.guild.text_channels)} Textkanäle **|** <:v_mikrofon:1037065919282810910> {len(interaction.guild.voice_channels)} Sprachkanäle", inline=False)
+        embed.add_field(name="Kanäle", value=f"<:v_chat:1119577968457568327> {len(interaction.guild.text_channels)} Textkanäle **|** <:v_mikrofon:1119581634216329266> {len(interaction.guild.voice_channels)} Sprachkanäle", inline=False)
         
         bans = [ban async for ban in interaction.guild.bans()]
-        embed.add_field(name="Gebannte User", value=f"<:v_mod:1037065920704696420> {len(bans)}", inline=False)
-        embed.add_field(name="Boost Status", value=f"<:v_bild:1037065909317148712> {interaction.guild.premium_subscription_count if interaction.guild.premium_subscription_count else 'Keine'} Booster (Level {interaction.guild.premium_tier})", inline=False)
+        embed.add_field(name="Gebannte User", value=f"<:v_mod:1119581819122241621> {len(bans)}", inline=False)
+        embed.add_field(name="Boost Status", value=f"<:v_bild:1119577789830537227> {interaction.guild.premium_subscription_count if interaction.guild.premium_subscription_count else 'Keine'} Booster (Level {interaction.guild.premium_tier})", inline=False)
         if interaction.guild.features:
             funktionen = ""
             for funktion in interaction.guild.features:
@@ -540,7 +540,7 @@ class meta(commands.Cog):
         try:
             emoj = discord.PartialEmoji.from_str(emoji)
             if emoj is None:
-                return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch in und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+                return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch in und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
             embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                 description=f"Hier der Link: {emoj.url}")
             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
@@ -548,7 +548,7 @@ class meta(commands.Cog):
             embed.set_image(url=f"{emoj.url}")
             await interaction.response.send_message(embed=embed)
         except:
-            return await interaction.response.send_message(content="**<:v_kreuz:1049388811353858069> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch in und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+            return await interaction.response.send_message(content="**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch in und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -559,13 +559,13 @@ class meta(commands.Cog):
         try:
             emoj = discord.PartialEmoji.from_str(emoji)
             if emoj is None:
-                return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+                return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
             async with aiohttp.ClientSession() as session:
                 async with session.get(emoj.url) as response:
                     image_bytes = await response.read()
                     emo = await interaction.guild.create_custom_emoji(name=name, image=image_bytes, reason="stealemoji command")
         except:
-            return await interaction.response.send_message(content="**<:v_kreuz:1049388811353858069> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+            return await interaction.response.send_message(content="**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
         embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                 description=f"**Der Emoji {emo} wurde erstellt.**\nName: {name}")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
@@ -579,7 +579,7 @@ class meta(commands.Cog):
     async def random(self, interaction: discord.Interaction, erstezahl: int, zweitezahl: int):
         """Erhalte eine random Zahl von deinen ausgewählten Zahlen."""
         drittezahl = random.randint(erstezahl, zweitezahl)
-        await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Deine zufällige Zahl zwischen `{erstezahl}` und `{zweitezahl}` ist `{drittezahl}`.**")
+        await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Deine zufällige Zahl zwischen `{erstezahl}` und `{zweitezahl}` ist `{drittezahl}`.**")
         
     @app_commands.command()
     @app_commands.guild_only()
@@ -672,7 +672,7 @@ class meta(commands.Cog):
                     await cursor.execute(f"SELECT enabled FROM levelstatus WHERE guild_id = {interaction.guild.id}")
                     enabled = await cursor.fetchone()
                     if enabled == None or int(enabled[0]) == 0:
-                        await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
+                        await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
                         return
                     await cursor.execute(f"SELECT user_level, user_xp, client_id FROM levelsystem WHERE guild_id = {interaction.guild.id} ORDER BY user_level DESC, user_xp DESC")
                     leaderboard = await cursor.fetchall()

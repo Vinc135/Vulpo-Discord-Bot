@@ -81,7 +81,7 @@ class bilder(commands.Cog):
 
                         await interaction.response.send_message(embed=embed)
         except:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Fehler beim Laden es Bildes. Versuche es später erneut!**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Fehler beim Laden es Bildes. Versuche es später erneut!**", ephemeral=True)
           
     @app_commands.command()
     @app_commands.guild_only()

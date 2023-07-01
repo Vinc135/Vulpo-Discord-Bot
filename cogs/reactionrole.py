@@ -20,11 +20,11 @@ class Dropdown(discord.ui.Select):
             if str(item) in self.values:
                 if rolle not in interaction.user.roles:
                     await interaction.user.add_roles(rolle)
-                    text += f"\n<:v_play:1037065922134945853> Du hast die Rolle {rolle.mention} erhalten."
+                    text += f"\n <:v_play:1119582324166770708> Du hast die Rolle {rolle.mention} erhalten."
             else:
                 if rolle in interaction.user.roles:
                     await interaction.user.remove_roles(rolle)
-                    text += f"\n<:v_play:1037065922134945853> Dir wurde die Rolle {rolle.mention} entzogen."
+                    text += f"\n <:v_play:1119582324166770708> Dir wurde die Rolle {rolle.mention} entzogen."
 
         if text != "":
             return await interaction.response.send_message(text, ephemeral=True)
@@ -47,7 +47,7 @@ class fertig(discord.ui.Modal, title="Erstelle ein Embed"):
     async def on_submit(self, interaction: discord.Interaction):
         emb = interaction.message.embeds[0]
         if emb.fields == []:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du musst zuerst ein paar Optionen festlegen.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du musst zuerst ein paar Optionen festlegen.**", ephemeral=True)
         embed = discord.Embed(title=self.children[0].value, description=self.children[1].value, color=await getcolour(self, interaction.user))
         embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         if self.children[2].value:
@@ -72,7 +72,7 @@ class fertig(discord.ui.Modal, title="Erstelle ein Embed"):
                     
         await interaction.message.delete()
         await interaction.channel.send(embed=embed, view=DropdownView(dict, id))
-        await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Setup erfolgreich beendet.**", ephemeral=True)
+        await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Setup erfolgreich beendet.**", ephemeral=True)
 
 class select_role1(discord.ui.RoleSelect):
     def __init__(self, bot=None):
@@ -94,12 +94,12 @@ class option_hinzufügen(discord.ui.Modal, title="Füge eine Option hinzu"):
         premium_status = await haspremium_forserver(self, interaction.guild)
         if premium_status == False:
             if len(embed.fields) >= 3:
-                return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst keine weiteren Optionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+                return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Optionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
         embed.add_field(name=self.children[0].value, value=self.roleID)
         embed.color = await getcolour(self, interaction.user)
         await interaction.message.edit(content="", embed=embed)
-        await interaction.response.send_message("**<:v_haken:1048677657040134195> Option wurde hinzugefügt.**", ephemeral=True)
+        await interaction.response.send_message("**<:v_haken:1119579684057907251> Option wurde hinzugefügt.**", ephemeral=True)
                 
 class setup_select(discord.ui.View):
     def __init__(self, bot=None, user=None):
@@ -107,7 +107,7 @@ class setup_select(discord.ui.View):
         self.bot = bot
         self.user = user
 
-    @discord.ui.button(label="Fertig", style=discord.ButtonStyle.green, custom_id="iuchouflgeiuhvcwoghjdk", emoji="<:v_haken:1048677657040134195>")
+    @discord.ui.button(label="Fertig", style=discord.ButtonStyle.green, custom_id="iuchouflgeiuhvcwoghjdk", emoji="<:v_haken:1119579684057907251>")
     async def zwei(self, interaction: discord.Interaction, button: discord.ui.Button):
         if self.user.id != interaction.user.id:
             return
@@ -117,7 +117,7 @@ class setup_select(discord.ui.View):
     async def drei(self, interaction: discord.Interaction, button: discord.ui.Button):
         if self.user.id != interaction.user.id:
             return
-        await interaction.response.edit_message(content="**<:v_kreuz:1049388811353858069> Vorgang abbgebrochen**", view=None, embed=None)
+        await interaction.response.edit_message(content="**<:v_kreuz:1119580775411621908> Vorgang abbgebrochen**", view=None, embed=None)
 
 
 ####################################################################################################
@@ -136,7 +136,7 @@ class setup_buttons(discord.ui.View):
         self.bot = bot
         self.user = user
 
-    @discord.ui.button(label="Fertig", style=discord.ButtonStyle.green, custom_id="wrtwrtwrgwrgw4tg", emoji="<:v_haken:1048677657040134195>")
+    @discord.ui.button(label="Fertig", style=discord.ButtonStyle.green, custom_id="wrtwrtwrgwrgw4tg", emoji="<:v_haken:1119579684057907251>")
     async def zwei(self, interaction: discord.Interaction, button: discord.ui.Button):
         if self.user.id != interaction.user.id:
             return
@@ -146,7 +146,7 @@ class setup_buttons(discord.ui.View):
     async def drei(self, interaction: discord.Interaction, button: discord.ui.Button):
         if self.user.id != interaction.user.id:
             return
-        await interaction.response.edit_message(content="**<:v_kreuz:1049388811353858069> Vorgang abbgebrochen**", view=None, embed=None)
+        await interaction.response.edit_message(content="**<:v_kreuz:1119580775411621908> Vorgang abbgebrochen**", view=None, embed=None)
 
 class option_hinzufügen_2(discord.ui.Modal, title="Füge eine Option hinzu"):
     def __init__(self, bot=None, roleID=None):
@@ -160,12 +160,12 @@ class option_hinzufügen_2(discord.ui.Modal, title="Füge eine Option hinzu"):
         premium_status = await haspremium_forserver(self, interaction.guild)
         if premium_status == False:
             if len(embed.fields) >= 3:
-                return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst keine weiteren Optionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+                return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Optionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
         embed.add_field(name=self.children[0].value, value=self.roleID)
         embed.color = await getcolour(self, interaction.user)
         await interaction.message.edit(content="", embed=embed)
-        await interaction.response.send_message("**<:v_haken:1048677657040134195> Option wurde hinzugefügt.**", ephemeral=True)
+        await interaction.response.send_message("**<:v_haken:1119579684057907251> Option wurde hinzugefügt.**", ephemeral=True)
 
 class fertig2(discord.ui.Modal, title="Erstelle ein Embed"):
     def __init__(self, bot=None):
@@ -179,7 +179,7 @@ class fertig2(discord.ui.Modal, title="Erstelle ein Embed"):
     async def on_submit(self, interaction: discord.Interaction):
         emb = interaction.message.embeds[0]
         if emb.fields == []:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du musst zuerst ein paar Optionen festlegen.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du musst zuerst ein paar Optionen festlegen.**", ephemeral=True)
         embed = discord.Embed(title=self.children[0].value, description=self.children[1].value, color=await getcolour(self, interaction.user))
         embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         if self.children[2].value:
@@ -208,7 +208,7 @@ class fertig2(discord.ui.Modal, title="Erstelle ein Embed"):
                     
         await interaction.message.delete()
         await interaction.channel.send(embed=embed, view=view)
-        await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Setup erfolgreich beendet.**", ephemeral=True)
+        await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Setup erfolgreich beendet.**", ephemeral=True)
 
 class CounterButton(discord.ui.Button):
     def __init__(self, label, role, id):
@@ -219,11 +219,11 @@ class CounterButton(discord.ui.Button):
         rolle = interaction.guild.get_role(int(self.role))
         if rolle not in interaction.user.roles:
             await interaction.user.add_roles(rolle)
-            return await interaction.response.send_message(f"<:v_play:1037065922134945853> Du hast die Rolle {rolle.mention} erhalten.", ephemeral=True)
+            return await interaction.response.send_message(f" <:v_play:1119582324166770708> Du hast die Rolle {rolle.mention} erhalten.", ephemeral=True)
 
         if rolle in interaction.user.roles:
             await interaction.user.remove_roles(rolle)
-            await interaction.response.send_message(f"<:v_play:1037065922134945853> Dir wurde die Rolle {rolle.mention} entzogen", ephemeral=True)
+            await interaction.response.send_message(f" <:v_play:1119582324166770708> Dir wurde die Rolle {rolle.mention} entzogen", ephemeral=True)
                 
 class view_for_buttons(discord.ui.View):
     def __init__(self):

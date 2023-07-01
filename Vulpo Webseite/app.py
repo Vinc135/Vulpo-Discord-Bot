@@ -14,8 +14,6 @@ VERIFY_URL_PROD = 'https://ipnpb.paypal.com/cgi-bin/webscr'
 VERIFY_URL_TEST = 'https://ipnpb.sandbox.paypal.com/cgi-bin/webscr'
 VERIFY_URL = VERIFY_URL_PROD
 
-# App is behind one proxy that sets the -For and -Host headers.
-
 async def open_acc(userid, p):
     async with p.acquire() as conn:
         async with conn.cursor() as cursor:

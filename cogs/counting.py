@@ -11,18 +11,18 @@ class countconfirm(discord.ui.View):
         self.kanal = kanal
         self.bot = bot
 
-    @discord.ui.button(label='Ja', style=discord.ButtonStyle.green, custom_id="A94bA4bG98bGbG4Fb5b5AG", emoji="<:v_haken:1048677657040134195>")
+    @discord.ui.button(label='Ja', style=discord.ButtonStyle.green, custom_id="A94bA4bG98bGbG4Fb5b5AG", emoji="<:v_haken:1119579684057907251>")
     async def ja(self, interaction: discord.Interaction, button: discord.ui.Button):
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 await cursor.execute("UPDATE counting SET channelID = (%s) WHERE guildID = (%s)", (self.kanal.id, interaction.guild.id))
                 await cursor.execute("UPDATE counting SET zahl = (%s) WHERE guildID = (%s)", (0, interaction.guild.id))
         
-        await interaction.response.edit_message(content=f"**<:v_haken:1048677657040134195> Der Kanal {self.kanal.mention} ist nun der neue Zähl-Kanal. Die nächste Zahl ist 1!**", view=None)
+        await interaction.response.edit_message(content=f"**<:v_haken:1119579684057907251> Der Kanal {self.kanal.mention} ist nun der neue Zähl-Kanal. Die nächste Zahl ist 1!**", view=None)
 
     @discord.ui.button(label='Abbrechen', style=discord.ButtonStyle.red, custom_id="67D799H969i69796HDiiU7", emoji="🗑")
     async def nein(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await interaction.response.edit_message(content="**<:v_kreuz:1049388811353858069> Vorgang abbgebrochen**", view=None)
+        await interaction.response.edit_message(content="**<:v_kreuz:1119580775411621908> Vorgang abbgebrochen**", view=None)
 
 class Counting(commands.Cog):
     def __init__(self, bot):
@@ -46,14 +46,14 @@ class Counting(commands.Cog):
                 if result == None:
                     await cursor.execute("INSERT INTO counting (channelID, guildID, zahl) VALUES (%s, %s, %s)", (kanal.id, interaction.guild.id, 0))
                     
-                    await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Der Kanal {kanal.mention} ist nun ein Zähl-Kanal.**")
+                    await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Der Kanal {kanal.mention} ist nun ein Zähl-Kanal.**")
                 if result != None:
                     aktueller_kanal = interaction.guild.get_channel(int(result[0]))
                     if aktueller_kanal == None:
                         await cursor.execute("UPDATE counting SET channelID = (%s) WHERE guildID = (%s)", (kanal.id, interaction.guild.id))
                         await cursor.execute("UPDATE counting SET zahl = (%s) WHERE guildID = (%s)", (0, interaction.guild.id))
                         
-                        await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Der Kanal {kanal.mention} ist nun ein Zähl-Kanal.**")
+                        await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Der Kanal {kanal.mention} ist nun ein Zähl-Kanal.**")
                     if aktueller_kanal != None:
                         await interaction.response.send_message(f"Der aktuelle Zähl-Kanal ist der Kanal {aktueller_kanal.mention}.\nMöchtest du die Count Funktion dort deaktivieren und in {kanal.mention} aktivieren?", view=countconfirm(kanal, self.bot), ephemeral=True)
 
@@ -67,17 +67,17 @@ class Counting(commands.Cog):
                 await cursor.execute(f"SELECT channelID FROM counting WHERE guildID = {interaction.guild.id}")
                 result = await cursor.fetchone()
                 if result == None:
-                    await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Hier ist kein Count-Channel eingerichtet. Richte einen mit `/count <kanal>` ein**", ephemeral=True)
+                    await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> Hier ist kein Count-Channel eingerichtet. Richte einen mit `/count <kanal>` ein**", ephemeral=True)
                     return
                 if result != None:
                     aktueller_kanal = interaction.guild.get_channel(int(result[0]))
                     if aktueller_kanal == None:
-                        await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Hier ist kein Count-Channel eingerichtet. Richte einen mit `/count <kanal>` ein**", ephemeral=True)
+                        await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> Hier ist kein Count-Channel eingerichtet. Richte einen mit `/count <kanal>` ein**", ephemeral=True)
                         return
                     if aktueller_kanal != None:
                         await cursor.execute("UPDATE counting SET zahl = (%s) WHERE guildID = (%s)", (zahl - 1, interaction.guild.id))
                         
-                        await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Die nächste Zahl ist {zahl} in {aktueller_kanal.mention}**")
+                        await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Die nächste Zahl ist {zahl} in {aktueller_kanal.mention}**")
 
     @counting.command()
     @app_commands.checks.has_permissions(manage_messages=True)
@@ -89,17 +89,17 @@ class Counting(commands.Cog):
                 await cursor.execute(f"SELECT channelID FROM counting WHERE guildID = {interaction.guild.id}")
                 result = await cursor.fetchone()
                 if result == None:
-                    await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Hier ist kein Count-Channel eingerichtet. Richte einen mit `/count <kanal>` ein**", ephemeral=True)
+                    await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> Hier ist kein Count-Channel eingerichtet. Richte einen mit `/count <kanal>` ein**", ephemeral=True)
                     return
                 if result != None:
                     aktueller_kanal = interaction.guild.get_channel(int(result[0]))
                     if aktueller_kanal == None:
-                        await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Hier ist kein Count-Channel eingerichtet. Richte einen mit `/count <kanal>` ein**", ephemeral=True)
+                        await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> Hier ist kein Count-Channel eingerichtet. Richte einen mit `/count <kanal>` ein**", ephemeral=True)
                         return
                     if aktueller_kanal != None:
                         await cursor.execute(f"DELETE FROM counting WHERE guildID = {interaction.guild.id}")
                         
-                        await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Erfolgreich ausgeschaltet.**")
+                        await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Erfolgreich ausgeschaltet.**")
 
     @commands.Cog.listener()
     async def on_message(self, msg: discord.Message):
@@ -127,14 +127,14 @@ class Counting(commands.Cog):
                                 a += 1
                                 if a == 2:
                                     if int(message.author.id) == int(msg.author.id):
-                                        m = await msg.reply("**<:v_kreuz:1049388811353858069> Warte bitte bis jemand anderes mitzählt. Alleine zählen ist doof.**\n*Diese Nachricht wird in 3 Sekunden gelöscht*")
+                                        m = await msg.reply("**<:v_kreuz:1119580775411621908> Warte bitte bis jemand anderes mitzählt. Alleine zählen ist doof.**\n*Diese Nachricht wird in 3 Sekunden gelöscht*")
                                         await asyncio.sleep(3)
                                         await m.delete()
                                         await msg.delete()
                                         return
                                     else:
                                         await cursor.execute("UPDATE counting SET zahl = (%s) WHERE guildID = (%s)", (zahl + 1, msg.guild.id))
-                                        await msg.add_reaction("<:v_haken:1048677657040134195>")
+                                        await msg.add_reaction("<:v_haken:1119579684057907251>")
 
                                         k = 100
                                         for i in range(100):
@@ -143,7 +143,7 @@ class Counting(commands.Cog):
                                                 await msg.add_reaction("🎉")
                                                 await msg.pin(reason="Zähl-Meilenstein")
                         else:
-                            m = await msg.reply(f"**<:v_kreuz:1049388811353858069> Die nächste Zahl wäre {zahl + 1}**\n*Diese Nachricht wird in 3 Sekunden gelöscht*")
+                            m = await msg.reply(f"**<:v_kreuz:1119580775411621908> Die nächste Zahl wäre {zahl + 1}**\n*Diese Nachricht wird in 3 Sekunden gelöscht*")
                             await asyncio.sleep(3)
                             await m.delete()
                             await msg.delete()

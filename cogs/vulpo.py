@@ -14,19 +14,19 @@ from info import getcolour
 class Dropdown(discord.ui.Select):
     def __init__(self, user, farbe):
         selectOptions = [
-            discord.SelectOption(label="Premium", emoji="<:v_ticket:1037065933014958230>"),
-            discord.SelectOption(label="Information", emoji="<:v_info:1037065915113676891>"),
-            discord.SelectOption(label="Settings & Setup", emoji="<:v_einstellungen:1037067521049759865>"),
-            discord.SelectOption(label="Basic Moderation", emoji="<:v_mod:1037065920704696420>"),
-            discord.SelectOption(label="Levelsystem", emoji="<:v_levelup:1037079572333735966>"),
-            discord.SelectOption(label="Giveaway", emoji="<:v_geschenk:1037065913981218818>"),
-            discord.SelectOption(label="Stats", emoji="<:v_stats:1037065930284474398>"),
-            discord.SelectOption(label="Ticketsystem", emoji="<:v_ticket:1037065933014958230>"),
-            discord.SelectOption(label="Nachrichten", emoji="<:v_chat:1037065910567055370>"),
-            discord.SelectOption(label="Auto Moderation", emoji="<:v_schutz:1037065923720392835>"),
-            discord.SelectOption(label="Fun", emoji="<:v_spa:1037065926929027122>"),
-            discord.SelectOption(label="Economy", emoji="<:v_cookie:1037065912492249259>"),
-            discord.SelectOption(label="Minispiele", emoji="<:v_spiel:1037065928304771183>")
+            discord.SelectOption(label="Premium", emoji="<:v_ticket:1119584819597279242>"),
+            discord.SelectOption(label="Information", emoji="<:v_info:1119579853092552715>"),
+            discord.SelectOption(label="Settings & Setup", emoji="<:v_einstellungen:1119578559086874636>"),
+            discord.SelectOption(label="Basic Moderation", emoji="<:v_mod:1119581819122241621>"),
+            discord.SelectOption(label="Levelsystem", emoji="<:v_levelup:1119581140240576612>"),
+            discord.SelectOption(label="Giveaway", emoji="<:v_geschenk:1119579279274025060>"),
+            discord.SelectOption(label="Stats", emoji="<:v_stats:1119583678083895346>"),
+            discord.SelectOption(label="Ticketsystem", emoji="<:v_ticket:1119584819597279242>"),
+            discord.SelectOption(label="Nachrichten", emoji="<:v_chat:1119577968457568327>"),
+            discord.SelectOption(label="Auto Moderation", emoji="<:v_schutz:1119582601104076943>"),
+            discord.SelectOption(label="Fun", emoji="<:v_smiley:1119583113153089626>"),
+            discord.SelectOption(label="Economy", emoji="<:v_cookie:1119578273580593232>"),
+            discord.SelectOption(label="Minispiele", emoji="<:v_spiel:1119583527919435796>")
         ]
         super().__init__(placeholder="Wähle eine Seite", min_values=1, max_values=1, options=selectOptions, custom_id="Dropdown-Help")
         self.user = user
@@ -37,13 +37,13 @@ class Dropdown(discord.ui.Select):
         
         if self.values[0] == "Premium":
             anzeige = """
-> <:v_info:1037065915113676891> Spezielle Befehle und Funtkionen, nur für Premium Nutzer.
+> <:v_info:1119579853092552715> Spezielle Befehle und Funtkionen, nur für Premium Nutzer.
 
-__<:v_user:1037065935015653476> User Befehle__
+__<:v_user:1119585450923929672> User Befehle__
 `/premium embedfarbe` Ändere die Farbe aller Embeds, die dir gesendet werden von Vulpo.
 `/premium rangkarte` Ändere das Bild deiner Rangkarte.
 
-__<:v_ticket:1037065933014958230> Premium erhalten__
+__<:v_ticket:1119584819597279242> Premium erhalten__
 Premium ist heiß begehrt. Du kannst es bekommen, indem du ein Abonnement wirst: https://vulpo-bot.de/premium."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
@@ -51,14 +51,14 @@ Premium ist heiß begehrt. Du kannst es bekommen, indem du ein Abonnement wirst:
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Stats":
             anzeige = """
-> <:v_info:1037065915113676891> Vulpos Stats System basiert auf Tracking von Mitgliedern, wie aktiv sie in Text- und Sprachkanälen sind.
+> <:v_info:1119579853092552715> Vulpos Stats System basiert auf Tracking von Mitgliedern, wie aktiv sie in Text- und Sprachkanälen sind.
 
-__<:v_user:1037065935015653476> User Befehle__
+__<:v_user:1119585450923929672> User Befehle__
 `/stats anzeigen` Zeigt Stats für Member und Kanäle.
 `/stats top` Lass dir die besten Stats dieses Servers anzeigen.
 `/stats lookback` Zeigt Stats für Member und Kanäle von einem bestimmten Zeitraum.
 
-__<:v_einstellungen:1037067521049759865> Team Befehle__
+__<:v_einstellungen:1119578559086874636> Team Befehle__
 `/stats blacklist` Setze Kanäle auf die Blacklist für Nachrichten.
 `/stats reset` Setze alle Stats auf 0 zurück.
 `/statschannel` Richte einen Stats-Kanal ein."""
@@ -68,12 +68,12 @@ __<:v_einstellungen:1037067521049759865> Team Befehle__
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Auto Moderation":
             anzeige = """
-> <:v_info:1037065915113676891> Dieses System ermöglicht dir automatische Handlungen gegen Nutzer, die eine bestimmte Warnanzahl erreicht haben. Warns können manuell und automatisch, über z.B.: Blacklist, verteilt werden.
+> <:v_info:1119579853092552715> Dieses System ermöglicht dir automatische Handlungen gegen Nutzer, die eine bestimmte Warnanzahl erreicht haben. Warns können manuell und automatisch, über z.B.: Blacklist, verteilt werden.
 
-__<:v_user:1037065935015653476> User Befehle__
+__<:v_user:1119585450923929672> User Befehle__
 Keine User Befehle.
 
-__<:v_einstellungen:1037067521049759865> Team Befehle__
+__<:v_einstellungen:1119578559086874636> Team Befehle__
 `/warn` Warne einen User.
 `/unwarn` Entferne eine Warnung eines Users.
 `/listwarn` Zeigt wie viele Warnungen ein User hat.
@@ -96,12 +96,12 @@ __<:v_einstellungen:1037067521049759865> Team Befehle__
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Ticketsystem":
             anzeige = """
-> <:v_info:1037065915113676891> Dieses Ticketsystem hat nur zwei Befehle. Cool oder? Alle Handlungen im Ticket werden durch Buttons gemanaged: öffnen, claimen, schließen, neu öffnen, löschen.
+> <:v_info:1119579853092552715> Dieses Ticketsystem hat nur zwei Befehle. Cool oder? Alle Handlungen im Ticket werden durch Buttons gemanaged: öffnen, claimen, schließen, neu öffnen, löschen.
 
-__<:v_user:1037065935015653476> User Befehle__
+__<:v_user:1119585450923929672> User Befehle__
 Keine User Befehle.
 
-__<:v_einstellungen:1037067521049759865> Team Befehle__
+__<:v_einstellungen:1119578559086874636> Team Befehle__
 `/createpanel` Erstelle ein Panel, womit User ein Ticket öffnen können.
 `/ticketlog` Richte einen Ticketlog ein."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
@@ -110,12 +110,12 @@ __<:v_einstellungen:1037067521049759865> Team Befehle__
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Nachrichten":
             anzeige = """
-> <:v_info:1037065915113676891> Die Kategorie Nachrichten beschreibt Befehle, mit denen du auf bestimmte Nachrichten reagieren kannst. Automatisch und manuell. z.B.: automatische Reaktionen
+> <:v_info:1119579853092552715> Die Kategorie Nachrichten beschreibt Befehle, mit denen du auf bestimmte Nachrichten reagieren kannst. Automatisch und manuell. z.B.: automatische Reaktionen
 
-__<:v_user:1037065935015653476> User Befehle__
+__<:v_user:1119585450923929672> User Befehle__
 Keine User Befehle.
 
-__<:v_einstellungen:1037067521049759865> Team Befehle__
+__<:v_einstellungen:1119578559086874636> Team Befehle__
 `/joinmsg` Lege eine Nachricht fest, wenn jemand joint.
 `/testjoin` Überprüfe die Join Nachricht.
 `/leavemsg` Lege eine Leave Nachricht fest.
@@ -139,9 +139,9 @@ Jeder Nutzer kann die Custom Befehle des Tags System nutzen. Wenn erstmal ein Ta
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Information":
             anzeige = """
-> <:v_info:1037065915113676891> Hier stehen Befehle, die hauptsächlich Informationen ausgeben oder nützlich sind.
+> <:v_info:1119579853092552715> Hier stehen Befehle, die hauptsächlich Informationen ausgeben oder nützlich sind.
 
-__<:v_user:1037065935015653476> User Befehle__
+__<:v_user:1119585450923929672> User Befehle__
 `/about` Infos über Vulpo.
 `/help` Alle wichtigen Links und Befehle.
 `/invite` Link, um Vulpo einzuladen.
@@ -161,7 +161,7 @@ __<:v_user:1037065935015653476> User Befehle__
 `/bestenliste` Erhalte Bestenlisten verschiedenster Funktionen.
 `/invites` Zeigt die Einladungen eines Users.
 
-__<:v_einstellungen:1037067521049759865> Team Befehle__
+__<:v_einstellungen:1119578559086874636> Team Befehle__
 Keine Team Befehle."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
@@ -169,16 +169,16 @@ Keine Team Befehle."""
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Settings & Setup":
             anzeige = """
-> <:v_info:1037065915113676891> Diese Kategorie bietet dir Einstellungen für deinen Server wie Joinrollen und Tags. Außerdem findest du dort nützliche Befehle für dich selbst.
+> <:v_info:1119579853092552715> Diese Kategorie bietet dir Einstellungen für deinen Server wie Joinrollen und Tags. Außerdem findest du dort nützliche Befehle für dich selbst.
 
-__<:v_user:1037065935015653476> User Befehle__
+__<:v_user:1119585450923929672> User Befehle__
 `/erinnerung erstellen` Erstelle dir eine Erinnerung für eine bestimmte Uhrzeit.
 `/erinnerung löschen` Entfernt eine Erinnerung.
 `/erinnerung anzeigen` Bekomme eine Liste von deinen Erinnerungen.
 `/afk` Setze dich AFK.
 `/starboard` - Lege einen Kanal fest für Nachrichten mit 5 Sternen von Usern.
 
-__<:v_einstellungen:1037067521049759865> Team Befehle__
+__<:v_einstellungen:1119578559086874636> Team Befehle__
 `/joinrole` Lege eine Joinrolle fest.
 `/botrole` Lege eine Botrolle fest.
 `/voicesetup` Erstelle einen "Join to Create" Kanal.
@@ -189,12 +189,12 @@ __<:v_einstellungen:1037067521049759865> Team Befehle__
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Basic Moderation":
             anzeige = """
-> <:v_info:1037065915113676891> Dies sind Befehle, die eigentlich jeder Bot hat. Einfache Moderation per Slash Befehle.
+> <:v_info:1119579853092552715> Dies sind Befehle, die eigentlich jeder Bot hat. Einfache Moderation per Slash Befehle.
 
-__<:v_user:1037065935015653476> User Befehle__
+__<:v_user:1119585450923929672> User Befehle__
 Keine User Befehle.
 
-__<:v_einstellungen:1037067521049759865> Team Befehle__
+__<:v_einstellungen:1119578559086874636> Team Befehle__
 `/kick` Kicke einen User.
 `/ban` Banne einen User.
 `/unban` Entbanne einen User.
@@ -209,12 +209,12 @@ __<:v_einstellungen:1037067521049759865> Team Befehle__
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Levelsystem":
             anzeige = """
-> <:v_info:1037065915113676891> Das Levelsystem vonn Vulpo ist umfassend. Coole Rangnachrichten und viele Einstellungsmöglichkeiten für Moderatoren.
+> <:v_info:1119579853092552715> Das Levelsystem vonn Vulpo ist umfassend. Coole Rangnachrichten und viele Einstellungsmöglichkeiten für Moderatoren.
 
-__<:v_user:1037065935015653476> User Befehle__
+__<:v_user:1119585450923929672> User Befehle__
 `/rank` Zeigt dir welches Level du bist.
 
-__<:v_einstellungen:1037067521049759865> Team Befehle__
+__<:v_einstellungen:1119578559086874636> Team Befehle__
 `/levelsystem status` Zeigt, ob das Levelystem aktiviert/deaktiviert ist.
 `/levelsystem role add/delete/list` Richte Rollen ein die beim Erreichen eines bestimmten Levels automatisch gegeben werden soll.
 `/levelystem levelupmessage` Richte eine Levelup Nachricht ein.
@@ -228,13 +228,13 @@ __<:v_einstellungen:1037067521049759865> Team Befehle__
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Giveaway":
             anzeige = """
-> <:v_info:1037065915113676891> Hinter dem Giveaway System steckt mehr als du denkst. Nicht nur Starten und blacklist, bypassrollen und verwalten. Die Gewinnspiele enden sogar nicht bei Bot Neustart, sondern laufen normal bis zum Ende weiter.
+> <:v_info:1119579853092552715> Hinter dem Giveaway System steckt mehr als du denkst. Nicht nur Starten und blacklist, bypassrollen und verwalten. Die Gewinnspiele enden sogar nicht bei Bot Neustart, sondern laufen normal bis zum Ende weiter.
 > Man kann ebenso Anforderungen einstellen. Hinter denen steckt noch die ganze Magie. Das Stats System ist mit verknüpft bei Nachrichten. Außerdem ist das Levelsystem mit vernetzt bei Levelanforderungen. Buttons gibt es auch.
 
-__<:v_user:1037065935015653476> User Befehle__
+__<:v_user:1119585450923929672> User Befehle__
 Keine User Befehle.
 
-__<:v_einstellungen:1037067521049759865> Team Befehle__
+__<:v_einstellungen:1119578559086874636> Team Befehle__
 `/gewinnspiel starten` Starte ein neues Gewinnspiel.
 `/gewinnspiel verwalten` Verwalte Gewinnspiele. 
 `/gewinnspiel bypassrolle` Bearbeite Rollen, die die Bedingungen umgehen. 
@@ -245,9 +245,9 @@ __<:v_einstellungen:1037067521049759865> Team Befehle__
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Fun":
             anzeige = """
-> <:v_info:1037065915113676891> Schon lange nicht mehr gelacht xD? Dann wird es mal Zeit. Denn mit diesen Befehlen wirst du zu 99% lachen!
+> <:v_info:1119579853092552715> Schon lange nicht mehr gelacht xD? Dann wird es mal Zeit. Denn mit diesen Befehlen wirst du zu 99% lachen!
 
-__<:v_user:1037065935015653476> User Befehle__
+__<:v_user:1119585450923929672> User Befehle__
 `/ask` Frage eine berühmte Person eine Frage
 `/avatar` Zeigt das Profilbild eines Users an
 `/cat` Schicke ein zufälliges Bild einer Katze.
@@ -269,7 +269,7 @@ __<:v_user:1037065935015653476> User Befehle__
 `/wetter` Zeigt das Wetter eines bestimmten Orts.
 `/stealemoji` Stiehlt ein emoji von einem Server.
 
-__<:v_einstellungen:1037067521049759865> Team Befehle__
+__<:v_einstellungen:1119578559086874636> Team Befehle__
 Keine Team Befehle."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
@@ -277,12 +277,12 @@ Keine Team Befehle."""
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Minispiele":
             anzeige = """
-> <:v_info:1037065915113676891> Du langweilst dich? Dann probier mal diese Spiele aus. Sie werden dir die Langeweile vertreiben!
+> <:v_info:1119579853092552715> Du langweilst dich? Dann probier mal diese Spiele aus. Sie werden dir die Langeweile vertreiben!
 
-__<:v_user:1037065935015653476> User Befehle__
+__<:v_user:1119585450923929672> User Befehle__
 `/speedgame` Teste deine Schnelligkeit und steige Ränge auf.
 
-__<:v_einstellungen:1037067521049759865> Team Befehle__
+__<:v_einstellungen:1119578559086874636> Team Befehle__
 `/emojiquiz` Verwalte das Emojiquiz deines Servers.
 `/counting set` Richte den Zählkanal ein.
 `/counting zahl` Stelle die aktuelle Zahl des Counting Kanals ein.
@@ -294,9 +294,9 @@ __<:v_einstellungen:1037067521049759865> Team Befehle__
             return await interaction.response.edit_message(embed=embed)
         if self.values[0] == "Economy":
             anzeige = """
-> <:v_info:1037065915113676891> Das globale Wirtschaftssystem von Vulpo bietet viel Spaß und Strategie. Messe dich mit anderen und steige in der Berufsleiter nach oben auf!
+> <:v_info:1119579853092552715> Das globale Wirtschaftssystem von Vulpo bietet viel Spaß und Strategie. Messe dich mit anderen und steige in der Berufsleiter nach oben auf!
 
-__<:v_user:1037065935015653476> User Befehle__
+__<:v_user:1119585450923929672> User Befehle__
 `/cookies anzeigen` Öffne das Profil eines Users.
 `/cookies abheben` Hebe Geld von der Bank ab.
 `/cookies einzahlen` Überweise Geld auf die Bank.
@@ -321,7 +321,7 @@ __<:v_user:1037065935015653476> User Befehle__
 `/shop item verkaufen` Verkaufe ein Item aus deinem Rucksack. Du bekommst zufällige Prozente des Kaufpreises wieder. Prozente im Bereich von 65% bis 115%
 `/shop item meine` Zeigt alle deine gekauften Items vom Shop.
 
-__<:v_einstellungen:1037067521049759865> Team Befehle__
+__<:v_einstellungen:1119578559086874636> Team Befehle__
 **Shop System**
 `/shop item hinzufügen` Füge ein Item dem Shop hinzu.
 `/shop item entfernen` Entferne ein Item aus dem Shop."""
@@ -352,28 +352,28 @@ class vulpo(commands.Cog):
         """Wichtige Links wie invite, support, vote und viele andere Infos."""
         farbe = await getcolour(self, interaction.user)
         embed = discord.Embed(title="Help Menü", description=f"""
-<:v_info:1037065915113676891> Danke dass du mich benutzt. Hier findest du alle Befehle von mir und wichtige Links.
+<:v_info:1119579853092552715> Danke dass du mich benutzt. Hier findest du alle Befehle von mir und wichtige Links.
 Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49jD3VXksp).
 
 **Alle Kategorien**
-> <:v_info:1037065915113676891> Information
-> <:v_einstellungen:1037067521049759865> Settings & Setup
-> <:v_mod:1037065920704696420> Basic Moderation
-> <:v_levelup:1037079572333735966> Levelsystem
-> <:v_geschenk:1037065913981218818> Giveaway
-> <:v_stats:1037065930284474398> Stats
-> <:v_ticket:1037065933014958230> Ticketsystem
-> <:v_chat:1037065910567055370> Nachrichten
-> <:v_schutz:1037065923720392835> Auto Moderation
-> <:v_spa:1037065926929027122> Fun
-> <:v_cookie:1037065912492249259> Economy
-> <:v_spiel:1037065928304771183> Minispiele
+> <:v_info:1119579853092552715> Information
+> <:v_einstellungen:1119578559086874636> Settings & Setup
+> <:v_mod:1119581819122241621> Basic Moderation
+> <:v_levelup:1119581140240576612> Levelsystem
+> <:v_geschenk:1119579279274025060> Giveaway
+> <:v_stats:1119583678083895346> Stats
+> <:v_ticket:1119584819597279242> Ticketsystem
+> <:v_chat:1119577968457568327> Nachrichten
+> <:v_schutz:1119582601104076943> Auto Moderation
+> <:v_smiley:1119583113153089626> Fun
+> <:v_cookie:1119578273580593232> Economy
+> <:v_spiel:1119583527919435796> Minispiele
 
 **Letzte Updates**
-<:v_info:1037065915113676891> Starboard für coole Nachrichten -> `/starboard`
-<:v_info:1037065915113676891> Tempchannels nun mit **Interface verfügbar** -> `/voicesetup`
-<:v_info:1037065915113676891> Reportlog - melde Nutzer per Rechtsklick ans Team -> `/reportlog`
-<:v_info:1037065915113676891> Statschannel - fertige live Stats Kanäle an -> `/statschannel`
+<:v_info:1119579853092552715> Starboard für coole Nachrichten -> `/starboard`
+<:v_info:1119579853092552715> Tempchannels nun mit **Interface verfügbar** -> `/voicesetup`
+<:v_info:1119579853092552715> Reportlog - melde Nutzer per Rechtsklick ans Team -> `/reportlog`
+<:v_info:1119579853092552715> Statschannel - fertige live Stats Kanäle an -> `/statschannel`
 
 **Links**
 [Einladen](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands) **|** [Support](https://discord.gg/49jD3VXksp) **|** [Voten](https://top.gg/bot/925799559576322078/vote)
@@ -394,7 +394,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
                 result = await cursor.fetchone()
                 if result == None:
                     embed = discord.Embed(title="Du kannst voten", url="https://top.gg/bot/925799559576322078/vote", description="""
-<:v_info:1037065915113676891> Der Vote-Cooldown von 12 Stunden ist abgelaufen. Es wäre sehr schön, wenn du wieder für mich votest.
+<:v_info:1119579853092552715> Der Vote-Cooldown von 12 Stunden ist abgelaufen. Es wäre sehr schön, wenn du wieder für mich votest.
 
 <:herz:941398727501955113> Als Belohnung für einen weiteren Vote bekommst du **300 🍪 im Economy System** und eine besondere **Rolle in [Vulpos Wald](https://discord.gg/49jD3VXksp)**""", colour=await getcolour(self, interaction.user))
                     embed.set_footer(text="Danke für deine Unterstützung", icon_url="https://media.discordapp.net/attachments/965302660871884840/965315155816767548/Vulpo_neu.png?width=1572&height=1572")
@@ -402,7 +402,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
                 t1 = int(result[0])
                 t2 = datetime.fromtimestamp(int(t1))
                 embed = discord.Embed(title="Du kannst noch nicht voten", url="https://top.gg/bot/925799559576322078/vote", description=f"""
-<:v_info:1037065915113676891> Der Vote-Cooldown von 12 Stunden ist noch nicht abgelaufen. Du kannst wieder {discord_timestamp(t2, "R")} voten.
+<:v_info:1119579853092552715> Der Vote-Cooldown von 12 Stunden ist noch nicht abgelaufen. Du kannst wieder {discord_timestamp(t2, "R")} voten.
 
 <:herz:941398727501955113> Als Belohnung für einen weiteren Vote bekommst du **300 🍪 im Economy System** und eine besondere **Rolle in [Vulpos Wald](https://discord.gg/49jD3VXksp)**""", colour=await getcolour(self, interaction.user))
                 embed.set_footer(text="Danke für deine Unterstützung", icon_url="https://media.discordapp.net/attachments/965302660871884840/965315155816767548/Vulpo_neu.png?width=1572&height=1572")
@@ -438,13 +438,13 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
         embed = discord.Embed(color=await getcolour(self, interaction.user), title="Infos über Vulpo", description=f"""
 <:v_statusonline:1037071233902182491> Vulpo wurde {discord_timestamp(erstellt2, 'R')} erstellt
 <:v_verifiedbot:1037069972226179182> Vulpo wurde {discord_timestamp(verifiziert, 'R')} verifiziert
-<:v_info:1037065915113676891> Vulpo ist {discord_timestamp(self.t2, 'R')} online gegangen.
+<:v_info:1119579853092552715> Vulpo ist {discord_timestamp(self.t2, 'R')} online gegangen.
 
 <:v_verifiedbotdeveloper:1037070049539788851> Entwickler: {self.bot.get_user(824378909985341451)}
-<:v_mod:1037070124164857867> Team: {teammember}
+<:v_mod:1119581819122241621> Team: {teammember}
 
-<:v_info:1037065915113676891> Server: {len(self.bot.guilds)}
-<:v_user:1037065935015653476> User: {all_users}
+<:v_info:1119579853092552715> Server: {len(self.bot.guilds)}
+<:v_user:1119585450923929672> User: {all_users}
 ❗ Commands: {len(self.bot.tree.get_commands())}
 
 <:v_python:1037073367175544932> Python Version: {str(sys.version)[0]}{str(sys.version)[1]}{str(sys.version)[2]}{str(sys.version)[3]}{str(sys.version)[4]}{str(sys.version)[5]}

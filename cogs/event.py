@@ -20,7 +20,7 @@ class Dropdown(discord.ui.Select):
                     last_claim = datetime.fromtimestamp(float(last_claim_stamp))
                     delta = now - last_claim
                     if delta < timedelta(hours=12):
-                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst nur alle 12 Stunden abstimmen. Gedulde dich noch etwas.**", ephemeral=True)
+                        return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst nur alle 12 Stunden abstimmen. Gedulde dich noch etwas.**", ephemeral=True)
                     else:
                         await cursor.execute("SELECT * FROM event WHERE guildNAME = (%s)", (self.values[0]))
                         r = await cursor.fetchone()
@@ -44,7 +44,7 @@ class abstimmen(discord.ui.View):
         super().__init__(timeout=None)
         self.bot = bot
 
-    @discord.ui.button(label='Abstimmen', style=discord.ButtonStyle.grey, custom_id="lkdfqeifouwifb", emoji="<:v_haken:1048677657040134195>")
+    @discord.ui.button(label='Abstimmen', style=discord.ButtonStyle.grey, custom_id="lkdfqeifouwifb", emoji="<:v_haken:1119579684057907251>")
     async def abstimmen(self, interaction: discord.Interaction, button: discord.ui.Button):
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
@@ -65,7 +65,7 @@ class abstimmen(discord.ui.View):
                     if delta > timedelta(hours=12):
                         await interaction.response.send_message("**Du kannst abstimmen.**", view=DropdownView(self.bot, selectOptions), ephemeral=True)
                     else:
-                        await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst nur alle 12 Stunden abstimmen. Gedulde dich noch etwas.**", ephemeral=True)
+                        await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst nur alle 12 Stunden abstimmen. Gedulde dich noch etwas.**", ephemeral=True)
                 if result is None:
                     await interaction.response.send_message("**Du kannst abstimmen.**", view=DropdownView(self.bot, selectOptions), ephemeral=True)
 
@@ -75,7 +75,7 @@ class button(discord.ui.View):
         super().__init__(timeout=None)
         self.bot = bot
 
-    @discord.ui.button(label='Loslegen', style=discord.ButtonStyle.grey, custom_id="fwerfgwgw4gwgwrtgfw", emoji="<:v_haken:1048677657040134195>")
+    @discord.ui.button(label='Loslegen', style=discord.ButtonStyle.grey, custom_id="fwerfgwgw4gwgwrtgfw", emoji="<:v_haken:1119579684057907251>")
     async def loslegen(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.send_modal(Modal(self.bot))
 
@@ -89,13 +89,13 @@ class Modal(discord.ui.Modal, title="Formular"):
 
     async def on_submit(self, interaction: discord.Interaction):
         if "https://discord.gg/" not in str(self.children[0].value):
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Die Servereinladung muss ein Link sein. Beachte, dass `https://discord.gg/` im Link ist.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Die Servereinladung muss ein Link sein. Beachte, dass `https://discord.gg/` im Link ist.**", ephemeral=True)
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 await cursor.execute("SELECT votes FROM event WHERE guildID = (%s)", (interaction.guild.id))
                 result = await cursor.fetchone()
                 if result:
-                    return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Dieser Server nimmt bereits teil.**", ephemeral=True)
+                    return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Dieser Server nimmt bereits teil.**", ephemeral=True)
                 else:
                     await cursor.execute("INSERT INTO event(guildID, votes, guildNAME, invite, beschreibung, bild) VALUES(%s, %s, %s, %s, %s, %s)", (interaction.guild.id, 0, interaction.guild.name, self.children[0].value, self.children[1].value, self.children[2].value))
                     channel = self.bot.get_channel(1072146041736019978)
@@ -111,7 +111,7 @@ class Modal(discord.ui.Modal, title="Formular"):
                     embed.color = discord.Color.orange()
                     c = self.bot.get_channel(1072146223605223424)
                     await c.send(embed=embed)
-                    await interaction.response.send_message("**<:v_haken:1048677657040134195> Die Community stimmt nun ab über deinen Server. Du und deine Community kann ebenso amstimmen, damit du vielleicht gewinnst. Die Abstimmung findet dort statt: https://discord.gg/49jD3VXksp.**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_haken:1119579684057907251> Die Community stimmt nun ab über deinen Server. Du und deine Community kann ebenso amstimmen, damit du vielleicht gewinnst. Die Abstimmung findet dort statt: https://discord.gg/49jD3VXksp.**", ephemeral=True)
                     
 class event(commands.Cog):
     def __init__(self, bot):
@@ -126,10 +126,10 @@ class event(commands.Cog):
     async def teilnehmen(self, interaction: discord.Interaction):
         """Nimm am Event teil."""
         if interaction.guild.owner != interaction.user:
-            return await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Tut uns Leid, du bist nicht der Owner vom Server. Diesen Befehl kann nur {interaction.guild.owner.mention} ausführen.**", ephemeral=True)
+            return await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> Tut uns Leid, du bist nicht der Owner vom Server. Diesen Befehl kann nur {interaction.guild.owner.mention} ausführen.**", ephemeral=True)
         if int(interaction.guild.member_count) < 10:
-            return await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Tut uns Leid, dein Server ist zu klein. Du brauchst mindestens 10 Mitglieder.**", ephemeral=True)
-        await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Tipp: Nachdem du auf den Button gedrückt hast und schon etwas ausgefüllt hast, dir aber etwas fehlt kannst du einfach raus gehen. Die Texte von dir im Modal bleiben solange dort, bis du es abschickst.**", ephemeral=True, view=button(self.bot))
+            return await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> Tut uns Leid, dein Server ist zu klein. Du brauchst mindestens 10 Mitglieder.**", ephemeral=True)
+        await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Tipp: Nachdem du auf den Button gedrückt hast und schon etwas ausgefüllt hast, dir aber etwas fehlt kannst du einfach raus gehen. Die Texte von dir im Modal bleiben solange dort, bis du es abschickst.**", ephemeral=True, view=button(self.bot))
 
 async def setup(bot):
     await bot.add_cog(event(bot))

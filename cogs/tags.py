@@ -21,16 +21,16 @@ class Tags(commands.Cog):
                 premium_status = await haspremium_forserver(self, interaction.guild)
                 if premium_status == False:
                     if len(a) >= 3:
-                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst keine weiteren Befehle erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+                        return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Befehle erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
                 await cursor.execute("SELECT name FROM tags WHERE guildID = (%s) AND name = (%s)", (interaction.guild.id, name))
                 result = await cursor.fetchone()
                 if result != None:
-                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Dieser Tag existiert bereits. Wähle bitte einen anderen Namen.**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Dieser Tag existiert bereits. Wähle bitte einen anderen Namen.**", ephemeral=True)
                     return
                 await cursor.execute("INSERT INTO tags(guildID, name, output) VALUES(%s,%s,%s)", (interaction.guild.id, name, output))
                 
-                await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Tag erstellt. Wenn jemand `!tag {name}` schreibt, kommt dieser Text:**\n*{output}*.")
+                await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Tag erstellt. Wenn jemand `!tag {name}` schreibt, kommt dieser Text:**\n*{output}*.")
 
     @tag.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -42,11 +42,11 @@ class Tags(commands.Cog):
                 await cursor.execute("SELECT name FROM tags WHERE guildID = (%s) AND name = (%s)", (interaction.guild.id, name))
                 result = await cursor.fetchone()
                 if result == None:
-                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Dieser Tag existiert nicht. Füge einen Tag mit `/tag add <name> <output>` hinzu.", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Dieser Tag existiert nicht. Füge einen Tag mit `/tag add <name> <output>` hinzu.", ephemeral=True)
                     return
                 await cursor.execute("DELETE FROM tags WHERE guildID = (%s) AND name = (%s)", (interaction.guild.id, name))
                 
-                await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Tag gelöscht.**")
+                await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Tag gelöscht.**")
 
     @tag.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -58,7 +58,7 @@ class Tags(commands.Cog):
                 await cursor.execute("SELECT name, output FROM tags WHERE guildID = (%s)", (interaction.guild.id))
                 result = await cursor.fetchall()
                 if result == None:
-                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Hier wurden keine Tags gefunden. Füge einen Tag mit `/tag add <name> <output>` hinzu**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Hier wurden keine Tags gefunden. Füge einen Tag mit `/tag add <name> <output>` hinzu**", ephemeral=True)
                     return
                 embed = discord.Embed(title="Alle Tags des Servers", description="Hier nähere Infos:", color=await getcolour(self, interaction.user))
                 embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
