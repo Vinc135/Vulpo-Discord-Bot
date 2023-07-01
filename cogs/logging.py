@@ -22,12 +22,12 @@ class logging(commands.Cog):
                     await cursor.execute(f"SELECT channelID FROM reportlog WHERE guildID = {interaction.guild.id}")
                     result = await cursor.fetchone()
                     if result == None:
-                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Auf diesem Server ist kein Reportlog eingerichtet.**", ephemeral=True)
+                        return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Auf diesem Server ist kein Reportlog eingerichtet.**", ephemeral=True)
                     await cursor.execute("DELETE FROM reportlog WHERE guildID = (%s)", (interaction.guild.id))
-                    return await interaction.response.send_message("**<:v_haken:1048677657040134195> Der Reportlog wurde ausgeschaltet.**")
+                    return await interaction.response.send_message("**<:v_haken:1119579684057907251> Der Reportlog wurde ausgeschaltet.**")
                 if argument == "Einrichten (Kanal muss mit angegeben werden)":
                     if kanal == None:
-                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Beim Einrichten ist auch eine Kanal-Angabe erforderlich.**", ephemeral=True)
+                        return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Beim Einrichten ist auch eine Kanal-Angabe erforderlich.**", ephemeral=True)
 
                     await cursor.execute(f"SELECT channelID FROM reportlog WHERE guildID = {interaction.guild.id}")
                     result = await cursor.fetchone()
@@ -35,14 +35,14 @@ class logging(commands.Cog):
                         await cursor.execute("UPDATE reportlog SET channelID = (%s) WHERE guildID = (%s)", (kanal.id, interaction.guild.id))
                     else:
                         await cursor.execute("INSERT INTO reportlog(guildID, channelID) VALUES(%s, %s)", (interaction.guild.id, kanal.id))
-                    await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Der Reportlog ist nun aktiv in {kanal.mention}.**")
+                    await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Der Reportlog ist nun aktiv in {kanal.mention}.**")
                 if argument == "Anzeigen":
                     await cursor.execute(f"SELECT channelID FROM reportlog WHERE guildID = {interaction.guild.id}")
                     result = await cursor.fetchone()
                     try:
                         channel = interaction.guild.get_channel(int(result[0]))
                     except:
-                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Kanal des Reportlogs existiert nicht mehr. Bitte deaktiviere den Reportlog und richte ihn erneut ein.**", ephemeral=True)
+                        return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Kanal des Reportlogs existiert nicht mehr. Bitte deaktiviere den Reportlog und richte ihn erneut ein.**", ephemeral=True)
 
                     embed = discord.Embed(title="Reportlog", description=f"Der aktuelle Reportlog ist aktiv in {channel.mention}", color=await getcolour(self, interaction.user))
                     embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
@@ -114,9 +114,9 @@ class logging(commands.Cog):
                             return
                         else:
                             embed = discord.Embed(title="Eine Nachricht wurde gelöscht", color=discord.Color.orange(), timestamp=datetime.now())
-                            embed.add_field(name="<:v_user:1037065935015653476> Autor", value=message.author)
-                            embed.add_field(name="<:v_enthullen:1037124921685442591> Kanal", value=message.channel.mention)
-                            embed.add_field(name="<:v_chat:1037065910567055370> Nachricht", value=message.content)
+                            embed.add_field(name="<:v_user:1119585450923929672> Autor", value=message.author)
+                            embed.add_field(name="<:v_auge:1119578772207849472> Kanal", value=message.channel.mention)
+                            embed.add_field(name="<:v_chat:1119577968457568327> Nachricht", value=message.content)
                             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                             await channel.send(embed=embed)
                 except:
@@ -175,16 +175,16 @@ class logging(commands.Cog):
                             if before.content != after.content:
                                 if before.pinned == True and after.pinned == True:
                                     embed = discord.Embed(description=f"**Die folgende angeheftete Nachricht({after.id}) wurde in {after.channel.mention} bearbeitet:*", color=discord.Color.gold(), timestamp=datetime.now())
-                                    embed.add_field(name="<:v_pfeil_links:1048677593743888536> Vorher", value=before.content, inline=False)
-                                    embed.add_field(name="<:v_pfeil_rechts:1048677625876459562> Nachher", value=after.content, inline=False)
+                                    embed.add_field(name="<:v_pfeil_links:1119582015042371604> Vorher", value=before.content, inline=False)
+                                    embed.add_field(name="<:v_pfeil_rechts:1119582171930300438> Nachher", value=after.content, inline=False)
                                     embed.set_author(name=after.author, icon_url=after.author.avatar)
                                     embed.set_footer(text=f"Autor-ID: {after.author.id}")
 
                                     await channel.send(embed=embed)
                                 else:
                                     embed = discord.Embed(description=f"**Nachricht({after.id}) wurde in {after.channel.mention} bearbeitet**", color=discord.Color.gold(), timestamp=datetime.now())
-                                    embed.add_field(name="<:v_pfeil_links:1048677593743888536> Vorher", value=before.content, inline=False)
-                                    embed.add_field(name="<:v_pfeil_rechts:1048677625876459562> Nachher", value=after.content, inline=False)
+                                    embed.add_field(name="<:v_pfeil_links:1119582015042371604> Vorher", value=before.content, inline=False)
+                                    embed.add_field(name="<:v_pfeil_rechts:1119582171930300438> Nachher", value=after.content, inline=False)
                                     embed.set_author(name=after.author, icon_url=after.author.avatar)
                                     embed.set_footer(text=f"Autor-ID: {after.author.id}")
 
@@ -258,9 +258,9 @@ class logging(commands.Cog):
                     else:
                         async for entry in guild.audit_logs(limit=1, action=discord.AuditLogAction.ban):
                             embed = discord.Embed(title="Jemand wurde gebannt", color=discord.Color.orange(), timestamp=datetime.now())
-                            embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.target.mention}({entry.target})")
-                            embed.add_field(name="<:v_mod:1037065920704696420> Moderator", value=f"{entry.user.mention}({entry.user})")
-                            embed.add_field(name="<:v_warnung:1037124929944027226> Grund", value=entry.reason if entry.reason else 'Kein grund angegeben')
+                            embed.add_field(name="<:v_user:1119585450923929672> User", value=f"{entry.target.mention}({entry.target})")
+                            embed.add_field(name="<:v_mod:1119581819122241621> Moderator", value=f"{entry.user.mention}({entry.user})")
+                            embed.add_field(name="<:v_warnung:1119585706310905886> Grund", value=entry.reason if entry.reason else 'Kein grund angegeben')
                             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                             await channel.send(embed=embed)
                             break
@@ -280,9 +280,9 @@ class logging(commands.Cog):
                     else:
                         async for entry in guild.audit_logs(limit=1, action=discord.AuditLogAction.ban):
                             embed = discord.Embed(title="Jemand wurde entbannt", color=discord.Color.orange(), timestamp=datetime.now())
-                            embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.target.mention}({entry.target})")
-                            embed.add_field(name="<:v_mod:1037065920704696420> Moderator", value=f"{entry.user.mention}({entry.user})")
-                            embed.add_field(name="<:v_warnung:1037124929944027226> Grund", value=entry.reason if entry.reason else 'Kein grund angegeben')
+                            embed.add_field(name="<:v_user:1119585450923929672> User", value=f"{entry.target.mention}({entry.target})")
+                            embed.add_field(name="<:v_mod:1119581819122241621> Moderator", value=f"{entry.user.mention}({entry.user})")
+                            embed.add_field(name="<:v_warnung:1119585706310905886> Grund", value=entry.reason if entry.reason else 'Kein grund angegeben')
                             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                             await channel.send(embed=embed)
                             break
@@ -303,9 +303,9 @@ class logging(commands.Cog):
                         else:
                             async for entry in channel.guild.audit_logs(limit=1, action=discord.AuditLogAction.channel_create):
                                 embed = discord.Embed(title=f"Ein {entry.target.type}kanal wurde erstellt", color=discord.Color.orange(), timestamp=datetime.now())
-                                embed.add_field(name="<:v_chat:1037065910567055370> Name", value=f"{entry.target.mention}({entry.target.name})")
-                                embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.user.mention}({entry.user})")
-                                embed.add_field(name="<:v_einstellungen:1037067521049759865> Kategorie", value=entry.target.category)
+                                embed.add_field(name="<:v_chat:1119577968457568327> Name", value=f"{entry.target.mention}({entry.target.name})")
+                                embed.add_field(name="<:v_user:1119585450923929672> User", value=f"{entry.user.mention}({entry.user})")
+                                embed.add_field(name="<:v_einstellungen:1119578559086874636> Kategorie", value=entry.target.category)
                                 embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                                 await chan.send(embed=embed)
                                 break
@@ -329,17 +329,17 @@ class logging(commands.Cog):
                             async for entry in after.guild.audit_logs(limit=1, action=discord.AuditLogAction.channel_update):
                                 if before.name != after.name:
                                     embed = discord.Embed(title="Ein Kanal wurde umbenannt", color=discord.Color.orange(), timestamp=datetime.now())
-                                    embed.add_field(name="<:v_pfeil_links:1048677593743888536> Alt", value=before.name)
-                                    embed.add_field(name="<:v_pfeil_rechts:1048677625876459562> Neu", value=after.name)
-                                    embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.user.mention}({entry.user})")
+                                    embed.add_field(name="<:v_pfeil_links:1119582015042371604> Alt", value=before.name)
+                                    embed.add_field(name="<:v_pfeil_rechts:1119582171930300438> Neu", value=after.name)
+                                    embed.add_field(name="<:v_user:1119585450923929672> User", value=f"{entry.user.mention}({entry.user})")
                                     embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                                     await chan.send(embed=embed)
                                     break
                                 if before.topic != after.topic:
                                     embed = discord.Embed(title="Eine Kanalbeschreibung wurde geändert", color=discord.Color.orange(), timestamp=datetime.now())
-                                    embed.add_field(name="<:v_pfeil_links:1048677593743888536> Alt", value=before.topic if before.topic else 'Keine Beschreibung')
-                                    embed.add_field(name="<:v_pfeil_rechts:1048677625876459562> Neu", value=after.topic if after.topic else 'Keine Beschreibung')
-                                    embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.user.mention}({entry.user})")
+                                    embed.add_field(name="<:v_pfeil_links:1119582015042371604> Alt", value=before.topic if before.topic else 'Keine Beschreibung')
+                                    embed.add_field(name="<:v_pfeil_rechts:1119582171930300438> Neu", value=after.topic if after.topic else 'Keine Beschreibung')
+                                    embed.add_field(name="<:v_user:1119585450923929672> User", value=f"{entry.user.mention}({entry.user})")
                                     embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                                     await chan.send(embed=embed)
                                     break
@@ -362,8 +362,8 @@ class logging(commands.Cog):
                         else:
                             async for entry in channel.guild.audit_logs(limit=1, action=discord.AuditLogAction.channel_delete):
                                 embed = discord.Embed(title=f"Ein {channel.type}kanal wurde gelöscht", color=discord.Color.orange(), timestamp=datetime.now())
-                                embed.add_field(name="<:v_chat:1037065910567055370> Name", value=f"{channel.name}")
-                                embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.user.mention}({entry.user})")
+                                embed.add_field(name="<:v_chat:1119577968457568327> Name", value=f"{channel.name}")
+                                embed.add_field(name="<:v_user:1119585450923929672> User", value=f"{entry.user.mention}({entry.user})")
                                 embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                                 await chan.send(embed=embed)
                                 break
@@ -385,8 +385,8 @@ class logging(commands.Cog):
                     else:
                         async for entry in role.guild.audit_logs(limit=1, action=discord.AuditLogAction.role_create):
                             embed = discord.Embed(title=f"Eine Rolle wurde erstellt", color=discord.Color.orange(), timestamp=datetime.now())
-                            embed.add_field(name="<:v_chat:1037065910567055370> Name", value=f"{role.name}")
-                            embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.user.mention}({entry.user})")
+                            embed.add_field(name="<:v_chat:1119577968457568327> Name", value=f"{role.name}")
+                            embed.add_field(name="<:v_user:1119585450923929672> User", value=f"{entry.user.mention}({entry.user})")
                             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                             await chan.send(embed=embed)
                             break
@@ -406,8 +406,8 @@ class logging(commands.Cog):
                     else:
                         async for entry in role.guild.audit_logs(limit=1, action=discord.AuditLogAction.role_delete):
                             embed = discord.Embed(title=f"Eine Rolle wurde gelöscht", color=discord.Color.orange(), timestamp=datetime.now())
-                            embed.add_field(name="<:v_chat:1037065910567055370> Name", value=f"{role.name}")
-                            embed.add_field(name="<:v_user:1037065935015653476> User", value=f"{entry.user.mention}({entry.user})")
+                            embed.add_field(name="<:v_chat:1119577968457568327> Name", value=f"{role.name}")
+                            embed.add_field(name="<:v_user:1119585450923929672> User", value=f"{entry.user.mention}({entry.user})")
                             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                             await chan.send(embed=embed)
                             break
@@ -435,8 +435,8 @@ class logging(commands.Cog):
                                 embed = discord.Embed(title="Mitglied wurde geändert", description=f"{entry.user.mention} hat eine Rolle von einem Mitglied entzogen.",
                                                     colour=discord.Colour.orange(), timestamp=discord.utils.utcnow())
                                 embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
-                                fields = [("<:v_user:1037065935015653476> Betroffenes Mitglied", before.mention, True),
-                                        ("<:v_levelup:1037079572333735966> Entzogende Rolle", role.mention, True)]
+                                fields = [("<:v_user:1119585450923929672> Betroffenes Mitglied", before.mention, True),
+                                        ("<:v_levelup:1119581140240576612> Entzogende Rolle", role.mention, True)]
 
                                 for name, value, inline in fields:
                                     embed.add_field(name=name, value=value, inline=inline)
@@ -449,8 +449,8 @@ class logging(commands.Cog):
                             embed = discord.Embed(title="Mitglied wurde geändert", description=f"{entry.user.mention} hat eine Rolle zu einem Mitglied hinzugefügt.",
                                                 colour=discord.Colour.orange(), timestamp=discord.utils.utcnow())
                             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
-                            fields = [("<:v_user:1037065935015653476> Betroffenes Mitglied", before.mention, True),
-                                    ("<:v_levelup:1037079572333735966> Hinzugefügte Rolle", role.mention, True)]
+                            fields = [("<:v_user:1119585450923929672> Betroffenes Mitglied", before.mention, True),
+                                    ("<:v_levelup:1119581140240576612> Hinzugefügte Rolle", role.mention, True)]
 
                             for name, value, inline in fields:
                                 embed.add_field(name=name, value=value, inline=inline)
@@ -478,7 +478,7 @@ class logging(commands.Cog):
             async with conn.cursor() as cursor:
                 premium_status = await haspremium_forserver(self, interaction.guild)
                 if premium_status == False:
-                    return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst dies nicht tun, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+                    return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst dies nicht tun, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
                 if modus == "An":
                     await cursor.execute("SELECT channelid FROM ticketlog WHERE guildid = (%s)", (interaction.guild.id))

@@ -38,7 +38,7 @@ class Autoreact(commands.Cog):
             await interaction.response.defer()
             emoj = discord.PartialEmoji.from_str(emoji)
             if emoj is None:
-                return await interaction.followup.send("**<:v_kreuz:1049388811353858069> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
             async with self.bot.pool.acquire() as conn:
                 async with conn.cursor() as cursor:
                     await cursor.execute(f"SELECT emoji FROM autoreact WHERE channelID = {kanal.id} AND guildID = {interaction.guild.id}")
@@ -47,12 +47,12 @@ class Autoreact(commands.Cog):
                     premium_status = await haspremium_forserver(self, interaction.guild)
                     if premium_status == False:
                         if len(a) >= 2:
-                            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst keine weiteren Reaktionen für diesen Kanal erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+                            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Reaktionen für diesen Kanal erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
                     await cursor.execute("INSERT INTO autoreact(guildID, channelID, emoji) VALUES(%s,%s,%s)", (interaction.guild.id, kanal.id, emoji))
-                    await interaction.followup.send(f"**<:v_haken:1048677657040134195> Eintrag erstellt. Jede Nachricht aus dem Kanal {kanal.mention} erhält das Emoji {emoj}.**")
+                    await interaction.followup.send(f"**<:v_haken:1119579684057907251> Eintrag erstellt. Jede Nachricht aus dem Kanal {kanal.mention} erhält das Emoji {emoj}.**")
         except:
-            return await interaction.followup.send("**<:v_kreuz:1049388811353858069> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+            return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
 
     @autoreact.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -64,10 +64,10 @@ class Autoreact(commands.Cog):
                 await cursor.execute("SELECT emoji FROM autoreact WHERE guildID = (%s) AND channelID = (%s)", (interaction.guild.id, kanal.id))
                 result = await cursor.fetchall()
                 if result == None or result == "()":
-                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> In dem Kanal ist keine Autoreaktion eingestellt.**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1119580775411621908> In dem Kanal ist keine Autoreaktion eingestellt.**", ephemeral=True)
                     return
                 await cursor.execute("DELETE FROM autoreact WHERE guildID = (%s) AND channelID = (%s)", (interaction.guild.id, kanal.id))
-                await interaction.response.send_message(f"**<:v_haken:1048677657040134195> Einträge gelöscht.**")
+                await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Einträge gelöscht.**")
 
     @autoreact.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -79,7 +79,7 @@ class Autoreact(commands.Cog):
                 await cursor.execute("SELECT emoji, channelID FROM autoreact WHERE guildID = (%s)", (interaction.guild.id))
                 result = await cursor.fetchall()
                 if result == ():
-                    await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Hier gibt es keine autoemojis. Füge eine mit `/autoreact add <kanal> <emoji>` hinzu**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Hier gibt es keine autoemojis. Füge eine mit `/autoreact add <kanal> <emoji>` hinzu**", ephemeral=True)
                     return
                 embed = discord.Embed(title="Alle automatische Emojis in Kanälen", description="Hier nähere Infos:", color=await getcolour(self, interaction.user))
                 embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")

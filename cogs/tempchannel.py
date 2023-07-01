@@ -47,7 +47,7 @@ class rename(discord.ui.Modal, title="Kanalname ändern"):
         try:
             await interaction.user.voice.channel.edit(name=self.children[0].value)
         except:
-            return await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Der Name ist zu lang.**", ephemeral=True)
+            return await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> Der Name ist zu lang.**", ephemeral=True)
         await interaction.response.defer(thinking=False, ephemeral=True)
 
 class limit(discord.ui.Modal, title="Kanallimit ändern"):
@@ -59,7 +59,7 @@ class limit(discord.ui.Modal, title="Kanallimit ändern"):
         try:
             int(self.children[0].value)
         except:
-            return await interaction.response.send_message(f"**<:v_kreuz:1049388811353858069> Das ist keine Zahl. Bitte gib eine Zahl beim nächsten Mal an.**", ephemeral=True)
+            return await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> Das ist keine Zahl. Bitte gib eine Zahl beim nächsten Mal an.**", ephemeral=True)
         await interaction.user.voice.channel.edit(name=interaction.user.voice.channel.name, user_limit=self.children[0].value)
         await interaction.response.defer(thinking=False, ephemeral=True)
 
@@ -68,18 +68,18 @@ class interface(discord.ui.View):
         super().__init__(timeout=None)
         self.bot = bot
 
-    @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="wefhqiwuzdlgkedf", emoji="<:v_sperren:1037124926919938130>")
+    @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="wefhqiwuzdlgkedf", emoji="<:v_sperren:1119583311254274089>")
     async def lock_channel(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.voice == None:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du bist in keinem Tempchannel.**", ephemeral=True)
 
         channel = await isTempChannel(self, interaction.user, interaction.user.voice.channel)
         owner = await isOwner(self, interaction.user, interaction.user.voice.channel)
         if channel == False:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du bist in keinem Tempchannel.**", ephemeral=True)
         
         if owner == False:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
         
         overwrites = {
             interaction.guild.default_role: discord.PermissionOverwrite(
@@ -89,18 +89,18 @@ class interface(discord.ui.View):
         await channel.edit(overwrites=overwrites)
         await interaction.response.defer(thinking=False, ephemeral=True)
     
-    @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="qvweifuqgieuzfviuw", emoji="<:v_entsperren:1037124922805330001>")
+    @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="qvweifuqgieuzfviuw", emoji="<:v_entsperren:1119579066266296452>")
     async def unlock_channel(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.voice == None:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du bist in keinem Tempchannel.**", ephemeral=True)
 
         channel = await isTempChannel(self, interaction.user, interaction.user.voice.channel)
         owner = await isOwner(self, interaction.user, interaction.user.voice.channel)
         if channel == False:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du bist in keinem Tempchannel.**", ephemeral=True)
         
         if owner == False:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
         
         overwrites = {
             interaction.guild.default_role: discord.PermissionOverwrite(
@@ -110,18 +110,18 @@ class interface(discord.ui.View):
         await channel.edit(overwrites=overwrites)
         await interaction.response.defer(thinking=False, ephemeral=True)
     
-    @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="ergwrgwrg", emoji="<:v_unsichtbar:1037124928345997322>")
+    @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="ergwrgwrg", emoji="<:v_unsichtbar:1119585089148436520>")
     async def hide_channel(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.voice == None:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du bist in keinem Tempchannel.**", ephemeral=True)
 
         channel = await isTempChannel(self, interaction.user, interaction.user.voice.channel)
         owner = await isOwner(self, interaction.user, interaction.user.voice.channel)
         if channel == False:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du bist in keinem Tempchannel.**", ephemeral=True)
         
         if owner == False:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
         
         overwrites = {
             interaction.guild.default_role: discord.PermissionOverwrite(
@@ -131,18 +131,18 @@ class interface(discord.ui.View):
         await channel.edit(overwrites=overwrites)
         await interaction.response.defer(thinking=False, ephemeral=True)
     
-    @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="öqhefoiuhioudgwc", emoji="<:v_enthullen:1037124921685442591>")
+    @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="öqhefoiuhioudgwc", emoji="<:v_auge:1119578772207849472>")
     async def unhide_channel(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.voice == None:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du bist in keinem Tempchannel.**", ephemeral=True)
 
         channel = await isTempChannel(self, interaction.user, interaction.user.voice.channel)
         owner = await isOwner(self, interaction.user, interaction.user.voice.channel)
         if channel == False:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du bist in keinem Tempchannel.**", ephemeral=True)
         
         if owner == False:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
         
         overwrites = {
             interaction.guild.default_role: discord.PermissionOverwrite(
@@ -152,33 +152,33 @@ class interface(discord.ui.View):
         await channel.edit(overwrites=overwrites)
         await interaction.response.defer(thinking=False, ephemeral=True)
     
-    @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="faegvwtgethr", emoji="<:v_chat:1037065910567055370>")
+    @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="faegvwtgethr", emoji="<:v_chat:1119577968457568327>")
     async def rename_channel(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.voice == None:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du bist in keinem Tempchannel.**", ephemeral=True)
 
         channel = await isTempChannel(self, interaction.user, interaction.user.voice.channel)
         owner = await isOwner(self, interaction.user, interaction.user.voice.channel)
         if channel == False:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du bist in keinem Tempchannel.**", ephemeral=True)
         
         if owner == False:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
         
         await interaction.response.send_modal(rename())
     
-    @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="iuehrofgweiuzfzg", emoji="<:v_limit:1037124925653274674>")
+    @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="iuehrofgweiuzfzg", emoji="<:v_limit:1119581406142660618>")
     async def limit_channel(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.voice == None:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du bist in keinem Tempchannel.**", ephemeral=True)
 
         channel = await isTempChannel(self, interaction.user, interaction.user.voice.channel)
         owner = await isOwner(self, interaction.user, interaction.user.voice.channel)
         if channel == False:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du bist in keinem Tempchannel.**", ephemeral=True)
         
         if owner == False:
-            return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
+            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
         
         await interaction.response.send_modal(limit())
 
@@ -203,7 +203,7 @@ class tempchannel(commands.Cog):
                 premium_status = await haspremium_forserver(self, interaction.guild)
                 if premium_status == False:
                     if len(a) >= 1:
-                        return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Du kannst keine weiteren Befehle erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+                        return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Befehle erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
                 await cursor.execute(f"SELECT channel_id FROM tempchannels WHERE guild_id = {interaction.guild.id}")
                 result = await cursor.fetchone()
@@ -237,19 +237,19 @@ class tempchannel(commands.Cog):
                 
                 if interfacekanal:
                     embed = discord.Embed(title="Tempchannel Interface", description=f"""
-<:v_support:1037065931588894841> Willkommen im Interface Menü von Vulpo.
-<:v_play:1037065922134945853> [KLICK HIER]({vc.jump_url}) um einen eigenen Talk zu erstellen.
-<:v_play:1037065922134945853> Nutze diesen Kanal um deinen Channel zu individualisieren.
+<:v_support:1119586154610692096> Willkommen im Interface Menü von Vulpo.
+ <:v_play:1119582324166770708> [KLICK HIER]({vc.jump_url}) um einen eigenen Talk zu erstellen.
+ <:v_play:1119582324166770708> Nutze diesen Kanal um deinen Channel zu individualisieren.
 
 ————————————————————————
-> <:v_sperren:1037124926919938130> Sperren
-> <:v_entsperren:1037124922805330001> Entsperren
+> <:v_sperren:1119583311254274089> Sperren
+> <:v_entsperren:1119579066266296452> Entsperren
 
-> <:v_unsichtbar:1037124928345997322> Verstecken
-> <:v_enthullen:1037124921685442591> Enthüllen
+> <:v_unsichtbar:1119585089148436520> Verstecken
+> <:v_auge:1119578772207849472> Enthüllen
 
-> <:v_chat:1037065910567055370> Namen ändern
-> <:v_limit:1037124925653274674> Limit ändern
+> <:v_chat:1119577968457568327> Namen ändern
+> <:v_limit:1119581406142660618> Limit ändern
 """, colour=discord.Color.orange())
                     embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                     await interfacekanal.send(embed=embed, view=interface(self.bot))

@@ -38,10 +38,10 @@ class owner(commands.Cog):
             dm.add_field(name=f"Nachricht", value=f"{message}", inline=False)
             dm.set_footer(text=f"Keine Antwort möglich!")
             await user.send(embed=dm)
-            await ctx.send("**<:v_haken:1048677657040134195> Die Nachricht wurde versendet.**")
+            await ctx.send("**<:v_haken:1119579684057907251> Die Nachricht wurde versendet.**")
             return
         except:
-            embed2 = discord.Embed(description=f"<:v_kreuz:1049388811353858069> Die Nachricht konnte nicht an {user} zugestellt werden. Dies geschieht in der Regel, weil der Bot keinen gemeinsamen Server mit dem Empfänger hat, Direktnachrichten auf diesem Server deaktiviert sind oder der Empfänger nur Direktnachrichten von Freunden annimmt. ",
+            embed2 = discord.Embed(description=f"<:v_kreuz:1119580775411621908> Die Nachricht konnte nicht an {user} zugestellt werden. Dies geschieht in der Regel, weil der Bot keinen gemeinsamen Server mit dem Empfänger hat, Direktnachrichten auf diesem Server deaktiviert sind oder der Empfänger nur Direktnachrichten von Freunden annimmt. ",
                                   color=discord.Color.red())
             embed2.set_author(name=ctx.author, icon_url=ctx.author.avatar)
             await ctx.send(embed=embed2)
@@ -59,15 +59,15 @@ class owner(commands.Cog):
                 color=discord.Color.orange())
             embed.set_author(name=ctx.author, icon_url=ctx.me.avatar)
             message = await ctx.send(embed=embed)
-            await message.add_reaction('<:v_haken:1048677657040134195>')
-            await message.add_reaction('<:v_kreuz:1049388811353858069>')
+            await message.add_reaction('<:v_haken:1119579684057907251>')
+            await message.add_reaction('<:v_kreuz:1119580775411621908>')
 
             def check(reaction, user):
-                return str(reaction.emoji) in ['<:v_haken:1048677657040134195>', '<:v_kreuz:1049388811353858069>'] and user == ctx.message.author
+                return str(reaction.emoji) in ['<:v_haken:1119579684057907251>', '<:v_kreuz:1119580775411621908>'] and user == ctx.message.author
 
             try:
                 reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=10)
-                if str(reaction.emoji) == '<:v_haken:1048677657040134195>':
+                if str(reaction.emoji) == '<:v_haken:1119579684057907251>':
                     await message.clear_reactions()
                     embed1 = discord.Embed(description=f"Ich habe den Server {guild.name} verlassen.",
                                             color=discord.Color.orange())
@@ -76,7 +76,7 @@ class owner(commands.Cog):
                     await guild.leave()
                     await message.edit(embed=embed1)
 
-                if str(reaction.emoji) == '<:v_kreuz:1049388811353858069>':
+                if str(reaction.emoji) == '<:v_kreuz:1119580775411621908>':
                     await message.clear_reactions()
                     embed2 = discord.Embed(description=f"Ich habe den Server {guild.name} nicht verlassen.",
                                             color=discord.Color.orange())
@@ -133,7 +133,7 @@ class owner(commands.Cog):
 
         elif ctx.command == command:
             command = self.bot.get_command(command)
-            embed = discord.Embed(colour=discord.Colour.red(), title="<:v_kreuz:1049388811353858069> Wrong argument",
+            embed = discord.Embed(colour=discord.Colour.red(), title="<:v_kreuz:1119580775411621908> Wrong argument",
                                     description=f"Ich konnte den Command **{command}** nicht deaktivieren.")
             embed.set_author(name=ctx.author, icon_url=ctx.author.avatar)
             await ctx.send(embed=embed)
