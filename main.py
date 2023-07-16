@@ -83,7 +83,7 @@ class MyTree(CommandTree):
                 if int(user.id) == int(banned_user.id):
                     embed = discord.Embed(title="<:v_mod:1119581819122241621> Du bist gebannt", description=f"""
     > <:v_info:1119579853092552715> Mit einem Bann hast du keinen Zugang mehr zu Vulpo's Befehlen. Außerdem hast du keinen Zutritt zum Supportserver "Vulpo's Wald".
-     <:v_play:1119582324166770708> Grund: {entry.reason}
+     <:v_pfeil_rechts:1119582171930300438> Grund: {entry.reason}
     <:v_play:1037065922134945853> Falls du denkst, dass du dich geändert hast, oder du zu unrecht bestraft wurdest, kannst du einen [Entbannungsantrag](https://forms.gle/NH1Jb1gVNEPuTLA58) stellen.
     """, colour=0xac0000)
                     await interaction.response.send_message(embed=embed, ephemeral=True)

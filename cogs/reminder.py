@@ -44,7 +44,7 @@ class Reminder(commands.Cog):
                 
                 embed = discord.Embed(color=await getcolour(self, interaction.user), title=f"Erinnerung gestellt (ID {id})", description=f"""
 <:v_info:1119579853092552715> Erinnerung gesetzt auf {discord_timestamp(t2, 'f')}
- <:v_play:1119582324166770708> {beschreibung}""")
+ <:v_pfeil_rechts:1119582171930300438> {beschreibung}""")
                 embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                 asyncio.create_task(reminder_end(t2, self.bot, interaction.user.id, id), name=f"Erinnerung - {id}")
                 await interaction.response.send_message(embed=embed)
@@ -84,7 +84,7 @@ class Reminder(commands.Cog):
                 embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                 for er in result:
                     t2 = datetime.datetime.fromtimestamp(int(er[2]))
-                    embed.add_field(name=f"ID {er[1]}", value=f" <:v_play:1119582324166770708> {er[0]}\n<:v_info:1119579853092552715> Ende: {discord_timestamp(t2, 'f')}", inline=False)
+                    embed.add_field(name=f"ID {er[1]}", value=f" <:v_pfeil_rechts:1119582171930300438> {er[0]}\n<:v_info:1119579853092552715> Ende: {discord_timestamp(t2, 'f')}", inline=False)
                 await interaction.response.send_message(embed=embed)
 
 async def setup(bot):

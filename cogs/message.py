@@ -1,3 +1,4 @@
+import datetime
 import typing
 import discord
 from discord.ext import commands
@@ -92,18 +93,28 @@ class message(commands.Cog):
                             pass
                     else:
                         finalmsg = result[1].replace("B9xV123", "").replace("%member", str(member)).replace("%name", str(member.name)).replace("%mention", str(member.mention)).replace("%guild", str(member.guild)).replace("%usercount", str(member.guild.member_count))
+                        
                         try:
                             embed = discord.Embed(color=await getcolour(self, member), description=finalmsg)
                             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                             background = Editor("willkommen.png")
                             profile = await load_image_async(str(member.avatar))
 
-                            profile = Editor(profile).resize((125, 125)).circle_image()
-                            background.paste(profile.image, (100, 100))
-                            poppins_small = Font.poppins("bold", size=30)
-                            background.text((380, 145), str(member), font=poppins_small, color="#e67e22")
-                            background.text((380, 195), str(member.id), font=poppins_small, color="#e67e22")
-                            background.text((500, 245), str(member.guild.member_count), font=poppins_small, color="#e67e22")
+                            profile = Editor(profile).resize((415, 415)).circle_image()
+                            background.paste(profile.image, (112, 252))
+                            poppins_small = Font.poppins("bold", size=75)
+                            background.text((1100, 475), str(member), font=poppins_small, color="#ffffff")
+
+                            current_datetime = datetime.datetime.now()
+                            account_created_at = member.created_at.replace(tzinfo=None)
+                            time_difference = current_datetime - account_created_at
+                            days_difference = time_difference.days
+
+                            output_message = f"Account vor {days_difference} Tagen erstellt."
+
+                            background.text((1100, 570), output_message, font=poppins_small, color="#ffffff")
+                            background.text((1550, 800), str(member.guild.member_count), font=poppins_small, color="#ffffff")
+                            background.text((2150, 850), str(member.guild.name), font=poppins_small, color="#ffffff")
                             file = discord.File(fp=background.image_bytes, filename="willkommen.png")
 
                             embed.set_image(url="attachment://willkommen.png")
@@ -139,12 +150,21 @@ class message(commands.Cog):
                     background = Editor("willkommen.png")
                     profile = await load_image_async(str(member.avatar))
 
-                    profile = Editor(profile).resize((160, 160)).circle_image()
-                    background.paste(profile.image, (100, 100))
-                    poppins_small = Font.poppins("bold", size=30)
-                    background.text((380, 142), str(member), font=poppins_small, color="#e67e22")
-                    background.text((380, 192), str(member.id), font=poppins_small, color="#e67e22")
-                    background.text((500, 245), str(member.guild.member_count), font=poppins_small, color="#e67e22")
+                    profile = Editor(profile).resize((415, 415)).circle_image()
+                    background.paste(profile.image, (112, 252))
+                    poppins_small = Font.poppins("bold", size=75)
+                    background.text((1100, 475), str(member), font=poppins_small, color="#ffffff")
+
+                    current_datetime = datetime.datetime.now()
+                    account_created_at = member.created_at.replace(tzinfo=None)
+                    time_difference = current_datetime - account_created_at
+                    days_difference = time_difference.days
+
+                    output_message = f"Account vor {days_difference} Tagen erstellt."
+
+                    background.text((1100, 570), output_message, font=poppins_small, color="#ffffff")
+                    background.text((1550, 800), str(member.guild.member_count), font=poppins_small, color="#ffffff")
+                    background.text((2150, 850), str(member.guild.name), font=poppins_small, color="#ffffff")
                     file = discord.File(fp=background.image_bytes, filename="willkommen.png")
 
                     await ch.send(finalmsg + f"\nTestjoin angefordert von {interaction.user}", file=file)

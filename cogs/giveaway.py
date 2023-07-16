@@ -28,28 +28,28 @@ async def teilnahme_angenommen(self, interaction: discord.Interaction, result):
             teilnehmer = await cursor.fetchall()
             embed = discord.Embed(title=f"🏆 {result[10]}", description=f"""                                      
 <:v_info:1119579853092552715> › __**Informationen**__
- <:v_play:1119582324166770708> Erstellt von {interaction.guild.get_member(int(result[3])).mention}
- <:v_play:1119582324166770708> **{result[5]}** Gewinner
- <:v_play:1119582324166770708> Endet {discord_timestamp(t2, "R")}
- <:v_play:1119582324166770708> **{len(teilnehmer)}** Teilnehmer
+ <:v_pfeil_rechts:1119582171930300438> Erstellt von {interaction.guild.get_member(int(result[3])).mention}
+ <:v_pfeil_rechts:1119582171930300438> **{result[5]}** Gewinner
+ <:v_pfeil_rechts:1119582171930300438> Endet {discord_timestamp(t2, "R")}
+ <:v_pfeil_rechts:1119582171930300438> **{len(teilnehmer)}** Teilnehmer
 
 <:v_einstellungen:1119578559086874636> › __**Anforderungen**__
- <:v_play:1119582324166770708> **Drücke** unten auf **den Button**, um teilzunehmen.""", color=discord.Color.orange())
+ <:v_pfeil_rechts:1119582171930300438> **Drücke** unten auf **den Button**, um teilzunehmen.""", color=discord.Color.orange())
             #guildID, channelID, msgID, hostID, endtime, preis, winners, status, nachrichten, rollenID, voicezeit, custom_status, jointime, level
             requirements = ""
             if result[8]:
                 rolle = interaction.guild.get_role(int(result[8]))
-                requirements += f"\n <:v_play:1119582324166770708> Du benötigst die **Rolle {rolle.mention}**."
+                requirements += f"\n <:v_pfeil_rechts:1119582171930300438> Du benötigst die **Rolle {rolle.mention}**."
             if result[6]:
-                requirements += f"\n <:v_play:1119582324166770708> Du musst mindestens **{result[6]} neue Nachrichten** schreiben."
+                requirements += f"\n <:v_pfeil_rechts:1119582171930300438> Du musst mindestens **{result[6]} neue Nachrichten** schreiben."
             if result[12]:
-                requirements += f"\n <:v_play:1119582324166770708> Du musst mindestens **{result[12]} Minuten** in Sprachkanälen verbringen."
+                requirements += f"\n <:v_pfeil_rechts:1119582171930300438> Du musst mindestens **{result[12]} Minuten** in Sprachkanälen verbringen."
             if result[11]:
-                requirements += f"\n <:v_play:1119582324166770708> Du musst **{result[11]}** im Status haben."
+                requirements += f"\n <:v_pfeil_rechts:1119582171930300438> Du musst **{result[11]}** im Status haben."
             if result[13]:
-                requirements += f"\n <:v_play:1119582324166770708> Du musst mindestens seit dem **{result[13]}** auf diesem Server sein."
+                requirements += f"\n <:v_pfeil_rechts:1119582171930300438> Du musst mindestens seit dem **{result[13]}** auf diesem Server sein."
             if result[7]:
-                requirements += f"\n <:v_play:1119582324166770708> Du musst mindestens **Level {result[7]}** bei Vulpos Levelsystem sein."
+                requirements += f"\n <:v_pfeil_rechts:1119582171930300438> Du musst mindestens **Level {result[7]}** bei Vulpos Levelsystem sein."
                 
             if requirements != "":
                 embed.description += requirements
@@ -250,29 +250,29 @@ class giveaway(commands.Cog):
                 #requirementsliste
                 requirements = ""
                 if rolle:
-                    requirements += f"\n <:v_play:1119582324166770708> Du benötigst die **Rolle {rolle.mention}**."
+                    requirements += f"\n <:v_pfeil_rechts:1119582171930300438> Du benötigst die **Rolle {rolle.mention}**."
                 if nachrichtenanzahl:
-                    requirements += f"\n <:v_play:1119582324166770708> Du musst mindestens **{nachrichtenanzahl} neue Nachrichten** schreiben."
+                    requirements += f"\n <:v_pfeil_rechts:1119582171930300438> Du musst mindestens **{nachrichtenanzahl} neue Nachrichten** schreiben."
                 if voiceminuten:
-                    requirements += f"\n <:v_play:1119582324166770708> Du musst mindestens **{voiceminuten} Minuten** in Sprachkanälen verbringen."
+                    requirements += f"\n <:v_pfeil_rechts:1119582171930300438> Du musst mindestens **{voiceminuten} Minuten** in Sprachkanälen verbringen."
                 if text_im_status:
-                    requirements += f"\n <:v_play:1119582324166770708> Du musst **{text_im_status}** im Status haben."
+                    requirements += f"\n <:v_pfeil_rechts:1119582171930300438> Du musst **{text_im_status}** im Status haben."
                 if joindatum:
-                    requirements += f"\n <:v_play:1119582324166770708> Du musst mindestens seit dem **{joindatum}** auf diesem Server sein."
+                    requirements += f"\n <:v_pfeil_rechts:1119582171930300438> Du musst mindestens seit dem **{joindatum}** auf diesem Server sein."
                 if level:
-                    requirements += f"\n <:v_play:1119582324166770708> Du musst mindestens **Level {level}** bei Vulpos Levelsystem sein."
+                    requirements += f"\n <:v_pfeil_rechts:1119582171930300438> Du musst mindestens **Level {level}** bei Vulpos Levelsystem sein."
 
                 embed = discord.Embed(title=f"🏆 {preis}", description=f"""
 `🤖` · [Lade den Bot hier ein](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands)
                                       
 <:v_info:1119579853092552715> › __**Informationen**__
- <:v_play:1119582324166770708> Erstellt von {interaction.user.mention}
- <:v_play:1119582324166770708> **{gewinneranzahl}** Gewinner
- <:v_play:1119582324166770708> Endet {discord_timestamp(t2, "R")}
- <:v_play:1119582324166770708> **0** Teilnehmer
+ <:v_pfeil_rechts:1119582171930300438> Erstellt von {interaction.user.mention}
+ <:v_pfeil_rechts:1119582171930300438> **{gewinneranzahl}** Gewinner
+ <:v_pfeil_rechts:1119582171930300438> Endet {discord_timestamp(t2, "R")}
+ <:v_pfeil_rechts:1119582171930300438> **0** Teilnehmer
 
 <:v_einstellungen:1119578559086874636> › __**Anforderungen**__
- <:v_play:1119582324166770708> **Drücke** unten auf **den Button**, um teilzunehmen.""", color=discord.Color.orange())
+ <:v_pfeil_rechts:1119582171930300438> **Drücke** unten auf **den Button**, um teilzunehmen.""", color=discord.Color.orange())
                 if requirements != "":
                     embed.description += requirements
                 embed.set_footer(text="🍀 Viel Glück")

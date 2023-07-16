@@ -30,7 +30,7 @@ class Tags(commands.Cog):
                     return
                 await cursor.execute("INSERT INTO tags(guildID, name, output) VALUES(%s,%s,%s)", (interaction.guild.id, name, output))
                 
-                await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Tag erstellt. Wenn jemand `!tag {name}` schreibt, kommt dieser Text:**\n*{output}*.")
+                await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Tag erstellt. Wenn jemand `v!{name}` schreibt, kommt dieser Text:**\n*{output}*.")
 
     @tag.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -81,7 +81,7 @@ class Tags(commands.Cog):
                 for message in result:
                     if message is None or message == "()":
                         return
-                    if f"!tag {str(message[0]).lower()}" == msg.content.lower():
+                    if f"v!{str(message[0]).lower()}" == msg.content.lower():
                         embed = discord.Embed(title=f"__{message[0].upper()}__", description=message[1], color=await getcolour(self, msg.author))
                         embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                         embed.set_thumbnail(url=msg.guild.icon)

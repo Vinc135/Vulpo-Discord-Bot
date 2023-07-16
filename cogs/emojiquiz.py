@@ -25,7 +25,7 @@ class buttons(discord.ui.View):
         m = await interaction.channel.send(f"{interaction.user.mention} hat den Begriff übersprungen. (-20 🍪)")
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
-                await cursor.execute("SELECT emojis, lösung, tipp FROM eqdb")
+                await cursor.execute("SELECT emojis, lösung, tipp FROM eq_begriffe")
                 result = await cursor.fetchall()
                 a = random.randint(1, int(len(result)))
                 b = 0
@@ -33,7 +33,7 @@ class buttons(discord.ui.View):
                     if a == b:
                         embed = discord.Embed(color=await getcolour(self, interaction.user), title="Emojiquiz", description="Solltest du Probleme beim Lösen haben, kannst du die Buttons dieser Nachricht benutzen.")
                         embed.add_field(name="❓ Gesuchter Begriff", value=quiz[0])
-                        embed.add_field(name="❗️ Tipp", value=quiz[2])
+                        embed.add_field(name="❗️ Tipp", value=f"||{quiz[2]}||")
                         embed.set_footer(text=f"Das letzte Quiz wurde übersprungen von {interaction.user}.", icon_url=interaction.user.avatar)
                         await asyncio.sleep(2)
                         m2 = await interaction.channel.send(embed=embed, view=buttons(self.bot))
@@ -113,7 +113,7 @@ async def answer_correct(self, msg):
         await update_acc(self, msg.author, "rucksack", 10, 0)
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
-                await cursor.execute("SELECT emojis, lösung, tipp FROM eqdb")
+                await cursor.execute("SELECT emojis, lösung, tipp FROM eq_begriffe")
                 result = await cursor.fetchall()
                 a = random.randint(1, int(len(result)))
                 b = 0
@@ -121,7 +121,7 @@ async def answer_correct(self, msg):
                     if a == b:
                         embed = discord.Embed(color=await getcolour(self, msg.author), title="Emojiquiz", description="Solltest du Probleme beim Lösen haben, kannst du die Buttons dieser Nachricht benutzen.")
                         embed.add_field(name="❓ Gesuchter Begriff", value=quiz[0])
-                        embed.add_field(name="❗️ Tipp", value=quiz[2])
+                        embed.add_field(name="❗️ Tipp", value=f"||{quiz[2]}||")
                         embed.set_footer(text=f"Das letzte Quiz wurde gelöst von {msg.author}.", icon_url=msg.author.avatar)
                         await asyncio.sleep(2)
                         m2 = await msg.channel.send(embed=embed, view=buttons(self.bot))
@@ -138,10 +138,11 @@ async def answer_correct(self, msg):
     except:
         pass
 
+
 async def answer_incorrect(self, msg):
     try:
         await msg.add_reaction("<:v_kreuz:1119580775411621908>")
-    except:
+    except: 
         pass
             
 class Emojiquiz(commands.Cog):
@@ -183,7 +184,7 @@ class Emojiquiz(commands.Cog):
                     result = await cursor.fetchone()
                     if result is None:
                         await cursor.execute("INSERT INTO eq(guildID, channelID) VALUES(%s, %s)", (interaction.guild.id, kanal.id))
-                        await cursor.execute("SELECT emojis, lösung, tipp FROM eqdb")
+                        await cursor.execute("SELECT emojis, lösung, tipp FROM eq_begriffe")
                         result2 = await cursor.fetchall()
                         a = random.randint(1, int(len(result2)))
                         b = 0
@@ -191,7 +192,7 @@ class Emojiquiz(commands.Cog):
                             if a == b:
                                 embed = discord.Embed(color=await getcolour(self, interaction.user), title="Emojiquiz", description="Solltest du Probleme beim Lösen haben, kannst du die Buttons dieser Nachricht benutzen.")
                                 embed.add_field(name="❓ Gesuchter Begriff", value=quiz[0])
-                                embed.add_field(name="❗️ Tipp", value=quiz[2])
+                                embed.add_field(name="❗️ Tipp", value=f"||{quiz[2]}||")
                                 embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                                 m2 = await kanal.send(embed=embed, view=buttons(self.bot))
                                 await cursor.execute("INSERT INTO eqcurrent(guildID, lösung, msgID) VALUES(%s, %s, %s)", (interaction.guild.id, quiz[1], m2.id))
@@ -201,7 +202,7 @@ class Emojiquiz(commands.Cog):
                                 b += 1
                     if result is not None:
                         await cursor.execute("UPDATE eq SET channelID = (%s) WHERE guildID = (%s)", (kanal.id, interaction.guild.id))
-                        await cursor.execute("SELECT emojis, lösung, tipp FROM eqdb")
+                        await cursor.execute("SELECT emojis, lösung, tipp FROM eq_begriffe")
                         result2 = await cursor.fetchall()
                         a = random.randint(1, int(len(result2)))
                         b = 0
@@ -209,7 +210,7 @@ class Emojiquiz(commands.Cog):
                             if a == b:
                                 embed = discord.Embed(color=await getcolour(self, interaction.user), title="Emojiquiz", description="Solltest du Probleme beim Lösen haben, kannst du die Buttons dieser Nachricht benutzen.")
                                 embed.add_field(name="❓ Gesuchter Begriff", value=quiz[0])
-                                embed.add_field(name="❗️ Tipp", value=quiz[2])
+                                embed.add_field(name="❗️ Tipp", value=f"||{quiz[2]}||")
                                 embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                                 m2 = await kanal.send(embed=embed, view=buttons(self.bot))
                                 await cursor.execute("INSERT INTO eqcurrent(guildID, lösung, msgID) VALUES(%s, %s, %s)", (interaction.guild.id, quiz[1], m2.id))

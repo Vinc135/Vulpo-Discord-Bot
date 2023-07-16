@@ -209,6 +209,16 @@ def agb():
     """Umleitung zur AGB Seite."""
     return render_template('agb.html')
 
+@app.route('/ticketsystem')
+def ticketsystem():
+    """Umleitung zur Ticketsystem Seite."""
+    return render_template('index.php')
+
+@app.errorhandler(404)
+def page_not_found(error):
+    """Diese Seite kommt, wenn eine Seite nicht gefunden wird."""
+    return render_template('404.html'), 404
+
 # @app.route('/process', methods=['POST'])
 # def process():
 #     data = request.json
@@ -311,7 +321,6 @@ def oauth_callback():
     except Exception as e:
         session.clear()
         return redirect("/logout")
-
 
 @app.route("/logout")
 def logout():

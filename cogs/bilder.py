@@ -1,4 +1,5 @@
 import os
+import typing
 import requests
 import io
 import aiohttp
@@ -10,6 +11,35 @@ from io import BytesIO
 from discord import app_commands
 from info import getcolour
 import asyncio
+import random
+
+def get_pic_from_pixabay(q, category):
+    url = "https://pixabay.com/api/"
+    api_key = "38012586-0dbb65610fcbf43f53d7ff81c"
+
+    params = {
+        "key": api_key,
+        "q": q,
+        "image_type": "photo",
+        "category": category,
+        "per_page": 50
+    }
+
+    try:
+        response = requests.get(url, params=params)
+        data = response.json()
+
+        if "hits" in data:
+
+            random_pic = random.choice(data["hits"])
+
+            image_url = random_pic["webformatURL"]
+            return image_url
+        else:
+            return "Keine Ergebnisse gefunden."
+    except requests.RequestException as e:
+        return "Fehler bei der Anfrage:", str(e)
+
 
 class bilder(commands.Cog):
     def __init__(self, bot):
@@ -66,20 +96,14 @@ class bilder(commands.Cog):
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
-    async def cat(self, interaction):
-        """Ein zufälliges Bild einer Katze."""
+    async def animal(self, interaction, tier: typing.Literal["Hund", "Katze", "Pferd", "Vogel", "Kaninchen", "Meerschweinchen", "Hamster", "Fisch", "Schildkröte", "Wellensittich", "Hase", "Schlange", "Frettchen", "Maus", "Kanarienvogel"]):
+        """Ein zufälliges Bild eines Tieres."""
         try:
-            async with interaction.channel.typing():
-                async with aiohttp.ClientSession() as cs:
-                    async with cs.get("http://aws.random.cat/meow") as r:
-                        data = await r.json()
+            url = get_pic_from_pixabay(tier, "animals")
+            embed = discord.Embed(title=" ", description=f"**{tier}**", colour=await getcolour(self, interaction.user))
+            embed.set_image(url=url)
 
-                        embed = discord.Embed(title="Miau", color=await getcolour(self, interaction.user))
-                        embed.set_image(url=data['file'])
-                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
-                        embed.set_footer(text="http://random.cat/")
-
-                        await interaction.response.send_message(embed=embed)
+            await interaction.response.send_message(embed=embed)
         except:
             return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Fehler beim Laden es Bildes. Versuche es später erneut!**", ephemeral=True)
           
