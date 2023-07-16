@@ -428,9 +428,9 @@ class economy(commands.Cog):
         
     @cookies.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
-    async def anzeigen(self, interaction: discord.Interaction, member: discord.User=None):
+    async def anzeigen(self, interaction: discord.Interaction, user: discord.User=None):
         """Verwalte dein Geld."""
-        member = member or interaction.user  
+        member = user or interaction.user  
         acc = await open_acc(self, member)
         em = discord.Embed(title=f"{member.name}'s supertolles Konto", color=await getcolour(self, member), description="> Dein Rucksack hat viel Platz. Dort findest du deine Items und deine Cookies.")
         em.add_field(name="Rucksack", value=f"{acc[0]} 🍪")
@@ -449,7 +449,7 @@ class economy(commands.Cog):
             string += f"\n\n**Items Wert: {wert}.** Mit Glück bekommst du mehr Geld beim Verkauf als du ausgegeben hast."
             em.add_field(name="Items", value=string)
         
-        em.set_thumbnail(url=interaction.user.avatar)
+        em.set_thumbnail(url=member.avatar)
         em.set_footer(text="Interesse an einem täglich steigenden Cookie Bonus? Befehl: /daily", icon_url="https://cdn.discordapp.com/emojis/814202875387183145.png")
         await interaction.response.send_message(embed=em)
 

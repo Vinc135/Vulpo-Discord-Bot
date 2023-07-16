@@ -1980,17 +1980,17 @@ INSERT INTO `eqcurrent` (`guildID`, `msgID`, `lösung`) VALUES
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `eqdb`
+-- Tabellenstruktur für Tabelle `eq_begriffe`
 --
 
-CREATE TABLE `eqdb` (
+CREATE TABLE `eq_begriffe` (
   `emojis` text DEFAULT NULL,
   `tipp` text DEFAULT NULL,
   `lösung` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Daten für Tabelle `eqdb`
+-- Daten für Tabelle `eq_begriffe`
 --
 
 INSERT INTO `eqdb` (`emojis`, `tipp`, `lösung`) VALUES

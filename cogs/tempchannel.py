@@ -238,8 +238,8 @@ class tempchannel(commands.Cog):
                 if interfacekanal:
                     embed = discord.Embed(title="Tempchannel Interface", description=f"""
 <:v_support:1119586154610692096> Willkommen im Interface Menü von Vulpo.
- <:v_play:1119582324166770708> [KLICK HIER]({vc.jump_url}) um einen eigenen Talk zu erstellen.
- <:v_play:1119582324166770708> Nutze diesen Kanal um deinen Channel zu individualisieren.
+ <:v_pfeil_rechts:1119582171930300438> [KLICK HIER]({vc.jump_url}) um einen eigenen Talk zu erstellen.
+ <:v_pfeil_rechts:1119582171930300438> Nutze diesen Kanal um deinen Channel zu individualisieren.
 
 ————————————————————————
 > <:v_sperren:1119583311254274089> Sperren

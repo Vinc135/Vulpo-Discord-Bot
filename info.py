@@ -223,10 +223,11 @@ async def giveaway_end(when: datetime.datetime, bot, msgID, status=None):
                     embed = discord.Embed(title=f"🏆 {result[5]}", description=f"""
 `🤖` · [Lade den Bot hier ein](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands)
             
-<:v_geschenk:1119579279274025060> › __**Wer hat gewonnen?**__
- <:v_play:1119582324166770708> Niemand hat gewonnen.
- <:v_play:1119582324166770708> Das Gewinnspiel endete {discord_timestamp(t2, 'R')}
- <:v_play:1119582324166770708> Es gab 0 Teilnehmer.""", color=discord.Color.red())
+<:v_geschenk:1119579279274025060>
+ › __**Wer hat gewonnen?**__
+ <:v_pfeil_rechts:1119582171930300438> Niemand hat gewonnen.
+ <:v_pfeil_rechts:1119582171930300438> Das Gewinnspiel endete {discord_timestamp(t2, 'R')}
+ <:v_pfeil_rechts:1119582171930300438> Es gab 0 Teilnehmer.""", color=discord.Color.red())
                     embed.set_thumbnail(url=msg.guild.icon)
                     embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                     return await msg.edit(content="**⛔️ Gewinnspiel beendet ⛔️**", embed=embed, view=None)
@@ -255,10 +256,11 @@ async def giveaway_end(when: datetime.datetime, bot, msgID, status=None):
                 embed = discord.Embed(title=f"🏆 {result[10]}", description=f"""
 `🤖` · [Lade den Bot hier ein](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands)
             
-<:v_geschenk:1119579279274025060> › __**Wer hat gewonnen?**__
- <:v_play:1119582324166770708> {winners} {'hat' if len(winner) == 1 else 'haben'} {result[10]} gewonnen.
- <:v_play:1119582324166770708> Das Gewinnspiel endete {discord_timestamp(t2, 'R')}
- <:v_play:1119582324166770708> Es gab {len(result2)} Teilnehmer.""", color=discord.Color.red())
+<:v_geschenk:1119579279274025060>
+ › __**Wer hat gewonnen?**__
+ <:v_pfeil_rechts:1119582171930300438> {winners} {'hat' if len(winner) == 1 else 'haben'} {result[10]} gewonnen.
+ <:v_pfeil_rechts:1119582171930300438> Das Gewinnspiel endete {discord_timestamp(t2, 'R')}
+ <:v_pfeil_rechts:1119582171930300438> Es gab {len(result2)} Teilnehmer.""", color=discord.Color.red())
                 embed.set_footer(text=f"🍀 Die Wahrscheinlichkeit zu gewinnen lag bei {round((int(result[5]) / len(result2)) * 100)}%")
                 embed.set_thumbnail(url=msg.guild.icon)
                 await msg.edit(content="**⛔️ Gewinnspiel beendet ⛔️**", embed=embed, view=None)

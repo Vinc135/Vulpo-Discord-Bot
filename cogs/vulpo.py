@@ -44,6 +44,7 @@ __<:v_user:1119585450923929672> User Befehle__
 `/premium rangkarte` Ändere das Bild deiner Rangkarte.
 
 __<:v_ticket:1119584819597279242> Premium erhalten__
+Es sind noch sehr viel mehr Funktionen in Premium enthalten. Du kannst alle Vorteile unter https://vulpo-bot.de/premium sehen.
 Premium ist heiß begehrt. Du kannst es bekommen, indem du ein Abonnement wirst: https://vulpo-bot.de/premium."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
@@ -250,7 +251,7 @@ __<:v_einstellungen:1119578559086874636> Team Befehle__
 __<:v_user:1119585450923929672> User Befehle__
 `/ask` Frage eine berühmte Person eine Frage
 `/avatar` Zeigt das Profilbild eines Users an
-`/cat` Schicke ein zufälliges Bild einer Katze.
+`/animal` Schicke ein zufälliges Bild eines bestimmten Tieres.
 `/color` Bekomme eine zufällige Farbe
 `/emojiurl` Bekomme das URL eines Emojis
 `/games` Zeigt alle Spiele an, die grade gespielt werden
@@ -360,7 +361,8 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
 > <:v_einstellungen:1119578559086874636> Settings & Setup
 > <:v_mod:1119581819122241621> Basic Moderation
 > <:v_levelup:1119581140240576612> Levelsystem
-> <:v_geschenk:1119579279274025060> Giveaway
+> <:v_geschenk:1119579279274025060>
+ Giveaway
 > <:v_stats:1119583678083895346> Stats
 > <:v_ticket:1119584819597279242> Ticketsystem
 > <:v_chat:1119577968457568327> Nachrichten
