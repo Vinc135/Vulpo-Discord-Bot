@@ -361,8 +361,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
 > <:v_einstellungen:1119578559086874636> Settings & Setup
 > <:v_mod:1119581819122241621> Basic Moderation
 > <:v_levelup:1119581140240576612> Levelsystem
-> <:v_geschenk:1119579279274025060>
- Giveaway
+> <:v_geschenk:1119579279274025060> Giveaway
 > <:v_stats:1119583678083895346> Stats
 > <:v_ticket:1119584819597279242> Ticketsystem
 > <:v_chat:1119577968457568327> Nachrichten
@@ -372,10 +371,8 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
 > <:v_spiel:1119583527919435796> Minispiele
 
 **Letzte Updates**
-<:v_info:1119579853092552715> Starboard für coole Nachrichten -> `/starboard`
-<:v_info:1119579853092552715> Tempchannels nun mit **Interface verfügbar** -> `/voicesetup`
-<:v_info:1119579853092552715> Reportlog - melde Nutzer per Rechtsklick ans Team -> `/reportlog`
-<:v_info:1119579853092552715> Statschannel - fertige live Stats Kanäle an -> `/statschannel`
+<:v_info:1119579853092552715> Erhalte Support hier: https://vulpo-bot.de/ticketsystem
+<:v_info:1119579853092552715> Benachrichtigungen von Youtube: `/benachrichtigung youtube`
 
 **Links**
 [Einladen](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands) **|** [Support](https://discord.gg/49jD3VXksp) **|** [Voten](https://top.gg/bot/925799559576322078/vote)
@@ -471,7 +468,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def support(self, interaction: discord.Interaction):
         """Zeigt einen Link für den Support-Server."""
-        embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"Bekomme Hilfe", description=f"Wenn du Hilfe benötigst, kannst du meinem Supportserver über [diesen Link](https://discord.gg/49jD3VXksp) beitreten.", url="https://discord.gg/49jD3VXksp")
+        embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"Bekomme Hilfe", description=f"Wenn du Hilfe benötigst, kannst du meinem Supportserver über [diesen Link](https://discord.gg/49jD3VXksp) beitreten.\nFalls du ein Ticket eröffnen möchtest kannst du das [auf dieser Webseite](https://vulpo-bot.de/ticketsystem) tun.")
         embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         await interaction.response.send_message(embed=embed)

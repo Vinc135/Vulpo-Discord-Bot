@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Vulpo - Seite nicht gefunden</title>
+  <title>Vulpo - Wo gehts jetzt hin?</title>
   <meta content="Vulpo ist ein vielseitiger Deutscher Discord Bot, der deinen Server sehr gut verwalten kann." name="description">
   <meta content="discord, bot, discord bot, bester discord bot, deutscher discord bot, economy, levelsystem, gewinnspiele, stats, vulpo premium, premium, günstig, free, gratis" name="keywords">
 
@@ -36,25 +36,6 @@
   ======================================================== -->
 </head>
 
-<!-- ======= Hero Section ======= -->
-<section id="hero" class="d-flex align-items-center">
-
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-12">
-          <h1 class="text-center">404 - Seite nicht gefunden</h1>
-          <h2 class="text-center">Es tut uns leid, aber die angeforderte Seite konnte nicht gefunden werden.</h2>
-        </div>
-      </div>
-    </div>
-  
-    <div class="hero-img" data-aos="zoom-in" data-aos-delay="200">
-      <img src="static/assets/img/404.png" class="img-fluid" alt="404 Error">
-    </div>
-  
-  </section><!-- End Hero -->
-  
-
 <body>
 
   <!-- ======= Header ======= -->
@@ -77,6 +58,43 @@
     </div>
   </header><!-- End Header -->
 
+  <!-- ======= Hero Section ======= -->
+  <section id="hero" class="d-flex align-items-center">
+
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 d-flex flex-column justify-content-center pt-4 pt-lg-0 order-2 order-lg-1" data-aos="fade-up" data-aos-delay="200">
+          <h1>Erfolgreich eingeloggt als {{ response["username"] }}</h1>
+          <h2>Du kannst nun aussuchen, wo du hingeleitet werden möchtest. Drücke dazu einfach unten den passenden Button.</h2>
+          <div class="d-flex justify-content-center justify-content-lg-start">
+            <form action="https://vulpo-bot.de/ticketsystem" method="post">
+                <input type="hidden" name="id" value="{{ response['id'] }}">
+                <input type="hidden" name="avatar" value="{{ response['avatar'] }}">
+                <input type="hidden" name="username" value="{{ response['username'] }}">
+
+                <button type="submit">Zum Ticketsystem weiterleiten</button>
+            </form>
+            <form action="https://vulpo-bot.de/premiumkauf" method="post">
+                <input type="hidden" name="id" value="{{ response['id'] }}">
+                <input type="hidden" name="avatar" value="{{ response['avatar'] }}">
+                <input type="hidden" name="username" value="{{ response['username'] }}">
+
+                <button type="submit">Zum Premiumkauf weiterleiten</button>
+            </form>
+          </div>
+        </div>
+        <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-in" data-aos-delay="200">
+          <img src="static/assets/img/hero-img.webp" class="img-fluid animated" alt="">
+        </div>
+      </div>
+    </div>
+
+  </section><!-- End Hero -->
+
+  <main id="main">
+
+  </main><!-- End #main -->
+  
   <!-- ======= Footer ======= -->
   <footer id="footer">
 
@@ -86,7 +104,7 @@
           <div class="col-lg-6">
             <h4>Erhalte den <strong>vollen Zugang</strong> zu Vulpo mit <strong>Vulpo Premium</strong></h4>
             <p>Exklusive Vorteile und erweiterte Funktionen für ein verbessertes Discord-Erlebnis. Erweiterte Moderation, personalisierbare Einstellungen und vieles mehr.</p>
-            <h5><strong><a href="https://vulpo-bot.de/premium" class="btn-get-started scrollto">Premium entdecken</a></strong></h5>
+            <h5><strong><a href="https://vulpo-bot.de/login" class="btn-get-started scrollto">Mit Discord einloggen und Premium jetzt kaufen</a></strong></h5>
           </div>
         </div>
       </div>

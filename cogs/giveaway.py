@@ -293,11 +293,42 @@ class giveaway(commands.Cog):
     @gewinnspiel.command()
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
-    async def verwalten(self, interaction: discord.Interaction, aktion: typing.Literal["Gewinnspiel beenden (Nachrichten ID erforderlich)","Gewinnspiel neu würfeln (Nachrichten ID erforderlich)","Gewinnspiele anzeigen"], nachrichtenid: str=None):
+    async def verwalten(self, interaction: discord.Interaction, aktion: typing.Literal["Gewinnspiel beenden (Nachrichten ID erforderlich)","Gewinnspiel neu würfeln (Nachrichten ID erforderlich)","Gewinnspiele anzeigen", "Teilnehmer einsehen (Nachrichten ID erforderlich)"], nachrichtenid: str=None):
         """Verwalte Gewinnspiele."""
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 #guildID, channelID, msgID, hostID, endtime, preis, winners, status, nachrichten, rollenID, voicezeit, custom_status, jointime, level
+                if aktion == "Teilnehmer einsehen (Nachrichten ID erforderlich)":
+                    if nachrichtenid is None:
+                        return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du musst eine Nachrichten ID mit angeben beim Befehl.**", ephemeral=True)
+                    await cursor.execute("SELECT * FROM gewinnspiele WHERE guildID = (%s) AND status = (%s) AND msgID = (%s)", (interaction.guild.id, "Aktiv", nachrichtenid))
+                    result = await cursor.fetchone()
+                    if result == None:
+                        return await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> Es wurde kein aktives Gewinnspiel mit der ID {nachrichtenid} auf diesem Server gefunden. Beachte, dass es sich bei der ID um die ID der Nachricht von einem aktiven Gewinnspiel handelt**", ephemeral=True)
+                    kanal = interaction.guild.get_channel(int(result[1]))
+                    if kanal == None:
+                        return await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> Es wurde kein aktives Gewinnspiel mit der ID {nachrichtenid} auf diesem Server gefunden. Beachte, dass es sich bei der ID um die ID der Nachricht von einem aktiven Gewinnspiel handelt**", ephemeral=True)
+                    nachricht = await kanal.fetch_message(int(nachrichtenid))
+                    if nachricht == None:
+                        return await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> Es wurde kein aktives Gewinnspiel mit der ID {nachrichtenid} auf diesem Server gefunden. Beachte, dass es sich bei der ID um die ID der Nachricht von einem aktiven Gewinnspiel handelt**", ephemeral=True)
+                    
+                    
+                    await cursor.execute("SELECT userID FROM gewinnspiel_teilnehmer WHERE guildID = (%s) AND msgID = (%s)", (interaction.guild.id, nachrichtenid))
+                    result2 = await cursor.fetchall()
+                    if result2 is None:
+                        return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Bei diesem Gewinnspiel gibt es bisher noch keine Teilnehmer.**", ephemeral=True)
+
+                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"Teilnehmer vom Gewinnspiel {nachrichtenid}", description="Alle Teilnehmer dieses aktiven Gewinnspiels findest du in dieser Liste. Hier kannst du als Beispiel Zweitaccounts von Gewinnspielen verbannen.")
+                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    embed.description += "\n\n__Alle Teilnehmer:__"
+                    for teilnehmer in result2:
+                        user = self.bot.get_user(int(teilnehmer[0]))
+                        if user is not None:
+                            embed.description += f"\n{user.name}"
+                        else:
+                            embed.description += f"\n**{teilnehmer[0]}** (Server verlassen?) ||Tipp: Von Gewinnspielen blockieren, damit er nicht mehr gewinnen kann.||"
+                    await interaction.response.send_message(embed=embed)
+
                 if aktion == "Gewinnspiel beenden (Nachrichten ID erforderlich)":
                     if nachrichtenid is None:
                         return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du musst eine Nachrichten ID mit angeben beim Befehl.**", ephemeral=True)
@@ -412,6 +443,7 @@ class giveaway(commands.Cog):
                     result = await cursor.fetchone()
                     if result == None:
                         await cursor.execute("INSERT INTO gewinnspiel_blacklist(guildID, id) VALUES(%s, %s)", (interaction.guild.id, id))
+                        await cursor.execute("DELETE FROM gewinnspiel_teilnehmer WHERE userID = (%s) AND guildID = (%s)", (id, interaction.guild.id))
                         return await interaction.response.send_message(f"**<:v_haken:1119579684057907251> {member} ist nun auf der Blacklist**")
                     await cursor.execute("DELETE FROM gewinnspiel_blacklist WHERE guildID = (%s) AND id = (%s)", (interaction.guild.id, id))
                     return await interaction.response.send_message(f"**<:v_haken:1119579684057907251> {member} ist nun nicht mehr auf der Blacklist**")
@@ -420,6 +452,9 @@ class giveaway(commands.Cog):
                     result = await cursor.fetchone()
                     if result == None:
                         await cursor.execute("INSERT INTO gewinnspiel_blacklist(guildID, id) VALUES(%s, %s)", (interaction.guild.id, id))
+                        for member in interaction.guild.members:
+                            if rolle in member.roles:
+                                await cursor.execute("DELETE FROM gewinnspiel_teilnehmer WHERE userID = (%s) AND guildID = (%s)", (member.id, interaction.guild.id))
                         return await interaction.response.send_message(f"**<:v_haken:1119579684057907251> {rolle.name} ist nun auf der Blacklist**")
                     await cursor.execute("DELETE FROM gewinnspiel_blacklist WHERE guildID = (%s) AND id = (%s)", (interaction.guild.id, id))
                     return await interaction.response.send_message(f"**<:v_haken:1119579684057907251> {rolle.name} ist nun nicht mehr auf der Blacklist**")

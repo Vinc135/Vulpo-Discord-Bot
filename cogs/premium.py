@@ -1,11 +1,12 @@
 import os
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 from discord import app_commands
 from info import getcolour
 import re
 from io import BytesIO
 from PIL import Image
+import datetime
 
 class buttons(discord.ui.View):
     def __init__(self, bot=None, farbe=None):
@@ -29,10 +30,34 @@ class buttons(discord.ui.View):
     async def nein(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.edit_message(embed=None, view=None, content="**❌ Alles klar, die Farbe wurde nicht geändert. Du kannst jederzeit diesen Befehl erneut ausführen, um die Farbe aller Embeds zu ändern.**")
 
+async def remove_expired_users(self):
+    current_timestamp = datetime.datetime.now().timestamp()
+    async with self.bot.pool.acquire() as conn:
+        async with conn.cursor() as cursor:
+            await cursor.execute("SELECT userID, endtime FROM premium")
+            rows = await cursor.fetchall()
+            for row in rows:
+                if row[1] == None:
+                    continue
+                user_id, endtime_str = row
+                endtime_timestamp = float(endtime_str)
+                if endtime_timestamp < current_timestamp:
+                    await cursor.execute("DELETE FROM premium WHERE userID = (%s)", (user_id))
 
 class premium(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+    
+    def cog_load(self):
+        self.check.start()
+        
+    def cog_unload(self):
+        self.check.cancel()
+
+    
+    @tasks.loop(seconds=60)
+    async def check(self):
+        await remove_expired_users(self)
 
     premium = app_commands.Group(name='premium', description='Verwalte dein Premium Abo.', guild_only=True)
 

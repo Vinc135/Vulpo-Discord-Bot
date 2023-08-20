@@ -423,13 +423,13 @@ async def on_app_command_error(interaction: discord.Interaction, error: AppComma
             await send_error("Auf Cooldown", f"<:v_kreuz:1119580775411621908> Dieser Command ist auf Cooldown. Bitte versuche es in **{math.ceil(seconds)}** Sekunden erneut.", interaction)
             return
         if math.ceil(error.retry_after) <= 3600:  # minutes
-            await send_error("Auf Cooldown", f"<:v_kreuz:1119580775411621908> Dieser Command ist auf Cooldown. Bitte versuche es in **{math.ceil(minutes)}** Minuten and **{math.ceil(seconds)}** Sekunden.", interaction)
+            await send_error("Auf Cooldown", f"<:v_kreuz:1119580775411621908> Dieser Command ist auf Cooldown. Bitte versuche es in **{math.ceil(minutes)}** Minuten und **{math.ceil(seconds)}** Sekunden.", interaction)
             return
         if math.ceil(error.retry_after) <= 86400:  # hours
-            await send_error("Auf Cooldown", f"<:v_kreuz:1119580775411621908> Dieser Command ist auf Cooldown. Bitte versuche es in **{math.ceil(hours)}** Stunden, **{math.ceil(minutes)}** Minuten and **{math.ceil(seconds)}** Sekunden.", interaction)
+            await send_error("Auf Cooldown", f"<:v_kreuz:1119580775411621908> Dieser Command ist auf Cooldown. Bitte versuche es in **{math.ceil(hours)}** Stunden, **{math.ceil(minutes)}** Minuten und **{math.ceil(seconds)}** Sekunden.", interaction)
             return
         if math.ceil(error.retry_after) >= 86400:  # days
-            await send_error("Auf Cooldown", f"<:v_kreuz:1119580775411621908> Dieser Command ist auf Cooldown. Bitte versuche es in **{math.ceil(days)}** Tagen, **{math.ceil(hours)}** Stunden, **{math.ceil(minutes)}** Minuten and **{math.ceil(seconds)}** Sekunden.", interaction)
+            await send_error("Auf Cooldown", f"<:v_kreuz:1119580775411621908> Dieser Command ist auf Cooldown. Bitte versuche es in **{math.ceil(days)}** Tagen, **{math.ceil(hours)}** Stunden, **{math.ceil(minutes)}** Minuten und **{math.ceil(seconds)}** Sekunden.", interaction)
             return
     if isinstance(error,app_commands.BotMissingPermissions):
         await send_error("Fehlende Berechtigungen", "<:v_kreuz:1119580775411621908> Ich habe keine Berechtigungen um das zu tun.", interaction)

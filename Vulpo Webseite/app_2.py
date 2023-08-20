@@ -1,17 +1,27 @@
 import os
-from flask import Flask, redirect, request, render_template, session
+from flask import Flask, redirect, request, render_template, session, jsonify
 from requests_oauthlib import OAuth2Session
 from credentials import client_id, client_secret, base_discord_api_url, authorize_url, token_url, redirect_uri, scope
 import aiomysql
 import asyncio
-import paypalrestsdk
 from datetime import datetime
 import requests
 import math
-
 VERIFY_URL_PROD = 'https://ipnpb.paypal.com/cgi-bin/webscr'
 VERIFY_URL_TEST = 'https://ipnpb.sandbox.paypal.com/cgi-bin/webscr'
 VERIFY_URL = VERIFY_URL_PROD
+baseURL = {
+    'sandbox': 'https://api-m.sandbox.paypal.com',
+    'production': 'https://api-m.paypal.com'
+}
+urls = ['https://api-m.sandbox.pypal.com','https://api-m.paypal.com']
+
+
+
+
+
+# use the orders api to capture payment
+
 
 async def open_acc(userid, p):
     async with p.acquire() as conn:
@@ -124,6 +134,7 @@ async def new_payment(first_name, last_name, payer_email, payer_id, txn_id, user
                 await addcookies(userID, p)
 
 from datetime import datetime
+import base64
 
 async def get_all_tickets(p, id):
     async with p.acquire() as conn:
@@ -236,7 +247,6 @@ async def send_message(p, ticketID, message, autorID, autorname, status):
             time_string = now.strftime(time_format)
             await cursor.execute("INSERT INTO w_ticketmsg(autorID, ticketID, zeit, autorname, nachricht) VALUES(%s, %s, %s, %s, %s)", (autorID, ticketID, time_string, autorname, message))
             await cursor.execute("UPDATE w_tickets SET status = (%s) WHERE ticketID = (%s)", (status, ticketID))
-            await cursor.execute("UPDATE w_tickets SET letztes_update = (%s) WHERE ticketID = (%s)", (time_string, ticketID))
 
 async def close_ticket(p, ticketID):
     async with p.acquire() as conn:
@@ -265,18 +275,15 @@ app: Flask = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['PAYPAL_MODE'] = 'live'
-app.config['PAYPAL_CLIENT_ID'] = 'AdNZxDHdmW7iJebIw1XY-YuwXHhI5VN7sGeuL-GfgSekyNw93QzQnsCin5A6BjWzE_SGOog1AnH-Id1t'
-app.config['PAYPAL_CLIENT_SECRET'] = 'EATcxSp0L9b6-W7QyuoOE7pYzbmI3RkFstVuDG1_B4imPa2qRLhHEC6bezP-2rck9FSmmM-ZgYUES_Bx'
+
+
+CLIENT_ID = 'AdNZxDHdmW7iJebIw1XY-YuwXHhI5VN7sGeuL-GfgSekyNw93QzQnsCin5A6BjWzE_SGOog1AnH-Id1t'
+APP_SECRET = 'EATcxSp0L9b6-W7QyuoOE7pYzbmI3RkFstVuDG1_B4imPa2qRLhHEC6bezP-2rck9FSmmM-ZgYUES_Bx'
 
 aiomysql_loop = asyncio.new_event_loop()
 asyncio.set_event_loop(aiomysql_loop)
 pool = aiomysql_loop.run_until_complete(create_pool(aiomysql_loop))
 
-paypalrestsdk.configure({
-    'mode': app.config['PAYPAL_MODE'],
-    'client_id': app.config['PAYPAL_CLIENT_ID'],
-    'client_secret': app.config['PAYPAL_CLIENT_SECRET']
-})
 #—————————————————————————————————————————————#
 #Die Umleitungen zu den Pages.
 #Beispiel: vulpo-bot.de/premium anstatt /premium.html
@@ -346,12 +353,14 @@ def premiumkauf():
         username = request.form.get('username', '')
         avatar = request.form.get('avatar', '')
         if id and username and avatar:
-            #task = aiomysql_loop.create_task(alle_ohne_premium_jemals(pool))
-            #liste = aiomysql_loop.run_until_complete(task)
-            #if int(id) in liste:
-            return render_template('nopremium.html', id=id, username=username, avatar=avatar)
-            #if int(id) not in liste:
-                #return render_template('nopremium_rabatte.html', id=id, username=username, avatar=avatar)
+            task = aiomysql_loop.create_task(alle_ohne_premium_jemals(pool))
+            liste = aiomysql_loop.run_until_complete(task)
+            if int(id) == 824378909985341451:
+                return render_template('lol.html', id=id, username=username, avatar=avatar)
+            if int(id) in liste:
+                return render_template('nopremium.html', id=id, username=username, avatar=avatar)
+            if int(id) not in liste:
+                return render_template('nopremium_rabatte.html', id=id, username=username, avatar=avatar)
         else:
             return redirect("/logout")
         
@@ -374,7 +383,6 @@ def new_tickt():
             return redirect("/logout")
         
     except Exception as e:
-        return f"{e}"
         return redirect("/logout")
     
 @app.route("/open_ticket", methods=["POST"])
@@ -407,12 +415,8 @@ def send_msg():
         ticketID = request.form.get('ticketID', '')
         avatar = request.form.get('avatar', '')
         message = request.form.get('message', '')
-        if id and username and thema and ticketID and avatar and message:
-            team = [897641092697186336, 981898944017739836, 976156443675873361, 824378909985341451]
-            if int(id) in team:
-                status = "Warte auf User"
-            else:
-                status = "Warte auf Support"
+        status = request.form.get('status', '')
+        if id and username and thema:
             task1 = aiomysql_loop.create_task(send_message(pool, ticketID, message, id, username, status))
             aiomysql_loop.run_until_complete(task1)
 
@@ -438,7 +442,72 @@ def close_tickt():
         task = aiomysql_loop.create_task(get_all_tickets(pool, id))
         all_tickets = aiomysql_loop.run_until_complete(task) or None
         return render_template('tickets.html', id=id, username=username, avatar=avatar, all_tickets=all_tickets)
+
+@app.route("/create-paypal-order",methods=['POST'])
+def create_paypal_order():
+    order = create_order()
+
+    return jsonify(order)
+
+@app.route('/capture-paypal-order',methods=['POST'])
+def capture_paypal_order():
+    data =  request.get_json()
+    order_id = data.get('orderID')
+
+    capture_data = capturePayment(order_id)
+
+    return jsonify(capture_data)
+
+def generateAccessToken():
+    auth = base64.b64encode(f'{CLIENT_ID}:{APP_SECRET}')
+    url = f'{urls[0]}/v1/oauth2/token'
+    send = 'grant_type=client_credentials'
+    headers = {"Authorization": f'Basic {auth}'}
+
+    r = requests.post(url,headers=headers,data=send)
+
+    if r.status_code == 200:
+        data = r.json()
+
+        return data['access_token']
+    else:
+        return 'error'
     
+async def create_order():
+    access_token = await generateAccessToken()
+
+    if access_token != 'error':
+        url = f'{urls[0]}/v2/checkout/orders'
+        json = {'intent': 'CAPTURE','purchase_units': [{'amount': {'currency_code': "EUR",'value':'10.00'}}]}
+        headers = {'Content-Type': 'application/json','Authorization': f'Bearer {access_token}'}
+
+        r = requests.post(url,headers=headers,data=str(json))
+
+        if r.status_code == 200:
+            return r.json()
+        else:
+            return 'error'
+    else:
+        return 'error'
+    
+async def capturePayment(orderId):
+    access_token = await generateAccessToken()
+
+    if access_token != 'error':
+        url = f'{urls[0]}/v2/checkout/orders/{orderId}/capture'
+        headers = {'Content-Type': 'application/json','Authorization': f'Bearer {access_token}'}
+
+        r = requests.post(url,headers=headers)
+
+        if r.status_code == 200:
+            return r.json()
+        else:
+            return 'error'
+    else:
+        return 'error'
+
+
+
 @app.errorhandler(404)
 def page_not_found(error):
     """Diese Seite kommt, wenn eine Seite nicht gefunden wird."""

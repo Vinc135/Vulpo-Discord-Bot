@@ -69,20 +69,50 @@ async def check_videos(self):
         channel = guild.get_channel(1127157434784432240)
         await channel.send(e)
 
+async def check_tickets(self):
+    async with self.bot.pool.acquire() as conn:
+        async with conn.cursor() as cursor:
+            guild = self.bot.get_guild(925729625580113951)
+            channel = guild.get_channel(1133348936116076636)
+            message = await channel.fetch_message(1133349035508519002)
+            if message.embeds:
+                emb = message.embeds[0]
+            else:
+                emb = None
+
+            await cursor.execute("SELECT autorname, autorID, ticketID, titel, status, letztes_update FROM w_tickets WHERE status != (%s)", ("Geschlossen"))
+            results = await cursor.fetchall()
+            embed = discord.Embed(title="Aktuelle Tickets", description="Hier siehst du alle Tickets und deren Status. Du kannst dich daran orientieren, wo Support gefragt ist.", color=discord.Color.orange())
+            for result in results:
+                autorname, autorID, ticketID, titel, status, letztes_update = result
+                embed.add_field(name=f"#{ticketID} - {titel}", value=f"<:v_user:1119585450923929672> {autorname}\n<:v_mod:1119581819122241621> {status}\n<:v_zeit:1119585888054296676> Letztes Update: {letztes_update}")
+            embed.set_footer(text="https://vulpo-bot.de/ticketsystem")
+            if emb == None or embed != emb:
+                await message.edit(content="", embed=embed)
+            
 class notifications(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     def cog_load(self):
         self.check.start()
+        self.check_tickets.start()
         
     def cog_unload(self):
         self.check.cancel()
+        self.check_tickets.cancel()
 
     
     @tasks.loop(seconds=60)
     async def check(self):
         await check_videos(self)
+
+    @tasks.loop(seconds=60)
+    async def check_tickets(self):
+        try:
+            await check_tickets(self)
+        except:
+            pass
 
     benachrichtigung = app_commands.Group(name='benachrichtigung', description='Lass Benachrichtigungen für neue Videos senden.', guild_only=True)
 
@@ -102,16 +132,15 @@ class notifications(commands.Cog):
                             videos = scrapetube.get_channel(channel_url=f"https://www.youtube.com/@{channelusername}", limit=5)
                             video_ids = [video["videoId"] for video in videos]
 
-                            saved_videos = await fetch_videos_from_database(channelusername)
+                            saved_videos = await fetch_videos_from_database(self, channelusername)
                             if saved_videos == []:
                                 for video_id in video_ids:
-                                    await insert_video_to_database(channelusername, video_id)
-                            
+                                    await insert_video_to_database(self, channelusername, video_id)                            
                             
                             return await interaction.response.send_modal(nachricht(kanal, channelname, channelusername, self.bot))
                         
-                        except:
-                            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Youtube Benachrichtigung", description=f"Der Youtube Kanal mit dem Usernamen `@{channelusername}` wurde nicht gefunden.")
+                        except Exception as e:
+                            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Youtube Benachrichtigung", description=f"Der Youtube Kanal mit dem Usernamen `@{channelusername}` wurde nicht gefunden.\nFehler: {e}")
                             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                             return await interaction.response.send_message(embed=embed, ephemeral=True)
                         
