@@ -46,28 +46,24 @@ Ich habe deinen AFK-Status entfernt. AFK gegangen {discord_timestamp(t2, 'R')}."
                             await msg.reply(embed=embed)
                         else:
                             text = ""
-                            a = 0
                             embed.description += f"\n💬 Während du AFK warst wurdest du hier **{len(result2)}** Mal gepingt. \n__Alle Erwähnungen:__"
                             for ping in result2:
                                 author = msg.guild.get_member(int(ping[0]))
                                 channel = msg.guild.get_channel(int(ping[2]))
-                                if channel == None:
+                                if author is None or channel is None:
+                                    text += "Der Autor oder der Kanal konnte nicht gefunden werden.\n"
                                     continue
                                 try:
                                     msg2 = await channel.fetch_message(int(ping[1]))
-                                    a = 1
                                 except:
-                                    text += "Diese Nachricht wurde gelöscht."
-                                    a = 1
-                                if author == None or channel == None:
-                                    text += "Diese Nachricht wurde gelöscht."
-                                    a = 1
-                                if a == 0:
-                                    t2 = datetime.datetime.fromtimestamp(int(ping[3]))
-                                    if text == "":
-                                        text += f"[{author.name}]({msg2.jump_url})"
-                                    else:
-                                        text += f", [{author.name}]({msg2.jump_url})"
+                                    text += "Diese Nachricht wurde gelöscht oder konnte nicht gefunden werden.\n"
+                                    continue
+                                t2 = datetime.datetime.fromtimestamp(int(ping[3]))
+                                if text == "":
+                                    text += f"[{author.name}]({msg2.jump_url})"
+                                else:
+                                    text += f", [{author.name}]({msg2.jump_url})"
+
                             embed.description += f"\n{text}"
                             await msg.reply(embed=embed)
                         await cursor.execute("DELETE FROM afk_nachrichten WHERE userID = (%s) AND guildID = (%s)", (member.id, msg.guild.id))

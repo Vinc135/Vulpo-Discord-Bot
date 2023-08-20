@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="4201f56a-66a9-4e81-b252-16665dafb20b" data-blockingmode="auto" type="text/javascript"></script>
+
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Vulpo - Ticketsystem</title>
+  <meta content="Vulpo ist ein vielseitiger Deutscher Discord Bot, der deinen Server sehr gut verwalten kann." name="description">
+  <meta content="discord, bot, discord bot, bester discord bot, deutscher discord bot, economy, levelsystem, gewinnspiele, stats, vulpo premium, premium, günstig, free, gratis" name="keywords">
+
+  <!-- Favicons -->
+  <link href="static/assets/img/favicon.webp" rel="icon">
+  <link href="static/assets/img/apple-touch-icon.webp" rel="apple-touch-icon">
+
+  <!-- Vendor CSS Files -->
+  <link href="static/assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="static/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="static/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="static/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="static/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="static/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="static/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  
+  <!-- Template Main CSS File -->
+  <link href="static/assets/css/style.css" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: Arsha
+  * Updated: Mar 10 2023 with Bootstrap v5.2.3
+  * Template URL: https://bootstrapmade.com/arsha-free-bootstrap-html-template-corporate/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+  <style>
+  .image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    overflow: hidden;
+    width: 45px;
+    height: 45px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    margin-left: 50px;
+  }
+  
+  .rounded-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .container2 {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .box {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .ticket-box {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .ticket-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .ticket-id {
+    font-size: 18px;
+    color: orange;
+  }
+  
+  .ticket-title {
+    font-size: 18px;
+    color: black;
+  }
+  
+  .ticket-info {
+    font-size: 14px;
+  }
+  
+  .status-badge {
+    font-size: 12px;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 5px;
+  }
+  
+  .status-badge[data-status="Offen"] {
+    background-color: green;
+  }
+  
+  .status-badge[data-status="Warte auf Support"],
+  .status-badge[data-status="Warte auf User"] {
+    background-color: orange;
+  }
+  
+  .status-badge[data-status="Geschlossen"] {
+    background-color: gray;
+  }
+  
+  .team-badge {
+    font-size: 12px;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 5px;
+    background-color: #007bff;
+  }
+  
+  .ticket-item {
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
+  
+  .ticket-list {
+    max-height: 300px;
+    overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  /* Stile für das Scrollen ab 7 offenen Tickets */
+  @media (min-height: 700px) {
+    .ticket-list {
+      max-height: 600px;
+    }
+  }
+  
+  /* Hinzugefügte Stile für das Letztes Update */
+  .ticket-info-container {
+    text-align: left;
+  }
+
+  .ticket-letztes_update {
+    display: block;
+    font-size: 14px;
+    margin-top: 5px;
+  }
+</style>
+  
+  
+
+  
+</head>
+
+<body>
+
+  <header id="header" class="fixed-top ">
+    <div class="container d-flex align-items-center">
+
+      <h1 class="logo me-auto"><a href="static/index.html">Vulpo</a></h1>
+      <!-- Uncomment below if you prefer to use an image logo -->
+      <!-- <a static/index.html class="logo me-auto"><img src="assets/img/logo.webp" alt="" class="img-fluid"></a>-->
+
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link" href="https://vulpo-bot.de/#hero">Hauptseite</a></li>
+          <li><a class="nav-link" href="https://vulpo-bot.de/#contact">Kontakt</a></li>
+          <li><a class="getstarted" href="https://vulpo-bot.de/invite">Einladen</a></li>
+          <li>
+          <div class="image-container">
+            <img src="https://cdn.discordapp.com/avatars/{{ id }}/{{ avatar }}.png" alt="User Avatar" class="rounded-image">
+          </div></li>
+          <li class="dropdown"><a href="#"><span>{{ username }}</span> <i class="bi bi-chevron-down"></i></a>
+            <ul>
+              <li>{{ id }}</li>
+              <li><a href="https://vulpo-bot.de/logout">Ausloggen</a></li>
+            </ul>
+          </li>
+
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav><!-- .navbar -->
+
+    </div>
+  </header><!-- End Header -->
+
+    <!-- ======= Hero Section ======= -->
+    <section id="hero" class="d-flex align-items-center">
+
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 d-flex flex-column justify-content-center pt-4 pt-lg-0 order-2 order-lg-1" data-aos="fade-up" data-aos-delay="200">
+            <h1>Willkommen im Support</h1>
+            <h2>Hier kannst du Kontakt zu uns aufnehmen und mit uns live chatten. Stelle uns gerne deine Fragen, wir beantworten sie gerne. DU kannst hier auch gerne diverse Dinge melden wie Bugs.</h2>
+            <div class="d-flex justify-content-center justify-content-lg-start">
+              <a href="https://vulpo-bot.de/invite" class="btn-get-started scrollto">Einladen</a>
+              <a href="https://vulpo-bot.de/support" class="glightbox btn-watch-video"><i class="bi bi-link"></i><span>Supportserver</span></a>
+            </div>
+          </div>
+          <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-in" data-aos-delay="200">
+            <img src="static/assets/img/hero-img.webp" class="img-fluid animated" alt="">
+          </div>
+        </div>
+      </div>
+  
+    </section><!-- End Hero -->
+
+  <main id="main">
+    <section class="inner-page">
+    <div class="container">
+      <title>Ticket-Übersicht</title>
+      <div class="container2">
+        <h1>Aktuelle Supporttickets</h1>
+        <div class="box">
+          <div class="box-header">
+            <div class="new-ticket">
+              <form action="/new_ticket" method="post">
+                <input type="hidden" name="autorID" value="{{ id }}">
+                <input type="hidden" name="autorname" value="{{ username }}">
+                <input type="hidden" name="avatar" value="{{ avatar }}">
+                <input type="text" name="titel" placeholder="Thema des Tickets" maxlength="20">
+                <button type="submit">Eröffnen</button>
+              </form>              
+            </div>
+          </div>
+          <div class="ticket-list">
+            {% if all_tickets %}
+              {% for ticket_id, ticket_info in all_tickets.items() %}
+                {% if ticket_info %}
+                  <form action="/open_ticket" method="post" class="ticket-form">
+                    <button type="submit" name="ticketID" value="{{ ticket_info.ticketID }}" class="ticket-box">
+                      <div class="ticket-header">
+                        <span class="ticket-id">#{{ ticket_info.ticketID }}</span>
+                        <span class="ticket-title">{{ ticket_info.titel }}</span>
+                      </div>
+                      <div class="ticket-info-container">
+                        <span class="ticket-letztes_update">Letztes Update: {{ ticket_info.letztes_update }}</span>
+                      </div>
+                      <div class="ticket-footer">
+                        <span class="status-badge" data-status="{{ ticket_info.status }}">{{ ticket_info.status }}</span>
+                        {% if ticket_info.team == 'ja' %}
+                          <span class="team-badge">{{ ticket_info.autorname }}</span>
+                        {% endif %}
+                      </div>
+                    </button>
+                    <input type="hidden" name="userID" value="{{ id }}">
+                    <input type="hidden" name="thema" value="{{ ticket_info.titel }}">
+                    <input type="hidden" name="ticketID" value="{{ ticketID }}">
+                    <input type="hidden" name="username" value="{{ username }}">
+                    <input type="hidden" name="avatar" value="{{ avatar }}">
+                    <input type="hidden" name="status" value="{{ ticket_info.status }}">
+                  </form>
+                {% endif %}
+              {% endfor %}
+            {% else %}
+              <br>
+              <div class="ticket-item">Keine Tickets</div>
+            {% endif %}
+          </div>                     
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ======= Footer ======= -->
+<footer id="footer">
+
+  <div class="footer-newsletter">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <h4>Erhalte den <strong>vollen Zugang</strong> zu Vulpo mit <strong>Vulpo Premium</strong></h4>
+          <p>Exklusive Vorteile und erweiterte Funktionen für ein verbessertes Discord-Erlebnis. Erweiterte Moderation, personalisierbare Einstellungen und vieles mehr.</p>
+          <h5><strong><a href="https://vulpo-bot.de/premium" class="btn-get-started scrollto">Premium entdecken</a></strong></h5>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-top">
+    <div class="container">
+      <div class="row">
+
+        <div class="col-lg-3 col-md-6 footer-contact">
+          <h3>Vulpo</h3>
+          <p>
+            Stell dir einen Bot vor, der ideal deinen Server verwalten kann. Der nützliche Funktionen wie Levelsystem, Gewinnspiele und viele mehr hat. Ein Bot, der sich perfekt deinen Bedürfnissen anpasst.
+          </p>
+        </div>
+
+        <div class="col-lg-3 col-md-6 footer-links">
+          <h4>Nützliche Links</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/#hero">Hauptseite</a></li>
+            <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/#about">Über Vulpo</a></li>
+            <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/#services">Funktionen</a></li>
+            <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/#portfolio">Galerie</a></li>
+            <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/#team">Team</a></li>
+            <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/premium">Premium Informationen</a></li>
+            <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/login">Mit Discord einloggen & Premium kaufen</a></li>
+            <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/#contact">Kontakt</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-3 col-md-6 footer-links">
+          <h4>Weiterführende Links</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/invite">Einladen</a></li>
+            <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/support">Supportserver</a></li>
+            <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/formulare">Weiterführendes</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-3 col-md-6 footer-links">
+          <h4>Rechtliches</h4>
+          <ul>
+            <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/impressum">Impressum</a></li>
+            <li><i class="bx bx-chevron-right"></i> <a href="https://vulpo-bot.de/datenschutz">Datenschutz</a></li>
+          </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="container footer-bottom clearfix">
+    <div class="copyright">
+      &copy; Copyright <strong><span>Vulpo</span></strong>. Alle Rechte reserviert
+    </div>
+    <div class="credits">
+      <!-- All the links in the footer should remain intact. -->
+      <!-- You can delete the links only if you purchased the pro version. -->
+      <!-- Licensing information: https://bootstrapmade.com/license/ -->
+      <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/arsha-free-bootstrap-html-template-corporate/ -->
+      Designt von <a href="https://bootstrapmade.com/">BootstrapMade</a>
+    </div>
+  </div>
+</footer><!-- End Footer -->
+
+<div id="preloader"></div>
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+<!-- Vendor JS Files -->
+<script src="static/assets/vendor/aos/aos.js"></script>
+<script src="static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="static/assets/vendor/glightbox/js/glightbox.min.js"></script>
+<script src="static/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+<script src="static/assets/vendor/swiper/swiper-bundle.min.js"></script>
+<script src="static/assets/vendor/waypoints/noframework.waypoints.js"></script>
+<script src="static/assets/vendor/php-email-form/validate.js"></script>
+
+<!-- Template Main JS File -->
+<script src="static/assets/js/main.js"></script>
+
+</body>
+
+</html>

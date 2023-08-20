@@ -18,7 +18,7 @@ class fun(commands.Cog):
         if user is None:
             user = interaction.user
         x = random.randint(1, 100)
-        embed = discord.Embed(colour=await getcolour(self, interaction.user), description=f"{user.mention} is LOST zu {x}%.")
+        embed = discord.Embed(colour=await getcolour(self, interaction.user), description=f"{user.mention} ist LOST zu {x}%.")
         embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         await interaction.response.send_message(embed=embed)

@@ -20,7 +20,7 @@ a {
 }
 
 a:hover {
-  color: #b04e02;
+  color: #ff6f00;
   text-decoration: none;
 }
 
@@ -182,7 +182,7 @@ h6 {
 .navbar .active,
 .navbar .active:focus,
 .navbar li:hover>a {
-  color: #ec5119;
+  color: #ffccb9;
 }
 
 .navbar .getstarted,
@@ -192,14 +192,14 @@ h6 {
   border-radius: 50px;
   color: #fff;
   font-size: 14px;
-  border: 2px solid #ec5119;
+  border: 2px solid #ffccb9;
   font-weight: 600;
 }
 
 .navbar .getstarted:hover,
 .navbar .getstarted:focus:hover {
   color: #fff;
-  background: #ec5119;
+  background: #ffccb9;
 }
 
 .navbar .dropdown ul {
