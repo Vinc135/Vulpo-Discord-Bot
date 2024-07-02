@@ -534,4 +534,4 @@ Der User {interaction.user.mention} hat eine Nachricht von {message.author.menti
                 return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Kanal des Reportlogs existiert nicht mehr. Bitte melde dies dem lokalen Serverteam.**", ephemeral=True)
 
 
-bot.run("OTI1Nzk5NTU5NTc2MzIyMDc4.GcwvXN.EkMMDxTqykR8em6L4lJqOouGfvAvH1J1rq9nJQ", reconnect=True)
+bot.run("NÖ", reconnect=True)
