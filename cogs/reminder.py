@@ -40,7 +40,7 @@ class Reminder(commands.Cog):
                 if result != None:
                     id = result[0] + 1
                 
-                await cursor.execute("INSERT INTO erinnerungen(userID, endtime, beschreibung, id) VALUES(%s, %s, %s, %s)", (interaction.user.id, t1, beschreibung, id))
+                await cursor.execute("INSERT INTO erinnerungen(userID, endtime, zeit, beschreibung, id) VALUES(%s, %s, %s, %s, %s)", (interaction.user.id, t1, zeit, beschreibung, id))
                 
                 embed = discord.Embed(color=await getcolour(self, interaction.user), title=f"Erinnerung gestellt (ID {id})", description=f"""
 <:v_info:1119579853092552715> Erinnerung gesetzt auf {discord_timestamp(t2, 'f')}

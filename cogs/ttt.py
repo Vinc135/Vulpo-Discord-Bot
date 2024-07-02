@@ -336,7 +336,7 @@ class Ttt(commands.Cog):
     @tictactoe.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def start(self, interaction: discord.Interaction, spieler2: discord.Member, modus: typing.Literal["Klassisch", "BIG"]):
-        """Spiele mit jemanden Tik-Tik-Toe."""
+        """Spiele mit jemanden tictactoe"""
         if modus == "Klassisch":
             if spieler2 == interaction.user:
                 return await interaction.response.send_message("**❌ Du kannst nicht gegen dich selbst spielen.**", ephemeral=True)
@@ -385,7 +385,7 @@ class Ttt(commands.Cog):
     @tictactoe.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def stats(self, interaction: discord.Interaction, member: discord.Member=None):
-        """Sieh dir deine Tik Tak Toe Stats an."""
+        """Sieh dir deine tictactoe Stats an."""
         if member == None:
             member = interaction.user
         async with self.bot.pool.acquire() as conn:

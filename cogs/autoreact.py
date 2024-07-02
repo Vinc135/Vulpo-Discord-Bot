@@ -31,14 +31,14 @@ class Autoreact(commands.Cog):
     @autoreact.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(manage_channels=True)
-    @app_commands.describe(emoji="Für normale Emojis: name:id oder für Animierte: a:name:id")
+    @app_commands.describe(emoji="Für normale filename: name:id oder für Animierte: a:name:id")
     async def add(self, interaction: discord.Interaction, kanal: discord.TextChannel, emoji: str):
         """Füge ein Emoji für ein Kanal hinzu."""
         try:
             await interaction.response.defer()
             emoj = discord.PartialEmoji.from_str(emoji)
             if emoj is None:
-                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)
             async with self.bot.pool.acquire() as conn:
                 async with conn.cursor() as cursor:
                     await cursor.execute(f"SELECT emoji FROM autoreact WHERE channelID = {kanal.id} AND guildID = {interaction.guild.id}")
@@ -52,13 +52,13 @@ class Autoreact(commands.Cog):
                     await cursor.execute("INSERT INTO autoreact(guildID, channelID, emoji) VALUES(%s,%s,%s)", (interaction.guild.id, kanal.id, emoji))
                     await interaction.followup.send(f"**<:v_haken:1119579684057907251> Eintrag erstellt. Jede Nachricht aus dem Kanal {kanal.mention} erhält das Emoji {emoj}.**")
         except:
-            return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+            return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)
 
     @autoreact.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(manage_channels=True)
     async def delete(self, interaction: discord.Interaction, kanal: discord.TextChannel):
-        """Entferne Autoemojis eines Kanals."""
+        """Entferne Autofilename eines Kanals."""
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 await cursor.execute("SELECT emoji FROM autoreact WHERE guildID = (%s) AND channelID = (%s)", (interaction.guild.id, kanal.id))
@@ -73,15 +73,15 @@ class Autoreact(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(manage_channels=True)
     async def liste(self, interaction: discord.Interaction):
-        """Erhalte eine Liste von den Autoemojis und deren Kanäle."""
+        """Erhalte eine Liste von den Autofilename und deren Kanäle."""
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 await cursor.execute("SELECT emoji, channelID FROM autoreact WHERE guildID = (%s)", (interaction.guild.id))
                 result = await cursor.fetchall()
                 if result == ():
-                    await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Hier gibt es keine autoemojis. Füge eine mit `/autoreact add <kanal> <emoji>` hinzu**", ephemeral=True)
+                    await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Hier gibt es keine autofilename. Füge eine mit `/autoreact add <kanal> <emoji>` hinzu**", ephemeral=True)
                     return
-                embed = discord.Embed(title="Alle automatische Emojis in Kanälen", description="Hier nähere Infos:", color=await getcolour(self, interaction.user))
+                embed = discord.Embed(title="Alle automatische filename in Kanälen", description="Hier nähere Infos:", color=await getcolour(self, interaction.user))
                 embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
                 for i in result:
                     k = interaction.guild.get_channel(int(i[1]))

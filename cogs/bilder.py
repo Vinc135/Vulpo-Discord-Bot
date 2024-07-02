@@ -49,6 +49,7 @@ class bilder(commands.Cog):
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def wanted(self, interaction, member: discord.Member=None):
+        await interaction.response.defer()
         """Erstellt ein 'Gesucht' Plakat mit dem Profilbild eines Members."""
         if member is None:
             member = interaction.user
@@ -68,13 +69,14 @@ class bilder(commands.Cog):
             embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
             embed.set_image(url="attachment://profile.jpg")
             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
-            await interaction.response.send_message(file=file, embed=embed)
+            await interaction.followup.send(file=file, embed=embed)
     
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def pix(self, interaction, member: discord.Member=None):
         """Verpixelt das Profilbild eines Nutzers."""
+        await interaction.response.defer()
         if member == None:
             member = interaction.user
         if member != None:
@@ -90,7 +92,7 @@ class bilder(commands.Cog):
             file = discord.File("pix.png", filename="pix.png")
             embed.set_image(url="attachment://pix.png")
             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
-            await interaction.response.send_message(file=file, embed=embed)
+            await interaction.followup.send(file=file, embed=embed)
             os.remove("pix.png")
 
     @app_commands.command()
@@ -98,20 +100,22 @@ class bilder(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def animal(self, interaction, tier: typing.Literal["Hund", "Katze", "Pferd", "Vogel", "Kaninchen", "Meerschweinchen", "Hamster", "Fisch", "Schildkröte", "Wellensittich", "Hase", "Schlange", "Frettchen", "Maus", "Kanarienvogel"]):
         """Ein zufälliges Bild eines Tieres."""
+        await interaction.response.defer()
         try:
             url = get_pic_from_pixabay(tier, "animals")
             embed = discord.Embed(title=" ", description=f"**{tier}**", colour=await getcolour(self, interaction.user))
             embed.set_image(url=url)
 
-            await interaction.response.send_message(embed=embed)
+            await interaction.followup.send(embed=embed)
         except:
-            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Fehler beim Laden es Bildes. Versuche es später erneut!**", ephemeral=True)
+            return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Fehler beim Laden es Bildes. Versuche es später erneut!**", ephemeral=True)
           
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def meme(self, interaction):
         """Sendet ein Meme."""
+        await interaction.response.defer()
         async with aiohttp.ClientSession() as cs:
             async with cs.get('https://www.reddit.com/r/memes/random/.json') as r:
                 res = await r.json()
@@ -127,7 +131,7 @@ class bilder(commands.Cog):
                 embed = discord.Embed(colour=await getcolour(self, interaction.user), title=title, url=url)
                 embed.set_image(url=image)
                 embed.set_footer(text=f"🔺 {ups} | 🔻 {downs} | 💬 {comments} ")
-                await interaction.response.send_message(embed=embed, content=None)
+                await interaction.followup.send(embed=embed, content=None)
 
 async def setup(bot):
     await bot.add_cog(bilder(bot))

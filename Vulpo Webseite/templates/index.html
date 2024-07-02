@@ -36,7 +36,32 @@
   ======================================================== -->
 </head>
 
+<style>
+  /* Stil für den schmalen orangefarbenen Abschnitt */
+  .narrow-bar {
+      background-color: orange;
+      height: 30px; /* Höhe des Abschnitts anpassen */
+      width: 100%; /* Breite des Bildschirms */
+      position: fixed; /* Fixierte Positionierung */
+      top: 0; /* Oben am Bildschirm */
+      left: 0; /* Links ausrichten */
+      z-index: 1000; /* Z-Index, um sicherzustellen, dass es über dem Inhalt liegt */
+      display: flex; /* Flexbox zur Ausrichtung des Textes */
+      align-items: center; /* Vertikal zentrieren */
+      justify-content: center; /* Horizontal zentrieren */
+  }
+
+  .narrow-bar p {
+      color: white;
+      margin: 0;
+      font-size: 14px;
+  }
+</style>
+
 <body>
+  <div class="narrow-bar">
+    <p>Communities: 2100+ | User: 330.000+</p>
+  </div>
 
   <!-- ======= Header ======= -->
   <header id="header" class="fixed-top ">
@@ -469,40 +494,6 @@
                 <h4>Vincent L.</h4>
                 <span>CEO, Softwareingenieur</span>
                 <p>Unser visionärer Gründer und CEO, der Vulpo mit strategischer Führung vorantreibt und das Unternehmen zu neuen Höhen führt.</p>
-                <div class="social">
-                  <a href=""><i class="ri-twitter-fill"></i></a>
-                  <a href=""><i class="ri-facebook-fill"></i></a>
-                  <a href=""><i class="ri-instagram-fill"></i></a>
-                  <a href=""> <i class="ri-linkedin-box-fill"></i> </a>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="col-lg-6 mt-4" data-aos="zoom-in" data-aos-delay="300">
-            <div class="member d-flex align-items-start">
-              <div class="pic"><img src="static/assets/img/team/team-3.webp" class="img-fluid" alt=""></div>
-              <div class="member-info">
-                <h4>Hugo W.</h4>
-                <span>Moderation</span>
-                <p>Unser engagierter Moderator, der für Harmonie und Respekt im Server sorgt. Er ist immer bereit zu helfen und Fragen zu beantworten, um sicherzustellen, dass alle Mitglieder eine positive Erfahrung machen.</p>
-                <div class="social">
-                  <a href=""><i class="ri-twitter-fill"></i></a>
-                  <a href=""><i class="ri-facebook-fill"></i></a>
-                  <a href=""><i class="ri-instagram-fill"></i></a>
-                  <a href=""> <i class="ri-linkedin-box-fill"></i> </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-6 mt-4" data-aos="zoom-in" data-aos-delay="300">
-            <div class="member d-flex align-items-start">
-              <div class="pic"><img src="static/assets/img/team/team-4.webp" class="img-fluid" alt=""></div>
-              <div class="member-info">
-                <h4>Fabio H.</h4>
-                <span>Moderation</span>
-                <p>Unser engagierter Moderator, der für eine freundliche und respektvolle Atmosphäre im Server sorgt. Konfliktlösung und Durchsetzung der Regeln sind seine Stärken.</p>
                 <div class="social">
                   <a href=""><i class="ri-twitter-fill"></i></a>
                   <a href=""><i class="ri-facebook-fill"></i></a>

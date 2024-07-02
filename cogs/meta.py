@@ -99,7 +99,7 @@ class meta(commands.Cog):
         
         embed=discord.Embed(description=f"Das Mitglied {member.mention} hat insgesammt __**{totalInvites} Mitglied{'er' if totalInvites >= 2 else ''}**__ zum Server eingeladen!", color=await getcolour(self, interaction.user))
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-        embed.set_footer(text="Diese Zahl basiert auf allen Invites, seitdem du auf dem Server bist.", icon_url="https://cdn.discordapp.com/emojis/814202875387183145.png")
+        embed.set_footer(text="Diese Zahl basiert auf allen Invites, seitdem du auf dem Server bist.", icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
 
         await interaction.response.send_message(embed=embed)
 
@@ -513,24 +513,36 @@ class meta(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def permissions(self, interaction: discord.Interaction, user: discord.Member=None):
         """Listet alle Berechtigungen von jemandem auf."""
+        await interaction.response.defer()
         if user is None:
             permissions = interaction.channel.permissions_for(interaction.user)
             user = interaction.user
         permissions = interaction.channel.permissions_for(user)
         embed = discord.Embed(title=f':customs:  Berechtigungen von {user}', color=await getcolour(self, interaction.user))
         embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
-        embed.add_field(name='Server', value=interaction.guild)
-        embed.add_field(name='Kanal', value=interaction.channel, inline=False)
+        embed.add_field(name='Server', value=f"<:v_info:1119579853092552715> {interaction.guild.name}")
+        embed.add_field(name='Kanal', value=f"<:v_chat:1119577968457568327> {interaction.channel.name}", inline=False)
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+        
+        embed2 = discord.Embed(color=await getcolour(self, interaction.user))
+        embed2.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+
+        permissionsCount = 0
 
         for item, valueBool in permissions:
+            
             if valueBool == True:
-                value = ':white_check_mark:'
+                value = '<:v_haken:1119579684057907251>'
             else:
-                value = ':x:'
-            embed.add_field(name=item, value=value)
+                value = '<:v_kreuz:1119580775411621908>'
+            if(permissionsCount < 23):
+                embed.add_field(name=item, value=value)
+            elif(permissionsCount <= 23*2):
+                embed2.add_field(name=item, value=value)
 
-        await interaction.response.send_message(embed=embed)
+            permissionsCount += 1
+
+        await interaction.followup.send(embeds=[embed, embed2])
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -540,7 +552,7 @@ class meta(commands.Cog):
         try:
             emoj = discord.PartialEmoji.from_str(emoji)
             if emoj is None:
-                return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch in und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+                return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch in und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)
             embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                 description=f"Hier der Link: {emoj.url}")
             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
@@ -548,7 +560,7 @@ class meta(commands.Cog):
             embed.set_image(url=f"{emoj.url}")
             await interaction.response.send_message(embed=embed)
         except:
-            return await interaction.response.send_message(content="**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch in und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+            return await interaction.response.send_message(content="**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch in und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -556,22 +568,23 @@ class meta(commands.Cog):
     @app_commands.checks.has_permissions(manage_emojis_and_stickers=True)
     async def stealemoji(self, interaction: discord.Interaction, emoji: str, name: str):
         """Erstelle das selbe Emoji, wie es ein anderer Server hat, für deinen Server."""
+        await interaction.response.defer()
         try:
             emoj = discord.PartialEmoji.from_str(emoji)
             if emoj is None:
-                return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)
             async with aiohttp.ClientSession() as session:
                 async with session.get(emoj.url) as response:
                     image_bytes = await response.read()
                     emo = await interaction.guild.create_custom_emoji(name=name, image=image_bytes, reason="stealemoji command")
         except:
-            return await interaction.response.send_message(content="**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale Emojis: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+            return await interaction.followup.send(content="**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)
         embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                 description=f"**Der Emoji {emo} wurde erstellt.**\nName: {name}")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         embed.set_image(url=f"{emoj.url}")
         embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -623,8 +636,9 @@ class meta(commands.Cog):
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 10, key=lambda i: (i.guild_id, i.user.id))
-    async def bestenliste(self, interaction: discord.Interaction, system: typing.Literal["Economy", "Emojiquiz", "Levelsystem", "TicTacToe", "Speedgame", "Votes"]):
+    async def bestenliste(self, interaction: discord.Interaction, system: typing.Literal["Economy", "Emojiquiz", "Flaggenquiz", "Levelsystem", "TicTacToe", "Speedgame", "Votes"]):
         """Bekomme Bestenlisten verschiedenster Funktionen."""
+        await interaction.response.defer()
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 if system == "Economy":
@@ -643,10 +657,10 @@ class meta(commands.Cog):
                                 name = f"Nicht gefunden ({userID})"
                         embed.add_field(name=f"{i}. {name} {name.id}", value=f"Total: {total} 🍪", inline=False)
                         if i == 10:
-                            await interaction.response.send_message(embed=embed)
+                            await interaction.followup.send(embed=embed)
                             break
                     if i != 10:
-                        await interaction.response.send_message(embed=embed)
+                        await interaction.followup.send(embed=embed)
                         
                 if system == "Emojiquiz":
                     await cursor.execute("SELECT anzahl, userID FROM eq_leaderboard ORDER BY anzahl DESC")
@@ -663,10 +677,30 @@ class meta(commands.Cog):
                                 name = f"Nicht gefunden ({userID})"
                         embed.add_field(name=f"{i}. {name}", value=f"Gelöste Quizze: {anzahl}", inline=False)
                         if i == 10:
-                            await interaction.response.send_message(embed=embed)
+                            await interaction.followup.send(embed=embed)
                             break
                     if i != 10:
-                        await interaction.response.send_message(embed=embed)
+                        await interaction.followup.send(embed=embed)
+
+                if system == "Flaggenquiz":
+                    await cursor.execute("SELECT anzahl, userID FROM fq_leaderboard ORDER BY anzahl DESC")
+                    leaderboard = await cursor.fetchall()
+                    
+                    embed = discord.Embed(title="Bestenliste (Flaggenquiz)", color=await getcolour(self, interaction.user))
+                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    for i, pos in enumerate(leaderboard, start=1):
+                        anzahl, userID = pos
+                        name = self.bot.get_user(int(userID))
+                        if name is None:
+                            name = await self.bot.fetch_user(int(userID))
+                            if name is None:
+                                name = f"Nicht gefunden ({userID})"
+                        embed.add_field(name=f"{i}. {name}", value=f"Gelöste Quizze: {anzahl}", inline=False)
+                        if i == 10:
+                            await interaction.followup.send(embed=embed)
+                            break
+                    if i != 10:
+                        await interaction.followup.send(embed=embed)
                     
                 if system == "Levelsystem":
                     await cursor.execute(f"SELECT enabled FROM levelstatus WHERE guild_id = {interaction.guild.id}")
@@ -690,10 +724,10 @@ class meta(commands.Cog):
                         i += 1
                         embed.add_field(name=f"{i}. {name}", value=f"Level {lvl} Erfahrung: {xp}/{xp_end}", inline=False)
                         if i == 10:
-                            await interaction.response.send_message(embed=embed)
+                            await interaction.followup.send(embed=embed)
                             break
                     if i != 10:
-                        await interaction.response.send_message(embed=embed)
+                        await interaction.followup.send(embed=embed)
                 
                 if system == "TicTacToe":
                     await cursor.execute("SELECT wins, loses, ties, userID, rating FROM ttt ORDER BY rating DESC")
@@ -711,10 +745,10 @@ class meta(commands.Cog):
                         rating = (wins * 3) + (loses * -1) + (ties * 2)
                         embed.add_field(name=f"{i}. {name}", value=f"Rating: {rating}", inline=False)    
                         if i == 10:
-                            await interaction.response.send_message(embed=embed)
+                            await interaction.followup.send(embed=embed)
                             break
                     if i != 10:
-                        await interaction.response.send_message(embed=embed)
+                        await interaction.followup.send(embed=embed)
                         
                 if system == "Speedgame":
                     await cursor.execute("SELECT zeit, userID, guildID FROM speedgame ORDER BY zeit ASC")
@@ -731,10 +765,10 @@ class meta(commands.Cog):
                         guild = self.bot.get_guild(int(guildID))
                         embed.add_field(name=f"{i}. {name}", value=f"{zeit}ms {'(' if guild is not None else ''}{guild.name if guild is not None else ''}{')' if guild is not None else ''}", inline=False)
                         if i == 10:
-                            await interaction.response.send_message(embed=embed)
+                            await interaction.followup.send(embed=embed)
                             break
                     if i != 10:
-                        await interaction.response.send_message(embed=embed)
+                        await interaction.followup.send(embed=embed)
                         
                 if system == "Votes":
                     await cursor.execute("SELECT votes, userID FROM topgg ORDER BY votes DESC")
@@ -750,10 +784,10 @@ class meta(commands.Cog):
                                 name = f"Nicht gefunden ({userID})"
                         embed.add_field(name=f"{i}. {name}", value=f"{votes} Votes", inline=False)
                         if i == 10:
-                            await interaction.response.send_message(embed=embed)
+                            await interaction.followup.send(embed=embed)
                             break
                     if i != 10:
-                        await interaction.response.send_message(embed=embed)
+                        await interaction.followup.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_message(self, msg: discord.Message):

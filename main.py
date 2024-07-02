@@ -73,8 +73,28 @@ class reportmsg(discord.ui.View):
         await interaction.response.send_message("**<:v_haken:1119579684057907251> Nutzer wurde verwarnt.**", ephemeral=True)
 
 class MyTree(CommandTree):
-    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+    async def interaction_check(self, interaction: discord.Interaction):
         try:
+            try:
+                async with self.bot.pool.acquire() as connection:
+                    async with connection.cursor() as cursor:
+                        if cursor is None:
+                            try:
+                                loop = asyncio.get_event_loop()
+                                pool = await aiomysql.create_pool(host='127.0.0.1', port=3306, user='vulpo', password='bWJDBfafaakfGfkgfaWKuklfGl67', db='VulpoDB', loop=loop, autocommit=True, maxsize=100)
+                                bot.pool = pool
+                                print(f"✅ Pool erneut erstellt")
+                            except:
+                                print(f"❌ Fehler bei der erneuten Pool Erstellung")
+            except:
+                try:
+                    loop = asyncio.get_event_loop()
+                    pool = await aiomysql.create_pool(host='127.0.0.1', port=3306, user='vulpo', password='bWJDBfafaakfGfkgfaWKuklfGl67', db='VulpoDB', loop=loop, autocommit=True, maxsize=100)
+                    bot.pool = pool
+                    print(f"✅ Pool erneut erstellt")
+                except:
+                    print(f"❌ Fehler bei der erneuten Pool Erstellung")
+
             user = interaction.user
             guild = bot.get_guild(925729625580113951)
             banned_users = [ban async for ban in guild.bans()]
@@ -89,8 +109,9 @@ class MyTree(CommandTree):
                     await interaction.response.send_message(embed=embed, ephemeral=True)
                     return False
             return True
-        except:
-            pass
+        except Exception as e:
+            print(e)
+
 
 class Vulpo(commands.AutoShardedBot):
     def __init__(self):
@@ -192,7 +213,7 @@ class Vulpo(commands.AutoShardedBot):
                 rolle = guild.get_role(1041046601394815127)
                 member = guild.get_member(int(userid))
                 if user:
-                    embed = discord.Embed(title=f"Danke vielmals {user}!", description=f"{user.mention} hat insgesammt {times} Mal gevotet.", colour=discord.Colour.orange())
+                    embed = discord.Embed(title=f"Danke vielmals {user.name}!", description=f"{user.mention} hat insgesammt {times} Mal gevotet.", colour=discord.Colour.orange())
                     embed.set_thumbnail(url=user.avatar)
                     if member:
                         embed.set_footer(text="Durch einen Vote erhältst du 300 Cookies und die Voter Rolle", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508227117289472/herz.png")
@@ -289,7 +310,7 @@ class Vulpo(commands.AutoShardedBot):
     async def setup_hook(self):
         try:
             loop = asyncio.get_event_loop()
-            pool = await aiomysql.create_pool(host='157.90.72.7', port=3306, user='databaseAdmin', password='OkUyBflP3l3i8ax$*A4', db='VulpoDB', loop=loop, autocommit=True, maxsize=100)
+            pool = await aiomysql.create_pool(host='127.0.0.1', port=3306, user='vulpo', password='bWJDBfafaakfGfkgfaWKuklfGl67', db='VulpoDB', loop=loop, autocommit=True, maxsize=500)
             bot.pool = pool
             print(f"✅ Pool erstellt")
         except:
@@ -309,14 +330,15 @@ class Vulpo(commands.AutoShardedBot):
                         await cursor.execute("SELECT endtime, msgID FROM gewinnspiele WHERE status = (%s)", ("Aktiv"))
                         result = await cursor.fetchall()
                         if str(result) == "()":
-                            return print(f"✅ Asyncio tasks für Giveaways bereit(0)")
-                        a = 0
-                        for i in result:
-                            time_to_convert = int(i[0])
-                            time_converted = datetime.datetime.fromtimestamp(int(time_to_convert))
-                            a += 1
-                            asyncio.create_task(giveaway_end(time_converted, bot, int(i[1])))
-                        print(f"✅ Asyncio tasks für Giveaways bereit({a})")
+                            print(f"✅ Asyncio tasks für Giveaways bereit(0)")
+                        else:
+                            a = 0
+                            for i in result:
+                                time_to_convert = int(i[0])
+                                time_converted = datetime.datetime.fromtimestamp(int(time_to_convert))
+                                a += 1
+                                asyncio.create_task(giveaway_end(time_converted, bot, int(i[1])))
+                            print(f"✅ Asyncio tasks für Giveaways bereit({a})")
                 except Exception as e:
                     print(f"❌ Asyncio tasks für Giveaways nicht bereit\n\n{e}")
                     
@@ -444,8 +466,8 @@ async def on_app_command_error(interaction: discord.Interaction, error: AppComma
         return
     else:
         await send_error("Unbekannt", "<:v_kreuz:1119580775411621908> Ein unbekannter Fehler ist aufgetreten.\nBitte öffne ein Ticket im [Supportserver](https://discord.gg/49jD3VXksp)", interaction)
-        guilds = bot.get_guild(925729625580113951)
-        channels = guilds.get_channel(925732898634600458)
+        guilds = bot.get_guild(787341728716816424)
+        channels = guilds.get_channel(1220037646408089600)
 
         traceback_string = traceback.format_exception(type(error), error, error.__traceback__)
 

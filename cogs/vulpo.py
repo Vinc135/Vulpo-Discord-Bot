@@ -12,7 +12,7 @@ from info import discord_timestamp
 from info import getcolour
 
 class Dropdown(discord.ui.Select):
-    def __init__(self, user, farbe):
+    def __init__(self, user, farbe, bot):
         selectOptions = [
             discord.SelectOption(label="Premium", emoji="<:v_ticket:1119584819597279242>"),
             discord.SelectOption(label="Information", emoji="<:v_info:1119579853092552715>"),
@@ -29,19 +29,19 @@ class Dropdown(discord.ui.Select):
             discord.SelectOption(label="Minispiele", emoji="<:v_spiel:1119583527919435796>")
         ]
         super().__init__(placeholder="Wähle eine Seite", min_values=1, max_values=1, options=selectOptions, custom_id="Dropdown-Help")
+        self.bot = bot
         self.user = user
         self.farbe = farbe
     async def callback(self, interaction: discord.Interaction):
-        if self.user.id != interaction.user.id:
-            return await interaction.response.defer(thinking=False, ephemeral=True)
+        await interaction.response.defer()
         
         if self.values[0] == "Premium":
             anzeige = """
-> <:v_info:1119579853092552715> Spezielle Befehle und Funtkionen, nur für Premium Nutzer.
+> <:v_info:1119579853092552715> Spezielle Befehle und Funkt/helpionen, nur für Premium Nutzer.
 
 __<:v_user:1119585450923929672> User Befehle__
-`/premium embedfarbe` Ändere die Farbe aller Embeds, die dir gesendet werden von Vulpo.
-`/premium rangkarte` Ändere das Bild deiner Rangkarte.
+</premium embedfarbe:1220399538943168523> Ändere die Farbe aller Embeds, die dir gesendet werden von Vulpo.
+</premium rangkarte:1220399538943168523> Ändere das Bild deiner Rangkarte.
 
 __<:v_ticket:1119584819597279242> Premium erhalten__
 Es sind noch sehr viel mehr Funktionen in Premium enthalten. Du kannst alle Vorteile unter https://vulpo-bot.de/premium sehen.
@@ -49,24 +49,24 @@ Premium ist heiß begehrt. Du kannst es bekommen, indem du ein Abonnement wirst:
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
-            return await interaction.response.edit_message(embed=embed)
+            return await interaction.edit_original_response(embed=embed)
         if self.values[0] == "Stats":
             anzeige = """
 > <:v_info:1119579853092552715> Vulpos Stats System basiert auf Tracking von Mitgliedern, wie aktiv sie in Text- und Sprachkanälen sind.
 
 __<:v_user:1119585450923929672> User Befehle__
-`/stats anzeigen` Zeigt Stats für Member und Kanäle.
-`/stats top` Lass dir die besten Stats dieses Servers anzeigen.
-`/stats lookback` Zeigt Stats für Member und Kanäle von einem bestimmten Zeitraum.
+</stats anzeigen:1220399540302118925> Zeigt Stats für Member und Kanäle.
+</stats top:1220399540302118925> Lass dir die besten Stats dieses Servers anzeigen.
+</stats lookback:1220399540302118925> Zeigt Stats für Member und Kanäle von einem bestimmten Zeitraum.
 
 __<:v_einstellungen:1119578559086874636> Team Befehle__
-`/stats blacklist` Setze Kanäle auf die Blacklist für Nachrichten.
-`/stats reset` Setze alle Stats auf 0 zurück.
-`/statschannel` Richte einen Stats-Kanal ein."""
+</stats blacklist:1220399540302118925> Setze Kanäle auf die Blacklist für Nachrichten.
+</stats reset:1220399540302118925> Setze alle Stats auf 0 zurück.
+</statschannel:1220399540302118926> Richte einen Stats-Kanal ein."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
-            return await interaction.response.edit_message(embed=embed)
+            return await interaction.edit_original_response(embed=embed)
         if self.values[0] == "Auto Moderation":
             anzeige = """
 > <:v_info:1119579853092552715> Dieses System ermöglicht dir automatische Handlungen gegen Nutzer, die eine bestimmte Warnanzahl erreicht haben. Warns können manuell und automatisch, über z.B.: Blacklist, verteilt werden.
@@ -75,26 +75,26 @@ __<:v_user:1119585450923929672> User Befehle__
 Keine User Befehle.
 
 __<:v_einstellungen:1119578559086874636> Team Befehle__
-`/warn` Warne einen User.
-`/unwarn` Entferne eine Warnung eines Users.
-`/listwarn` Zeigt wie viele Warnungen ein User hat.
+</warn:1220399539203211429> Warne einen User.
+</unwarn:1220399539203211430> Entferne eine Warnung eines Users.
+</listwarns:1220399539203211431> Zeigt wie viele Warnungen ein User hat.
 
-`/modlog` Richte einen Moderationlog ein.
-`/messagelog` Richte einen MessageLog ein.
+</modlog:1220399539203211426> Richte einen Moderationlog ein.
+</messagelog:1220399539203211425> Richte einen MessageLog ein.
 
-`/automod addaction` Füge hinzu Automod-Aktionen hinzu.
-`/automod removeaction` Entferne Automod-Aktionen.
-`/automod liste` Lass dir alle Automod-Aktionen anzeigen.
-`/automod caps` Füge einen Caps Filter hinzu.
-`/automod spam` Füge einen Spam Filter hinzu.
+</automod addaction:1220399539203211428> Füge eine Aktion für die Automatische Moderation hinzu.
+</automod removeaction:1220399539203211428> Entferne eine Aktion von der Automatischen Moderation.
+</automod liste:1220399539203211428> Lass dir alle Automod-Aktionen anzeigen.
+</automod caps:1220399539203211428> Füge einen Caps Filter hinzu.
+</automod spam:1220399539203211428> Füge einen Spam Filter hinzu.
 
-`/blacklist show` Zeigt alle Wörter auf der Blacklist an.
-`/blacklist add` Füge ein Wort der Blacklist hinzu.
-`/blacklist remove` Entferne ein Wort von der Blacklist."""
+</blacklist show:1220399539203211432> Zeigt alle Wörter auf der Blacklist an.
+</blacklist add:1220399539203211432> Füge ein Wort der Blacklist hinzu.
+</blacklist remove:1220399539203211432> Entferne ein Wort von der Blacklist."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
-            return await interaction.response.edit_message(embed=embed)
+            return await interaction.edit_original_response(embed=embed)
         if self.values[0] == "Ticketsystem":
             anzeige = """
 > <:v_info:1119579853092552715> Dieses Ticketsystem hat nur zwei Befehle. Cool oder? Alle Handlungen im Ticket werden durch Buttons gemanaged: öffnen, claimen, schließen, neu öffnen, löschen.
@@ -103,12 +103,12 @@ __<:v_user:1119585450923929672> User Befehle__
 Keine User Befehle.
 
 __<:v_einstellungen:1119578559086874636> Team Befehle__
-`/createpanel` Erstelle ein Panel, womit User ein Ticket öffnen können.
-`/ticketlog` Richte einen Ticketlog ein."""
+</createpanel:1220399538943168524> Erstelle ein Panel, womit User ein Ticket öffnen können.
+</ticketlog:1220399539203211427> Richte einen Ticketlog ein."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
-            return await interaction.response.edit_message(embed=embed)
+            return await interaction.edit_original_response(embed=embed)
         if self.values[0] == "Nachrichten":
             anzeige = """
 > <:v_info:1119579853092552715> Die Kategorie Nachrichten beschreibt Befehle, mit denen du auf bestimmte Nachrichten reagieren kannst. Automatisch und manuell. z.B.: automatische Reaktionen
@@ -117,18 +117,18 @@ __<:v_user:1119585450923929672> User Befehle__
 Keine User Befehle.
 
 __<:v_einstellungen:1119578559086874636> Team Befehle__
-`/joinmsg` Lege eine Nachricht fest, wenn jemand joint.
-`/testjoin` Überprüfe die Join Nachricht.
-`/leavemsg` Lege eine Leave Nachricht fest.
-`/testleave` Überprüfe die Leave Nachricht.
-`/autoreact add` Richte Auto Reaktionen in Channels ein.
-`/autoreact delete` Entferne automatische Reaktionen von Kanälen.
-`/autoreact liste` Lass dir alle automatischen Reaktionen anzeigen.
-`/embed` Mache eine eine eingebettete Nachricht.
-`/tag add` Erstelle einen Tag.
-`/tag delete` Entferne einen Tag.
-`/tag liste` Lass dir alle Tags anzeigen.
-`/reportlog` Lege einen Kanal fest für gemeldete Nachrichten von Usern.
+</joinmsg:1220399538519412834> Lege eine Nachricht fest, wenn jemand joint.
+</testjoin:1220399538519412833> Überprüfe die Join Nachricht.
+</leavemsg:1220399538943168522> Lege eine Leave Nachricht fest.
+</testleave:1220399538519412836> Überprüfe die Leave Nachricht.
+</autoreact add:1220399539505074308> Richte Auto Reaktionen in Channels ein.
+</autoreact delete:1220399539505074308> Entferne automatische Reaktionen von Kanälen.
+</autoreact liste:1220399539505074308> Lass dir alle automatischen Reaktionen anzeigen.
+</embed:1220399538066554971> Mache eine eine eingebettete Nachricht.
+</tag add:1220399540742393927> Erstelle einen Tag.
+</tag delete:1220399540742393927> Entferne einen Tag.
+</tag liste:1220399540742393927> Lass dir alle Tags anzeigen.
+</reportlog:1220399538943168531> Lege einen Kanal fest für gemeldete Nachrichten von Usern.
 
 Außerdem:
 Jeder Nutzer kann die Custom Befehle des Tags System nutzen. Wenn erstmal ein Tag erstellt wurde kann jeder User ihn mit `!tag tagname` ausführen.
@@ -137,57 +137,56 @@ Jeder Nutzer kann die Custom Befehle des Tags System nutzen. Wenn erstmal ein Ta
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
-            return await interaction.response.edit_message(embed=embed)
+            return await interaction.edit_original_response(embed=embed)
         if self.values[0] == "Information":
             anzeige = """
 > <:v_info:1119579853092552715> Hier stehen Befehle, die hauptsächlich Informationen ausgeben oder nützlich sind.
 
 __<:v_user:1119585450923929672> User Befehle__
-`/about` Infos über Vulpo.
-`/help` Alle wichtigen Links und Befehle.
-`/invite` Link, um Vulpo einzuladen.
-`/support` Zeigt einen Link für den Support-Server.
-`/vote` Zeigt an, wann du wieder für Vulpo voten kannst.
-`/info server` Infos zum Server.
-`/servericon` Zeigt das Server Profilbild.
-`/info member` Infos zu einem Member.
-`/info role` Infos zu einer Rolle.
-`/info channel` Infos zu einem Channel.
-`/permissions` Listet alle Berechtigungen von jemandem auf.
-`/ping`  Zeigt den Ping.
-`/umfrage` Erstelle eine Umfrage.
-`/mostvoted` Bekomme eine Liste von den 10 Usern, die am öftesten gevotet haben.
-`/random` Erhalte eine random Zahl von deinen ausgewählten Zahlen.
-`/translate` Übersetze einen Text in mehrere Sprachen.
-`/bestenliste` Erhalte Bestenlisten verschiedenster Funktionen.
-`/invites` Zeigt die Einladungen eines Users.
+</about:1220399539958190158> Infos über Vulpo.
+</help:1220399539958190156> Alle wichtigen Links und Befehle.
+</invite:1220399539958190159> Link, um Vulpo einzuladen.
+</support:1220399540302118922> Zeigt einen Link für den Support-Server.
+</vote:1220399539958190157> Zeigt an, wann du wieder für Vulpo voten kannst.
+</info server:1220399538066554976> Infos zum Server.
+</servericon:1220399538066554977> Zeigt das Server Profilbild.
+</info member:1220399538066554976> Infos zu einem Member.
+</info rolle:1220399538066554976> Infos zu einer Rolle.
+</info kanal:1220399538066554976> Infos zu einem Channel.
+</permissions:1220399538066554979> Listet alle Berechtigungen von jemandem auf.
+</ping:1220399540302118923>  Zeigt den Ping.
+</umfrage:1220399538066554975> Erstelle eine Umfrage.
+</random:1220399538519412829> Erhalte eine random Zahl von deinen ausgewählten Zahlen.
+</translate:1220399538519412830> Übersetze einen Text in mehrere Sprachen.
+</bestenliste:1220399538519412831> Erhalte Bestenlisten verschiedenster Funktionen.
+</invites:1220399538066554972> Zeigt die Einladungen eines Users.
 
 __<:v_einstellungen:1119578559086874636> Team Befehle__
 Keine Team Befehle."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
-            return await interaction.response.edit_message(embed=embed)
+            return await interaction.edit_original_response(embed=embed)
         if self.values[0] == "Settings & Setup":
             anzeige = """
 > <:v_info:1119579853092552715> Diese Kategorie bietet dir Einstellungen für deinen Server wie Joinrollen und Tags. Außerdem findest du dort nützliche Befehle für dich selbst.
 
 __<:v_user:1119585450923929672> User Befehle__
-`/erinnerung erstellen` Erstelle dir eine Erinnerung für eine bestimmte Uhrzeit.
-`/erinnerung löschen` Entfernt eine Erinnerung.
-`/erinnerung anzeigen` Bekomme eine Liste von deinen Erinnerungen.
-`/afk` Setze dich AFK.
-`/starboard` - Lege einen Kanal fest für Nachrichten mit 5 Sternen von Usern.
+</erinnerung erstellen:1220399539203211434> Erstelle dir eine Erinnerung für eine bestimmte Uhrzeit.
+</erinnerung löschen:1220399539203211434> Entfernt eine Erinnerung.
+</erinnerung anzeigen:1220399539203211434> Bekomme eine Liste von deinen Erinnerungen.
+</afk:1220399540302118927> Setze dich AFK.
+</starboard:1220399540302118924> - Lege einen Kanal fest für Nachrichten mit 5 Sternen von Usern.
 
 __<:v_einstellungen:1119578559086874636> Team Befehle__
-`/joinrole` Lege eine Joinrolle fest.
-`/botrole` Lege eine Botrolle fest.
-`/voicesetup` Erstelle einen "Join to Create" Kanal.
-`/reactionrole` Erstelle Reaktionsrollen."""
+</joinrole:1220399539958190154> Lege eine Joinrolle fest.
+</botrole:1220399539958190155> Lege eine Botrolle fest.
+</voicesetup:1220399540302118929> Erstelle einen "Join to Create" Kanal.
+</reactionrole:1220399539203211433> Erstelle Reaktionsrollen."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
-            return await interaction.response.edit_message(embed=embed)
+            return await interaction.edit_original_response(embed=embed)
         if self.values[0] == "Basic Moderation":
             anzeige = """
 > <:v_info:1119579853092552715> Dies sind Befehle, die eigentlich jeder Bot hat. Einfache Moderation per Slash Befehle.
@@ -196,37 +195,40 @@ __<:v_user:1119585450923929672> User Befehle__
 Keine User Befehle.
 
 __<:v_einstellungen:1119578559086874636> Team Befehle__
-`/kick` Kicke einen User.
-`/ban` Banne einen User.
-`/unban` Entbanne einen User.
-`/banlist` Zeigt dir eine Liste, die Gebannt wurden.
-`/clear channel` Lösche Nachrichten in einem Channel.
-`/clear between` Lösche alle Nachrichten zwischen zwei Nachrichten eines Kanals.
+</kick:1220399537743597593> Kicke einen User.
+</ban:1220399537743597594> Banne einen User.
+</unban:1220399537743597595> Entbanne einen User.
+</banlist:1220399537743597596> Zeigt dir eine Liste, die Gebannt wurden.
+</clear channel:1220399537743597597> Lösche Nachrichten in einem Channel.
+</clear between:1220399537743597597> Lösche alle Nachrichten zwischen zwei Nachrichten eines Kanals.
 
 ❓ Du suchst nach Verwarnungs Befehlen? Guck mal in der Kategorie Auto Moderation nach! ;)"""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
-            return await interaction.response.edit_message(embed=embed)
+            return await interaction.edit_original_response(embed=embed)
         if self.values[0] == "Levelsystem":
             anzeige = """
 > <:v_info:1119579853092552715> Das Levelsystem vonn Vulpo ist umfassend. Coole Rangnachrichten und viele Einstellungsmöglichkeiten für Moderatoren.
 
 __<:v_user:1119585450923929672> User Befehle__
-`/rank` Zeigt dir welches Level du bist.
+</rang:1220399538943168527> Zeigt dir welches Level du bist.
 
 __<:v_einstellungen:1119578559086874636> Team Befehle__
-`/levelsystem status` Zeigt, ob das Levelystem aktiviert/deaktiviert ist.
-`/levelsystem role add/delete/list` Richte Rollen ein die beim Erreichen eines bestimmten Levels automatisch gegeben werden soll.
-`/levelystem levelupmessage` Richte eine Levelup Nachricht ein.
-`/levelsystem Levelupkanal` Richte ein, in welchem Kanal die Levelup Nachricht geschickt werden soll.
-`/levelsystem block channel/rolle` Richte Channels/Rollen ein, die keine Level sammeln können.
-`/setlevel` Setze einen User zu einem bestimmten Level.
-`/xpboost` Starte einen XP Boost auf deinem Server."""
+</levelsystem status:1220399538943168526> Zeigt, ob das Levelystem aktiviert/deaktiviert ist.
+</levelsystem role add:1220399538943168526> Setzte eine neue Levelrolle.
+</levelsystem role delete:1220399538943168526> Entferne eine Levelrolle.
+</levelsystem role list:1220399538943168526> Liste von allen Levelrollen in diesem Server.
+</levelsystem levelupmessage:1220399538943168526> Richte eine Levelup Nachricht ein.
+</levelsystem levelupkanal:1220399538943168526> Richte ein, in welchem Kanal die Levelup Nachricht geschickt werden soll.
+</levelsystem block channel:1220399538943168526> Entferne einen Kanal vom Levelsystem
+</levelsystem block rolle:1220399538943168526> Entferne eine Rolle vom Levelsystem
+</setlevel:1220399538943168528> Setze einen User zu einem bestimmten Level.
+</xpboost:1220399538943168529> Starte einen XP Boost auf deinem Server."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
-            return await interaction.response.edit_message(embed=embed)
+            return await interaction.edit_original_response(embed=embed)
         if self.values[0] == "Giveaway":
             anzeige = """
 > <:v_info:1119579853092552715> Hinter dem Giveaway System steckt mehr als du denkst. Nicht nur Starten und blacklist, bypassrollen und verwalten. Die Gewinnspiele enden sogar nicht bei Bot Neustart, sondern laufen normal bis zum Ende weiter.
@@ -236,105 +238,107 @@ __<:v_user:1119585450923929672> User Befehle__
 Keine User Befehle.
 
 __<:v_einstellungen:1119578559086874636> Team Befehle__
-`/gewinnspiel starten` Starte ein neues Gewinnspiel.
-`/gewinnspiel verwalten` Verwalte Gewinnspiele. 
-`/gewinnspiel bypassrolle` Bearbeite Rollen, die die Bedingungen umgehen. 
-`/gewinnspiel blacklist` Setze Member und Rollen auf die Blacklist."""
+</gewinnspiel starten:1220399540742393926> Starte ein neues Gewinnspiel.
+</gewinnspiel verwalten:1220399540742393926> Verwalte Gewinnspiele. 
+</gewinnspiel bypassrolle:1220399540742393926> Bearbeite Rollen, die die Bedingungen umgehen. 
+</gewinnspiel blockieren:1220399540742393926> Setze Member und Rollen auf die Blacklist."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
-            return await interaction.response.edit_message(embed=embed)
+            return await interaction.edit_original_response(embed=embed)
         if self.values[0] == "Fun":
             anzeige = """
 > <:v_info:1119579853092552715> Schon lange nicht mehr gelacht xD? Dann wird es mal Zeit. Denn mit diesen Befehlen wirst du zu 99% lachen!
 
 __<:v_user:1119585450923929672> User Befehle__
-`/ask` Frage eine berühmte Person eine Frage
-`/avatar` Zeigt das Profilbild eines Users an
-`/animal` Schicke ein zufälliges Bild eines bestimmten Tieres.
-`/color` Bekomme eine zufällige Farbe
-`/emojiurl` Bekomme das URL eines Emojis
-`/games` Zeigt alle Spiele an, die grade gespielt werden
-`/regenbogen` Sendet dein Profilbild mit einem Regenbogen Filter.
-`/iq` Zeigt das IQ von einem User an.
-`/lostrate` Zeigt wie lost ein User ist.
-`/los` Ziehe ein Rubbellos.
-`/love` Finde heraus wie verliebt zwei User sind
-`/meme` Bekomme ein zufälliges Meme.
-`/password` Generiert ein zufälliges Passwort für dich.
-`/pix` Verpixelt ein Profilbild eines Users.
-`/tictactoe start/stats` Spiele tictacoe mit jemanden und sieh dir deine Tik Tak Toe Stats an.
-`/triggered` Zeigt, dass du getriggered bist.
-`/wanted` Erstellt ein "Gesucht" Plakat mit dem Profilbild eines Users.
-`/wasted` Sendet ein Profilbild mit Effekten.
-`/wetter` Zeigt das Wetter eines bestimmten Orts.
-`/stealemoji` Stiehlt ein emoji von einem Server.
+</ask:1220399540742393931> Frage eine berühmte Person eine Frage
+</avatar:1220399538066554973> Zeigt das Profilbild eines Users an
+</animal:1220399537743597590> Schicke ein zufälliges Bild eines bestimmten Tieres.
+</emojiurl:1220399538519412827> Bekomme das URL eines filename
+</games:1220399540742393934> Zeigt alle Spiele an, die grade gespielt werden
+</iq:1220399540742393930> Zeigt das IQ von einem User an.
+</lostrate:1220399540742393929> Zeigt wie lost ein User ist.
+</los:1220399540742393933> Ziehe ein Ticket und reibe es auf, indem du auf die schwarzen Blöcke tippst.
+</love:1220399540742393932> Finde heraus wie verliebt zwei User sind
+</meme:1220399537743597591> Bekomme ein zufälliges Meme.
+</password:1220399540742393935> Generiert ein zufälliges Passwort für dich.
+</pix:1220399537743597589> Verpixelt ein Profilbild eines Users.
+</tictactoe start:1220399538066554970> Spiele mit jemanden tictactoe.
+</tictactoe stats:1220399538066554970> Spiele tictacoe mit jemanden und sieh dir deine Tik Tak Toe Stats an.
+</wanted:1220399537743597588> Erstellt ein "Gesucht" Plakat mit dem Profilbild eines Users.
+</wetter:1220399538066554978> Zeigt das Wetter eines bestimmten Orts.
+</stealemoji:1220399538519412828> Stiehlt ein emoji von einem Server.
 
 __<:v_einstellungen:1119578559086874636> Team Befehle__
 Keine Team Befehle."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
-            return await interaction.response.edit_message(embed=embed)
+            return await interaction.edit_original_response(embed=embed)
         if self.values[0] == "Minispiele":
             anzeige = """
 > <:v_info:1119579853092552715> Du langweilst dich? Dann probier mal diese Spiele aus. Sie werden dir die Langeweile vertreiben!
 
 __<:v_user:1119585450923929672> User Befehle__
-`/speedgame` Teste deine Schnelligkeit und steige Ränge auf.
+</speedgame profil:1220399538519412832> Zeigt deine Bestzeit
+</speedgame start:1220399538519412832> Teste deine Schnelligkeit und steige im Rang auf
 
 __<:v_einstellungen:1119578559086874636> Team Befehle__
 `/emojiquiz` Verwalte das Emojiquiz deines Servers.
-`/counting set` Richte den Zählkanal ein.
-`/counting zahl` Stelle die aktuelle Zahl des Counting Kanals ein.
-`/counting disable` Deaktiviere das Minispiel.
-`/guessthenumber` Verwalte das Minispiel 'Guess the number' auf deinem Server."""
+</counting set:1220399538943168530> Richte den Zählkanal ein.
+</counting zahl:1220399538943168530> Stelle die aktuelle Zahl des Counting Kanals ein.
+</counting disable:1220399538943168530> Deaktiviere das Minispiel.
+</guessthenumber:1220399540302118930> Verwalte das Minispiel 'Guess the number' auf deinem Server."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
-            return await interaction.response.edit_message(embed=embed)
+            return await interaction.edit_original_response(embed=embed)
         if self.values[0] == "Economy":
             anzeige = """
 > <:v_info:1119579853092552715> Das globale Wirtschaftssystem von Vulpo bietet viel Spaß und Strategie. Messe dich mit anderen und steige in der Berufsleiter nach oben auf!
 
 __<:v_user:1119585450923929672> User Befehle__
-`/cookies anzeigen` Öffne das Profil eines Users.
-`/cookies abheben` Hebe Geld von der Bank ab.
-`/cookies einzahlen` Überweise Geld auf die Bank.
+</cookies anzeigen:1220399539505074309> Öffne das Profil eines Users.
+</cookies abheben:1220399539505074309> Hebe Geld von der Bank ab.
+</cookies einzahlen:1220399539505074309> Überweise Geld auf die Bank.
 
-`/daily` Hole tägliche Cookies ab.
-`/work` Gehe Arbeiten.
-`/beg` gehe betteln.
-`/send` Gebe einem User Cookies.
-`/rob` Raube einen User aus.
-`/rps` Spiele Schere, Stein, Papier um Cookies.
-`/slot` Spiele Casino.
+</daily:1220399539505074311> Hole tägliche Cookies ab.
+</work:1220399539505074312> Gehe Arbeiten.
+</beg:1220399539505074310> Bettle für Münzen.
+</send:1220399539505074313> Gebe einem User Cookies.
+</rob:1220399539505074314> Raube einen User aus.
+</rps:1220399539958190150> Spiele Schere, Stein, Papier um Cookies.
+</slot:1220399539505074315> Spiele Casino.
 
 **Job System**
-`/job apply` Bewerbe dich für einen Job.
-`/job quit` Verlasse deinen Job.
-`/job list` Zeigt dir eine Liste aller Jobs.
+</job apply:1220399539958190151> Bewerbe dich für einen Job.
+</job quit:1220399539958190151> Verlasse deinen Job.
+</job list:1220399539958190151> Zeigt dir eine Liste aller Jobs.
 
 
 **Shop System**
-`/shop anzeigen` Zeigt dir alle Items im Shop.
-`/shop item kaufen` Kaufe ein Item aus dem Shop.
-`/shop item verkaufen` Verkaufe ein Item aus deinem Rucksack. Du bekommst zufällige Prozente des Kaufpreises wieder. Prozente im Bereich von 65% bis 115%
-`/shop item meine` Zeigt alle deine gekauften Items vom Shop.
+</shop anzeigen:1220399539958190152> Zeigt dir alle Items im Shop.
+</shop item kaufen:1220399539958190152> Kaufe ein Item aus dem Shop.
+</shop item verkaufen:1220399539958190152> Verkaufe ein Item aus deinem Rucksack. Du bekommst zufällige Prozente des Kaufpreises wieder. Prozente im Bereich von 65% bis 115%
+</shop item meine:1220399539958190152> Zeigt alle deine gekauften Items vom Shop.
 
 __<:v_einstellungen:1119578559086874636> Team Befehle__
 **Shop System**
-`/shop item hinzufügen` Füge ein Item dem Shop hinzu.
-`/shop item entfernen` Entferne ein Item aus dem Shop."""
+</shop item hinzufügen:1220399539958190152> Füge ein Item dem Shop hinzu.
+</shop item entfernen:1220399539958190152> Entferne ein Item aus dem Shop."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
-            return await interaction.response.edit_message(embed=embed)
+            return await interaction.edit_original_response(embed=embed)
 
 class DropdownView(discord.ui.View):
-    def __init__(self, user, farbe):
+    def __init__(self, user, farbe, bot):
         super().__init__(timeout=None)
-        self.add_item(Dropdown(user, farbe))
+        self.add_item(Dropdown(user, farbe, bot))
+        
+        website = discord.ui.Button(label='Zur Website', style=discord.ButtonStyle.url, url='https://vulpo-bot.de/')
+        
+        self.add_item(website)
 
 class vulpo(commands.Cog):
     def __init__(self, bot):
@@ -344,13 +348,14 @@ class vulpo(commands.Cog):
     
     @commands.Cog.listener()
     async def on_ready(self):
-        self.bot.add_view(DropdownView(None, None))
+        self.bot.add_view(DropdownView(None, None, self.bot))
 
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def help(self, interaction: discord.Interaction):
         """Wichtige Links wie invite, support, vote und viele andere Infos."""
+        await interaction.response.defer(ephemeral=True)
         farbe = await getcolour(self, interaction.user)
         embed = discord.Embed(title="Help Menü", description=f"""
 <:v_info:1119579853092552715> Danke dass du mich benutzt. Hier findest du alle Befehle von mir und wichtige Links.
@@ -380,7 +385,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
         embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         embed.set_author(name="Vulpo", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
         embed.set_thumbnail(url=interaction.guild.icon)
-        await interaction.response.send_message(embed=embed, view=DropdownView(interaction.user, farbe))
+        await interaction.followup.send(embed=embed, view=DropdownView(interaction.user, farbe, self.bot), ephemeral=True)
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -412,7 +417,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def about(self, interaction: discord.Interaction):
         """Zeigt Infos über mich."""
-        bot = interaction.guild.get_member(925799559576322078)
+        bot = await interaction.guild.fetch_member(925799559576322078)
         erstellt1 = math.floor(bot.created_at.timestamp())
         erstellt2 = datetime.fromtimestamp(int(erstellt1))
         
