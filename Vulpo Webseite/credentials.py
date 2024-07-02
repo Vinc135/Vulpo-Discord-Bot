@@ -5,3 +5,4 @@ authorize_url = 'https://discordapp.com/api/v9/oauth2/authorize'
 token_url = 'https://discordapp.com/api/v9/oauth2/token'
 redirect_uri = 'https://vulpo-bot.de/oauth_callback'
 scope = ['identify','guilds']
+token="OTI1Nzk5NTU5NTc2MzIyMDc4.GcwvXN.EkMMDxTqykR8em6L4lJqOouGfvAvH1J1rq9nJQ"

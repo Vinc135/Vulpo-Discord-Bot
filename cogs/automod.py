@@ -76,6 +76,7 @@ class Automod(commands.Cog):
     @app_commands.checks.has_permissions(kick_members=True)
     async def warn(self, interaction: discord.Interaction, user: discord.User, grund: str):
         """Warnt einen Benutzer."""
+        await interaction.response.defer()
         await addwarn(self, user, interaction, grund)
         embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                 description=f"Der Benutzer {user} (**{user.id}**) wurde verwarnt.")
@@ -94,9 +95,9 @@ class Automod(commands.Cog):
         dm.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
         try:
             await user.send(embed=dm)
-            await interaction.response.send_message(embed=embed)
+            await interaction.followup.send(embed=embed)
         except:
-            await interaction.response.send_message(embed=embed)
+            await interaction.followup.send(embed=embed)
         
     @app_commands.command()
     @app_commands.guild_only()
@@ -271,9 +272,9 @@ class Automod(commands.Cog):
                         await cursor.execute("SELECT status FROM spam WHERE guildID = (%s)", (msg.guild.id))
                         result = await cursor.fetchone()
                         if result:
-                            if result[0] == 1:
+                            if result[0] == "1":
                                 time_end = discord.utils.utcnow()
-                                dt = time_end + datetime.timedelta(minutes=1, seconds=7200)
+                                dt = time_end + datetime.timedelta(hours=2)
                                 await msg.author.timeout(dt ,reason="Hat die Spam Grenze von 5 Nachrichten innerhalb 2,5 Sekunden überschritten.")
                                 await msg.channel.send(f"{msg.author.mention} Bitte unterlasse Nachrichten-Spam. Du wurdest verwarnt!")
                                 await addwarn(self, msg.author, msg, f"Hat die Spam Grenze von 5 Nachrichten innerhalb 2,5 Sekunden überschritten.")

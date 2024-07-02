@@ -4,544 +4,380 @@ from info import convert, voicetime_to_xp
 from discord import app_commands
 import typing
 from googletrans import Translator
-import datetime
+from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 import os
 from info import getcolour, haspremium_forserver
+import time
+import mplcyberpunk
+import json
+import math
+import numpy
 
-class StatsKanal(discord.ui.Modal, title="Stats Kanal"):
-    def __init__(self, bot, kanal=None):
-        super().__init__(custom_id="wjfkbuhqefgihgerifuzgqeiufgzu")
-        self.kanal = kanal
-        self.bot = bot
-        self.add_item(discord.ui.TextInput(label="Nachricht", style=discord.TextStyle.paragraph, required=True, placeholder="%usercount | %notoffline | %membercount | %botcount | %online | %dnd | %idle | %offline"))
+async def generateStatsImage(xWerte, yWerteMSG, yWerteTALK):
+    plt.figure(figsize=(7.5, 3.5))
+    plt.style.use("./stats.mplstyle")
+    plt.plot(xWerte, yWerteMSG, marker="o", label="Nachrichten")
+    plt.plot(xWerte, yWerteTALK, marker="o", label="Sprachzeit")
+    mplcyberpunk.make_lines_glow()
+    
+    locs, labels = plt.yticks()
+    dloc = math.ceil(locs[1] - locs[0])
+    dloc_int = int(dloc)
+    new_yticks = numpy.arange(0, locs.max(), dloc_int, dtype=int)
+    plt.yticks(new_yticks)
+    
+    for i, label in enumerate(plt.gca().get_xticklabels()):
+        if i % 2 == 0:
+            label.set_visible(False)
+    
+    labels = ["Nachrichten", "Sprachzeit"]
+    
+    plt.legend(labels, loc="upper center", bbox_to_anchor=(0.5, 1.1))
+    
+    plt.savefig("stats.png", bbox_inches='tight')
+    plt.close()
 
-    async def on_submit(self, interaction: discord.Interaction):
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                if self.kanal == None:
-                    new_channel = await interaction.guild.create_voice_channel(name="[erstellen] circa 10 Minuten")
-                    await cursor.execute("INSERT INTO upstats (guildID, channelID, text) VALUES (%s, %s, %s)", (interaction.guild.id, new_channel.id, self.children[0].value))
-                    return await interaction.response.send_message("**<:v_haken:1119579684057907251> Der Stats Kanal wird nun erstellt. Es dauert bis zu 10 Minuten, bis der Kanal zum ersten Male geupdated wird.**")
-                if self.kanal != None:
-                    await cursor.execute("INSERT INTO upstats (guildID, channelID, text) VALUES (%s, %s, %s)", (interaction.guild.id, self.kanal.id, self.children[0].value))
-                    return await interaction.response.send_message("**<:v_haken:1119579684057907251> Der Stats Kanal wird nun bearbeitet. Es dauert bis zu 10 Minuten, bis der Kanal zum ersten Male geupdated wird.**")
+async def generateServerStatsImage(xWerte, yWerteMSG, yWerteTALK):
+    plt.figure(figsize=(7.5, 3.5))
+    plt.style.use("./stats.mplstyle")
+    plt.plot(xWerte, yWerteMSG, marker="o", label="Nachrichten")
+    plt.plot(xWerte, yWerteTALK, marker="o", label="Sprachzeit")
+    mplcyberpunk.make_lines_glow()
+    
+    locs, labels = plt.yticks()
+    dloc = math.ceil(locs[1] - locs[0])
+    dloc_int = int(dloc)
+    new_yticks = numpy.arange(0, locs.max(), dloc_int, dtype=int)
+    plt.yticks(new_yticks)
+    
+    for i, label in enumerate(plt.gca().get_xticklabels()):
+        if i % 2 == 0:
+            label.set_visible(False)
+    
+    labels = ["Nachrichten", "Sprachzeit"]
+    
+    plt.legend(labels, loc="upper center", bbox_to_anchor=(0.5, 1.1))
+    
+    plt.savefig("ServerStats.png", bbox_inches='tight')
+    plt.close()
 
-async def getuserstats(self, art, member, guild):
-    async with self.bot.pool.acquire() as conn:
+
+    
+async def get_user_data(bot, user_id):
+    user_data = {}
+
+    # Aktuelles Datum und Zeit
+    current_datetime = datetime.now()
+
+    # Letzte 14 Tage
+    last_14_days = current_datetime - timedelta(days=14)
+
+    async with bot.pool.acquire() as conn:
         async with conn.cursor() as cursor:
-            if art == "Textkanal":
-                total1 = 0
-                jahr1 = 0
-                monat1 = 0
-                woche1 = 0
-                tag1 = 0
-                await cursor.execute("SELECT anzahl, zeit FROM nachrichten WHERE guildID = (%s) AND userID = (%s)", (guild.id, member.id))
-                r1 = await cursor.fetchall()
-                if str(r1) != "()":
-                    for datum in r1:
-                        #für nachrichten
-                        #jahr stats
-                        total1 += int(datum[0])
-                        if f".{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
-                            jahr1 += int(datum[0])
-                        #monats stats
-                        if f".{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
-                            monat1 += int(datum[0])
-                        #wochen stats
-                        i = 0
-                        a = 0
-                        while True:
-                            i += 1
-                            if i >= 8:
-                                break
-                            tag = int(discord.utils.utcnow().__format__('%d')) - i
-                            if int(tag) >= 1:
-                                if f"{tag}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
-                                    woche1 += int(datum[0])
-                            else:
-                                letzter_monat = 31 - a
-                                jahr = discord.utils.utcnow().__format__('%Y')
-                                l_m = int(discord.utils.utcnow().__format__('%m')) - 1
-                                if int(discord.utils.utcnow().__format__('%m')) - 1 <= 0:
-                                    l_m = 12
-                                    jahr = int(discord.utils.utcnow().__format__('%Y')) -1
-                                a += 1
-                                if f"{letzter_monat}.{l_m}.{jahr}" in str(datum[1]):
-                                    woche1 += int(datum[0])
-                        #tages stats
-                        if f"{discord.utils.utcnow().__format__('%d')}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
-                            tag1 += int(datum[0])
-                            
-                    liste = [total1, jahr1, monat1, woche1, tag1]
-                    return liste
-                liste = [0, 0, 0, 0, 0]
-                return liste
-            
-            if art == "Sprachkanal":
-                total1 = 0
-                jahr1 = 0
-                monat1 = 0
-                woche1 = 0
-                tag1 = 0
-                await cursor.execute("SELECT anzahl, zeit FROM voice WHERE guildID = (%s) AND userID = (%s)", (guild.id, member.id))
-                r1 = await cursor.fetchall()
-                if str(r1) != "()":
-                    for datum in r1:
-                        #für nachrichten
-                        #jahr stats
-                        total1 += int(datum[0])
-                        if f".{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
-                            jahr1 += int(datum[0])
-                        #monats stats
-                        if f".{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
-                            monat1 += int(datum[0])
-                        #wochen stats
-                        i = 0
-                        a = 0
-                        while True:
-                            i += 1
-                            if i >= 8:
-                                break
-                            tag = int(discord.utils.utcnow().__format__('%d')) - i
-                            if int(tag) >= 1:
-                                if f"{tag}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
-                                    woche1 += int(datum[0])
-                            else:
-                                letzter_monat = 31 - a
-                                jahr = discord.utils.utcnow().__format__('%Y')
-                                l_m = int(discord.utils.utcnow().__format__('%m')) - 1
-                                if int(discord.utils.utcnow().__format__('%m')) - 1 <= 0:
-                                    l_m = 12
-                                    jahr = int(discord.utils.utcnow().__format__('%Y')) -1
-                                a += 1
-                                if f"{letzter_monat}.{l_m}.{jahr}" in str(datum[1]):
-                                    woche1 += int(datum[0])
-                        #tages stats
-                        if f"{discord.utils.utcnow().__format__('%d')}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
-                            tag1 += int(datum[0])
-                            
-                    liste = [total1, jahr1, monat1, woche1, tag1]
-                    return liste
-                liste = [0, 0, 0, 0, 0]
-                return liste
+            # Anzahl der Nachrichten des Benutzers in den letzten 14 Tagen abrufen
+            await cursor.execute("SELECT COUNT(*) FROM nachrichten WHERE userID = %s AND datum >= %s", (user_id, last_14_days))
+            message_count_last_14_days = await cursor.fetchone()
+            user_data['message_count_last_14_days'] = message_count_last_14_days[0] if message_count_last_14_days else 0
 
-async def getuserslb(self, art, user, guild):
-    async with self.bot.pool.acquire() as conn:
+            # Rang des Benutzers auf jedem Server basierend auf der Anzahl der Nachrichten in den letzten 14 Tagen abrufen
+            await cursor.execute("SELECT guildID, COUNT(*) AS message_count FROM nachrichten WHERE userID = %s AND datum >= %s GROUP BY guildID ORDER BY message_count DESC", (user_id, last_14_days))
+            server_ranks = await cursor.fetchall()
+
+            user_server_ranks = {}
+            for idx, rank in enumerate(server_ranks, start=1):
+                user_server_ranks[rank['guildID']] = idx
+
+            user_data['server_ranks_last_14_days'] = user_server_ranks
+
+    return user_data
+
+
+async def bild_server_stats(bot, guild_id):
+    async with bot.pool.acquire() as conn:
         async with conn.cursor() as cursor:
-            if art == "Textkanal":
-                await cursor.execute("SELECT channelID, anzahl FROM nachrichten WHERE guildID = (%s) AND userID = (%s)", (guild.id, user.id))
-                result = await cursor.fetchall()
-                if str(result) != "()":
-                    leaderboard = {}
-                    for data in result:
-                        channel = guild.get_channel(int(data[0]))
-                        if channel != None:
-                            try:
-                                leaderboard[int(data[0])] += int(data[1])
-                            except:
-                                leaderboard[int(data[0])] = int(data[1])
-                                
-                    s_l = sorted(leaderboard.items(), key=lambda kv: kv[1], reverse=True)
-                    return s_l
-                return None
+            stats = []
+            daten = []
+            all_messages = {}
+            statsvoice = []
+
+            for i in range(14):
+                tag = (datetime.now() - timedelta(days=13-i)).strftime('%Y-%m-%d')
+                tag_voice = (datetime.now() - timedelta(days=i)).strftime('%d.%m.%Y')
+
+                tag_format = (datetime.now() - timedelta(days=13-i)).strftime('%d.%m')
+                daten.append(tag_format)
+                
+                await cursor.execute("SELECT daten FROM nachrichten WHERE guildID = %s AND datum = %s", (guild_id, tag))
+                json_data_raw = await cursor.fetchone()
+                if json_data_raw is None:
+                    all_messages[tag] = 0
+                else:
+                    json_data = json.loads(json_data_raw[0])
                     
-            if art == "Sprachkanal":
-                await cursor.execute("SELECT channelID, anzahl FROM voice WHERE guildID = (%s) AND userID = (%s)", (guild.id, user.id))
-                result = await cursor.fetchall()
-                if str(result) != "()":
-                    leaderboard = {}
-                    for data in result:
-                        channel = guild.get_channel(int(data[0]))
-                        if channel != None:
-                            try:
-                                leaderboard[int(data[0])] += int(data[1])
-                            except:
-                                leaderboard[int(data[0])] = int(data[1])
-                    s_l = sorted(leaderboard.items(), key=lambda kv: kv[1], reverse=True)
-                    return s_l
-                return None
-
-async def getchannelstats(self, art, channel, guild):
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            if art == "Textkanal":
-                total1 = 0
-                jahr1 = 0
-                monat1 = 0
-                woche1 = 0
-                tag1 = 0
-                await cursor.execute("SELECT anzahl, zeit FROM nachrichten WHERE guildID = (%s) AND channelID = (%s)", (guild.id, channel.id))
-                r1 = await cursor.fetchall()
-                if str(r1) != "()":
-                    for datum in r1:
-                        #für nachrichten
-                        #jahr stats
-                        total1 += int(datum[0])
-                        if f".{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
-                            jahr1 += int(datum[0])
-                        #monats stats
-                        if f".{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
-                            monat1 += int(datum[0])
-                        #wochen stats
-                        i = 0
-                        a = 0
-                        while True:
-                            i += 1
-                            if i >= 8:
-                                break
-                            tag = int(discord.utils.utcnow().__format__('%d')) - i
-                            if int(tag) >= 1:
-                                if f"{tag}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
-                                    woche1 += int(datum[0])
-                            else:
-                                letzter_monat = 31 - a
-                                jahr = discord.utils.utcnow().__format__('%Y')
-                                l_m = int(discord.utils.utcnow().__format__('%m')) - 1
-                                if int(discord.utils.utcnow().__format__('%m')) - 1 <= 0:
-                                    l_m = 12
-                                    jahr = int(discord.utils.utcnow().__format__('%Y')) -1
-                                a += 1
-                                if f"{letzter_monat}.{l_m}.{jahr}" in str(datum[1]):
-                                    woche1 += int(datum[0])
-                        #tages stats
-                        if f"{discord.utils.utcnow().__format__('%d')}." in str(datum[1]):
-                            tag1 += int(datum[0])
-                            
-                    liste = [total1, jahr1, monat1, woche1, tag1]
-                    return liste
-                liste = [0, 0, 0, 0, 0]
-                return liste
-            
-            if art == "Sprachkanal":
-                total1 = 0
-                jahr1 = 0
-                monat1 = 0
-                woche1 = 0
-                tag1 = 0
-                await cursor.execute("SELECT anzahl, zeit FROM voice WHERE guildID = (%s) AND channelID = (%s)", (guild.id, channel.id))
-                r1 = await cursor.fetchall()
-                if str(r1) != "()":
-                    for datum in r1:
-                        #für nachrichten
-                        #jahr stats
-                        total1 += int(datum[0])
-                        if f".{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
-                            jahr1 += int(datum[0])
-                        #monats stats
-                        if f".{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
-                            monat1 += int(datum[0])
-                        #wochen stats
-                        i = 0
-                        a = 0
-                        while True:
-                            i += 1
-                            if i >= 8:
-                                break
-                            tag = int(discord.utils.utcnow().__format__('%d')) - i
-                            if int(tag) >= 1:
-                                if f"{tag}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(datum[1]):
-                                    woche1 += int(datum[0])
-                            else:
-                                letzter_monat = 31 - a
-                                jahr = discord.utils.utcnow().__format__('%Y')
-                                l_m = int(discord.utils.utcnow().__format__('%m')) - 1
-                                if int(discord.utils.utcnow().__format__('%m')) - 1 <= 0:
-                                    l_m = 12
-                                    jahr = int(discord.utils.utcnow().__format__('%Y')) -1
-                                a += 1
-                                if f"{letzter_monat}.{l_m}.{jahr}" in str(datum[1]):
-                                    woche1 += int(datum[0])
-                        #tages stats
-                        if f"{discord.utils.utcnow().__format__('%d')}." in str(datum[1]):
-                            tag1 += int(datum[0])
-                            
-                    liste = [total1, jahr1, monat1, woche1, tag1]
-                    return liste
-                liste = [0, 0, 0, 0, 0]
-                return liste
-
-async def getchannelslb(self, art, channel, guild):
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            if art == "Textkanal":
-                await cursor.execute("SELECT userID, anzahl FROM nachrichten WHERE guildID = (%s) AND channelID = (%s)", (guild.id, channel.id))
-                result = await cursor.fetchall()
-                if str(result) != "()":
-                    leaderboard = {}
-                    for data in result:
-                        mitglied = guild.get_member(int(data[0]))
-                        if mitglied != None:
-                            try:
-                                leaderboard[int(data[0])] += int(data[1])
-                            except:
-                                leaderboard[int(data[0])] = int(data[1])
-                                
-                    s_l = sorted(leaderboard.items(), key=lambda kv: kv[1], reverse=True)
-                    return s_l
-                return None
+                    total_messages = 0
+                    for user_data in json_data.values():
+                        for channel_count in user_data.values():
+                            total_messages += channel_count
+                    all_messages[tag] = total_messages
                     
-            if art == "Sprachkanal":
-                await cursor.execute("SELECT userID, anzahl FROM voice WHERE guildID = (%s) AND channelID = (%s)", (guild.id, channel.id))
+                #VOICE
+                await cursor.execute("SELECT anzahl FROM voice WHERE guildID = %s AND zeit = %s", (guild_id, tag_voice))
                 result = await cursor.fetchall()
-                if str(result) != "()":
-                    leaderboard = {}
-                    for data in result:
-                        mitglied = guild.get_member(int(data[0]))
-                        if mitglied != None:
-                            try:
-                                leaderboard[int(data[0])] += int(data[1])
-                            except:
-                                leaderboard[int(data[0])] = int(data[1])
-                    s_l = sorted(leaderboard.items(), key=lambda kv: kv[1], reverse=True)
-                    return s_l
-                return None
+ 
+                anzahl = 0
+ 
+                for minuten in result:
+                    anzahl += minuten[0]
+                statsvoice.append(anzahl)
             
-async def getservernachrichtenstats(self, art, guild):
-    async with self.bot.pool.acquire() as conn:
+            for entry in all_messages.values():
+                stats.append(entry)
+                
+            statsvoice = statsvoice[::-1]
+            
+            return daten, stats, statsvoice
+
+
+async def get_server_stats(bot, guild_id):
+    async with bot.pool.acquire() as conn:
         async with conn.cursor() as cursor:
-            if art == "Mitglieder":
-                await cursor.execute("SELECT userID, anzahl FROM nachrichten WHERE guildID = (%s)", (guild.id))
-                result = await cursor.fetchall()
-                if str(result) != "()":
-                    leaderboard = {}
-                    for data in result:
-                        mitglied = guild.get_member(int(data[0]))
-                        if mitglied != None:
-                            try:
-                                leaderboard[int(data[0])] += int(data[1])
-                            except:
-                                leaderboard[int(data[0])] = int(data[1])
-                                
-                    s_l = sorted(leaderboard.items(), key=lambda kv: kv[1], reverse=True)
-                    return s_l
-                return None
-            if art == "Kanäle":
-                await cursor.execute("SELECT channelID, anzahl FROM nachrichten WHERE guildID = (%s)", (guild.id))
-                result = await cursor.fetchall()
-                if str(result) != "()":
-                    leaderboard = {}
-                    for data in result:
-                        mitglied = guild.get_channel(int(data[0]))
-                        if mitglied != None:
-                            try:
-                                leaderboard[int(data[0])] += int(data[1])
-                            except:
-                                leaderboard[int(data[0])] = int(data[1])
-                                
-                    s_l = sorted(leaderboard.items(), key=lambda kv: kv[1], reverse=True)
-                    return s_l
-                return None
+            #TEXT
+            stats = {}
+            alle_user_tages = {}
+            alle_channel_letzte_7tage = {}
+            alle_user_tages_voice = {}
+            voice7 = 0
+            voice30 = 0
+            
+            anzahl_letzte_7tage = 0
+            anzahl_letzte_30tage = 0
 
-async def getservervoicestats(self, art, guild):
-    async with self.bot.pool.acquire() as conn:
+            heute = datetime.now().strftime('%Y-%m-%d')
+            
+            for i in range(31):
+                tag = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d')
+                tag_voice = (datetime.now() - timedelta(days=i)).strftime('%d.%m.%Y')
+                
+                await cursor.execute("SELECT daten FROM nachrichten WHERE guildID = %s AND datum = %s", (guild_id, tag))
+                json_data = await cursor.fetchone()
+                if json_data is None:
+                    continue
+                
+                server_stats = json.loads(json_data[0])
+                
+                for user_id, user_data in server_stats.items():
+                    for channel_id, channel_count in user_data.items():
+                        if(i <= 6):
+                            anzahl_letzte_7tage += channel_count
+                        anzahl_letzte_30tage += channel_count
+                        if tag == heute:
+                            # Aktivster Nutzer des Tages
+                            if user_id in alle_user_tages:
+                                alle_user_tages[user_id] += channel_count
+                            else:
+                                alle_user_tages[user_id] = channel_count
+                                
+                            await cursor.execute("SELECT userid, anzahl FROM voice WHERE guildID = %s AND zeit = %s", (guild_id, tag_voice))
+                            result = await cursor.fetchall()
+                            for user, anzahl in result:
+                                if user in alle_user_tages_voice:
+                                    alle_user_tages_voice[user] += anzahl
+                                else:
+                                    alle_user_tages_voice[user] = anzahl
+                            
+                        # Top-Kanal der letzten 7 Tage
+                        if channel_id in alle_channel_letzte_7tage:
+                            alle_channel_letzte_7tage[channel_id] += channel_count
+                        else:
+                            alle_channel_letzte_7tage[channel_id] = channel_count
+                #VOICE
+            
+                await cursor.execute("SELECT anzahl FROM voice WHERE guildID = %s AND zeit = %s", (guild_id, tag_voice))
+                result = await cursor.fetchall()
+ 
+                for minuten in result:
+                    if(i <= 6):
+                        voice7 += int(minuten[0])
+                    voice30 += int(minuten[0])
+                    
+            
+            #MESSAGES
+                           
+            stats["<:v_chat:1119577968457568327> Nachrichten (7 Tage)"] = anzahl_letzte_7tage
+            stats["<:v_chat:1119577968457568327> Nachrichten (30 Tage)"] = anzahl_letzte_30tage
+            
+            #CHANNEL
+            
+            msgs_channel = 0
+            
+            aktivster_channel = max(alle_channel_letzte_7tage.items(), key=lambda x: x[1])[0] if alle_channel_letzte_7tage else "Es gibt keinen aktivsten Kanal"   
+            if aktivster_channel != "Es gibt keinen aktivsten Kanal":
+                msgs_channel = alle_channel_letzte_7tage[aktivster_channel]
+            
+                stats["<:v_stats:1119583678083895346> Top Channel (7 Tage)"] = f"<#{aktivster_channel}> - {msgs_channel} Nachrichten"
+            else:
+                stats["<:v_stats:1119583678083895346> Top Channel (7 Tage)"] = f"{aktivster_channel} - {msgs_channel} Nachrichten"
+
+            stats["<:v_stats:1119583678083895346> Voice Minuten (7 Tage)"] = f"{voice7} Minuten"
+            stats["<:v_stats:1119583678083895346> Voice Minuten (30 Tage)"] = f"{voice30} Minuten"
+
+            #USER
+            
+            msgs_user = 0
+            talk_user = 0
+            talk_msgs_user = 0
+            
+            aktivster_nutzer_voice_str = "Es gibt keinen aktivsten Nutzer"
+            aktivster_nutzer_str = "Es gibt keinen aktivsten Nutzer"
+            
+            aktivster_nutzer_voice = max(alle_user_tages_voice.items(), key=lambda x: x[1])[0] if alle_user_tages_voice else "Es gibt keinen aktivsten Nutzer"
+            aktivster_nutzer = max(alle_user_tages.items(), key=lambda x: x[1])[0] if alle_user_tages else "Es gibt keinen aktivsten Nutzer"
+            if aktivster_nutzer != "Es gibt keinen aktivsten Nutzer":
+                aktivster_nutzer_str = f"<@{aktivster_nutzer}>"
+                msgs_user = alle_user_tages[aktivster_nutzer]
+                talk_msgs_user = alle_user_tages_voice[aktivster_nutzer] if aktivster_nutzer in alle_user_tages_voice else "0"
+            if aktivster_nutzer_voice != "Es gibt keinen aktivsten Nutzer":
+                aktivster_nutzer_voice_str = f"<@{aktivster_nutzer_voice}>"
+                talk_user = alle_user_tages_voice[aktivster_nutzer_voice]
+            
+            if(aktivster_nutzer_str != aktivster_nutzer_voice_str):
+                stats["<:v_user:1119585450923929672> Aktivste Nutzer des Tages"] = f"{aktivster_nutzer_str} - {msgs_user} Nachrichten \n{aktivster_nutzer_voice_str} - {talk_user} Minuten"
+            else:
+                stats["<:v_user:1119585450923929672> Aktivste Nutzer des Tages"] = f"{aktivster_nutzer_str} - {msgs_user} Nachrichten, {talk_msgs_user} Minuten"
+            
+            return stats
+
+async def bild_user_stats(bot, guild_id, user_id):
+    async with bot.pool.acquire() as conn:
         async with conn.cursor() as cursor:
-            if art == "Mitglieder":
-                await cursor.execute("SELECT userID, anzahl FROM voice WHERE guildID = (%s)", (guild.id))
-                result = await cursor.fetchall()
-                if str(result) != "()":
-                    leaderboard = {}
-                    for data in result:
-                        mitglied = guild.get_member(int(data[0]))
-                        if mitglied != None:
-                            try:
-                                leaderboard[int(data[0])] += int(data[1])
-                            except:
-                                leaderboard[int(data[0])] = int(data[1])
-                                
-                    s_l = sorted(leaderboard.items(), key=lambda kv: kv[1], reverse=True)
-                    return s_l
-                return None
-            if art == "Kanäle":
-                await cursor.execute("SELECT channelID, anzahl FROM voice WHERE guildID = (%s)", (guild.id))
-                result = await cursor.fetchall()
-                if str(result) != "()":
-                    leaderboard = {}
-                    for data in result:
-                        mitglied = guild.get_channel(int(data[0]))
-                        if mitglied != None:
-                            try:
-                                leaderboard[int(data[0])] += int(data[1])
-                            except:
-                                leaderboard[int(data[0])] = int(data[1])
-                                
-                    s_l = sorted(leaderboard.items(), key=lambda kv: kv[1], reverse=True)
-                    return s_l
-                return None
+            stats = []
+            daten = []
+            all_messages = {}
+            statsvoice = []
 
-async def lookback_messages(self, tage, guild, art):
-    async with self.bot.pool.acquire() as conn:
+            for i in range(14):
+                tag = (datetime.now() - timedelta(days=13-i)).strftime('%Y-%m-%d')
+                tag_voice = (datetime.now() - timedelta(days=i)).strftime('%d.%m.%Y')
+
+                tag_format = (datetime.now() - timedelta(days=13-i)).strftime('%d.%m')
+                daten.append(tag_format)
+                
+                await cursor.execute("SELECT daten FROM nachrichten WHERE guildID = %s AND datum = %s", (guild_id, tag))
+                json_data_raw = await cursor.fetchone()
+                if json_data_raw is None:
+                    all_messages[tag] = 0
+                else:
+                    json_data = json.loads(json_data_raw[0])
+                    
+                    total_messages = 0
+                    for id, user_data in json_data.items():
+                        if(id == str(user_id)):
+                            for channel_count in user_data.values():
+                                total_messages += channel_count
+                    all_messages[tag] = total_messages
+                    
+                #VOICE
+                await cursor.execute("SELECT anzahl FROM voice WHERE guildID = %s AND zeit = %s AND userID = %s", (guild_id, tag_voice, user_id))
+                result = await cursor.fetchall()
+ 
+                anzahl = 0
+ 
+                for minuten in result:
+                    anzahl += minuten[0]
+                statsvoice.append(anzahl)
+            
+            for entry in all_messages.values():
+                stats.append(entry)
+                
+            statsvoice = statsvoice[::-1]
+            
+            return daten, stats, statsvoice
+
+
+async def get_user_stats(bot, user_id, guild_id):
+    async with bot.pool.acquire() as conn:
         async with conn.cursor() as cursor:
-            if art == "Mitglieder":
-                await cursor.execute("SELECT userID, anzahl, zeit FROM nachrichten WHERE guildID = (%s)", (guild.id))
+            #TEXT
+            stats = {}
+            voice7 = 0
+            voice30 = 0
+            all_users_msgs = {}
+            all_users_talk = {}
+            
+            anzahl_letzte_7tage = 0
+            anzahl_letzte_30tage = 0
+            
+            for i in range(31):
+                tag = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d')
+                tag_voice = (datetime.now() - timedelta(days=i)).strftime('%d.%m.%Y')
+                
+                await cursor.execute("SELECT daten FROM nachrichten WHERE guildID = %s AND datum = %s", (guild_id, tag))
+                json_data = await cursor.fetchone()
+                if json_data is None:
+                    continue
+                
+                server_stats = json.loads(json_data[0])
+                
+                for id, user_data in server_stats.items():
+                    for channel_id, channel_count in user_data.items():
+                        if(id == str(user_id)):
+                            if(i <= 6):
+                                anzahl_letzte_7tage += channel_count
+                            anzahl_letzte_30tage += channel_count
+                        if(id in all_users_msgs):
+                            all_users_msgs[id] += channel_count
+                        else:
+                            all_users_msgs[id] = channel_count
+                        
+                                
+                #VOICE
+            
+                await cursor.execute("SELECT userID, anzahl FROM voice WHERE guildID = %s AND zeit = %s", (guild_id, tag_voice))
                 result = await cursor.fetchall()
-                if str(result) != "()":
-                    leaderboard = {}
-                    for data in result:
-                        i = 0
-                        a = 0
-                        while True:
-                            i += 1
-                            if i >= int(tage) + 1:
-                                break
-                            tag = int(discord.utils.utcnow().__format__('%d')) - i
-                            if int(tag) >= 1:
-                                if f"{tag}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(data[2]):
-                                    mitglied = guild.get_member(int(data[0]))
-                                    if mitglied != None:
-                                        try:
-                                            leaderboard[int(data[0])] += int(data[1])
-                                        except:
-                                            leaderboard[int(data[0])] = int(data[1])
+ 
+                for user in result:
+                    id = user[0]
+                    if(user[0] == str(user_id)):
+                        if(i <= 6):
+                            voice7 += int(user[1])
+                        voice30 += int(user[1])
+                    
+                    if(id in all_users_talk):
+                        all_users_talk[id] += user[1]
+                    else:
+                        all_users_talk[id] = user[1]
+                    
+            
+            #MESSAGES
+                           
+            stats["<:v_chat:1119577968457568327> Nachrichten (7 Tage)"] = anzahl_letzte_7tage
+            stats["<:v_chat:1119577968457568327> Nachrichten (30 Tage)"] = anzahl_letzte_30tage
 
-                            else:
-                                letzter_monat = 31 - a
-                                jahr = discord.utils.utcnow().__format__('%Y')
-                                l_m = int(discord.utils.utcnow().__format__('%m')) - 1
-                                if int(discord.utils.utcnow().__format__('%m')) - 1 <= 0:
-                                    l_m = 12
-                                    jahr = int(discord.utils.utcnow().__format__('%Y')) -1
-                                a += 1
-                                if f"{letzter_monat}.{l_m}.{jahr}" in str(data[2]):
-                                    mitglied = guild.get_channel(int(data[0]))
-                                    if mitglied != None:
-                                        try:
-                                            leaderboard[int(data[0])] += int(data[1])
-                                        except:
-                                            leaderboard[int(data[0])] = int(data[1])
-                      
-                    s_l = sorted(leaderboard.items(), key=lambda kv: kv[1], reverse=True)
-                    return s_l
-                return None
+            stats["<:v_stats:1119583678083895346> Voice Minuten (7 Tage)"] = f"{voice7} Minuten"
+            stats["<:v_stats:1119583678083895346> Voice Minuten (30 Tage)"] = f"{voice30} Minuten"
+            
+            #RANK
+            
+            rank_msg = ""
+            
+            sortedUsersMSGS = dict(sorted(all_users_msgs.items(), key=lambda item: item[1], reverse=True))
+            sortedUsersTalk = dict(sorted(all_users_talk.items(), key=lambda item: item[1], reverse=True))
+            if(str(user_id) in sortedUsersMSGS):
+                MSGRank = list(sortedUsersMSGS.keys()).index(str(user_id))+1
+                rank_msg = f"**#{MSGRank}** (Nachrichten)"
+            else:
+                rank_msg = f"**#{len(sortedUsersMSGS)+1}** (Nachrichten)"
+            if(str(user_id) in sortedUsersTalk):
+                MSGRank = list(sortedUsersTalk.keys()).index(str(user_id))+1
+                rank_msg += f"\n\n**#{MSGRank}** (Sprachzeit)"
+            else:
+                rank_msg += f"\n\n**#{len(sortedUsersTalk)+1}** (Sprachzeit)"
+            
+            stats["<:v_stats:1119583678083895346> Server Rank"] = rank_msg
+            
+            return stats
 
-            if art == "Kanäle":
-                await cursor.execute("SELECT channelID, anzahl, zeit FROM nachrichten WHERE guildID = (%s)", (guild.id))
-                result = await cursor.fetchall()
-                if str(result) != "()":
-                    leaderboard = {}
-                    for data in result:
-                        i = 0
-                        a = 0
-                        while True:
-                            i += 1
-                            if i >= int(tage) + 1:
-                                break
-                            tag = int(discord.utils.utcnow().__format__('%d')) - i
-                            if int(tag) >= 1:
-                                if f"{tag}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(data[2]):
-                                    mitglied = guild.get_channel(int(data[0]))
-                                    if mitglied != None:
-                                        try:
-                                            leaderboard[int(data[0])] += int(data[1])
-                                        except:
-                                            leaderboard[int(data[0])] = int(data[1])
-
-                            else:
-                                letzter_monat = 31 - a
-                                jahr = discord.utils.utcnow().__format__('%Y')
-                                l_m = int(discord.utils.utcnow().__format__('%m')) - 1
-                                if int(discord.utils.utcnow().__format__('%m')) - 1 <= 0:
-                                    l_m = 12
-                                    jahr = int(discord.utils.utcnow().__format__('%Y')) -1
-                                a += 1
-                                if f"{letzter_monat}.{l_m}.{jahr}" in str(data[2]):
-                                    mitglied = guild.get_channel(int(data[0]))
-                                    if mitglied != None:
-                                        try:
-                                            leaderboard[int(data[0])] += int(data[1])
-                                        except:
-                                            leaderboard[int(data[0])] = int(data[1])
-                                                  
-                    s_l = sorted(leaderboard.items(), key=lambda kv: kv[1], reverse=True)
-                    return s_l
-                return None
-
-async def lookback_voice(self, tage, guild, art):
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            if art == "Mitglieder":
-                await cursor.execute("SELECT userID, anzahl, zeit FROM voice WHERE guildID = (%s)", (guild.id))
-                result = await cursor.fetchall()
-                if str(result) != "()":
-                    leaderboard = {}
-                    for data in result:
-                        i = 0
-                        a = 0
-                        while True:
-                            i += 1
-                            if i >= int(tage) + 1:
-                                break
-                            tag = int(discord.utils.utcnow().__format__('%d')) - i
-                            if int(tag) >= 1:
-                                if f"{tag}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(data[2]):
-                                    mitglied = guild.get_member(int(data[0]))
-                                    if mitglied != None:
-                                        try:
-                                            leaderboard[int(data[0])] += int(data[1])
-                                        except:
-                                            leaderboard[int(data[0])] = int(data[1])
-
-                            else:
-                                letzter_monat = 31 - a
-                                jahr = discord.utils.utcnow().__format__('%Y')
-                                l_m = int(discord.utils.utcnow().__format__('%m')) - 1
-                                if int(discord.utils.utcnow().__format__('%m')) - 1 <= 0:
-                                    l_m = 12
-                                    jahr = int(discord.utils.utcnow().__format__('%Y')) -1
-                                a += 1
-                                if f"{letzter_monat}.{l_m}.{jahr}" in str(data[2]):
-                                    mitglied = guild.get_channel(int(data[0]))
-                                    if mitglied != None:
-                                        try:
-                                            leaderboard[int(data[0])] += int(data[1])
-                                        except:
-                                            leaderboard[int(data[0])] = int(data[1])
-                                                  
-                    s_l = sorted(leaderboard.items(), key=lambda kv: kv[1], reverse=True)
-                    return s_l
-                return None
-
-            if art == "Kanäle":
-                await cursor.execute("SELECT channelID, anzahl, zeit FROM voice WHERE guildID = (%s)", (guild.id))
-                result = await cursor.fetchall()
-                if str(result) != "()":
-                    leaderboard = {}
-                    for data in result:
-                        i = 0
-                        a = 0
-                        while True:
-                            i += 1
-                            if i >= int(tage) + 1:
-                                break
-                            tag = int(discord.utils.utcnow().__format__('%d')) - i
-                            if int(tag) >= 1:
-                                if f"{tag}.{discord.utils.utcnow().__format__('%m')}.{discord.utils.utcnow().__format__('%Y')}" in str(data[2]):
-                                    mitglied = guild.get_channel(int(data[0]))
-                                    if mitglied != None:
-                                        try:
-                                            leaderboard[int(data[0])] += int(data[1])
-                                        except:
-                                            leaderboard[int(data[0])] = int(data[1])
-
-                            else:
-                                letzter_monat = 31 - a
-                                jahr = discord.utils.utcnow().__format__('%Y')
-                                l_m = int(discord.utils.utcnow().__format__('%m')) - 1
-                                if int(discord.utils.utcnow().__format__('%m')) - 1 <= 0:
-                                    l_m = 12
-                                    jahr = int(discord.utils.utcnow().__format__('%Y')) -1
-                                a += 1
-                                if f"{letzter_monat}.{l_m}.{jahr}" in str(data[2]):
-                                    mitglied = guild.get_channel(int(data[0]))
-                                    if mitglied != None:
-                                        try:
-                                            leaderboard[int(data[0])] += int(data[1])
-                                        except:
-                                            leaderboard[int(data[0])] = int(data[1])
-                                                  
-                    s_l = sorted(leaderboard.items(), key=lambda kv: kv[1], reverse=True)
-                    return s_l
-                return None
 
 async def update_all(self):
     async with self.bot.pool.acquire() as conn:
@@ -575,10 +411,11 @@ async def update_all(self):
                 except:
                     continue
 
+
 class Stats(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-	
+    
     def cog_load(self):
         self.channel_update.start()
         
@@ -588,7 +425,7 @@ class Stats(commands.Cog):
     @tasks.loop(minutes=10)
     async def channel_update(self):
         await update_all(self)
-        
+            
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
         async with self.bot.pool.acquire() as conn:
@@ -597,18 +434,23 @@ class Stats(commands.Cog):
                 result = await cursor.fetchone()
                 if result != None:
                     if before.channel:
-                        voice_leave_time = datetime.datetime.now().time().strftime('%H:%M:%S')
+                        voice_leave_time = datetime.now().time().strftime('%H:%M:%S')
                         voice_join_time = result[0]
 
                         calculate_time = (
-                                datetime.datetime.strptime(voice_leave_time, '%H:%M:%S') - datetime.datetime.strptime(
+                                datetime.strptime(voice_leave_time, '%H:%M:%S') - datetime.strptime(
                             voice_join_time, '%H:%M:%S'))
+                        
                         string = f"{str(calculate_time)[0]}h {str(calculate_time)[2]}{str(calculate_time)[3]}m {str(calculate_time)[5]}{str(calculate_time)[6]}s"
                         time_in_seconds = convert(string)
                         if time_in_seconds == None:
                             return
                         time_in_minutes = round(time_in_seconds / 60)
+                            
                         await cursor.execute("DELETE FROM voicedata WHERE userID = (%s)", (member.id))
+                        if(time_in_minutes <= 1):
+                            return
+                        
                         await cursor.execute("SELECT anzahl FROM voice WHERE guildID = (%s) AND userID = (%s) AND zeit = (%s) AND channelID = (%s)", (member.guild.id, member.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), before.channel.id))
                         result = await cursor.fetchone()
                         if result is None:
@@ -631,258 +473,98 @@ class Stats(commands.Cog):
                         except:
                             pass
                 if after.channel:
-                    new_voice_join_time = datetime.datetime.now().time().strftime('%H:%M:%S')
+                    new_voice_join_time = datetime.now().time().strftime('%H:%M:%S')
                     await cursor.execute("INSERT INTO voicedata(time, userID) VALUES(%s, %s)", (new_voice_join_time, member.id))
 
     #Nachrichten Stats#
-    
+
     @commands.Cog.listener()
     async def on_message(self, msg):
-        if msg.guild == None:
+        if msg.guild is None or msg.author.bot:
             return
-        if msg.author.bot:
-            return
-        if msg.guild != None:
-            async with self.bot.pool.acquire() as conn:
-                async with conn.cursor() as cursor:
-                    await cursor.execute("SELECT channelID FROM stats_blacklist WHERE guildID = (%s)", (msg.guild.id))
-                    blacklist = await cursor.fetchall()
-                    if blacklist != None or str(blacklist) != "()":
-                        for id in blacklist:
-                            if msg.channel.id == int(id[0]):
-                                return
-                    await cursor.execute("SELECT anzahl FROM nachrichten WHERE guildID = (%s) AND userID = (%s) AND zeit = (%s) AND channelID = (%s)", (msg.guild.id, msg.author.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), msg.channel.id))
-                    result = await cursor.fetchone()
-                    if result is None:
-                        return await cursor.execute("INSERT INTO nachrichten(userID, guildID, zeit, anzahl, channelID) VALUES(%s, %s, %s, %s, %s)", (msg.author.id, msg.guild.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), 1, msg.channel.id))
-                    await cursor.execute("UPDATE nachrichten SET anzahl = (%s) WHERE guildID = (%s) AND userID = (%s) AND zeit = (%s) AND channelID = (%s)", (result[0] + 1, msg.guild.id, msg.author.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), msg.channel.id))
-    
+        
+        async with self.bot.pool.acquire() as conn:
+            async with conn.cursor() as cursor:
+                current_datetime = datetime.now().strftime('%Y-%m-%d')
+                
+                await cursor.execute("SELECT daten FROM nachrichten WHERE guildID = %s AND datum = %s", (msg.guild.id, current_datetime))
+                result = await cursor.fetchone()
+                if result is None:
+                    initial_data = {
+                        str(msg.author.id): {
+                            str(msg.channel.id): 1,
+                        }
+                    }
+                    json_data = json.dumps(initial_data)
+                    await cursor.execute("INSERT INTO nachrichten(guildID, datum, daten) VALUES(%s, %s, %s)", (msg.guild.id, current_datetime, json_data))
+                else:
+                    # Laden des vorhandenen JSON aus der Datenbank und Aktualisieren der Daten
+                    existing_json = json.loads(result[0])
+                    user_id = str(msg.author.id)
+                    channel_id = str(msg.channel.id)
+                    if user_id in existing_json:
+                        if channel_id in existing_json[user_id]:
+                            existing_json[user_id][channel_id] += 1
+                        else:
+                            existing_json[user_id][channel_id] = 1
+                    else:
+                        existing_json[user_id] = {channel_id: 1}
+                    
+                    updated_json = json.dumps(existing_json)
+                    
+                    # Aktualisierten JSON in die Datenbank speichern
+                    await cursor.execute("UPDATE nachrichten SET daten = %s WHERE guildID = %s AND datum = %s", (updated_json, msg.guild.id, current_datetime))
+        
     stats = app_commands.Group(name='stats', description='Verwalte Stats.', guild_only=True)
     
     @stats.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
-    async def anzeigen(self, interaction: discord.Interaction, member: discord.Member=None, textkanal: discord.TextChannel=None, sprachkanal: discord.VoiceChannel=None):
-        """Zeigt Stats für Member und Kanäle."""
-        status = await haspremium_forserver(self, interaction.guild)
-        if status == False:
-            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
-        mydate = datetime.datetime.now()
-        translator = Translator()
-        translation = translator.translate(f'Month {mydate.strftime("%B")}' , dest="de")
-        monat = translation.text
+    async def server(self, interaction: discord.Interaction):
+        """Schau dir die Stats des Servers an."""
+        await interaction.response.defer()
+        server_stats = await get_server_stats(self.bot, interaction.guild.id)
+        embed = discord.Embed(title=f"Stats für {interaction.guild.name}", color=await getcolour(self, interaction.user))
+        for stat_name, stat_value in server_stats.items():
+            if stat_name == "<:v_user:1119585450923929672> Aktivste Nutzer des Tages" or stat_name == "<:v_stats:1119583678083895346> Top Channel (7 Tage)":
+                embed.add_field(name=f"{stat_name}", value=stat_value, inline=False)
+            else:
+                embed.add_field(name=stat_name, value=stat_value, inline=True)
         
-        if member == None and textkanal == None and sprachkanal == None:
-            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Bitte gib beim nächsten Male an für welchen Kanal oder für welchen Member du die Stats einsehen willst.**", ephemeral=True)
-        if member != None and textkanal != None or member != None and sprachkanal != None or textkanal != None and sprachkanal != None:
-            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst dich nur für eines entscheiden. Entweder für die Stats eines Members oder für die Stats eines Kanals.**", ephemeral=True)
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                if member != None:
-                    stats1 = await getuserstats(self, "Textkanal", member, interaction.guild)
-                    stats2 = await getuserstats(self, "Sprachkanal", member, interaction.guild)
-                    text1 = ""
-                    text2 = ""
-                    channeluserstats1 = await getuserslb(self, "Textkanal", member, interaction.guild)
-                    try:
-                        a = 0
-                        for data in channeluserstats1:
-                            channel = interaction.guild.get_channel(int(data[0]))
-                            if channel != None:
-                                if a == 5:
-                                    break
-                                a += 1
-                                text1 += f"> {channel.mention}: {data[1]} {'Nachrichten' if int(data[1]) > 1 else 'Nachricht'}\n"
-                    except:
-                        text1 += "Keine Daten"
-                    
-                    try:
-                        b = 0
-                        channeluserstats2 = await getuserslb(self, "Sprachkanal", member, interaction.guild)
-                        for data in channeluserstats2:
-                            channel = interaction.guild.get_channel(int(data[0]))
-                            if channel != None:
-                                if b == 5:
-                                    break
-                                b += 1
-                                text2 += f"> {channel.mention}: {data[1]} {'Minuten' if int(data[1]) > 1 else 'Minute'}\n"
-                    except:
-                        text2 += "Keine Daten"
-                    
-                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1119583678083895346> Statistiken von {member.name}", description=f"""
-<:v_chat:1119577968457568327> **Nachrichten Stats:**
-> Insgesammt: {stats1[0]} Nachrichten
-> Jahr {discord.utils.utcnow().__format__('%Y')}: {stats1[1]} Nachrichten
-> {monat}: {stats1[2]} Nachrichten
-> Letzten 7 Tage: {stats1[3]} Nachrichten
-> Tag: {stats1[4]} Nachrichten
-
-<:v_chat:1119577968457568327> **Aktivste Kanäle des Nutzers:**
-{text1}
-
-
-<:v_mikrofon:1119581634216329266> **Sprachkanal Stats:**
-> Insgesammt: {stats2[0]} Minuten
-> Jahr: {stats2[1]} Minuten
-> Monat: {stats2[2]} Minuten
-> Letzten 7 Tage: {stats2[3]} Minuten
-> Tag: {stats2[4]} Minuten
-
-<:v_mikrofon:1119581634216329266> **Aktivste Sprachkanäle des Nutzers:**
-{text2}""")
-                    embed.set_thumbnail(url=member.avatar)
-                    return await interaction.response.send_message(embed=embed)
-                
-                
-                if textkanal != None:
-                    text = ""
-                    channeluserstats = await getchannelslb(self, "Textkanal", textkanal, interaction.guild)
-                    try:
-                        a = 0
-                        for data in channeluserstats:
-                            mitglied = interaction.guild.get_member(int(data[0]))
-                            if mitglied != None:
-                                if a == 5:
-                                    break
-                                a += 1
-                                text += f"> {mitglied.mention}: {data[1]} {'Nachrichten' if int(data[1]) > 1 else 'Nachricht'}\n"
-                    except:
-                        text += "Keine Daten"
-                        
-                    stats = await getchannelstats(self, "Textkanal", textkanal, interaction.guild)
-                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1119583678083895346> Statistiken von {textkanal.name}", description=f"""
-<:v_chat:1119577968457568327> **Nachrichten Stats:**
-> Insgesammt: {stats[0]} Nachrichten
-> Jahr {discord.utils.utcnow().__format__('%Y')}: {stats[1]} Nachrichten
-> {monat}: {stats[2]} Nachrichten
-> Letzten 7 Tage: {stats[3]} Nachrichten
-> Tag: {stats[4]} Nachrichten
-
-<:v_chat:1119577968457568327> **Aktivste Nutzer des Kanals:**
-{text}""")
-                    embed.set_thumbnail(url=interaction.guild.icon)
-                    return await interaction.response.send_message(embed=embed)
-                
-                if sprachkanal != None:
-                    text = ""
-                    channeluserstats = await getchannelslb(self, "Sprachkanal", sprachkanal, interaction.guild)
-                    try:
-                        a = 0
-                        for data in channeluserstats:
-                            mitglied = interaction.guild.get_member(int(data[0]))
-                            if mitglied != None:
-                                if a == 5:
-                                    break
-                                a += 1
-                                text += f"> {mitglied.mention}: {data[1]} {'Minuten' if int(data[1]) > 1 else 'Minute'}\n"
-                    except:
-                        text += "Keine Daten"
-                        
-                    stats = await getchannelstats(self, "Sprachkanal", sprachkanal, interaction.guild)
-                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1119583678083895346> Statistiken von {sprachkanal.name}", description=f"""
-<:v_mikrofon:1119581634216329266> **Aktivität im Sprachkanal:**
-> Insgesammt: {stats[0]} Minuten
-> Jahr {discord.utils.utcnow().__format__('%Y')}: {stats[1]} Minuten
-> {monat}: {stats[2]} Minuten
-> Letzten 7 Tage: {stats[3]} Minuten
-> Tag: {stats[4]} Minuten
-
-<:v_mikrofon:1119581634216329266> **Aktivste Nutzer des Kanals:**
-{text}""")
-                    embed.set_thumbnail(url=interaction.guild.icon)
-                    return await interaction.response.send_message(embed=embed) 
+        xWerte, yWerteMSG, yWerteTALK = await bild_server_stats(self.bot, interaction.guild.id)
+        
+        await generateServerStatsImage(xWerte, yWerteMSG, yWerteTALK)
+        
+        embed.set_image(url="attachment://ServerStats.png")       
+        file = discord.File("ServerStats.png", filename="ServerStats.png")
+        os.remove("ServerStats.png")
+        return await interaction.followup.send(file=file, embed=embed)
 
     @stats.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
-    async def lookback(self, interaction: discord.Interaction, tage: typing.Literal[7,14,21,28]):
-        """Zeigt Stats für Member und Kanäle für eine Zeitspanne."""
-        status = await haspremium_forserver(self, interaction.guild)
-        if status == False:
-            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
-        await interaction.response.defer(thinking=True, ephemeral=False)
-        lookback_messages_members = await lookback_messages(self, tage, interaction.guild, "Mitglieder")
-        lookback_messages_channels = await lookback_messages(self, tage, interaction.guild, "Kanäle")
-        lookback_voice_members = await lookback_voice(self, tage, interaction.guild, "Mitglieder")
-        lookback_voice_channels = await lookback_voice(self, tage, interaction.guild, "Kanäle")
-        text = ""
-        text2 = ""
-        text3 = ""
-        text4 = ""
-        try:
-            a = 0
-            for data in lookback_messages_members:
-                mitglied = interaction.guild.get_member(int(data[0]))
-                if mitglied != None:
-                    if a == 5:
-                        break
-                    a += 1
-                    text += f"> {mitglied.mention}: {data[1]} {'Nachrichten' if int(data[1]) > 1 else 'Nachricht'}\n"
-            if text == "":
-                text += "Keine Daten"
-                    
-        except:
-            text += f"Keine Daten"
+    async def user(self, interaction: discord.Interaction, user: discord.Member = None):
+        """Schau dir die Stats eines Users an."""
+        await interaction.response.defer()
+        member = user
+        if(member is None):
+            member = interaction.user
+        server_stats = await get_user_stats(self.bot, member.id, interaction.guild.id)
+        embed = discord.Embed(title=f"Stats für {member}", color=await getcolour(self, interaction.user))
+        for stat_name, stat_value in server_stats.items():
+            embed.add_field(name=stat_name, value=stat_value, inline=False)
+            #if stat_name == "<:v_stats:1119583678083895346> Voice Minuten (7 Tage)" or stat_name == "<:v_stats:1119583678083895346> Server Rank":
+            #    embed.add_field(name=f"{stat_name}", value=stat_value, inline=False)
+            #else:
+            #    embed.add_field(name=stat_name, value=stat_value, inline=True)
         
-        try:
-            a = 0
-            for data in lookback_messages_channels:
-                channel = interaction.guild.get_channel(int(data[0]))
-                if channel != None:
-                    if a == 5:
-                        break
-                    a += 1
-                    text2 += f"> {channel.mention}: {data[1]} {'Nachrichten' if int(data[1]) > 1 else 'Nachricht'}\n"
-            if text2 == "":
-                text2 += "Keine Daten"
-                    
-        except:
-            text2 += f"Keine Daten"
-
-        try:
-            a = 0
-            for data in lookback_voice_members:
-                mitglied = interaction.guild.get_member(int(data[0]))
-                if mitglied != None:
-                    if a == 5:
-                        break
-                    a += 1
-                    text3 += f"> {mitglied.mention}: {data[1]} {'Minuten' if int(data[1]) > 1 else 'Minute'}\n"
-            if text3 == "":
-                text3 += "Keine Daten"
-                    
-        except:
-            text3 += f"Keine Daten"
+        xWerte, yWerteMSG, yWerteTALK = await bild_user_stats(self.bot, interaction.guild.id, member.id)
         
-        try:
-            a = 0
-            for data in lookback_voice_channels:
-                channel = interaction.guild.get_channel(int(data[0]))
-                if channel != None:
-                    if a == 5:
-                        break
-                    a += 1
-                    text4 += f"> {channel.mention}: {data[1]} {'Minuten' if int(data[1]) > 1 else 'Minute'}\n"
-            if text4 == "":
-                text4 += "Keine Daten"
-                    
-        except:
-            text4 += f"Keine Daten"
+        await generateStatsImage(xWerte, yWerteMSG, yWerteTALK)
         
-        embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1119583678083895346> Statistiken der letzten {tage} Tage", description=f"""
-<:v_chat:1119577968457568327> **Aktivste Nutzer in Textkanälen:**
-{text}
+        embed.set_image(url="attachment://stats.png")       
+        file = discord.File("stats.png", filename="stats.png")
+        os.remove("stats.png")
+        return await interaction.followup.send(file=file, embed=embed)
 
-<:v_chat:1119577968457568327> **Aktivste Textkanäle:**
-{text2}
-
-<:v_mikrofon:1119581634216329266> **Aktivste Nutzer in Sprachkanälen:**
-{text3}
-
-<:v_mikrofon:1119581634216329266> **Aktivste Sprachkanäle:**
-{text4}
-""")
-        embed.set_thumbnail(url=interaction.guild.icon)
-        await interaction.followup.send(embed=embed)
-                
     @stats.command()
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -914,238 +596,222 @@ class Stats(commands.Cog):
                 await cursor.execute("DELETE FROM nachrichten WHERE guildID = (%s)", (interaction.guild.id))
                 await interaction.response.send_message("**<:v_haken:1119579684057907251> Alle Stats dieses Servers wurden gelöscht.**")
     
-    @stats.command()
-    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
-    async def top(self, interaction: discord.Interaction, art: typing.Literal["Mitglieder", "Kanäle"]):
-        """Lass dir die besten Stats dieses Servers anzeigen."""
-        status = await haspremium_forserver(self, interaction.guild)
-        if status == False:
-            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
-        await interaction.response.send_message("**<:v_einstellungen:1119578559086874636> Ich generiere die Embeds und die Graphen. Einen kleinen Moment bitte.**", ephemeral=True)
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                if art == "Mitglieder":
-                    ###
-                    
-                    liste1 = []
-                    liste2 = []
-                    legend = []
-                    tod = datetime.datetime.now()
-                    for i in range(14):
-                        d = datetime.timedelta(days=i)
-                        a = tod - d
-                        liste1.append(f"{a.strftime('%b')} {int(a.__format__('%d'))}")
-                        
-                        await cursor.execute("SELECT anzahl FROM nachrichten WHERE guildID = (%s) AND zeit = (%s)", (interaction.guild.id, a.strftime(f"%d.%m.%Y")))
-                        result = await cursor.fetchall()
-                        if result != ():
-                            anzahl = 0
-                            for stat in result:
-                                anzahl += int(stat[0])
-                            liste2.append(anzahl)
-                        else:
-                            liste2.append(0)
-
-                    #plt.plot(liste1, liste2, color="#0a0a0d", marker=".")
-
-                    plt.xlabel("Datum")
-                    plt.ylabel("Anzahl")
-                    plt.title("14 Tage Nachrichten Stats der aktivsten Nutzer")
-
-                    text = ""
-                    b = await getservernachrichtenstats(self, "Mitglieder", interaction.guild)
-                    text2 = ""
-                    c = await getservervoicestats(self, "Mitglieder", interaction.guild)
-                    try:
-                        a = 0
-                        for data in b:
-                            l = []
-                            mitglied = interaction.guild.get_member(int(data[0]))
-                            if mitglied != None:
-                                if a == 5:
-                                    break
-                                a += 1
-                                text += f"> {mitglied.mention}: {data[1]} {'Nachrichten' if int(data[1]) > 1 else 'Nachricht'}\n"
-                                legend.append(mitglied.name)
-                                
-                                for i in range(14):
-                                    d2 = datetime.timedelta(days=i)
-                                    ab = tod - d2
-                                    
-                                    
-                                    await cursor.execute("SELECT anzahl FROM nachrichten WHERE guildID = (%s) AND zeit = (%s) AND userID = (%s)", (interaction.guild.id, ab.strftime(f"%d.%m.%Y"), mitglied.id))
-                                    result = await cursor.fetchall()
-                                    if result != ():
-                                        anzahl = 0
-                                        for stat in result:
-                                            anzahl += int(stat[0])
-                                        l.append(anzahl)
-                                    else:
-                                        l.append(0)
-                            plt.plot(liste1, l)
-                                
-                    except:
-                        text += f"Keine Daten"
-                    
-                    try:
-                        a = 0
-                        for data in c:
-                            mitglied = interaction.guild.get_member(int(data[0]))
-                            if mitglied != None:
-                                if a == 5:
-                                    break
-                                a += 1
-                                text2 += f"> {mitglied.mention}: {data[1]} {'Minuten' if int(data[1]) > 1 else 'Minute'}\n"
-                    except:
-                        text2 += "Keine Daten"
-                        
-                    plt.legend(legend)
-                    plt.xticks(rotation=45)
-                    plt.savefig("stats.png")
-                    plt.close()
-                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1119583678083895346> Statistiken der aktivsten {art}", description=f"""
-<:v_chat:1119577968457568327> **Aktivste Nutzer in Textkanälen:**
-{text}
-
-<:v_mikrofon:1119581634216329266> **Aktivste Nutzer in Sprachkanälen:**
-{text2}""")
-                    embed.set_thumbnail(url=interaction.guild.icon)
-                    embed.set_image(url="attachment://stats.png")
-                    embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-                    
-                    file = discord.File("stats.png", filename="stats.png")
-                    os.remove("stats.png")
-                    return await interaction.channel.send(file=file, embed=embed)
+#     @stats.command()
+#     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
+#     async def top(self, interaction: discord.Interaction, art: typing.Literal["Mitglieder", "Kanäle"]):
+#         """Lass dir die besten Stats dieses Servers anzeigen."""
+#         await interaction.response.defer(ephemeral=True)
+#         start = time.time()
+#         status = await haspremium_forserver(self, interaction.guild)
+#         if status == False:
+#             return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
+#         print(f"Zeit:  {time.time() - start}")
+#         await interaction.followup.send("**<:v_einstellungen:1119578559086874636> Ich generiere die Embeds und die Graphen. Einen kleinen Moment bitte.**", ephemeral=True)
+        
+#         maxdays = 7
+        
+#         async with self.bot.pool.acquire() as conn:
+#             async with conn.cursor() as cursor:
+#                 #plt.style.use('https://github.com/dhaitz/matplotlib-stylesheets/raw/master/pitayasmoothie-dark.mplstyle')
                 
-                if art == "Kanäle":
-                    liste1 = []
-                    liste2 = []
-                    legend = []
-                    tod = datetime.datetime.now()
-                    for i in range(14):
-                        d = datetime.timedelta(days=i)
-                        a = tod - d
-                        liste1.append(f"{a.strftime('%b')} {int(a.__format__('%d'))}")
+#                 if art == "Mitglieder":
+#                     ###
+                    
+#                     liste1 = []
+#                     liste2 = []
+#                     legend = []
+#                     tod = datetime.datetime.now()
+                    
+#                     startLoop = time.time()
+#                     for i in range(maxdays):
+#                         print(f"i: {i}")
+#                         d = datetime.timedelta(days=maxdays-1-i)
+#                         print(f"d: {d}")
+#                         a = tod - d
+#                         print(f"tod: {tod}")
+#                         print(f"a: {a}")
+#                         liste1.append(f"{a.strftime('%d.%m')}")
                         
-                        await cursor.execute("SELECT anzahl FROM voice WHERE guildID = (%s) AND zeit = (%s)", (interaction.guild.id, a.strftime(f"%d.%m.%Y")))
-                        result = await cursor.fetchall()
-                        if result != ():
-                            anzahl = 0
-                            for stat in result:
-                                anzahl += int(stat[0])
-                            liste2.append(anzahl)
-                        else:
-                            liste2.append(0)
+#                         await cursor.execute("SELECT anzahl FROM nachrichten WHERE guildID = (%s) AND zeit = (%s)", (interaction.guild.id, a.strftime(f"%d.%m.%Y")))
+#                         result = await cursor.fetchall()
+#                         if result != ():
+#                             anzahl = 0
+#                             for stat in result:
+#                                 anzahl += int(stat[0])
+#                             liste2.append(anzahl)
+#                         else:
+#                             liste2.append(0)
+#                     print(time.time() - startLoop)
+
+#                     #plt.plot(liste1, liste2, color="#0a0a0d", marker=".")
+
+#                     #plt.xlabel("Datum")
+#                     #plt.ylabel("Anzahl")
+#                     #plt.title("7 Tage Nachrichten Stats der aktivsten Nutzer")
+
+#                     text = ""
+#                     servermsgstats = time.time()
+#                     b = await getservernachrichtenstats(self, "Mitglieder", interaction.guild)
+#                     print(f"Servernachrichtenstats: {time.time() - servermsgstats}")
+#                     text2 = ""
+#                     servervoicestats = time.time()
+#                     c = await getservervoicestats(self, "Mitglieder", interaction.guild)
+#                     print(f"Serversprachstats: {time.time() - servervoicestats}")
+#                     try:
+#                         a = 0
+#                         completeloopstart = time.time()
+#                         print(f"b: {b}")
+#                         for data in b:
+#                             loopstart = time.time()
+#                             print(f"data: {data}")
+#                             l = []
+#                             mitglied = interaction.guild.get_member(int(data[0]))
+#                             if mitglied != None:
+#                                 if a == 5:
+#                                     break
+#                                 a += 1
+#                                 text += f"> {mitglied.mention}: {data[1]} {'Nachrichten' if int(data[1]) > 1 else 'Nachricht'}\n"
+#                                 legend.append(mitglied.name)
+                                
+#                                 secondloopstart = time.time()
+#                                 for i in range(maxdays):
+#                                     d2 = datetime.timedelta(days=maxdays-1-i)
+#                                     ab = tod - d2
+                                    
+#                                     dbstart = time.time()
+#                                     await cursor.execute("SELECT anzahl FROM nachrichten WHERE guildID = (%s) AND zeit = (%s) AND userID = (%s)", (interaction.guild.id, ab.strftime(f"%d.%m.%Y"), mitglied.id))
+#                                     print(f"dbend: {time.time() - dbstart}")
+#                                     result = await cursor.fetchall()
+#                                     if result != ():
+#                                         anzahl = 0
+#                                         for stat in result:
+#                                             anzahl += int(stat[0])
+#                                         l.append(anzahl)
+#                                     else:
+#                                         l.append(0)
+#                                 print(f"secondloopend: {time.time() - secondloopstart}")
+#                             plt.plot(liste1, l, marker="o")
+                            
+#                             print(f"LoopEnd {time.time() - loopstart}")
+                        
+#                         print(f"Completeloop: {time.time() - completeloopstart}")
+                                
+#                     except:
+#                         text += f"Keine Daten"
+                    
+#                     try:
+#                         a = 0
+#                         for data in c:
+#                             mitglied = interaction.guild.get_member(int(data[0]))
+#                             if mitglied != None:
+#                                 if a == 5:
+#                                     break
+#                                 a += 1
+#                                 text2 += f"> {mitglied.mention}: {data[1]} {'Minuten' if int(data[1]) > 1 else 'Minute'}\n"
+#                     except:
+#                         text2 += "Keine Daten"
+                       
+                    
+#                     embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1119583678083895346> Statistiken der aktivsten {art}", description=f"""
+# <:v_chat:1119577968457568327> **Aktivste Nutzer in Textkanälen:**
+# {text}
+
+# <:v_mikrofon:1119581634216329266> **Aktivste Nutzer in Sprachkanälen:**
+# {text2}""")
+#                     embed.set_thumbnail(url=interaction.guild.icon)
+#                     embed.set_image(url="attachment://stats.png")
+#                     embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                    
+#                     file = discord.File("stats.png", filename="stats.png")
+#                     os.remove("stats.png")
+#                     return await interaction.channel.send(file=file, embed=embed)
+                
+                #if art == "Kanäle":
+                #    liste1 = []
+                #    liste2 = []
+                #    legend = []
+                #    tod = datetime.datetime.now()
+                #    for i in range(0, maxdays):
+                #        d = datetime.timedelta(days=maxdays-i)
+                #        a = tod - d
+                #        liste1.append(f"{a.strftime('%b')} {int(a.__format__('%d'))}")
+                #        
+                #        await cursor.execute("SELECT anzahl FROM voice WHERE guildID = (%s) AND zeit = (%s)", (interaction.guild.id, a.strftime(f"%d.%m.%Y")))
+                #        result = await cursor.fetchall()
+                #        if result != ():
+                #            anzahl = 0
+                #            for stat in result:
+                #                anzahl += int(stat[0])
+                #            liste2.append(anzahl)
+                #        else:
+                #            liste2.append(0)
 
                     #plt.plot(liste1, liste2, color="#0a0a0d", marker=".")
-
-                    plt.xlabel("Datum")
-                    plt.ylabel("Anzahl")
-                    plt.title("14 Tage Nachrichten Stats der aktivsten Kanäle")
                     
-                    text = ""
-                    b = await getservernachrichtenstats(self, "Kanäle", interaction.guild)
-                    text2 = ""
-                    c = await getservervoicestats(self, "Kanäle", interaction.guild)
-                    try:
-                        a = 0
-                        for data in b:
-                            l = []
-                            mitglied = interaction.guild.get_channel(int(data[0]))
-                            if mitglied != None:
-                                if a == 5:
-                                    break
-                                a += 1
-                                text += f"> {mitglied.mention}: {data[1]} {'Nachrichten' if int(data[1]) > 1 else 'Nachricht'}\n"
-                                legend.append(mitglied.name)
+                #    text = ""
+                #    b = await getservernachrichtenstats(self, "Kanäle", interaction.guild)
+                #    text2 = ""
+                #    c = await getservervoicestats(self, "Kanäle", interaction.guild)
+                #    try:
+                #        a = 0
+                #        for data in b:
+                #            l = []
+                #            mitglied = interaction.guild.get_channel(int(data[0]))
+                #            if mitglied != None:
+                #                if a == 5:
+                #                    break
+                #                a += 1
+                #                text += f"> {mitglied.mention}: {data[1]} {'Nachrichten' if int(data[1]) > 1 else 'Nachricht'}\n"
+                #                legend.append(mitglied.name)
                                 
-                                for i in range(14):
-                                    d2 = datetime.timedelta(days=i)
-                                    ab = tod - d2
+                #                for i in range(0, maxdays):
+                #                    d2 = datetime.timedelta(days=maxdays-i)
+                #                    ab = tod - d2
                                     
                                     
-                                    await cursor.execute("SELECT anzahl FROM nachrichten WHERE guildID = (%s) AND zeit = (%s) AND channelID = (%s)", (interaction.guild.id, ab.strftime(f"%d.%m.%Y"), mitglied.id))
-                                    result = await cursor.fetchall()
-                                    if result != ():
-                                        anzahl = 0
-                                        for stat in result:
-                                            anzahl += int(stat[0])
-                                        l.append(anzahl)
-                                    else:
-                                        l.append(0)
-                            plt.plot(liste1, l)
+                #                    await cursor.execute("SELECT anzahl FROM nachrichten WHERE guildID = (%s) AND zeit = (%s) AND channelID = (%s)", (interaction.guild.id, ab.strftime(f"%d.%m.%Y"), mitglied.id))
+                #                    result = await cursor.fetchall()
+                #                    if result != ():
+                #                        anzahl = 0
+                #                        for stat in result:
+                #                            anzahl += int(stat[0])
+                #                        l.append(anzahl)
+                #                    else:
+                #                        l.append(0)
+                #            plt.plot(liste1, l)
                                 
-                    except:
-                        text += f"Keine Daten"
+                #    except:
+                #        text += f"Keine Daten"
                     
-                    try:
-                        a = 0
-                        for data in c:
-                            mitglied = interaction.guild.get_channel(int(data[0]))
-                            if mitglied != None:
-                                if a == 5:
-                                    break
-                                a += 1
-                                text2 += f"> {mitglied.mention}: {data[1]} {'Minuten' if int(data[1]) > 1 else 'Minute'}\n"
-                    except:
-                        text2 += "Keine Daten"
+                #    try:
+                #        a = 0
+                #        for data in c:
+                #            mitglied = interaction.guild.get_channel(int(data[0]))
+                #            if mitglied != None:
+                #                if a == 5:
+                #                    break
+                #                a += 1
+                #                text2 += f"> {mitglied.mention}: {data[1]} {'Minuten' if int(data[1]) > 1 else 'Minute'}\n"
+                #    except:
+                #        text2 += "Keine Daten"
                         
-                    plt.legend(legend)
-                    plt.xticks(rotation=45)
-                    plt.savefig("stats.png")
-                    plt.close()
-                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1119583678083895346> Statistiken der aktivsten {art}", description=f"""
-<:v_chat:1119577968457568327> **Aktivste Textkanäle:**
-{text}
+                #    plt.legend(legend)
+                #    plt.xticks(rotation=45)
+                #    plt.savefig("stats.png")
+                #    plt.close()
+                #    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1119583678083895346> Statistiken der aktivsten {art}", description=f"""
+#<:v_chat:1119577968457568327> **Aktivste Textkanäle:**
+#{text}
 
-<:v_mikrofon:1119581634216329266> **Aktivste Sprachkanäle:**
-{text2}""")
-                    embed.set_thumbnail(url=interaction.guild.icon)
-                    embed.set_image(url="attachment://stats.png")
-                    embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-                    
-                    file = discord.File("stats.png", filename="stats.png")
-                    os.remove("stats.png")
-                    return await interaction.channel.send(file=file, embed=embed)
-
-    @app_commands.command()
-    @app_commands.guild_only()
-    @app_commands.checks.has_permissions(administrator=True)
-    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
-    async def statschannel(self, interaction: discord.Interaction, argument: typing.Literal["Einrichten","Anzeigen","Ausschalten"], kanal: discord.abc.GuildChannel=None):
-        """Richte einen Stats Kanal ein."""
-        status = await haspremium_forserver(self, interaction.guild)
-        if status == False:
-            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                if argument == "Ausschalten":
-                    await cursor.execute(f"SELECT channelID, text FROM upstats WHERE guildID = {interaction.guild.id}")
-                    result = await cursor.fetchone()
-                    if result == None:
-                        return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Auf diesem Server ist kein Stats-Kanal eingerichtet.**", ephemeral=True)
-                    await cursor.execute("DELETE FROM upstats WHERE guildID = (%s)", (interaction.guild.id))
-                    return await interaction.response.send_message("**<:v_haken:1119579684057907251> Die Stats-Kanäle wurden ausgeschaltet.**")
-                if argument == "Einrichten":
-                    if kanal:
-                        await cursor.execute("SELECT text FROM upstats WHERE guildID = (%s) AND channelID = (%s)", (interaction.guild.id, kanal.id))
-                        result = await cursor.fetchone()
-                        if result:
-                            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Kanal ist bereits ein Stats-Kanal.**", ephemeral=True)
-
-                    await interaction.response.send_modal(StatsKanal(self.bot, kanal))
-                if argument == "Anzeigen":
-                    await cursor.execute(f"SELECT guildID, channelID, text FROM upstats WHERE guildID = {interaction.guild.id}")
-                    wel = await cursor.fetchall()
-                    if wel == []:
-                        return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Auf diesem Server ist kein Stats-Kanal eingerichtet.**", ephemeral=True)
-
-                    embed = discord.Embed(title="Stats Kanäle", description=f"Die aktuellen Stats Kanäle:", color=await getcolour(self, interaction.user))
-                    for ergebnis in wel:
-                        k = interaction.guild.get_channel(int(ergebnis[1]))
-                        if k != None:
-                            embed.add_field(name=ergebnis[2] if len(ergebnis[2]) > 7 else f"{str(ergebnis[2])[:7]}...", value=k.mention, inline=False)
-                    await interaction.response.send_message(embed=embed)
+#<:v_mikrofon:1119581634216329266> **Aktivste Sprachkanäle:**
+#{text2}""")
+                #    embed.set_thumbnail(url=interaction.guild.icon)
+                #    embed.set_image(url="attachment://stats.png")
+                #    embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                #    
+                #    file = discord.File("stats.png", filename="stats.png")
+                #    os.remove("stats.png")
+                #    return await interaction.channel.send(file=file, embed=embed)
 
                     
 async def setup(bot):

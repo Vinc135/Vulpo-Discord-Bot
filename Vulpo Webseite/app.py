@@ -128,7 +128,7 @@ from datetime import datetime
 async def get_all_tickets(p, id):
     async with p.acquire() as conn:
         async with conn.cursor() as cursor:
-            team = [897641092697186336, 981898944017739836, 976156443675873361, 824378909985341451]
+            team = [824378909985341451, 1073582376610967602]
             if int(id) not in team:
                 await cursor.execute("SELECT autorname, autorID, ticketID, titel, status, letztes_update FROM w_tickets WHERE autorID = (%s)", (id))
                 rows = await cursor.fetchall()
@@ -151,6 +151,28 @@ async def get_all_tickets(p, id):
 
                 sorted_tickets = dict(sorted(tickets_dict.items(), key=lambda x: sort_key_function(x[1]), reverse=True))
                 return sorted_tickets
+            
+async def get_one_ticket(p, ticketid, message, type):
+    async with p.acquire() as conn:
+        async with conn.cursor() as cursor:
+            if type == "msg":
+                await cursor.execute("SELECT autorID, zeit, autorname, nachricht FROM w_ticketmsg WHERE ticketID = (%s) AND nachricht = (%s)", (ticketid, message))
+                result = await cursor.fetchone()
+                if result != None:
+                    return False
+                
+            if type == "close":
+                await cursor.execute("SELECT status FROM w_tickets WHERE ticketID = (%s) AND status = (%s)", (ticketid, "Offen"))
+                result1 = await cursor.fetchone()
+                if result1 == None:
+                    return False
+            
+
+            await cursor.execute("SELECT autorID FROM w_tickets WHERE ticketID = (%s)", (ticketid))
+            result = await cursor.fetchone()
+            autorid = result[0]
+
+            return autorid
 
 def sort_key_function(ticket):
     # Erst nach Status, dann nach Zeit sortieren
@@ -166,7 +188,7 @@ async def new_ticket(p, autorID, autorname, titel):
             await cursor.execute("SELECT * FROM w_tickets WHERE autorID = (%s) AND titel = (%s)", (autorID, titel))
             result = await cursor.fetchone()
             if result != None:
-                return
+                return False
 
             await cursor.execute("SELECT MAX(ticketID) FROM w_tickets")
             row = await cursor.fetchone()
@@ -200,7 +222,7 @@ async def open_ticket(p, ticketID):
                 autorID, zeit_str, autorname, nachricht = row
                 zeit = datetime.strptime(zeit_str, "%d.%m.%Y %H:%M:%S")
 
-                team = [897641092697186336, 981898944017739836, 976156443675873361, 824378909985341451]
+                team = [824378909985341451, 1073582376610967602]
                 if int(autorID) not in team:
                     messages_dict[zeit] = {
                         "autorID": autorID,
@@ -335,8 +357,20 @@ def ticketsystem():
         else:
             return redirect("/logout")
         
-    except Exception as e:
-        return redirect("/logout")
+    except:
+        try:
+            id = request.form.get('id', '')
+            username = request.form.get('username', '')
+            avatar = request.form.get('avatar', '')
+            if id and username and avatar:
+                task = aiomysql_loop.create_task(get_all_tickets(pool, id))
+                all_tickets = aiomysql_loop.run_until_complete(task) or None
+                return render_template('tickets.html', id=id, username=username, avatar=avatar, all_tickets=all_tickets)
+            else:
+                return redirect("/logout")
+            
+        except Exception as e:
+            return redirect("/logout")
     
 @app.route("/premiumkauf", methods=["POST"])
 def premiumkauf():
@@ -369,7 +403,17 @@ def new_tickt():
         if autorID and autorname and titel and avatar:
             task = aiomysql_loop.create_task(new_ticket(pool, autorID, autorname, titel))
             ticketID = aiomysql_loop.run_until_complete(task)
-            return render_template('ticket.html', id=autorID, username=autorname, avatar=avatar, thema=titel, ticketID=ticketID)
+            if ticketID == False:
+                return redirect("/logout")
+            if ticketID != False:
+                res1 = requests.post(url="https://discord.com/api/v10/users/@me/channels", headers={"authorization": "Bot OTI1Nzk5NTU5NTc2MzIyMDc4.GcwvXN.EkMMDxTqykR8em6L4lJqOouGfvAvH1J1rq9nJQ"}, json={"recipient_id": autorID})
+                channel_id = res1.json()["id"]
+
+                requests.post(url=f"https://discord.com/api/v10/channels/{channel_id}/messages", data={"content": "Du hast ein Ticket geöffnet. Ab jetzt erhältst du hier immer eine Nachricht, sobald der Support in deinem Ticket antwortet. Klicke auf fogenden Link, um dich auf Vulpos Webseite einzuloggen: [Hier einloggen](https://vulpo-bot.de/login)"}, headers={"authorization": "Bot OTI1Nzk5NTU5NTc2MzIyMDc4.GcwvXN.EkMMDxTqykR8em6L4lJqOouGfvAvH1J1rq9nJQ"})
+
+                return render_template('ticket.html', id=autorID, username=autorname, avatar=avatar, thema=titel, ticketID=ticketID)
+            
+            
         else:
             return redirect("/logout")
         
@@ -408,11 +452,22 @@ def send_msg():
         avatar = request.form.get('avatar', '')
         message = request.form.get('message', '')
         if id and username and thema and ticketID and avatar and message:
-            team = [897641092697186336, 981898944017739836, 976156443675873361, 824378909985341451]
+            team = [824378909985341451, 1073582376610967602]
             if int(id) in team:
                 status = "Warte auf User"
+                task = aiomysql_loop.create_task(get_one_ticket(pool, ticketID, message, "msg"))
+                autorid = aiomysql_loop.run_until_complete(task)
+                if autorid == False:
+                    pass
+
+                if autorid != False:
+                    res1 = requests.post(url="https://discord.com/api/v10/users/@me/channels", headers={"authorization": "Bot OTI1Nzk5NTU5NTc2MzIyMDc4.GcwvXN.EkMMDxTqykR8em6L4lJqOouGfvAvH1J1rq9nJQ"}, json={"recipient_id": autorid})
+                    channel_id = res1.json()["id"]
+
+                    requests.post(url=f"https://discord.com/api/v10/channels/{channel_id}/messages", data={"content": "Du hast eine Antwort auf dein Ticket bekommen. Klicke auf fogenden Link, um dich auf Vulpos Webseite einzuloggen: [Hier einloggen](https://vulpo-bot.de/login)"}, headers={"authorization": "Bot OTI1Nzk5NTU5NTc2MzIyMDc4.GcwvXN.EkMMDxTqykR8em6L4lJqOouGfvAvH1J1rq9nJQ"})
             else:
                 status = "Warte auf Support"
+    
             task1 = aiomysql_loop.create_task(send_message(pool, ticketID, message, id, username, status))
             aiomysql_loop.run_until_complete(task1)
 
@@ -432,13 +487,25 @@ def close_tickt():
     username = request.form.get('username', '')
     avatar = request.form.get('avatar', '')
     if id and username and avatar and ticketID:
+        task = aiomysql_loop.create_task(get_one_ticket(pool, ticketID, "", "close"))
+        autorid = aiomysql_loop.run_until_complete(task)
+        if autorid == False:
+            pass
+
+        if autorid != False:
+            res1 = requests.post(url="https://discord.com/api/v10/users/@me/channels", headers={"authorization": "Bot OTI1Nzk5NTU5NTc2MzIyMDc4.GcwvXN.EkMMDxTqykR8em6L4lJqOouGfvAvH1J1rq9nJQ"}, json={"recipient_id": autorid})
+            channel_id = res1.json()["id"]
+
+            requests.post(url=f"https://discord.com/api/v10/channels/{channel_id}/messages", data={"content": "Dein Ticket wurde geschlossen. Klicke auf fogenden Link, um dich auf Vulpos Webseite einzuloggen: [Hier einloggen](https://vulpo-bot.de/login)"}, headers={"authorization": "Bot OTI1Nzk5NTU5NTc2MzIyMDc4.GcwvXN.EkMMDxTqykR8em6L4lJqOouGfvAvH1J1rq9nJQ"})
+    
         task1 = aiomysql_loop.create_task(close_ticket(pool, ticketID))
         aiomysql_loop.run_until_complete(task1)
 
         task = aiomysql_loop.create_task(get_all_tickets(pool, id))
         all_tickets = aiomysql_loop.run_until_complete(task) or None
         return render_template('tickets.html', id=id, username=username, avatar=avatar, all_tickets=all_tickets)
-    
+        
+        
 @app.errorhandler(404)
 def page_not_found(error):
     """Diese Seite kommt, wenn eine Seite nicht gefunden wird."""
@@ -562,4 +629,4 @@ def logout():
 
 if __name__ == "__main__":
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=8000)

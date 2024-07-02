@@ -76,6 +76,7 @@ class ClosebuttonView(discord.ui.View):
 
     @discord.ui.button(label="Ticket schließen", emoji="<:v_kreuz:1119580775411621908>", custom_id="Button-CloseTicket", style=discord.ButtonStyle.red)
     async def button_closeticket(self, interaction: discord.Interaction, button):
+        await interaction.response.defer()
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 await cursor.execute(f"SELECT channelID, userID, panelID FROM tickets WHERE channelID = {interaction.channel_id}")
@@ -87,7 +88,7 @@ class ClosebuttonView(discord.ui.View):
                     r = await cursor.fetchone()
                     role = interaction.guild.get_role(int(r[0]))
                     if role not in interaction.user.roles:
-                        return await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
+                        return await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
                 except:
                     pass
                 member = interaction.user
@@ -117,7 +118,7 @@ class ClosebuttonView(discord.ui.View):
                 view = DeletebuttonView(self.bot)
                 await channel.send(f"{member.mention} hat das Ticket geschlossen.\nDrücke unter dieser Nachricht auf den Mülleimer um das Ticket zu löschen.", view=view)
                 button.disabled = True
-                await interaction.response.edit_message(view=self)
+                await interaction.edit_original_response(view=self)
 
                 try:
                     await cursor.execute(f"SELECT channelid FROM ticketlog WHERE guildid = {interaction.guild_id}")
@@ -136,6 +137,7 @@ class ClosebuttonView(discord.ui.View):
 
     @discord.ui.button(label="Ticket claimen", emoji="<:v_support:1119586154610692096>", custom_id="Button-ClaimTicket", style=discord.ButtonStyle.grey)
     async def button_claimticket(self, interaction: discord.Interaction, button):
+        await interaction.response.defer()
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 await cursor.execute(f"SELECT channelID, userID, panelID FROM tickets WHERE channelID = {interaction.channel_id}")
@@ -147,7 +149,7 @@ class ClosebuttonView(discord.ui.View):
                     r = await cursor.fetchone()
                     role = interaction.guild.get_role(int(r[0]))
                     if role not in interaction.user.roles:
-                        return await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
+                        return await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
                 except:
                     pass
                 channel = interaction.channel
@@ -191,7 +193,7 @@ class ClosebuttonView(discord.ui.View):
                 }
 
                 await interaction.channel.edit(overwrites=overwrites)
-                await interaction.response.edit_message(content=f"{member.mention}", embed=embed, view=self)
+                await interaction.edit_original_response(content=f"{member.mention}", embed=embed, view=self)
 
                 try:
                     await cursor.execute(f"SELECT channelid FROM ticketlog WHERE guildid = {interaction.guild_id}")
@@ -210,6 +212,7 @@ class ClosebuttonView(discord.ui.View):
 
     @discord.ui.button(label="Userinfo", emoji="<:v_karte:1119580106822795324>", custom_id="Button-UserInfo", style=discord.ButtonStyle.grey)
     async def button_userinfo(self, interaction: discord.Interaction, button):
+        await interaction.response.defer()
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 await cursor.execute(f"SELECT channelID, userID, panelID FROM tickets WHERE channelID = {interaction.channel_id}")
@@ -272,10 +275,11 @@ class ClosebuttonView(discord.ui.View):
                 if user.banner:
                     embed.set_image(url=user.banner)
                 embed.set_author(name=f"Userinfo {member}", icon_url=member.avatar)
-                await interaction.response.send_message(embed=embed, ephemeral=True)
+                await interaction.followup.send(embed=embed, ephemeral=True)
 
     @discord.ui.button(label="Einstellungen", emoji="<:v_einstellungen:1119578559086874636>", custom_id="Button-einstellungen", style=discord.ButtonStyle.blurple)
     async def button_einstellungen(self, interaction: discord.Interaction, button):
+        await interaction.response.defer()
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 await cursor.execute(f"SELECT channelID, userID, panelID FROM tickets WHERE channelID = {interaction.channel_id}")
@@ -287,13 +291,13 @@ class ClosebuttonView(discord.ui.View):
                     r = await cursor.fetchone()
                     role = interaction.guild.get_role(int(r[0]))
                     if role not in interaction.user.roles:
-                        return await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
+                        return await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
                 except:
                     pass
                 
                 view = discord.ui.View(timeout=None)
                 view.add_item(menu_member(self.bot))
-                await interaction.response.send_message(f"<:v_einstellungen:1119578559086874636> **Du kannst hier Nutzer auswählen, die vom Ticket entfernt werden sollen und welche hinzugefügt werden sollen.**", ephemeral=True, view=view)
+                await interaction.followup.send(f"<:v_einstellungen:1119578559086874636> **Du kannst hier Nutzer auswählen, die vom Ticket entfernt werden sollen und welche hinzugefügt werden sollen.**", ephemeral=True, view=view)
 
 class DeletebuttonView(discord.ui.View):
     def __init__(self, bot):
@@ -302,6 +306,7 @@ class DeletebuttonView(discord.ui.View):
 
     @discord.ui.button(label="Ticket löschen", emoji="<:v_kreuz:1119580775411621908>", custom_id="Button-DeleteTicket", style=discord.ButtonStyle.red)
     async def button_deleteticket(self, interaction: discord.Interaction, button):
+        await interaction.response.defer()
         await interaction.channel.send(f"{interaction.user.mention} hat das Ticket gelöscht.")
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
@@ -314,7 +319,7 @@ class DeletebuttonView(discord.ui.View):
                     r = await cursor.fetchone()
                     role = interaction.guild.get_role(int(r[0]))
                     if role not in interaction.user.roles:
-                        return await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
+                        return await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
                 except:
                     pass
                 member = interaction.user
@@ -358,6 +363,7 @@ class DeletebuttonView(discord.ui.View):
 
     @discord.ui.button(label="Ticket erneut öffnen", emoji="<:v_sicherheit:1119586595473989784>", custom_id="Button-ReopenTicket", style=discord.ButtonStyle.green)
     async def button_reopenticket(self, interaction: discord.Interaction, button):
+        await interaction.response.defer()
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 await cursor.execute(f"SELECT channelID, userID, panelID FROM tickets WHERE channelID = {interaction.channel_id}")
@@ -369,7 +375,7 @@ class DeletebuttonView(discord.ui.View):
                     r = await cursor.fetchone()
                     role = interaction.guild.get_role(int(r[0]))
                     if role not in interaction.user.roles:
-                        return await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
+                        return await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
                 except:
                     pass
                 member = interaction.user
@@ -396,7 +402,7 @@ class DeletebuttonView(discord.ui.View):
                 await channel.edit(category=category, overwrites=overwrites)
                 await channel.send(f"{member.mention} hat das Ticket erneut geöffnet.")
                 button.disabled = True
-                await interaction.response.edit_message(view=self)
+                await interaction.edit_original_response(view=self)
 
                 try:
                     await cursor.execute(f"SELECT channelid FROM ticketlog WHERE guildid = {interaction.guild_id}")
@@ -459,6 +465,7 @@ class Ticketsystem(commands.Cog):
     @app_commands.checks.has_permissions(manage_channels=True)
     async def createpanel(self, interaction, kanal: discord.TextChannel, titel: str, beschreibung: str, supportrolle: discord.Role, kategorie: discord.CategoryChannel, archiv: discord.CategoryChannel):
         """Erstelle ein Panel für Tickets."""
+        await interaction.response.defer()
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 finalemb = discord.Embed(title="Ticketsystem", description="Ein neues Panel wurde erstellt!", color=await getcolour(self, interaction.user))
@@ -469,7 +476,7 @@ class Ticketsystem(commands.Cog):
                 finalemb.add_field(name="Supportrolle", value=supportrolle.mention, inline=False)
                 finalemb.add_field(name="Kategorie für offene Tickets", value=kategorie.name, inline=False)
                 finalemb.add_field(name="Kategorie für geschlossene Tickets", value=archiv.name, inline=False)
-                await interaction.response.send_message(f"{interaction.user.mention} hat ein Panel erstellt.", embed=finalemb)
+                await interaction.followup.send(f"{interaction.user.mention} hat ein Panel erstellt.", embed=finalemb)
 
                 embed = discord.Embed(title=titel, description=beschreibung, color=await getcolour(self, interaction.user))
                 embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")

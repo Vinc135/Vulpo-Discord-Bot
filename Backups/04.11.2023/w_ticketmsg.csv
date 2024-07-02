@@ -1,0 +1,171 @@
+"autorID","ticketID","zeit","autorname","nachricht"
+"824378909985341451","1","25.07.2023 15:39:54",vncnt.lrz,Moin was geht?
+"824378909985341451","1","25.07.2023 15:40:35",vncnt.lrz,Wie findest du es?
+"947400397990002689","1","25.07.2023 15:51:16",luispupuis,Hi gut
+"618805150756110336","4","25.07.2023 16:35:51",martinbndr,Wie lange geht mein Premium noch? Also wann ist das derzeitige Ablaufdatum/Uhrzeit?
+"824378909985341451","4","25.07.2023 16:55:44",vncnt.lrz,"Hey Martin, dein Premium geht noch bis Samstag, dem 9. September 2023. Hast du vor, es dir wieder zu holen? "
+"824378909985341451","4","25.07.2023 16:56:11",vncnt.lrz,Ah und Uhrzeit 15:30 Uhr.
+"618805150756110336","4","25.07.2023 17:33:49",martinbndr,"Ja, sehr wahrscheinlich. Danke für die Info!"
+"824378909985341451","4","25.07.2023 17:34:35",vncnt.lrz,Gerne. Schönen Tag noch!
+"1092441245743325226","5","28.07.2023 19:31:08",kreppergamer106yt,Hai
+"824378909985341451","5","29.07.2023 13:30:01",vncnt.lrz,"Willkommen im Support, wie kann ich Ihnen helfen?"
+"824378909985341451","6","29.07.2023 13:33:14",vncnt.lrz,"Willkommen im Support. Ist es richtig, dass Sie einen Entbannungsantrag stellen wollen? Wenn ja, schicke ich Ihnen hier ein paar Fragen, die Sie beantworten müssen.
+"
+"507436719339995136","6","29.07.2023 13:33:33",tobiasschnabeltv,könnt ihr den tobiasschnabeltv entbannen es tut ihm auch sehr sehr leid was er gemacht hat er nimmt es auch zurück er hat keine Fehler draus gelernt er wird dich auch nie mehr machen versprochen
+"824378909985341451","6","29.07.2023 13:35:38",vncnt.lrz,"Sind Sie nicht selbst ""tobiasschnabeltv""? Sie schreiben ""er""."
+"824378909985341451","7","29.07.2023 13:40:49",vncnt.lrz,test
+"824378909985341451","6","29.07.2023 13:48:06",vncnt.lrz,"Beantworten Sie bitte folgende Fragen sachlich und vollständig.
+
+1. Warum wurden Sie vom Benutzen des Vulpo Bots ausgeschlossen?
+2. Welche konkreten Verhaltensweisen oder Aktionen haben dazu geführt, dass Sie vom Vulpo Bot ausgeschlossen wurden?
+3. Wie erkennen Sie jetzt, dass Ihr Verhalten unangemessen war und dass Sie gegen die Nutzungsbedingungen des Vulpo Bots verstoßen haben?
+4. Welche Maßnahmen haben Sie ergriffen, um sicherzustellen, dass Sie nicht erneut gegen die Nutzungsbedingungen des Vulpo Bots verstoßen?
+5. Beschreiben Sie Ihre bisherige Erfahrung und Interaktion mit dem Vulpo Bot.
+6. Welche Funktionen oder Aspekte des Vulpo Bots haben Ihnen besonders gefallen oder waren Ihnen besonders wichtig?
+7. Gibt es besondere Gründe oder Umstände, die zu Ihren vorherigen Handlungen im Zusammenhang mit dem Vulpo Bot geführt haben? 
+8. Wie beabsichtigen Sie, den Vulpo Bot in Zukunft zu nutzen und dabei sicherzustellen, dass Sie die Nutzungsbedingungen und Richtlinien einhalten?
+9. Haben Sie Bugs oder Fehler im Vulpo Bot ausgenutzt, um Vorteile zu erlangen? Wenn ja, welchen Bug oder Fehler haben Sie ausgenutzt?
+10. Sind Sie bereit, eine Verpflichtung einzugehen, den Vulpo Bot nur im Rahmen der festgelegten Nutzungsbedingungen zu verwenden und keine weiteren Bugs oder Fehler auszunutzen?
+
+Falls wir überzeugt davon sind, dass Sie sich gebessert haben werden wir Sie entbannen.
+"
+"931795662704615444","8","30.07.2023 18:03:42",lecallele,"Hallo liebes Vulpo-Team. Ich habe ein kleines Problem, bei mir funktioniert der Levelupkanal nicht. Es kommt einfach keine Benachrichtigung, dass man ein Level aufgestiegen ist. Ich habe es auf einem meiner Test-Server probiert und habe genau die gleichen Einstellungen vorgenommen wie auf meinem Hauptserver und auf dem Test-Server hat es funktioniert."
+"824378909985341451","8","30.07.2023 19:06:40",vncnt.lrz,"Hallo, könnte es daran liegen dass auf dem Hauptserver Levelup Rollen eingestellt sind, die über Vulpos höchsten Rolle sind? Es könnte sein, dass Vulpo failed die Rolle zu vergeben und so auch bei der Nachricht failed. Sonst könnte es noch an fehlenden Rechten liegen. Gib mal Bescheid."
+"931795662704615444","8","30.07.2023 20:04:48",lecallele,"Nein, ich habe keine Levelup-Rollen eingestellt, die Vulpo-Rolle ist jedoch ganz unten und eventuell liegt es ja daran."
+"931795662704615444","8","30.07.2023 20:12:09",lecallele,"Das klappt auch nicht.
+"
+"931795662704615444","8","30.07.2023 20:22:11",lecallele,"Vulpo hat auf meinem Hauptserver genau dieselben Einstellungen wie auf dem Test-Server, wo es funktioniert. 
+Sprich: Kanäle ansehen, Nachrichten senden, Links einbetten, Dateien anhängen, Reaktion hinzufügen, Externe Emojis verwenden, Externe Sticker verwenden, Nachrichten verwalten, Nachrichtenverlauf anzeigen.
+Und auf meinem Test-Server ist die Vulpo-Rolle ganz unten gelistet und dort funktioniert es ja auch."
+"824378909985341451","8","30.07.2023 20:30:44",vncnt.lrz,Das ist komisch. Auf welche Einstellung ist diese Nachricht? Kanal des Levelups? Nachricht maybe zu lang? Schick mal diese Dinge und die Serverid bitte.
+"931795662704615444","8","30.07.2023 20:42:26",lecallele,"Eingestellt habe ich es so: /levelsystem levelupkanal modus: Spezieller Kanal (Kanalangabe benötigt) kanal: #🤖｜levelup
+Server ID: 931796676774092842
+
+"
+"931795662704615444","8","30.07.2023 20:46:43",lecallele,"Der #🤖｜levelup Kanal ist noch privat, weil ich es ja testen möchte, ob es klappt, aber das sollte eigentlich nicht daran liegen, weil Vulpo ja darauf zugriff hat."
+"824378909985341451","8","30.07.2023 21:46:27",vncnt.lrz,Ich werde es mir anschauen sobald ich Zeit finde. Frühestens morgen 17 Uhr.
+"931795662704615444","8","30.07.2023 21:49:56",lecallele,"Alles klar. Dann danke ich fürs erste.
+"
+"824378909985341451","8","31.07.2023 21:51:48",vncnt.lrz,"Hey, ich habe nun Zeit. Ich bin der Sache mal auf den Grund gegangen und sehe, dass dein Server(931796676774092842) zwar einen Eintrag hat, jedoch mit den falschen Werten. Passt Channel(1135218996044628089)? Außerdem ist bei der Nachricht einfach nichts eingetragen. Leer gelassen das Feld. Ich teste gerade den Befehl und es toppt irgendwie kein Feld auf zum einstellen der Nachricht. Ich gehe der Sache mal tiefer auf den Grund."
+"824378909985341451","8","31.07.2023 21:52:57",vncnt.lrz,"Huch das war mein Fehler 🙈. Es gibt ja auch einen Befehl: /levelsystem levelupmessage. Dir ist bestimmt das selbe passiert, ein Kanal eingestellt aber keine Nachricht. Ist das die Lösung?"
+"931795662704615444","8","01.08.2023 20:40:39",lecallele,"Wann wird mir weiter geholfen?
+"
+"931795662704615444","8","01.08.2023 20:41:42",lecallele,"Oh... hab die Nachrichten nicht gesehen, sorry. Die wurden nicht geladen.
+"
+"931795662704615444","8","01.08.2023 20:53:36",lecallele,Es hat funktioniert! Bräuchte jetzt nur noch Hilfe bei den Variablen für Player und Level.
+"1088585103178997772","9","02.08.2023 00:06:26",kenobi.tobi,"Herzlich willkommen Beim ADAC Paderborn, es wird sich gleich ein verfügbarer Mitarbeiter um sie kümmern. Haben sie einen kurzen Moment geduld"
+"1088585103178997772","9","02.08.2023 00:06:41",kenobi.tobi,test
+"824378909985341451","8","02.08.2023 07:48:01",vncnt.lrz,Steht doch da: Nutze %level für das Level und %member für den Member.
+"931795662704615444","8","02.08.2023 12:57:21",lecallele,"Das stand bei mir nicht da, oder ich bin einfach blind. Ich danke dir aber für den Support. "
+"824378909985341451","10","09.08.2023 09:58:51",vncnt.lrz,Willkommen im Support. Wie kann ich Ihnen helfen?
+"1067793800082235493","11","10.08.2023 01:24:00",megasag,Hallo
+"1067793800082235493","11","10.08.2023 01:24:08",megasag,Hi 
+"824378909985341451","6","10.08.2023 10:12:36",vncnt.lrz,Dein Ticket wurde aufgrund von Inaktivität geschlossen.
+"824378909985341451","10","10.08.2023 10:12:55",vncnt.lrz,Dein Ticket wurde aufgrund von Inaktivität geschlossen.
+"824378909985341451","12","10.08.2023 10:28:27",vncnt.lrz,s
+"824378909985341451",None,"10.08.2023 10:28:59",vncnt.lrz,test
+"824378909985341451","13","10.08.2023 10:31:23",vncnt.lrz,test
+"1091423409927360522","14","12.08.2023 14:23:20",crazymax1606,"Guten Tag, ich wollte Fragen wie man den Auto Mod ausschaltet, er warnt auf unserem werbeserver einfach so obwohl ich nichts akitiviert habe. 
+Geht das weg oder muss ich den Bot weg machen?
+"
+"976156443675873361","14","13.08.2023 08:49:29",erschrecken,"Hallo
+Mach mal ""/automod liste"" um zu sehen, was Vulpo da macht"
+"988502572404969552","16","13.08.2023 08:52:32",christianstun,"Hi Vinc, endlich hat es geklappt!"
+"824378909985341451","16","13.08.2023 11:27:35",vncnt.lrz,Das ist gut. Schildere mal dein Anliegen.
+"988502572404969552","16","13.08.2023 18:48:24",christianstun,"Also:
+
+Es geht wieder und den Supporter TobiJT.
+Wie ihr vielleicht mitbekommen habt, wurde sein Account gelöscht. 
+Ich habe Tobi auf Whatsapp, somit kann ich immer noch mit ihm schreiben.
+
+Tobi hat 2 Fragen an dich:
+1. Würde es gehen, wenn er sich einen neuen Account macht, dass er dann einfach so ins Team wieder reinkommt und seinen alten Posten wieder aufnehmen kann?
+
+2. Außerdem würde er nochmal persönlich mit dir reden.
+Deshalb möchte er dich fragen, ob es in Ordnung sei, wenn ihr beide nochmal per Email oder so redet. (Weil er noch ein paar Fragen hat oder so. Weiß ich leider nicht.)
+Wäre das in Ordnung?
+
+Bei weiteren Fragen stehe ich zur Verfügung,
+MfG
+Christianstun
+"
+"824378909985341451","16","13.08.2023 19:38:32",vncnt.lrz,"Er hatte ja keinen festen Posten. Es war ja nur ein Testzeitraum. Wir nehmen ihn nicht wieder auf, da er ja von Discord gebannt wurde und die bestimmt einen guten Grund hatten. Falls er fragen hat bin ich per Email oder hier erreichbar."
+"988502572404969552","16","14.08.2023 08:32:25",christianstun,"Ich habe die Nachricht und die Email Adresse weitergeleitet. Ich denke, das Ticket kann nun geschlossen werden."
+"1117021103366357012",None,"14.08.2023 10:32:04",maxcool01,Willkommen Bei Deiner Gang Bewerbung ein Staff Mitglied wird dir gleich eine Vorlage schicken bitte warten sie 5-10 min
+"1124575309493178378","19","14.08.2023 20:36:36",luca500ps1,Wenn du hilfe brauchst kannst du hier ein ticket öffnen um den support zu kotaktieren
+"800387017850224660","21","18.08.2023 19:01:38",toxcigamerxd,Habt ihr keinen guten Web Dev?
+"824378909985341451","21","18.08.2023 22:13:51",vncnt.lrz,Ich mache als Entwickler alles an Vulpo alleine.
+"1117021103366357012","18","24.08.2023 17:21:32",maxcool01,Hier kannst du dich als Gang Mitglied bewerben
+"1117021103366357012","18","24.08.2023 17:21:59",maxcool01,Ok
+"824378909985341451","18","28.08.2023 12:27:29",vncnt.lrz,Was ist denn dein Ziel? Hier ist der Support von Vulpo. Du kannst hier Fragen zu Vulpo stellen.
+"824378909985341451","14","28.08.2023 12:28:14",vncnt.lrz,"Dein Ticket wurde geschlossen, da du nicht mehr geantwortet hast."
+"800387017850224660","21","28.08.2023 15:20:49",toxcigamerxd,Hattest du nicht mal irgendwie nen Web Dev
+"824378909985341451","21","28.08.2023 15:26:14",vncnt.lrz,Kurzzeitig bis ich alles selbst übernommen habe.
+"800387017850224660","21","28.08.2023 15:28:10",toxcigamerxd,achso oke krass naja ist auch eig besser oder?
+"976156443675873361","23","29.08.2023 09:46:47",erschrecken,"Hallo.
+Welchen Bug hast du denn gefunden?
+"
+"1139934732835098745","23","29.08.2023 09:48:42",tob_main.acc,"Ich habe einen Bug im Economy System gefunden:
+Ich hatte keinen Job drin und hab /work dann hab ich einen Job reingemacht und dann nochmal aber dann muss ich eine Stunde warten obwohl ich nicht gearbeitet habe. Hab auch einen Screenshot.
+Tobi (aka TobiJT)"
+"1139934732835098745","23","29.08.2023 09:49:42",tob_main.acc,Ist das so verständlich?
+"976156443675873361","23","29.08.2023 09:53:16",erschrecken,"Ich frag mal Vinc ob er das beheben kann :D
+"
+"1139934732835098745","23","29.08.2023 09:55:51",tob_main.acc,Passt
+"1139934732835098745","23","29.08.2023 09:58:18",tob_main.acc,Ich war ja bei euch im Team (Testphase ich weiß) und wollte jetzt noch fragen ob ich mich neu bewerben müsste oder gesperrt bin oder einfach wieder aufgenommen werde im Team?
+"1121306481631961088","24","29.08.2023 16:50:28",bibabobycarboyyoshy,"Hallo liebes Vulpo Team
+
+
+Ich bin Yoshy und wollte mich als Mod bewerben
+
+*Warum ich?* - Ich mag den Bot sehr und würde mich freuen ihn zu supporten und moderieren
+
+*Über mich* - Ich programmiere leidenschaftlich in der Sprache **Java**, **JavaScript**, **HTML** und **CSS**. Ich habe schon mehrere Minecraft-Plugins und Discord-Bots gecodet. Dazu spiele ich auch gerne selber games z.b Minecraft, Fall Guys oder Asphalt 9. Ich mache auch ganz gerne Sport was ich aber in letzter Zeit ein bisschen vernachlässige
+
+Es würde mich sehr freuen wenn sie mich annehmen könnten da ich gerne ein Teil dieses Bot seihen würde"
+"1054408659540660234","25","03.09.2023 13:57:16",messidergoat,ff
+"1140393384486387885","26","08.09.2023 05:32:32",xottic_07,Ticket 
+"824378909985341451","23","11.09.2023 18:18:52",vncnt.lrz,"Hey, sorry für die späte Antwort, hatte das nicht mehr auf dem Schirm. Warum wurdest du aus der Testphase gekickt?"
+"824378909985341451","24","11.09.2023 18:20:19",vncnt.lrz,"Hallo, deine Bewerbung wurde abgelehnt. Du hast uns nicht überzeugt."
+"1140393384486387885","26","17.09.2023 01:38:57",xottic_07,K
+"1055779916584587305","27","21.09.2023 20:16:15",julian0990,Guten Tag ich wollte einmal fragen auf wie viele. Servern vulpo nun aktiv ist 
+"976156443675873361","27","23.09.2023 18:58:13",erschrecken,Über 2.000. Bald schon 2.100 :)
+"800387017850224660","21","23.09.2023 18:58:33",toxcigamerxd,Test
+"936294577323790346","31","29.09.2023 17:23:48",pohaski_74,"min. 150 Wörter
+-IC Infos
+-3 Stärken und 3 Schwächen
+-Warum du?
+-Warum das LSPD?
+-Onlinezeiten
+-Schluss"
+"936294577323790346",None,"29.09.2023 17:26:03",pohaski_74,"min. 150 Wörter 
+-IC Infos 
+-3 Stärken und 3 Schwächen 
+-Warum du? 
+-Warum das LSPD? 
+-Onlinezeiten 
+-Schluss"
+"936294577323790346","31","29.09.2023 17:32:22",pohaski_74,Hallo
+"936294577323790346","31","29.09.2023 17:32:49",pohaski_74,Will das gerne bei Bewerbungen haben geht das ?
+"1140201716755742822",None,"29.09.2023 18:12:03",shadyxos,Du willst dich als Supporter bewerben? Dann öffne einfach ein Ticket 
+"864455844157456395","33","12.10.2023 15:25:47",lukaludw2605,"Wie kann man weiter helfen?
+"
+"1128012563637092385","34","14.10.2023 12:00:08",ju9149,hallo dein support ticket wird bearbeitet
+"1100039310671106131","36","27.10.2023 22:58:59",ayoo.amin,Hi wie kann ich ein Ticket Pannel für meinen Discord Server erstellen?
+"976156443675873361","36","01.11.2023 09:47:16",erschrecken,"Mit dem Befehl ""/createpanel""
+"
+"730734267704934422","37","01.11.2023 16:05:38",mcbencrafter,"Guten Tag,
+
+ich wollte mal fragen, ob man sich als Developer bewerben kann.
+
+Über mich: 
+Ich bin Ben 15 Jahre alt und meine Hobbys sind Programmieren, Schach spielen und Tennis spielen. Ich programmiere schon seit ca. 2,5 Jahren. Und lerne seitdem Java, Python und weitere Sprachen. Ich habe schon einen multifunktionellen Discord Bot programmiert, denn ich aber nie veröffentlicht habe. 
+
+Warum Vulpo:
+Ich verfolge und nutze Vulpo schon seit ca. 1,5 Jahren und würde mich freuen auch teil des Projekts sein zu dürfen.
+
+Ich freue mich über Rückmeldung!
+
+Mit freundlichen Grüßen
+
+Ben aka Mcbencrafter"
