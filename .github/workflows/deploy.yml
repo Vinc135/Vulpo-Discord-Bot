@@ -3,8 +3,7 @@ name: Deploy to Server
 on:
   push:
     branches:
-      - main  # Passe diesen Branch an deine Bedürfnisse an
-
+      - main
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -16,19 +15,19 @@ jobs:
     - name: Set up Python environment
       uses: actions/setup-python@v2
       with:
-        python-version: '3.x'  # oder deine benötigte Python-Version
+        python-version: '3.10'
 
     - name: Read SSH key from credentials.py
       id: get_ssh_key
       run: |
-        python -c "import credentials; print(credentials.SSH_PRIVATE_KEY.strip())" > ssh_key
-        echo "SSH_KEY=$(cat ssh_key)" >> $GITHUB_ENV
+        python -c "import credentials; print(credentials.SSH_PRIVATE_KEY)" > ssh_key
+        echo "SSH_PRIVATE_KEY=$(cat ssh_key)" >> $GITHUB_ENV
 
     - name: Set up SSH
       uses: webfactory/ssh-agent@v0.5.3
       with:
-        ssh-private-key: ${{ env.SSH_KEY }}
+        ssh-private-key: ${{ env.SSH_PRIVATE_KEY }}
 
     - name: Sync files to server
       run: |
-        rsync -avz --delete . user@your-server:/path/to/destination
+        rsync -avz --delete . vulpo@connection.pandaserver.de:/mybot
