@@ -72,7 +72,7 @@ class Reminder(commands.Cog):
     @erinnerung.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def anzeigen(self, interaction: discord.Interaction):
-        """Bekomme eine Liste von deinen Erinnerungen."""
+        """Bekomme eine Liste von deinen Erinnerungen.""" 
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 await cursor.execute("SELECT beschreibung, id, endtime FROM erinnerungen WHERE userID = (%s)", (interaction.user.id))
