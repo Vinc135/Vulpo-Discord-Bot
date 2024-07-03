@@ -1,33 +1,29 @@
-name: Deploy to Server
+name: Deploy
 
+# Controls when the action will run. 
 on:
+  # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches:
-      - main
+    branches: [ main ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  deploy:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Set up Python environment
-      uses: actions/setup-python@v2
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:       
+    - name: Deploy using ssh
+      uses: appleboy/ssh-action@master
       with:
-        python-version: '3.10'
-
-    - name: Read SSH key from credentials.py
-      id: get_ssh_key
-      run: |
-        python -c "import credentials; print(credentials.SSH_PRIVATE_KEY)" > ssh_key
-        echo "SSH_PRIVATE_KEY=$(cat ssh_key)" >> $GITHUB_ENV
-
-    - name: Set up SSH
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{ env.SSH_PRIVATE_KEY }}
-
-    - name: Sync files to server
-      run: |
-        rsync -avz --delete . vulpo@connection.pandaserver.de:/
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: |
+          cd /var/www/Vulpo-Discord-Bot/
+          git pull origin main
+          git status
+          npm install --only=prod
