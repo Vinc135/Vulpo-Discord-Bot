@@ -18,6 +18,6 @@ jobs:
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         ssh-keyscan -H ${{ secrets.HOST }} > ~/.ssh/known_hosts
     - name: connect and pull
-      run: ssh ${{ secrets.USER }}@${{ secrets.HOST }} "cd /var/www && git checkout main && git pull && exit"
+      run: ssh ${{ secrets.USER }}@${{ secrets.HOST }} "cd /var/www/Vulpo-Discord-Bot && git checkout main && git pull && exit"
     - name: cleanup
       run: rm -rf ~/.ssh
