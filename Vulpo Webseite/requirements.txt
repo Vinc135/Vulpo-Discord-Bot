@@ -1,6 +1,0 @@
-flask
-aiomysql
-asyncio
-flask-session
-paypalrestsdk
-requests-oauthlib
