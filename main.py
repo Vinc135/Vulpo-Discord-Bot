@@ -14,6 +14,7 @@ import aiomysql
 from googletrans import Translator
 from info import discord_timestamp
 import time
+from credentials import token
 
 
 dbl_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjkyNTc5OTU1OTU3NjMyMjA3OCIsImJvdCI6dHJ1ZSwiaWF0IjoxNjQyODc4ODc1fQ.PJVIOEUe25WxuUbD1E68UF7bXpRZR_k4XXwr8ukue-c"
@@ -534,4 +535,4 @@ Der User {interaction.user.mention} hat eine Nachricht von {message.author.menti
                 return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Kanal des Reportlogs existiert nicht mehr. Bitte melde dies dem lokalen Serverteam.**", ephemeral=True)
 
 
-bot.run("NÖ", reconnect=True)
+bot.run(token, reconnect=True)
