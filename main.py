@@ -5,17 +5,16 @@ import datetime
 import asyncio
 import traceback
 import sys
-from info import giveaway_end, vote_reminder, send_error, random_color, reminder_end, limit_characters
+from utils import giveaway_end, vote_reminder, send_error, random_color, reminder_end, limit_characters
 import topgg
 import math
 from discord.app_commands import AppCommandError, CommandTree
 from discord import app_commands
 import aiomysql
 from googletrans import Translator
-from info import discord_timestamp
+from utils import discord_timestamp
 import time
 from credentials import token
-
 
 dbl_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjkyNTc5OTU1OTU3NjMyMjA3OCIsImJvdCI6dHJ1ZSwiaWF0IjoxNjQyODc4ODc1fQ.PJVIOEUe25WxuUbD1E68UF7bXpRZR_k4XXwr8ukue-c"
 
@@ -76,26 +75,6 @@ class reportmsg(discord.ui.View):
 class MyTree(CommandTree):
     async def interaction_check(self, interaction: discord.Interaction):
         try:
-            try:
-                async with self.bot.pool.acquire() as connection:
-                    async with connection.cursor() as cursor:
-                        if cursor is None:
-                            try:
-                                loop = asyncio.get_event_loop()
-                                pool = await aiomysql.create_pool(host='127.0.0.1', port=3306, user='vulpo', password='bWJDBfafaakfGfkgfaWKuklfGl67', db='VulpoDB', loop=loop, autocommit=True, maxsize=100)
-                                bot.pool = pool
-                                print(f"✅ Pool erneut erstellt")
-                            except:
-                                print(f"❌ Fehler bei der erneuten Pool Erstellung")
-            except:
-                try:
-                    loop = asyncio.get_event_loop()
-                    pool = await aiomysql.create_pool(host='127.0.0.1', port=3306, user='vulpo', password='bWJDBfafaakfGfkgfaWKuklfGl67', db='VulpoDB', loop=loop, autocommit=True, maxsize=100)
-                    bot.pool = pool
-                    print(f"✅ Pool erneut erstellt")
-                except:
-                    print(f"❌ Fehler bei der erneuten Pool Erstellung")
-
             user = interaction.user
             guild = bot.get_guild(925729625580113951)
             banned_users = [ban async for ban in guild.bans()]
@@ -526,7 +505,7 @@ Der User {interaction.user.mention} hat eine Nachricht von {message.author.menti
 
 `Nachricht`: {message.content}
 """, color=discord.Color.red())
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     embed.set_thumbnail(url=interaction.guild.icon)
                     embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                     await channel.send(embed=embed, view=reportmsg(message, bot))

@@ -40,7 +40,7 @@ class afk(commands.Cog):
                         
                         embed = discord.Embed(title=f"<:v_afk:1119577204712542301> **{member.name}, willkommen zurück**", color=await getcolour(self, msg.author), description=f"""
 Ich habe deinen AFK-Status entfernt. AFK gegangen {discord_timestamp(t2, 'R')}.""")
-                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                        
                         if result2 == ():
                             embed.description += f"\n💬 Während du AFK warst wurdest du hier nicht gepingt."
                             await msg.reply(embed=embed)
@@ -79,7 +79,7 @@ Ich habe deinen AFK-Status entfernt. AFK gegangen {discord_timestamp(t2, 'R')}."
 *Grund: {r[1]}*
 AFK gegangen {discord_timestamp(t2, 'R')}.""")
                                                       
-                                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                                
                                 await msg.reply(embed=embed)
                             
     @app_commands.command()
@@ -105,7 +105,7 @@ AFK gegangen {discord_timestamp(t2, 'R')}.""")
 *Grund: {grund}* 
 AFK gegangen {discord_timestamp(t2, 'R')}.
 Wenn du wiederkommst, zeige ich dir alle Nachrichten, in denen du gepingt wurdest.""")
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     return await interaction.response.send_message(embed=embed)
                 
                 if result != None:
@@ -120,7 +120,7 @@ Wenn du wiederkommst, zeige ich dir alle Nachrichten, in denen du gepingt wurdes
                     
                     embed = discord.Embed(title=f"<:v_afk:1119577204712542301> **{interaction.user.name}, willkommen zurück**", color=await getcolour(self, interaction.user), description=f"""
 Ich habe deinen AFK-Status entfernt. AFK gegangen {discord_timestamp(t2, 'R')}.""")
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     if result2 == ():
                         embed.description += f"\n💬 Während du AFK warst wurdest du hier nicht gepingt."
                         await interaction.response.send_message(embed=embed)

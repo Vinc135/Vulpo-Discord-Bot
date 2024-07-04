@@ -87,7 +87,7 @@ class message(commands.Cog):
                         finalmsg = result[1].replace("%member", str(member)).replace("%name", str(member.name)).replace("%mention", str(member.mention)).replace("%guild", str(member.guild)).replace("%usercount", str(member.guild.member_count))
                         try:
                             embed = discord.Embed(color=await getcolour(self, member), description=finalmsg)
-                            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                            
                             await ch.send(finalmsg)
                         except:
                             pass
@@ -96,7 +96,7 @@ class message(commands.Cog):
                         
                         try:
                             embed = discord.Embed(color=await getcolour(self, member), description=finalmsg)
-                            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                            
                             background = Editor("willkommen.png")
                             profile = await load_image_async(str(member.avatar))
 
@@ -206,7 +206,7 @@ class message(commands.Cog):
                         return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Kanal der Willkommensnachricht existiert nicht mehr. Bitte deaktiviere die Willkommensnachricht und richte sie erneut ein.**", ephemeral=True)
 
                     embed = discord.Embed(title="Willkommensnachricht", description=f"Die aktuelle Willkommensnachricht:", color=await getcolour(self, interaction.user))
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     embed.add_field(name="Kanal", value=ch.mention, inline=False)
                     embed.add_field(name="Nachricht", value=wel[1], inline=False)
                     await interaction.response.send_message(embed=embed)
@@ -228,7 +228,7 @@ class message(commands.Cog):
                     finalmsg = result[1].replace("%member", str(member)).replace("%name", str(member.name)).replace("%mention", str(member.mention)).replace("%guild", str(member.guild)).replace("%usercount", str(member.guild.member_count))
                     try:
                         embed = discord.Embed(color=await getcolour(self, member), description=finalmsg)
-                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                        
                         await ch.send(embed=embed)
                     except:
                         pass
@@ -254,7 +254,7 @@ class message(commands.Cog):
                 try:
                     embed = discord.Embed(color=await getcolour(self, interaction.user), description=finalmsg)
                     embed.set_footer(text=f"Test-Verlassensnachricht angefordert von {interaction.user}")
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     await ch.send(embed=embed)
                     await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Die Test-Verlassensnachricht wurde an den Kanal {ch.mention} gesendet.**")
                 except:
@@ -298,7 +298,7 @@ class message(commands.Cog):
                     embed = discord.Embed(title="Verlassensnachricht", description=f"Die aktuelle Verlassensnachricht:", color=await getcolour(self, interaction.user))
                     embed.add_field(name="Kanal", value=ch.mention, inline=False)
                     embed.add_field(name="Nachricht", value=wel[1], inline=False)
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     await interaction.response.send_message(embed=embed)
 
 async def setup(bot):

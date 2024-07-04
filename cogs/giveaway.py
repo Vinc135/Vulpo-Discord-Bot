@@ -19,7 +19,7 @@ async def teilnahme_angenommen(self, interaction: discord.Interaction, result):
 """)
     embed.set_thumbnail(url=interaction.guild.icon)
     embed.set_image(url="https://media.discordapp.net/attachments/1023508002453594122/1023508199426506782/GW_Pannel_31.png")
-    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+    
     await interaction.response.send_message("<:v_smiley:1119583113153089626> Deine Teilnahme an einem Gewinnspiel war **erfolgreich**.", embed=embed, ephemeral=True)
     
     async with self.bot.pool.acquire() as conn:
@@ -69,7 +69,7 @@ async def teilnahme_abgelehnt(self, interaction: discord.Interaction, grund, res
 `❓` · Gründe:
 {grund}
 """)
-    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+    
     embed.set_thumbnail(url=interaction.guild.icon)
     embed.set_image(url="https://media.discordapp.net/attachments/1023508002453594122/1023508199044829294/GW_Pannel_3.png")
     await interaction.response.send_message("Deine Teilnahme an einem Gewinnspiel war **nicht erfolgreich**.", embed=embed, ephemeral=True)
@@ -319,7 +319,7 @@ class giveaway(commands.Cog):
                         return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Bei diesem Gewinnspiel gibt es bisher noch keine Teilnehmer.**", ephemeral=True)
 
                     embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"Teilnehmer vom Gewinnspiel {nachrichtenid}", description="Alle Teilnehmer dieses aktiven Gewinnspiels findest du in dieser Liste. Hier kannst du als Beispiel Zweitaccounts von Gewinnspielen verbannen.")
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     embed.description += "\n\n__Alle Teilnehmer:__"
                     for teilnehmer in result2:
                         user = self.bot.get_user(int(teilnehmer[0]))
@@ -371,7 +371,7 @@ class giveaway(commands.Cog):
                     if result3 == ():
                         return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Es gibt keine aktiven Gewinnspiele auf diesem Server.**", ephemeral=True)
                     embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Gewinnspiele", description="Alle aktiven Gewinnspiele von diesem Server findest du in dieser Nachricht.")
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     for gewinnspiel in result3:
                         kanal3 = interaction.guild.get_channel(int(gewinnspiel[1]))
                         if kanal3 == None:
@@ -415,7 +415,7 @@ class giveaway(commands.Cog):
                     if result3 == None:
                         return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Auf diesem Server gibt es keine Bypassrollen.**", ephemeral=True)
                     embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Gewinnspiele", description="Alle aktiven Gewinnspiele von diesem Server findest du in dieser Nachricht.")
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     for rolle in result3:
                         rolle2 = interaction.guild.get_role(int(rolle[0]))
                         if rolle2 == None:

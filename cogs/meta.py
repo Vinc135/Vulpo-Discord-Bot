@@ -112,7 +112,7 @@ class meta(commands.Cog):
             member = interaction.user
         embed = discord.Embed(colour=await getcolour(self, interaction.user), description=f"Profilbild und Banner (wenn existent) von {member.mention}")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+        
         user = await self.bot.fetch_user(member.id)
         if user.banner:
             embed.set_image(url=user.banner)
@@ -240,7 +240,7 @@ class meta(commands.Cog):
             embed.add_field(name="🔢 Position", value=f"{channel.position}",
                             inline=False)
             embed.set_author(name=f"Kanal info {channel.name}")
-            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+            
             await interaction.response.send_message(embed=embed)
             return
         if textkanal == None and sprachkanal != None:
@@ -256,7 +256,7 @@ class meta(commands.Cog):
             embed.add_field(name=f"📊 Limit", value=f"{channel.user_limit}", inline=False)
             embed.add_field(name=f"🔊 Bitrate", value=f"{channel.bitrate/1000} kbps", inline=False)
             embed.set_author(name=f"Kanal info {channel.name}")
-            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+            
             await interaction.response.send_message(embed=embed)
             return
         else:
@@ -278,7 +278,7 @@ class meta(commands.Cog):
         embed.add_field(name="Beitritt", value=f"Der User ist {discord_timestamp(t4, 'R')} dem Server beigetreten.", inline=True)
         embed.add_field(name="Bot?", value='Ja' if member.bot else 'Nein', inline=False)
         embed.add_field(name="Höchste Rolle", value=member.top_role.mention, inline=True)
-        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+        
         if member.public_flags:
             flags = ""
             for flag in member.public_flags:
@@ -444,7 +444,7 @@ class meta(commands.Cog):
             embed.set_image(url=interaction.guild.banner)
         embed.set_thumbnail(url=interaction.guild.icon)
         embed.set_author(name=f"Serverinfo {interaction.guild.name}", icon_url=interaction.guild.icon)
-        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+        
         await interaction.response.send_message(embed=embed)
     
     @info.command()
@@ -462,7 +462,7 @@ class meta(commands.Cog):
         embed.add_field(name="👥 Benutzer mit der Rolle",
                         value=f"{len(rolle.members)} von {guild.member_count} Mitgliedern", inline=False)
         embed.set_author(name=f"Rolleninfo {rolle.name}")
-        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+        
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command()
@@ -474,7 +474,7 @@ class meta(commands.Cog):
         embed = discord.Embed(colour=await getcolour(self, interaction.user), description=f"Serverbild von {guild.name}")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         embed.set_image(url=guild.icon)
-        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+        
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command()
@@ -498,13 +498,13 @@ class meta(commands.Cog):
                     embed.add_field(name=f"💧 Luftfeuchtigkeit", value=f"{int((float(data['main']['humidity'])))}%", inline=False)
                     embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                     embed.set_thumbnail(url=f"https://openweathermap.org/img/wn/{icon}@2x.png")
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     await interaction.response.send_message(embed=embed)
         except:
             embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                     description=f"Stadt **{stadt}** nicht gefunden")
             embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+            
             await interaction.response.send_message(embed=embed)
             return
 
@@ -519,13 +519,13 @@ class meta(commands.Cog):
             user = interaction.user
         permissions = interaction.channel.permissions_for(user)
         embed = discord.Embed(title=f':customs:  Berechtigungen von {user}', color=await getcolour(self, interaction.user))
-        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+        
         embed.add_field(name='Server', value=f"<:v_info:1119579853092552715> {interaction.guild.name}")
         embed.add_field(name='Kanal', value=f"<:v_chat:1119577968457568327> {interaction.channel.name}", inline=False)
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         
         embed2 = discord.Embed(color=await getcolour(self, interaction.user))
-        embed2.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+        
 
         permissionsCount = 0
 
@@ -555,7 +555,7 @@ class meta(commands.Cog):
                 return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch in und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)
             embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                 description=f"Hier der Link: {emoj.url}")
-            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+            
             embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
             embed.set_image(url=f"{emoj.url}")
             await interaction.response.send_message(embed=embed)
@@ -583,7 +583,7 @@ class meta(commands.Cog):
                                 description=f"**Der Emoji {emo} wurde erstellt.**\nName: {name}")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         embed.set_image(url=f"{emoj.url}")
-        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+        
         await interaction.followup.send(embed=embed)
 
     @app_commands.command()
@@ -630,7 +630,7 @@ class meta(commands.Cog):
         embed.add_field(name="Vorher", value=translation.origin)
         embed.add_field(name="Nachher", value=translation.text)
         embed.set_thumbnail(url=interaction.user.avatar)
-        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+        
         await interaction.response.send_message(embed=embed)
     
     @app_commands.command()
@@ -645,7 +645,7 @@ class meta(commands.Cog):
                     await cursor.execute(f"SELECT bank, rucksack, userID FROM economy ORDER BY bank DESC")
                     leaderboard = await cursor.fetchall()
                     embed = discord.Embed(title="Bestenliste (Economy)", color=await getcolour(self, interaction.user))
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     for i, pos in enumerate(leaderboard, start=1):
                         bank, rucksack, userID = pos
                         total = int(bank)
@@ -667,7 +667,7 @@ class meta(commands.Cog):
                     leaderboard = await cursor.fetchall()
                     
                     embed = discord.Embed(title="Bestenliste (Emojiquiz)", color=await getcolour(self, interaction.user))
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     for i, pos in enumerate(leaderboard, start=1):
                         anzahl, userID = pos
                         name = self.bot.get_user(int(userID))
@@ -687,7 +687,7 @@ class meta(commands.Cog):
                     leaderboard = await cursor.fetchall()
                     
                     embed = discord.Embed(title="Bestenliste (Flaggenquiz)", color=await getcolour(self, interaction.user))
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     for i, pos in enumerate(leaderboard, start=1):
                         anzahl, userID = pos
                         name = self.bot.get_user(int(userID))
@@ -711,7 +711,7 @@ class meta(commands.Cog):
                     await cursor.execute(f"SELECT user_level, user_xp, client_id FROM levelsystem WHERE guild_id = {interaction.guild.id} ORDER BY user_level DESC, user_xp DESC")
                     leaderboard = await cursor.fetchall()
                     embed = discord.Embed(title="Bestenliste (Levelsystem)", color=await getcolour(self, interaction.user))
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     i = 0
                     for eintrag in leaderboard:
                         lvl = eintrag[0]
@@ -734,7 +734,7 @@ class meta(commands.Cog):
                     leaderboard = await cursor.fetchall()
                     
                     embed = discord.Embed(title="Bestenliste (TicTacToe)", color=await getcolour(self, interaction.user))
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     for i, pos in enumerate(leaderboard, start=1):
                         wins, loses, ties, userID, rating = pos
                         name = self.bot.get_user(int(userID))
@@ -754,7 +754,7 @@ class meta(commands.Cog):
                     await cursor.execute("SELECT zeit, userID, guildID FROM speedgame ORDER BY zeit ASC")
                     leaderboard = await cursor.fetchall()
                     embed = discord.Embed(title="Bestenliste (Speedgame)", color=await getcolour(self, interaction.user))
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     for i, pos in enumerate(leaderboard, start=1):
                         zeit, userID, guildID = pos
                         name = self.bot.get_user(int(userID))
@@ -774,7 +774,7 @@ class meta(commands.Cog):
                     await cursor.execute("SELECT votes, userID FROM topgg ORDER BY votes DESC")
                     leaderboard = await cursor.fetchall()
                     embed = discord.Embed(title="Bestenliste (Votes)", description="💎 [VOTE](https://top.gg/bot/925799559576322078/vote) auch du für Vulpo um vielleicht bald in der Top 10 zu sein. 💎", color=await getcolour(self, interaction.user))
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     for i, pos in enumerate(leaderboard, start=1):
                         votes, userID = pos
                         name = self.bot.get_user(int(userID))

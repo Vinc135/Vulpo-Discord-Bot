@@ -222,7 +222,7 @@ class Emojiquiz(commands.Cog):
                                 embed = discord.Embed(color=await getcolour(self, interaction.user), title="Emojiquiz", description="Solltest du Probleme beim Lösen haben, kannst du die Buttons dieser Nachricht benutzen.")
                                 embed.add_field(name="❓ Gesuchter Begriff", value=quiz[0])
                                 embed.add_field(name="❗️ Tipp", value=f"||{quiz[2]}||")
-                                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                                
                                 m2 = await kanal.send(embed=embed, view=buttons(self.bot))
                                 await cursor.execute("INSERT INTO eqcurrent(guildID, lösung, msgID) VALUES(%s, %s, %s)", (server.id, quiz[1], m2.id))
                                 b += 100000
@@ -240,7 +240,7 @@ class Emojiquiz(commands.Cog):
                                 embed = discord.Embed(color=await getcolour(self, interaction.user), title="Emojiquiz", description="Solltest du Probleme beim Lösen haben, kannst du die Buttons dieser Nachricht benutzen.")
                                 embed.add_field(name="❓ Gesuchter Begriff", value=quiz[0])
                                 embed.add_field(name="❗️ Tipp", value=f"||{quiz[2]}||")
-                                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                                
                                 m2 = await kanal.send(embed=embed, view=buttons(self.bot))
                                 await cursor.execute("INSERT INTO eqcurrent(guildID, lösung, msgID) VALUES(%s, %s, %s)", (server.id, quiz[1], m2.id))
                                 b += 100000

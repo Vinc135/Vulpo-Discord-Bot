@@ -19,7 +19,7 @@ class nachricht(discord.ui.Modal, title="Eigene Nachricht"):
             async with conn.cursor() as cursor:
                 await cursor.execute("INSERT INTO channels(guildID, channelID, name, username, format) VALUES(%s, %s, %s, %s, %s)", (interaction.guild.id, self.kanal.id, self.name, self.username, self.children[0].value))
                 embed = discord.Embed(color=await getcolour(self, interaction.user), title="Youtube Benachrichtigung", description=f"Vulpo wird nun jedes neue Video vom Youtube Kanal mit dem Usernamen `@{self.username}` im Kanal {self.kanal.mention} posten (innerhalb von 60 Sekunden nach der Veröffentlichung eines Videos).")
-                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                
                 await interaction.response.send_message(embed=embed)
     
 async def fetch_videos_from_database(self, channel_name):
@@ -142,12 +142,12 @@ class notifications(commands.Cog):
                         
                         except Exception as e:
                             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Youtube Benachrichtigung", description=f"Der Youtube Kanal mit dem Usernamen `@{channelusername}` wurde nicht gefunden.\nFehler: {e}")
-                            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                            
                             return await interaction.response.send_message(embed=embed, ephemeral=True)
                         
                     else:
                         embed = discord.Embed(color=await getcolour(self, interaction.user), title="Youtube Benachrichtigung", description=f"In diesem Kanal erhältst du bereits Benachrichtigungen vom Youtube Kanal mit dem Usernamen `@{channelusername}`.")
-                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                        
                         return await interaction.response.send_message(embed=embed, ephemeral=True)
                         
         if modus == "Entfernen":
@@ -157,14 +157,14 @@ class notifications(commands.Cog):
                     result = await cursor.fetchone()
                     if result is None:
                         embed = discord.Embed(color=await getcolour(self, interaction.user), title="Youtube Benachrichtigung", description=f"In diesem Kanal erhältst du keine Benachrichtigungen vom Youtube Kanal mit dem Usernamen `@{channelusername}`.")
-                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                        
                         return await interaction.response.send_message(embed=embed, ephemeral=True)
 
                     if result:
                         await cursor.execute("DELETE FROM channels WHERE guildID = (%s) AND channelID = (%s) AND username = (%s)", (interaction.guild.id, kanal.id, channelusername))
                         await cursor.execute("DELETE FROM videos WHERE channel_name = (%s)", (channelusername))
                         embed = discord.Embed(color=await getcolour(self, interaction.user), title="Youtube Benachrichtigung", description=f"Vulpo wird nun nicht mehr jedes neue Video vom Youtube Kanal mit dem Usernamen `@{channelusername}` im Kanal {kanal.mention} posten.")
-                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                        
                         return await interaction.response.send_message(embed=embed)
                     
 async def setup(bot):

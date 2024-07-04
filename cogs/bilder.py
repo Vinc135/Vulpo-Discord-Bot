@@ -68,7 +68,7 @@ class bilder(commands.Cog):
             embed = discord.Embed(title=" ", description=f"**{member} wird gesucht!**", colour=await getcolour(self, interaction.user))
             embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
             embed.set_image(url="attachment://profile.jpg")
-            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+            
             await interaction.followup.send(file=file, embed=embed)
     
     @app_commands.command()
@@ -91,7 +91,7 @@ class bilder(commands.Cog):
             embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar)
             file = discord.File("pix.png", filename="pix.png")
             embed.set_image(url="attachment://pix.png")
-            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+            
             await interaction.followup.send(file=file, embed=embed)
             os.remove("pix.png")
 

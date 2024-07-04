@@ -20,7 +20,7 @@ class moderation(commands.Cog):
                 embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                       description=f"{rolle.mention} wurde hinzugefügt zu {member.mention}.")
                 embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                
                 await member.add_roles(rolle)
                 await interaction.response.send_message(embed=embed)
                 return
@@ -32,7 +32,7 @@ class moderation(commands.Cog):
             try:
                 embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                     description=f"{rolle.mention} wurde entfernt von {member.mention}.")
-                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                
                 embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                 await member.remove_roles(rolle)
                 await interaction.response.send_message(embed=embed)
@@ -52,7 +52,7 @@ class moderation(commands.Cog):
         embed.add_field(name=f"👮 Moderator:", value=f"{interaction.user} (**{interaction.user.id}**)", inline=False)
         embed.add_field(name=f"📄 Grund:", value=f"{grund}", inline=False)
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+        
 
         dm = discord.Embed(colour=await getcolour(self, interaction.user),
                             description=f"Hey {member.mention}! \nDu wurdest auf dem Server **{interaction.guild.name}** gekickt! Genauere Informationen hier:")
@@ -60,7 +60,7 @@ class moderation(commands.Cog):
         dm.add_field(name=f"👮 Moderator:", value=f"{interaction.user.mention}", inline=False)
         dm.add_field(name=f"📄 Grund:", value=f"{grund}", inline=False)
         dm.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-        dm.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+        
         try:
             await interaction.response.send_message(embed=embed)
             await member.kick(reason=grund)
@@ -84,7 +84,7 @@ class moderation(commands.Cog):
         embed.add_field(name=f"👮 Moderator:", value=f"{interaction.user.mention} (**{interaction.user.id}**)", inline=False)
         embed.add_field(name=f"📄 Grund:", value=f"{grund}", inline=False)
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+        
 
         dm = discord.Embed(colour=await getcolour(self, interaction.user),
                             description=f"Hey {user.mention}! \nDu wurdest auf dem Server **{interaction.guild.name}** gebannt! Genauere Informationen hier:")
@@ -92,7 +92,7 @@ class moderation(commands.Cog):
         dm.add_field(name=f"👮 Moderator:", value=f"{interaction.user.mention}", inline=False)
         dm.add_field(name=f"📄 Grund:", value=f"{grund}", inline=False)
         dm.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-        dm.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+        
         try:
             member = interaction.guild.get_member(user.id)
             if member in interaction.guild.members: 

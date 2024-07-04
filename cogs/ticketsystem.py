@@ -45,7 +45,7 @@ class PanelbuttonView(discord.ui.View):
                     embed.add_field(name="Thema", value=interaction.message.embeds[0].title)
                     embed.add_field(name="Bearbeiter", value="Keiner")
                     embed.set_author(name=interaction.user, icon_url=member.avatar)
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     view = ClosebuttonView(self.bot)
                     panelnachricht = await new_channel.send(f"{member.mention} | {role.mention}", embed=embed, view=view)
                     await panelnachricht.pin()
@@ -64,7 +64,7 @@ class PanelbuttonView(discord.ui.View):
                             return
                         embed = discord.Embed(title="Ticket erstellt", description=f"{interaction.user.mention}({interaction.user}) hat ein Ticket erstellt. \n**Ticket:** {new_channel.mention}\n**Thema:** {interaction.message.embeds[0].title}", color=discord.Color.green())
                         embed.set_author(name=interaction.user, icon_url=member.avatar)
-                        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                        
                         await ticketlog.send(embed=embed)
                     except:
                         pass
@@ -130,7 +130,7 @@ class ClosebuttonView(discord.ui.View):
                         return
                     embed = discord.Embed(title="Ticket geschlossen", description=f"{interaction.user.mention}({interaction.user}) hat ein Ticket geschlossen. \n**Ticket:** {interaction.channel.mention}({interaction.channel.name})", color=discord.Color.gold())
                     embed.set_author(name=interaction.user, icon_url=member.avatar)
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     await ticketlog.send(embed=embed)
                 except:
                     pass
@@ -154,7 +154,7 @@ class ClosebuttonView(discord.ui.View):
                     pass
                 channel = interaction.channel
                 claim = discord.Embed(color=discord.Color.green(), title="Ticket geclaimt", description=f"{interaction.guild.get_member(int(result[1])).mention}, du wirst nun von {interaction.user.mention} supportet.")
-                claim.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                
                 await channel.send(embed=claim)
                 button.disabled = True
 
@@ -167,7 +167,7 @@ class ClosebuttonView(discord.ui.View):
                 authorname = interaction.message.embeds[0].author.name
                 authoricon = interaction.message.embeds[0].author.icon_url
                 embed = discord.Embed(title=title, description=description, color=discord.Color.orange())
-                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                
                 embed.set_author(name=authorname, icon_url=authoricon)
                 embed.add_field(name=Themaheader, value=Thema)
                 embed.add_field(name=Claimer, value=interaction.user.mention)
@@ -205,7 +205,7 @@ class ClosebuttonView(discord.ui.View):
                         return
                     embed = discord.Embed(title="Ticket geclaimt", description=f"{interaction.user.mention}({interaction.user}) hat ein Ticket geclaimt. \n**Ticket:** {interaction.channel.mention}({interaction.channel.name})\n**Thema:** {Thema}", color=discord.Color.dark_green())
                     embed.set_author(name=interaction.user, icon_url=member.avatar)
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     await ticketlog.send(embed=embed)
                 except:
                     pass
@@ -227,7 +227,7 @@ class ClosebuttonView(discord.ui.View):
                 t4= datetime.datetime.fromtimestamp(int(t3))
                 embed = discord.Embed(colour=member.color, description=f"Der Account wurde {discord_timestamp(t2, 'R')} erstellt.")
                 embed.set_thumbnail(url=member.avatar)
-                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                
                 embed.add_field(name="ID", value=member.id, inline=False)
                 embed.add_field(name="Beitritt", value=f"Der User ist {discord_timestamp(t4, 'R')} dem Server beigetreten.", inline=True)
                 embed.add_field(name="Bot?", value='Ja' if member.bot else 'Nein', inline=False)
@@ -414,7 +414,7 @@ class DeletebuttonView(discord.ui.View):
                         return
                     embed = discord.Embed(title="Ticket erneut geöffnet", description=f"{interaction.user.mention}({interaction.user}) hat ein Ticket erneut geöffnet. \n**Ticket:** {interaction.channel.mention}({interaction.channel.name})", color=discord.Color.gold())
                     embed.set_author(name=interaction.user, icon_url=member.avatar)
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     await ticketlog.send(embed=embed)
                 except:
                     pass
@@ -469,7 +469,7 @@ class Ticketsystem(commands.Cog):
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
                 finalemb = discord.Embed(title="Ticketsystem", description="Ein neues Panel wurde erstellt!", color=await getcolour(self, interaction.user))
-                finalemb.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+
                 finalemb.add_field(name="Kanal", value=kanal.mention, inline=False)
                 finalemb.add_field(name="Embedtitel", value=titel, inline=False)
                 finalemb.add_field(name="Embedbeschreibung", value=beschreibung, inline=False)
@@ -479,7 +479,7 @@ class Ticketsystem(commands.Cog):
                 await interaction.followup.send(f"{interaction.user.mention} hat ein Panel erstellt.", embed=finalemb)
 
                 embed = discord.Embed(title=titel, description=beschreibung, color=await getcolour(self, interaction.user))
-                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                
                 if interaction.guild.icon != None:
                     embed.set_thumbnail(url=interaction.guild.icon)
                 embed.set_footer(text="Drücke auf den Button um ein Ticket zu erstellen")

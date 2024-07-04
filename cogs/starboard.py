@@ -43,7 +43,7 @@ class starboard(commands.Cog):
                         return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Kanal des Starboards existiert nicht mehr. Bitte deaktiviere das Starboard und richte ihn erneut ein.**", ephemeral=True)
 
                     embed = discord.Embed(title="Starboard", description=f"Das aktuelle Starboard ist aktiv in {channel.mention}", color=discord.Color.orange())
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     await interaction.response.send_message(embed=embed)
     
     @commands.Cog.listener()
@@ -62,7 +62,7 @@ class starboard(commands.Cog):
                                 msg: discord.Message = await channel.fetch_message(int(result[1]))
                                 if msg is None:
                                     embed = discord.Embed(title="⭐️ Nachricht ausgezeichnet! ⭐️", description=reaction.message.content, color=discord.Color.orange())
-                                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                                    
                                     embed.description += f"\n\n**[Springe zur Nachricht]({reaction.message.jump_url})**"
                                     embed.set_author(name=reaction.message.author, icon_url=reaction.message.author.avatar)
                                     for attachment in reaction.message.attachments:
@@ -74,7 +74,7 @@ class starboard(commands.Cog):
                             channel = self.bot.get_channel(int(channel_id[0]))
                             if channel:
                                 embed = discord.Embed(title="⭐️ Nachricht ausgezeichnet! ⭐️", description=reaction.message.content, color=discord.Color.orange())
-                                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                                
                                 embed.description += f"\n\n**[Springe zur Nachricht]({reaction.message.jump_url})**"
                                 embed.set_author(name=reaction.message.author, icon_url=reaction.message.author.avatar)
                                 for attachment in reaction.message.attachments:

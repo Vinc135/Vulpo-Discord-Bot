@@ -215,7 +215,7 @@ class tempchannel(commands.Cog):
                     embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                             description=f"Die Einrichtung des Sprachsystems war erfolgreich.\n{vc.mention}")
                     embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     await interaction.response.send_message(embed=embed)
                 
                     
@@ -229,7 +229,7 @@ class tempchannel(commands.Cog):
                     embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                             description=f"Die Aktualisierung des Sprachsystems war erfolgreich.\n{vc.mention}")
                     embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     await interaction.response.send_message(embed=embed)
                 
                     
@@ -251,7 +251,7 @@ class tempchannel(commands.Cog):
 > <:v_chat:1119577968457568327> Namen ändern
 > <:v_limit:1119581406142660618> Limit ändern
 """, colour=discord.Color.orange())
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     await interfacekanal.send(embed=embed, view=interface(self.bot))
 
     @commands.Cog.listener()

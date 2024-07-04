@@ -408,7 +408,7 @@ Davon gewonnen: `{total_plays - result[1] - result[2]}`
 Davon unentschieden: `{total_plays - result[0] - result[1]}`
 Davon verloren: `{total_plays - result[0] - result[2]}`""")
                     embed.set_thumbnail(url=member.avatar)
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     await interaction.response.send_message(embed=embed)
                 
 async def setup(bot):

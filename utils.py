@@ -52,7 +52,7 @@ class NameModal(discord.ui.Modal, title="Beschreibung für Erinnerung"):
                 embed = discord.Embed(color=await getcolour(self, interaction.user), title=f"Erinnerung gestellt (ID {id})", description=f"""
 <:v_info:1119579853092552715> Erinnerung gesetzt auf {discord_timestamp(t2, 'f')}
  <:v_pfeil_rechts:1119582171930300438> {self.beschreibung.value}""")
-                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                
                 asyncio.create_task(reminder_end(t2, self.bot, interaction.user.id, id), name=f"Erinnerung - {id}")
                 await interaction.followup.send(embed=embed)
                 
@@ -211,7 +211,7 @@ async def reminder_end(when: datetime.datetime, bot, user_id, id):
                 result = await cursor.fetchone()
                 await cursor.execute("DELETE FROM erinnerungen WHERE userID = (%s) AND id = (%s)", (user_id, id))
                 embed = discord.Embed(title="<:v_zeit:1119585888054296676> Timer abgelaufen", description=result[0], color=discord.Color.green())
-                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                
                 try:
                     await user.send(embed=embed, view=NewTimerName(bot, result[0], result[1], embed))
                 except:
@@ -289,7 +289,7 @@ async def giveaway_end(when: datetime.datetime, bot, msgID, status=None):
 <:v_pfeil_rechts:1119582171930300438> Das Gewinnspiel endete {discord_timestamp(t2, 'R')}
 <:v_pfeil_rechts:1119582171930300438> Es gab 0 Teilnehmer.""", color=discord.Color.red())
                 embed.set_thumbnail(url=msg.guild.icon)
-                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                
                 return await msg.edit(content="**⛔️ Gewinnspiel beendet ⛔️**", embed=embed, view=None)
 
             participants = [userid[0] for userid in result2]
@@ -302,7 +302,7 @@ async def giveaway_end(when: datetime.datetime, bot, msgID, status=None):
 `⏰` · Das Gewinnspiel endete {discord_timestamp(t2, 'R')}
 """)
                 embed.set_thumbnail(url=guild.icon)
-                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                
                 try:
                     await member.send("Du hast ein Gewinnspiel **gewonnen**!", embed=embed)
                 except:
@@ -376,7 +376,7 @@ async def levelup_role_check(botobject, guildobjekt, userobjekt, newlevel):
 async def send_error(title, description, interaction):
     embed = discord.Embed(colour=discord.Colour.red(), title=title, description=description)
     embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+    
     try:
         await interaction.response.send_message(embed=embed, ephemeral=True)
     except:

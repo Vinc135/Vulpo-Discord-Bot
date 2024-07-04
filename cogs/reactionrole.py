@@ -49,7 +49,7 @@ class fertig(discord.ui.Modal, title="Erstelle ein Embed"):
         if emb.fields == []:
             return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du musst zuerst ein paar Optionen festlegen.**", ephemeral=True)
         embed = discord.Embed(title=self.children[0].value, description=self.children[1].value, color=await getcolour(self, interaction.user))
-        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+        
         if self.children[2].value:
             embed.set_thumbnail(url=self.children[2].value)
         if self.children[3].value:
@@ -181,7 +181,7 @@ class fertig2(discord.ui.Modal, title="Erstelle ein Embed"):
         if emb.fields == []:
             return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du musst zuerst ein paar Optionen festlegen.**", ephemeral=True)
         embed = discord.Embed(title=self.children[0].value, description=self.children[1].value, color=await getcolour(self, interaction.user))
-        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+        
         if self.children[2].value:
             embed.set_thumbnail(url=self.children[2].value)
         if self.children[3].value:
@@ -277,13 +277,13 @@ class reactionrole(commands.Cog):
         """Lege Reaktionsrollen fest."""
         if erscheinungsbild == "Select Menü":
             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Reaktionsrollen Setup", description="Hier kannst du mithilfe von Buttons, Reaktionsrollen dem Select Menü hinzufügen.")
-            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+            
             view = setup_select(self.bot, interaction.user)
             view.add_item(select_role1(self.bot))
             await interaction.response.send_message(embed=embed, view=view)
         if erscheinungsbild == "Buttons":
             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Reaktionsrollen Setup", description="Hier kannst du mithilfe von Buttons, Reaktionsrollen als Buttons hinzufügen.")
-            embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+            
             view = setup_buttons(self.bot, interaction.user)
             view.add_item(select_role2(self.bot))
             await interaction.response.send_message(embed=embed, view=view)
