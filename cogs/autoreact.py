@@ -82,7 +82,7 @@ class Autoreact(commands.Cog):
                     await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Hier gibt es keine autofilename. Füge eine mit `/autoreact add <kanal> <emoji>` hinzu**", ephemeral=True)
                     return
                 embed = discord.Embed(title="Alle automatische filename in Kanälen", description="Hier nähere Infos:", color=await getcolour(self, interaction.user))
-                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                
                 for i in result:
                     k = interaction.guild.get_channel(int(i[1]))
                     if k is not None:

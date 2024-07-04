@@ -16,7 +16,7 @@ async def function(self, interaction, farbe, t_1, t_3):
 **{interaction.user.mention}, zu ungenau!** 
 > Du warst wahrscheinlich zu schnell und hast die falsche Farbe angetippt. Versuche es später noch einmal.""")
         embed.set_thumbnail(url=interaction.user.avatar)
-        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+        
         return await interaction.message.edit(content="", embed=embed, view=None)
 
     async with self.bot.pool.acquire() as conn:
@@ -38,7 +38,7 @@ async def function(self, interaction, farbe, t_1, t_3):
 **{interaction.user.mention}, richtig getippt!** 
 > Du hast die richtige Farbe ausgewählt. Deine Zeit liegt bei `{time_delta1}ms`. **Neuer Rekord!**""")
                 embed.set_thumbnail(url=interaction.user.avatar)
-                embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                
                 return await interaction.message.edit(content="", embed=embed, view=None)
             else:
                 if int(result[0]) > int(time_delta1):
@@ -52,7 +52,7 @@ async def function(self, interaction, farbe, t_1, t_3):
 **{interaction.user.mention}, richtig getippt!** 
 > Du hast die richtige Farbe ausgewählt. Deine Zeit liegt bei `{time_delta1}ms`. **Neuer Rekord!**""")
                     embed.set_thumbnail(url=interaction.user.avatar)
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     return await interaction.message.edit(content="", embed=embed, view=None)
                 else:
                     
@@ -63,7 +63,7 @@ async def function(self, interaction, farbe, t_1, t_3):
 **{interaction.user.mention}, richtig getippt!** 
 > Du hast die richtige Farbe ausgewählt. Deine Zeit liegt bei `{time_delta1}ms`. **Leider kein neuer Rekord.**""")
                     embed.set_thumbnail(url=interaction.user.avatar)
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     return await interaction.message.edit(content="", embed=embed, view=None)
                 
 class speedgame_setup(discord.ui.View):
@@ -143,7 +143,7 @@ class Speedgame(commands.Cog):
         embed.description = f"""
 **{interaction.user.mention}, es geht jetzt los, sei schnell und geschickt!** 
 > Tippe das Emoji {farbe} an."""
-        embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+        
         await interaction.response.send_message(embed=embed, view=speedgame_setup(self.bot, interaction.user, farbe, time.perf_counter(), "An"))
         
     @speedgame.command()
@@ -165,7 +165,7 @@ class Speedgame(commands.Cog):
 Aktuelle Stats von {member.mention}
 **Bestzeit**: `{result[0]}ms`""")
                     embed.set_thumbnail(url=member.avatar)
-                    embed.set_footer(text="Premium jetzt veröffentlicht! www.vulpo-bot.de/premium")
+                    
                     await interaction.response.send_message(embed=embed)
                 
 async def setup(bot):
