@@ -4,7 +4,7 @@ from discord import app_commands
 import math
 import datetime
 from info import discord_timestamp
-from info import getcolour 
+from info import getcolour
 
 class afk(commands.Cog):
     def __init__(self, bot):
