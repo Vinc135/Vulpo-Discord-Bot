@@ -4,78 +4,48 @@ import typing
 import discord
 from discord.ext import commands
 from discord import app_commands
-from info import random_color
-from info import getcolour
-
-async def open_acc(self, user):
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute(f"SELECT rucksack, bank, job, stunden FROM economy WHERE userID = {user.id}")
-            result = await cursor.fetchone()
-            if result is None:
-                await cursor.execute("INSERT INTO economy(rucksack, bank, job, stunden, userID) VALUES(%s, %s, %s, %s, %s)",("0", "0", "Kein Job", "0", user.id))
-                
-                liste = ["0","0","Kein Job","0",user.id]
-                return liste
-            else:
-                return result
-
-async def update_acc(self, user, mode, sum, dif):
-    acc = await open_acc(self, user)
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            if mode == "rucksack":
-                bal = acc[0]
-                new = int(bal) + int(sum) - int(dif)
-                await cursor.execute("UPDATE economy SET rucksack = (%s) WHERE userID = (%s)", (new, user.id))
-                
-            if mode == "bank":
-                bal = acc[1]
-                new = int(bal) + int(sum) - int(dif)
-                await cursor.execute("UPDATE economy SET bank = (%s) WHERE userID = (%s)", (new, user.id))
-
+from utils.utils import random_color, getcolour
+from utils.MongoDB import getMongoDataBase
+from cogs.economy import open_acc, update_account
 
 async def check_channel(self, msg):
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute("SELECT channelID FROM gtn WHERE guildID = (%s)", (msg.guild.id))
-            result = await cursor.fetchone()
-            if result is None:
-                return False
-            else:
-                if int(result[0]) == int(msg.channel.id):
-                    return True
-                else:
-                    return False
+    result = await getMongoDataBase()["gtn"].find_one({"guildID": str(msg.guild.id)})
+    if result is None:
+        return False
+    else:
+        if int(result["channelID"]) == int(msg.channel.id):
+            return True
+        else:
+            return False
 
 async def check_number(self, msg: discord.Message):
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute("SELECT zahl FROM gtncurrent WHERE guildID = (%s)", (msg.guild.id))
-            result = await cursor.fetchone()
-            if result is None:
-                return False
-            try:
-                if int(result[0]) == int(msg.content):
-                    await cursor.execute("DELETE FROM gtncurrent WHERE guildID = (%s)", (msg.guild.id))
-                    return True
-                elif int(result[0]) != int(msg.content):
-                    return False
-            except:
-                pass
+    db = getMongoDataBase()
+    
+    result = await db["gtncurrent"].find_one({"guildID": str(msg.guild.id)})
+    
+    if result is None:
+        return False
+    try:
+        if int(result["number"]) == int(msg.content):
+            await db["gtncurrent"].delete_one({"guildID": str(msg.guild.id)})
+            return True
+        else:
+            return False
+    except:
+        pass
                 
 async def answer_correct(self, msg):
     await msg.channel.send(f"{msg.author.mention} hat die gesuchte Zahl erraten. (+10 🍪)")
-    await update_acc(self, msg.author, "rucksack", 10, 0)
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            a = random.randint(20, 100)
-            b = random.randint(1, a)
-            embed = discord.Embed(color=await getcolour(self, msg.author), title="Guess the number", description=f"Ich habe mir eine Zahl zwischen **1** und **{a}** ausgedacht. Kannst du sie erraten?")
-            embed.set_footer(text=f"Die letzte Zahl wurde erraten von {msg.author}.", icon_url=msg.author.avatar)
-            await asyncio.sleep(2)
-            m2 = await msg.channel.send(embed=embed)
-            await cursor.execute("INSERT INTO gtncurrent(guildID, zahl, msgID) VALUES(%s, %s, %s)", (msg.guild.id, b, m2.id))
+    await update_account(self, msg.author, "rucksack", 10, 0)
+
+    a = random.randint(20, 100)
+    b = random.randint(1, a)
+    embed = discord.Embed(color=await getcolour(self, msg.author), title="Guess the number", description=f"Ich habe mir eine Zahl zwischen **1** und **{a}** ausgedacht. Kannst du sie erraten?")
+    embed.set_footer(text=f"Die letzte Zahl wurde erraten von {msg.author}.", icon_url=msg.author.avatar)
+    await asyncio.sleep(2)
+    m2 = await msg.channel.send(embed=embed)
+    
+    await getMongoDataBase()["gtncurrent"].insert_one({"guildID": str(msg.guild.id), "zahl": b, "msgID": m2.id})
 
 async def answer_incorrect(self, msg):
     pass
@@ -106,37 +76,39 @@ class Guessthenumber(commands.Cog):
     @app_commands.checks.has_permissions(kick_members=True)
     async def guessthenumber(self, interaction: discord.Interaction, modus: typing.Literal["Anschalten", "Ausschalten"], kanal: typing.Union[discord.TextChannel, discord.ForumChannel, discord.Thread]):
         """Verwalte das Minispiel 'Guess the number' auf deinem Server."""
+        
+        await interaction.response.defer()
+        
         a = random.randint(20, 100)
         b = random.randint(1, a)
+        
+        db = getMongoDataBase()
+        
         if modus == "Anschalten":
-            async with self.bot.pool.acquire() as conn:
-                async with conn.cursor() as cursor:
-                    await cursor.execute("SELECT channelID FROM gtn WHERE guildID = (%s)", (interaction.guild.id))
-                    result = await cursor.fetchone()
-                    if result is None:
-                        await cursor.execute("INSERT INTO gtn(guildID, channelID) VALUES(%s, %s)", (interaction.guild.id, kanal.id))
-                        embed = discord.Embed(color=await getcolour(self, interaction.user), title="Guess the number", description=f"Ich habe mir eine Zahl zwischen **1** und **{a}** ausgedacht. Kannst du sie erraten?")
-                        
-                        m2 = await kanal.send(embed=embed)
-                        await cursor.execute("INSERT INTO gtncurrent(guildID, zahl, msgID) VALUES(%s, %s, %s)", (interaction.guild.id, b, m2.id))
-                        return await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Guess the number wurde gestartet in {kanal.mention}.**", ephemeral=True)
-                    if result is not None:
-                        await cursor.execute("UPDATE gtn SET channelID = (%s) WHERE guildID = (%s)", (kanal.id, interaction.guild.id))
-                        embed = discord.Embed(color=await getcolour(self, interaction.user), title="Guess the number", description=f"Ich habe mir eine Zahl zwischen **1** und **{a}** ausgedacht. Kannst du sie erraten?")
-                        
-                        m2 = await kanal.send(embed=embed)
-                        await cursor.execute("INSERT INTO gtncurrent(guildID, zahl, msgID) VALUES(%s, %s, %s)", (interaction.guild.id, b, m2.id))
-                        return await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Guess the number wurde neu gestartet in {kanal.mention}.**", ephemeral=True)
+            
+            result = await db["gtn"].find_one({"guildID": interaction.guild.id})
+            if result is None:
+                db["gtn"].insert_one({"guildID": interaction.guild.id, "channelID": kanal.id})
+                embed = discord.Embed(color=await getcolour(self, interaction.user), title="Guess the number", description=f"Ich habe mir eine Zahl zwischen **1** und **{a}** ausgedacht. Kannst du sie erraten?")
+                
+                m2 = await kanal.send(embed=embed)
+                db["gtncurrent"].insert_one({"guildID": interaction.guild.id, "zahl": b, "msgID": m2.id})
+                return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Guess the number wurde gestartet in {kanal.mention}.**", ephemeral=True)
+            if result is not None:
+                db["gtn"].update_one({"guildID": interaction.guild.id}, {"$set": {"channelID": kanal.id}})
+                embed = discord.Embed(color=await getcolour(self, interaction.user), title="Guess the number", description=f"Ich habe mir eine Zahl zwischen **1** und **{a}** ausgedacht. Kannst du sie erraten?")
+                
+                m2 = await kanal.send(embed=embed)
+                db["gtncurrent"].update_one({"guildID": interaction.guild.id}, {"$set": {"zahl": b, "msgID": m2.id}})
+                return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Guess the number wurde neu gestartet in {kanal.mention}.**", ephemeral=True)
                     
         if modus == "Ausschalten":
-            async with self.bot.pool.acquire() as conn:
-                async with conn.cursor() as cursor:
-                    await cursor.execute("SELECT channelID FROM eq WHERE guildID = (%s)", (interaction.guild.id))
-                    result = await cursor.fetchone()
-                    if result is None:
-                        return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Guess the number ist nicht in diesem Server aktiviert.**", ephemeral=True)
-                    await cursor.execute("DELETE FROM eq WHERE guildID = (%s)", (interaction.guild.id))
-                    return await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Guess the number wurde in diesem Server ausgeschalten.**", ephemeral=True)
+            await db["gtn"].find_one({"guildID": interaction.guild.id})
+            if result is None:
+                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Guess the number ist nicht in diesem Server aktiviert.**", ephemeral=True)
+            
+            await db["gtn"].delete_one({"guildID": interaction.guild.id})
+            return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Guess the number wurde in diesem Server ausgeschalten.**", ephemeral=True)
 
 async def setup(bot):
     await bot.add_cog(Guessthenumber(bot))

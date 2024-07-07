@@ -1,11 +1,12 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from info import random_color
+from utils.utils import random_color
 import random
 import asyncio
 import time
-from info import getcolour
+from utils.utils import getcolour
+from utils.MongoDB import getMongoDataBase
 
 async def function(self, interaction, farbe, t_1, t_3):
     if self.user.id != interaction.user.id:
@@ -19,52 +20,51 @@ async def function(self, interaction, farbe, t_1, t_3):
         
         return await interaction.message.edit(content="", embed=embed, view=None)
 
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute("SELECT zeit FROM speedgame WHERE userID = (%s)", (interaction.user.id))
-            result = await cursor.fetchone()
-            t_2 = time.perf_counter()
-            t_4 = time.perf_counter()
-            time_delta1 = round(((t_2 - t_1) - round(t_4 - t_3)) * 1000)
-            time_delta2 = round((t_4 - t_3) * 1000)
-            if result is None:
-                await cursor.execute("INSERT INTO speedgame(userID, zeit, guildID) VALUES(%s, %s, %s)", (interaction.user.id, time_delta1, interaction.guild.id))
-                
-                
-                embed = discord.Embed(colour=await getcolour(self, interaction.user), title="⏱ Teste deine Schnelligkeit", description=f"""
+    db = getMongoDataBase()
+
+    result = await db['speedgame'].find_one({"userID": interaction.user.id})
+    t_2 = time.perf_counter()
+    t_4 = time.perf_counter()
+    time_delta1 = round(((t_2 - t_1) - round(t_4 - t_3)) * 1000)
+    time_delta2 = round((t_4 - t_3) * 1000)
+    if result is None:
+        await db['speedgame'].insert_one({"userID": interaction.user.id, "zeit": time_delta1, "guildID": interaction.guild.id})    
+        
+        embed = discord.Embed(colour=await getcolour(self, interaction.user), title="⏱ Teste deine Schnelligkeit", description=f"""
                                     
 `🤖 Gespielt mit einem Ping von {time_delta2}ms`
                         
 **{interaction.user.mention}, richtig getippt!** 
 > Du hast die richtige Farbe ausgewählt. Deine Zeit liegt bei `{time_delta1}ms`. **Neuer Rekord!**""")
-                embed.set_thumbnail(url=interaction.user.avatar)
-                
-                return await interaction.message.edit(content="", embed=embed, view=None)
-            else:
-                if int(result[0]) > int(time_delta1):
-                    await cursor.execute("UPDATE speedgame SET zeit = (%s) WHERE userID = (%s)", (time_delta1, interaction.user.id))
-                    await cursor.execute("UPDATE speedgame SET guildID = (%s) WHERE userID = (%s)", (interaction.guild.id, interaction.user.id))
-                    
-                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title="⏱ Teste deine Schnelligkeit", description=f"""
+        embed.set_thumbnail(url=interaction.user.avatar)
+        
+        return await interaction.message.edit(content="", embed=embed, view=None)
+    
+    else:
+        if int(result["zeit"]) < int(time_delta1):
+            await db['speedgame'].update_one({"userID": interaction.user.id}, {"$set": {"zeit": time_delta1}})
+            await db['speedgame'].update_one({"userID": interaction.user.id}, {"$set": {"guildID": interaction.guild.id}})
+            
+            embed = discord.Embed(colour=await getcolour(self, interaction.user), title="⏱ Teste deine Schnelligkeit", description=f"""
                                         
 `🤖 Gespielt mit einem Ping von {time_delta2}ms`
                             
 **{interaction.user.mention}, richtig getippt!** 
 > Du hast die richtige Farbe ausgewählt. Deine Zeit liegt bei `{time_delta1}ms`. **Neuer Rekord!**""")
-                    embed.set_thumbnail(url=interaction.user.avatar)
-                    
-                    return await interaction.message.edit(content="", embed=embed, view=None)
-                else:
-                    
-                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title="⏱ Teste deine Schnelligkeit", description=f"""
+            embed.set_thumbnail(url=interaction.user.avatar)
+
+            return await interaction.message.edit(content="", embed=embed, view=None)
+        else:
+
+            embed = discord.Embed(colour=await getcolour(self, interaction.user), title="⏱ Teste deine Schnelligkeit", description=f"""
                                         
 `🤖 Gespielt mit einem Ping von {time_delta2}ms`
                             
 **{interaction.user.mention}, richtig getippt!** 
 > Du hast die richtige Farbe ausgewählt. Deine Zeit liegt bei `{time_delta1}ms`. **Leider kein neuer Rekord.**""")
-                    embed.set_thumbnail(url=interaction.user.avatar)
+            embed.set_thumbnail(url=interaction.user.avatar)
                     
-                    return await interaction.message.edit(content="", embed=embed, view=None)
+            return await interaction.message.edit(content="", embed=embed, view=None)
                 
 class speedgame_setup(discord.ui.View):
     def __init__(self, bot=None, user: discord.User=None, farbe=None, t_1=None, modus=None):
@@ -144,7 +144,7 @@ class Speedgame(commands.Cog):
 **{interaction.user.mention}, es geht jetzt los, sei schnell und geschickt!** 
 > Tippe das Emoji {farbe} an."""
         
-        await interaction.response.send_message(embed=embed, view=speedgame_setup(self.bot, interaction.user, farbe, time.perf_counter(), "An"))
+        await interaction.followup.send(embed=embed, view=speedgame_setup(self.bot, interaction.user, farbe, time.perf_counter(), "An"))
         
     @speedgame.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id)) 
@@ -152,21 +152,20 @@ class Speedgame(commands.Cog):
         """Zeigt deine Bestzeit."""
         if member == None:
             member = interaction.user
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute("SELECT zeit FROM speedgame WHERE userID = (%s)", (member.id))
-                result = await cursor.fetchone()
-                if result == None:
-                    if member == interaction.user:
-                        return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du hast noch kein Match gespielt. Aufgrund dessen hast du auch keine Bestzeit. Du musst zuerst ein Match spielen.**", ephemeral=True)
-                    return await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> {member.mention} hat noch kein Match gespielt. Aufgrund dessen hat er/sie auch keine Bestzeit. Er/Sie muss zuerst ein Match spielen.**", ephemeral=True)
-                else:
-                    embed = discord.Embed(color=await getcolour(self, interaction.user), title="⚡️ **| __Speedgame Stats__ |** 💨", description=f"""
+            
+        result = await getMongoDataBase()["speedgame"].find_one({"userID": member.id})
+            
+        if result == None:
+            if member == interaction.user:
+                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du hast noch kein Match gespielt. Aufgrund dessen hast du auch keine Bestzeit. Du musst zuerst ein Match spielen.**", ephemeral=True)
+            return await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> {member.mention} hat noch kein Match gespielt. Aufgrund dessen hat er/sie auch keine Bestzeit. Er/Sie muss zuerst ein Match spielen.**", ephemeral=True)
+        else:
+            embed = discord.Embed(color=await getcolour(self, interaction.user), title="⚡️ **| __Speedgame Stats__ |** 💨", description=f"""
 Aktuelle Stats von {member.mention}
-**Bestzeit**: `{result[0]}ms`""")
-                    embed.set_thumbnail(url=member.avatar)
+**Bestzeit**: `{result["zeit"]}ms`""")
+            embed.set_thumbnail(url=member.avatar)
                     
-                    await interaction.response.send_message(embed=embed)
+            await interaction.followup.send(embed=embed)
                 
 async def setup(bot):
     await bot.add_cog(Speedgame(bot))

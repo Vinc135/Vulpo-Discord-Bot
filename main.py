@@ -5,18 +5,22 @@ import datetime
 import asyncio
 import traceback
 import sys
-from utils import giveaway_end, vote_reminder, send_error, random_color, reminder_end, limit_characters
+from utils.utils import giveaway_end, vote_reminder, send_error, random_color, reminder_end, limit_characters
 import topgg
 import math
 from discord.app_commands import AppCommandError, CommandTree
 from discord import app_commands
 import aiomysql
 from googletrans import Translator
-from utils import discord_timestamp
+from utils.utils import discord_timestamp
 import time
-from credentials import token
+#from credentials import token
+from utils.MongoDB import getMongoDataBase
+from cogs.economy import update_account
 
 dbl_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjkyNTc5OTU1OTU3NjMyMjA3OCIsImJvdCI6dHJ1ZSwiaWF0IjoxNjQyODc4ODc1fQ.PJVIOEUe25WxuUbD1E68UF7bXpRZR_k4XXwr8ukue-c"
+
+token = "MTIyMDAyOTIwODE4NTY2NzYwNA.GjqVga.RqXdfyLRu_MQsKilBdo1ljKW3H8NxWolMKKWYQ"
 
 class voteView(discord.ui.View):
     def __init__(self):
@@ -33,65 +37,57 @@ class reportmsg(discord.ui.View):
 
     @discord.ui.button(label='Gemeldeten Nutzer verwarnen', style=discord.ButtonStyle.red, custom_id="fbiuwerzgfiuwzevfizuk", emoji="🔨")
     async def warn(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await interaction.message.edit(content=f"**🔒 Dieser Nutzer wurde von {interaction.user.mention} verwarnt.**", embed=interaction.message.embeds[0], view=None)
-        user = self.message.author
-        grund = "Unangemessene Nachricht"
+                await interaction.message.edit(content=f"**🔒 Dieser Nutzer wurde von {interaction.user.mention} verwarnt.**", embed=interaction.message.embeds[0], view=None)
+                user = self.message.author
+                grund = "Unangemessene Nachricht"
 
-        #warn + automod anfang
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
+                db = getMongoDataBase()
+
                 warnID = 1
-                await cursor.execute("SELECT warnID FROM warns WHERE userID = (%s) AND guildID = (%s)", (user.id, interaction.guild.id))
-                result = await cursor.fetchall()
+                
+                result = await db['warns'].find({"userID": user.id, "guildID": interaction.guild.id}).to_list()
                 if result is None:
-                    await cursor.execute("INSERT INTO warns(guildID, userID, grund, warnID) VALUES(%s, %s, %s, %s)", (interaction.guild.id, user.id, grund + f"\n`Verwarnung erstellt am {discord.utils.utcnow().__format__('%d.%m.%Y')}`", 1))
+                    await db['warns'].insert_one({"guildID": interaction.guild.id, "userID": user.id, "grund": grund + f"\n`Verwarnung erstellt am {discord.utils.utcnow().__format__('%d.%m.%Y')}`", "warnID": 1})
                     
                     warnID += 1
-                    return
                 if result != None:
                     for warn in result:
                         warnID += 1
-                    await cursor.execute("INSERT INTO warns(guildID, userID, grund, warnID) VALUES(%s, %s, %s, %s)", (interaction.guild.id, user.id, grund + f"\n`Verwarnung erstellt am {discord.utils.utcnow().__format__('%d.%m.%Y')}`", warnID))
+                    await db['warns'].insert_one({"guildID": interaction.guild.id, "userID": user.id, "grund": grund + f"\n`Verwarnung erstellt am {discord.utils.utcnow().__format__('%d.%m.%Y')}`", "warnID": warnID})
 
-                await cursor.execute("SELECT aktion FROM automod WHERE guildID = (%s) AND warnanzahl = (%s)", (interaction.guild.id, warnID))
-                result2 = await cursor.fetchone()
+                result2 = await db['automod'].find({"guildID": interaction.guild.id, "warnanzahl": warnID}).to_list()
                 if result2:
-                    if result2[0] == "Timeout":
+                    if result2["aktion"] == "Timeout":
                         time_end = discord.utils.utcnow()
                         dt = time_end + datetime.timedelta(days=1)
                         await user.timeout(dt ,reason="Automod wurde ausgelöst")
                         await interaction.channel.send(f"🚨 **Der Benutzer {user.mention} wurde getimeoutet.** 🚨\nGrund: Automod wurde ausgelöst ({warnID} Verwarnungen).")
-                    if result2[0] == "Kick":
+                    if result2["aktion"] == "Kick":
                         await user.kick(reason="Automod wurde ausgelöst")
                         await interaction.channel.send(f"🚨 **Der Benutzer {user.mention} wurde gekickt.** 🚨\nGrund: Automod wurde ausgelöst ({warnID} Verwarnungen).")
-                    if result2[0] == "Ban":
+                    if result2["aktion"] == "Ban":
                         await user.ban(reason="Automod wurde ausgelöst")
                         await interaction.channel.send(f"🚨 **Der Benutzer {user.mention} wurde gebannt.** 🚨\nGrund: Automod wurde ausgelöst ({warnID} Verwarnungen).")
-        #warn + automod ende
 
-
-        await interaction.response.send_message("**<:v_haken:1119579684057907251> Nutzer wurde verwarnt.**", ephemeral=True)
+                await interaction.followup.send("**<:v_haken:1119579684057907251> Nutzer wurde verwarnt.**", ephemeral=True)
 
 class MyTree(CommandTree):
     async def interaction_check(self, interaction: discord.Interaction):
         try:
             user = interaction.user
-            guild = bot.get_guild(925729625580113951)
-            banned_users = [ban async for ban in guild.bans()]
-            for entry in banned_users:
-                banned_user = entry.user
-                if int(user.id) == int(banned_user.id):
+            result = await getMongoDataBase()["banned"].find_one({"userID": user.id})
+            if result is not None:
                     embed = discord.Embed(title="<:v_mod:1119581819122241621> Du bist gebannt", description=f"""
     > <:v_info:1119579853092552715> Mit einem Bann hast du keinen Zugang mehr zu Vulpo's Befehlen. Außerdem hast du keinen Zutritt zum Supportserver "Vulpo's Wald".
-     <:v_pfeil_rechts:1119582171930300438> Grund: {entry.reason}
+     <:v_pfeil_rechts:1119582171930300438> Grund: {result["reason"]}
     <:v_play:1037065922134945853> Falls du denkst, dass du dich geändert hast, oder du zu unrecht bestraft wurdest, kannst du einen [Entbannungsantrag](https://forms.gle/NH1Jb1gVNEPuTLA58) stellen.
     """, colour=0xac0000)
-                    await interaction.response.send_message(embed=embed, ephemeral=True)
+                    await interaction.followup.send(embed=embed, ephemeral=True)
                     return False
             return True
-        except Exception as e:
-            print(e)
-
+        except:
+            pass
+        
 
 class Vulpo(commands.AutoShardedBot):
     def __init__(self):
@@ -122,8 +118,8 @@ class Vulpo(commands.AutoShardedBot):
         await bot.process_commands(msg)
         
     async def on_guild_join(self, guild):
-        guilds = bot.get_guild(925729625580113951)
-        channels = guilds.get_channel(925732763364106290)
+        guilds = await bot.fetch_guild(925729625580113951)
+        channels = await guilds.fetch_channel(925732763364106290)
         
         t1 = math.floor(guild.created_at.timestamp())
         t2 = datetime.datetime.fromtimestamp(int(t1))
@@ -165,33 +161,32 @@ class Vulpo(commands.AutoShardedBot):
             pass
     
     async def on_dbl_vote(self, data):
-        if data["type"] == "test":
-            return bot.dispatch('dbl_test', data)
-        async with bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
+                if data["type"] == "test":
+                    return bot.dispatch('dbl_test', data)
+                
+                db = getMongoDataBase()
+                
                 userid = int(data["user"])
-
-                guild = bot.get_guild(925729625580113951)
-                channel = guild.get_channel(934036224413417472)
-                await cursor.execute(f"SELECT votes FROM topgg WHERE userID = {userid}")
-                result = await cursor.fetchone()
+                guild = await bot.fetch_guild(925729625580113951)
+                channel = await guild.fetch_channel(934036224413417472)
+                result = await db['topgg'].find_one({"userID": userid})
                 if result is None or result is False:
-                    await cursor.execute(f"INSERT INTO topgg(userID, votes) VALUES(%s, %s)", (userid, 1))
+                    await db['topgg'].insert_one({"userID": userid, "votes": 1})
                     
                     times = 1
                 else:
-                    await cursor.execute(f"UPDATE topgg SET votes = (%s) WHERE userID = (%s)", (int(result[0]) + 1, userid))
+                    await db['topgg'].update_one({"userID": userid}, {"$set": {"votes": int(result["votes"]) + 1}})
                     
-                    times = int(result[0]) + 1
+                    times = int(result["votes"]) + 1
 
                 time_to_convert = math.floor(datetime.datetime.now().timestamp() + 43200)
                 time_converted = datetime.datetime.fromtimestamp(int(time_to_convert))
                 asyncio.create_task(vote_reminder(time_converted, bot, userid))
-                await cursor.execute("INSERT INTO vote(userid, endtime) VALUES(%s, %s)", (userid, time_to_convert))
+                await db['vote'].insert_one({"userid": userid, "endtime": time_to_convert})
 
                 user = await bot.fetch_user(userid)
                 rolle = guild.get_role(1041046601394815127)
-                member = guild.get_member(int(userid))
+                member = await guild.fetch_member(int(userid))
                 if user:
                     embed = discord.Embed(title=f"Danke vielmals {user.name}!", description=f"{user.mention} hat insgesammt {times} Mal gevotet.", colour=discord.Colour.orange())
                     embed.set_thumbnail(url=user.avatar)
@@ -208,23 +203,14 @@ class Vulpo(commands.AutoShardedBot):
                     embed = discord.Embed(title=f"Danke vielmals {userid}!", description=f"{userid} hat insgesammt {times} Mal gevotet.", colour=discord.Colour.orange())
                     embed.set_footer(text="Durch einen Vote erhältst du 300 Cookies", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508227117289472/herz.png")
                     await channel.send(embed=embed, view=voteView())
-                await cursor.execute(f"SELECT rucksack, bank, job, stunden FROM economy WHERE userID = {user.id}")
-                result = await cursor.fetchone()
-                if result is None:
-                    await cursor.execute("INSERT INTO economy(rucksack, bank, job, stunden, userID) VALUES(%s, %s, %s, %s, %s)",("0", "0", "Kein Job", "0", user.id))
-                    
-                    bal = 0
-                else:
-                    bal = int(result[0])
-                new = bal + 300
-                await cursor.execute("UPDATE economy SET rucksack = (%s) WHERE userID = (%s)", (new, user.id))
-                
+                 
+                await update_account(self, userid, "rucksack", 300, 0)       
 
                 dblpy = topgg.DBLClient(bot, dbl_token, autopost_interval=0)
                 votedata = await dblpy.get_bot_info()
                 votes = int(votedata["monthly_points"])
-                guild = bot.get_guild(925729625580113951)
-                votechannel = guild.get_channel(934036446271139860)
+                guild = await bot.fetch_guild(925729625580113951)
+                votechannel = await guild.fetch_channel(934036446271139860)
                 mydate = datetime.datetime.now()
                 translator = Translator()
                 translation = translator.translate(f'Month {mydate.strftime("%B")}' , dest="de")
@@ -254,18 +240,17 @@ class Vulpo(commands.AutoShardedBot):
                     pass
                 
     async def on_dbl_test(self, data):
-        async with bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
                 userid = int(data["user"])
 
-                guild = bot.get_guild(925729625580113951)
-                channel = guild.get_channel(934036224413417472)
-                await cursor.execute(f"SELECT votes FROM topgg WHERE userID = {userid}")
-                result = await cursor.fetchone()
-                times = result[0]
+                db = getMongoDataBase()
+
+                guild = await bot.fetch_guild(925729625580113951)
+                channel = await guild.fetch_channel(934036224413417472)
+                result = await db['topgg'].find_one({"userID": userid})
+                times = result["votes"]
 
                 rolle = guild.get_role(1041046601394815127)
-                member = guild.get_member(int(userid))
+                member = await guild.fetch_member(int(userid))
 
                 user = await bot.fetch_user(userid)
                 if user:
@@ -289,68 +274,69 @@ class Vulpo(commands.AutoShardedBot):
                 
     async def setup_hook(self):
         try:
-            loop = asyncio.get_event_loop()
-            pool = await aiomysql.create_pool(host='127.0.0.1', port=3306, user='vulpo', password='bWJDBfafaakfGfkgfaWKuklfGl67', db='VulpoDB', loop=loop, autocommit=True, maxsize=500)
-            bot.pool = pool
-            print(f"✅ Pool erstellt")
+            topgg_webhook = topgg.WebhookManager(bot).dbl_webhook("/dblwebhook", "Vulpo123321")
+            await topgg_webhook.run(5000)
+            print("✅ Verbunden mit der topgg api")
         except:
-            print(f"❌ Fehler bei der Pool Erstellung")
-        async with bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                try:
-                    topgg_webhook = topgg.WebhookManager(bot).dbl_webhook("/dblwebhook", "Vulpo123321")
-                    await topgg_webhook.run(5000)
-                    print("✅ Verbunden mit der topgg api")
-                except:
-                    print("❌ Verbindung zur topgg api fehlgeschlagen")
+            print("❌ Verbindung zur topgg api fehlgeschlagen")
+              
+        db = getMongoDataBase()
                     
-                try:
-                    if self.giveaways is False:
-                        self.giveaways = True
-                        await cursor.execute("SELECT endtime, msgID FROM gewinnspiele WHERE status = (%s)", ("Aktiv"))
-                        result = await cursor.fetchall()
-                        if str(result) == "()":
-                            print(f"✅ Asyncio tasks für Giveaways bereit(0)")
-                        else:
-                            a = 0
-                            for i in result:
-                                time_to_convert = int(i[0])
-                                time_converted = datetime.datetime.fromtimestamp(int(time_to_convert))
-                                a += 1
-                                asyncio.create_task(giveaway_end(time_converted, bot, int(i[1])))
-                            print(f"✅ Asyncio tasks für Giveaways bereit({a})")
-                except Exception as e:
-                    print(f"❌ Asyncio tasks für Giveaways nicht bereit\n\n{e}")
+        try:
+            if self.giveaways is False:
+                self.giveaways = True
+                result = await db["gewinnspiele"].find({"status": "Aktiv"}).to_list(length=None)
+                if str(result) == "()":
+                    print(f"✅ Asyncio tasks für Giveaways bereit(0)")
+                else:
+                    a = 0
+                    for i in result:
+                        time_to_convert = int(i["endtime"])
+                        time_converted = datetime.datetime.fromtimestamp(int(time_to_convert))
+                        a += 1
+                        asyncio.create_task(giveaway_end(time_converted, bot, int(i[1])))
+                    print(f"✅ Asyncio tasks für Giveaways bereit({a})")
+        except Exception as e:
+            print(f"❌ Asyncio tasks für Giveaways nicht bereit\n\n{e}")
                     
-                try:
-                    if self.votes is False:
-                        self.votes = True
-                        await cursor.execute("SELECT userid, endtime FROM vote")
-                        result = await cursor.fetchall()
-                        a = 0
-                        for c in result:
-                            time_to_convert = int(c[1])
-                            time_converted = datetime.datetime.fromtimestamp(int(time_to_convert))
-                            a += 1
-                            asyncio.create_task(vote_reminder(time_converted, bot, int(c[0])))
-                        print(f"✅ Asyncio tasks für Vote bereit({a})")
-                except Exception as e:
-                    print(f"❌ Asyncio tasks für Vote nicht bereit\n\n{e}")
+        try:
+            if self.votes is False:
+                self.votes = True
+                result = await db["vote"].find({}).to_list(length=None)
+                a = 0
+                for c in result:
+                    time_to_convert = int(c["endtime"])
+                    time_converted = datetime.datetime.fromtimestamp(int(time_to_convert))
+                    a += 1
+                    asyncio.create_task(vote_reminder(time_converted, bot, int(c[0])))
+                print(f"✅ Asyncio tasks für Vote bereit({a})")
+        except Exception as e:
+            print(f"❌ Asyncio tasks für Vote nicht bereit\n\n{e}")
                     
-                try:
-                    if self.reminder is False:
-                        self.reminder = True
-                        await cursor.execute("SELECT userID, endtime, id FROM erinnerungen")
-                        result = await cursor.fetchall()
-                        a = 0
-                        for c in result:
-                            time_to_convert = int(c[1])
-                            time_converted = datetime.datetime.fromtimestamp(int(time_to_convert))
-                            a += 1
-                            asyncio.create_task(reminder_end(time_converted, bot, c[0], c[2]))
-                        print(f"✅ Asyncio tasks für Erinnerungen bereit({a})")
-                except Exception as e:
-                    print(f"❌ Asyncio tasks für Vote Erinnerungen bereit\n\n{e}")
+        try:
+            if self.reminder is False:
+                self.reminder = True
+                result = await db["erinnerungen"].find({}).to_list(length=None)
+                a = 0
+                for c in result:
+                    time_to_convert = int(c["endtime"])
+                    time_converted = datetime.datetime.fromtimestamp(int(time_to_convert))
+                    a += 1
+                    asyncio.create_task(reminder_end(time_converted, bot, c[0], c[2]))
+                print(f"✅ Asyncio tasks für Erinnerungen bereit({a})")
+        except Exception as e:
+            print(f"❌ Asyncio tasks für Vote Erinnerungen bereit\n\n{e}")
+        
+        await db["banned"].delete_many({})
+        
+        guild = await bot.fetch_guild(787341728716816424)
+        banned_users = [ban async for ban in guild.bans()]
+        for entry in banned_users:
+            banned_user = entry.user
+            await db['banned'].update_one({"userID": banned_user.id}, {"$setOnInsert": {"userID": banned_user.id, "reason": entry.reason}}, upsert=True)
+            
+        print ("✅ Banned User wurden geladen")
+            
         try:
             geladen = 0
             fehler = 0
@@ -394,6 +380,9 @@ async def on_error(ctx, error):
 
 @bot.tree.error
 async def on_app_command_error(interaction: discord.Interaction, error: AppCommandError):
+    
+    await interaction.response.defer()
+    
     if isinstance(error, app_commands.MissingPermissions):
         await send_error("Fehlende Berechtigungen", "<:v_kreuz:1119580775411621908> Du hast nicht die Rechte, diesen Command auszuführen.", interaction)
         return
@@ -425,13 +414,13 @@ async def on_app_command_error(interaction: discord.Interaction, error: AppComma
             await send_error("Auf Cooldown", f"<:v_kreuz:1119580775411621908> Dieser Command ist auf Cooldown. Bitte versuche es in **{math.ceil(seconds)}** Sekunden erneut.", interaction)
             return
         if math.ceil(error.retry_after) <= 3600:  # minutes
-            await send_error("Auf Cooldown", f"<:v_kreuz:1119580775411621908> Dieser Command ist auf Cooldown. Bitte versuche es in **{math.ceil(minutes)}** Minuten und **{math.ceil(seconds)}** Sekunden.", interaction)
+            await send_error("Auf Cooldown", f"<:v_kreuz:1119580775411621908> Dieser Command ist auf Cooldown. Bitte versuche es in **{math.ceil(minutes)}** Minuten und **{math.ceil(seconds)}** Sekunden erneut.", interaction)
             return
         if math.ceil(error.retry_after) <= 86400:  # hours
-            await send_error("Auf Cooldown", f"<:v_kreuz:1119580775411621908> Dieser Command ist auf Cooldown. Bitte versuche es in **{math.ceil(hours)}** Stunden, **{math.ceil(minutes)}** Minuten und **{math.ceil(seconds)}** Sekunden.", interaction)
+            await send_error("Auf Cooldown", f"<:v_kreuz:1119580775411621908> Dieser Command ist auf Cooldown. Bitte versuche es in **{math.ceil(hours)}** Stunden, **{math.ceil(minutes)}** Minuten und **{math.ceil(seconds)}** Sekunden erneut.", interaction)
             return
         if math.ceil(error.retry_after) >= 86400:  # days
-            await send_error("Auf Cooldown", f"<:v_kreuz:1119580775411621908> Dieser Command ist auf Cooldown. Bitte versuche es in **{math.ceil(days)}** Tagen, **{math.ceil(hours)}** Stunden, **{math.ceil(minutes)}** Minuten und **{math.ceil(seconds)}** Sekunden.", interaction)
+            await send_error("Auf Cooldown", f"<:v_kreuz:1119580775411621908> Dieser Command ist auf Cooldown. Bitte versuche es in **{math.ceil(days)}** Tagen, **{math.ceil(hours)}** Stunden, **{math.ceil(minutes)}** Minuten und **{math.ceil(seconds)}** Sekunden erneut.", interaction)
             return
     if isinstance(error,app_commands.BotMissingPermissions):
         await send_error("Fehlende Berechtigungen", "<:v_kreuz:1119580775411621908> Ich habe keine Berechtigungen um das zu tun.", interaction)
@@ -446,8 +435,10 @@ async def on_app_command_error(interaction: discord.Interaction, error: AppComma
         return
     else:
         await send_error("Unbekannt", "<:v_kreuz:1119580775411621908> Ein unbekannter Fehler ist aufgetreten.\nBitte öffne ein Ticket im [Supportserver](https://discord.gg/49jD3VXksp)", interaction)
-        guilds = bot.get_guild(787341728716816424)
-        channels = guilds.get_channel(1220037646408089600)
+        #guilds = await bot.fetch_guild(787341728716816424)
+        #channels = await guilds.fetch_channel(1220037646408089600)
+        guilds = await bot.fetch_guild(787341728716816424)
+        channels = await guilds.fetch_channel(1220037646408089600)
 
         traceback_string = traceback.format_exception(type(error), error, error.__traceback__)
 
@@ -476,7 +467,7 @@ async def sync(ctx, serverid: int=None):
         except Exception as e:
             await ctx.send(f"**<:v_kreuz:1119580775411621908> Synchronisierung fehlgeschlagen**\n```\n{e}```")
     if serverid is not None:
-        guild = bot.get_guild(int(serverid))
+        guild = await bot.fetch_guild(int(serverid))
         if guild:
             try:
                 s = await bot.tree.sync(guild=discord.Object(id=guild.id))
@@ -489,16 +480,13 @@ async def sync(ctx, serverid: int=None):
 
 @bot.tree.context_menu(name="Nachricht melden")
 async def nachricht_melden(interaction: discord.Interaction, message: discord.Message):
-    async with bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute(f"SELECT channelID FROM reportlog WHERE guildID = {interaction.guild.id}")
-            result = await cursor.fetchone()
+            result = await getMongoDataBase()["reportlog"].find_one({"guildID": interaction.guild.id})
             if result == None:
-                return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Diese Funktion ist hier nicht aktiviert.**", ephemeral=True)
+                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Diese Funktion ist hier nicht aktiviert.**", ephemeral=True)
             try:
-                channel = interaction.guild.get_channel(int(result[0]))
+                channel = await interaction.guild.fetch_channel(int(result["channelID"]))
                 if channel == None:
-                    return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Kanal des Reportlogs existiert nicht mehr. Bitte melde dies dem lokalen Serverteam.**", ephemeral=True)
+                    return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Kanal des Reportlogs existiert nicht mehr. Bitte melde dies dem lokalen Serverteam.**", ephemeral=True)
                 else:
                     embed = discord.Embed(title="Nachricht Meldung", description=f"""
 Der User {interaction.user.mention} hat eine Nachricht von {message.author.mention} gemeldet.
@@ -509,9 +497,9 @@ Der User {interaction.user.mention} hat eine Nachricht von {message.author.menti
                     embed.set_thumbnail(url=interaction.guild.icon)
                     embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                     await channel.send(embed=embed, view=reportmsg(message, bot))
-                    await interaction.response.send_message(f"`Du hast eine Nachricht von` {message.author.mention} `gemeldet.`", ephemeral=True)
+                    await interaction.followup.send(f"`Du hast eine Nachricht von` {message.author.mention} `gemeldet.`", ephemeral=True)
             except:
-                return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Kanal des Reportlogs existiert nicht mehr. Bitte melde dies dem lokalen Serverteam.**", ephemeral=True)
+                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Kanal des Reportlogs existiert nicht mehr. Bitte melde dies dem lokalen Serverteam.**", ephemeral=True)
 
 
 bot.run(token, reconnect=True)

@@ -12,4 +12,3 @@ for i in range(1000000):
 #start = time.time()
 #collection.find_one({'test': 'test60357'})
 #print(f'Find one document in {time.time() - start} seconds')
-

@@ -1,0 +1,11 @@
+[Unit]
+Description=Vulpo start-script
+
+[Service]
+User=root
+Group=root
+Type=simple
+ExecStart=/root/mybot/start.sh
+
+[Install]
+WantedBy=multi-user.target

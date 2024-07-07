@@ -3,7 +3,7 @@ import discord
 from discord.ext import commands
 from datetime import datetime
 from discord import app_commands
-from info import getcolour
+from utils.utils import getcolour
 
 class moderation(commands.Cog):
     def __init__(self, bot):
@@ -22,10 +22,10 @@ class moderation(commands.Cog):
                 embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                 
                 await member.add_roles(rolle)
-                await interaction.response.send_message(embed=embed)
+                await interaction.followup.send(embed=embed)
                 return
             except:
-                await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Ich habe hier keine Brechtigungen dazu.**", ephemeral=True)
+                await interaction.followup.send("**<:v_kreuz:1119580775411621908> Ich habe hier keine Brechtigungen dazu.**", ephemeral=True)
                 return
 
         if rolle in member.roles:
@@ -35,10 +35,10 @@ class moderation(commands.Cog):
                 
                 embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                 await member.remove_roles(rolle)
-                await interaction.response.send_message(embed=embed)
+                await interaction.followup.send(embed=embed)
                 return
             except:
-                await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Ich habe hier keine Brechtigungen dazu.**", ephemeral=True)
+                await interaction.followup.send("**<:v_kreuz:1119580775411621908> Ich habe hier keine Brechtigungen dazu.**", ephemeral=True)
     
     @app_commands.command()
     @app_commands.guild_only()
@@ -62,14 +62,14 @@ class moderation(commands.Cog):
         dm.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         
         try:
-            await interaction.response.send_message(embed=embed)
+            await interaction.followup.send(embed=embed)
             await member.kick(reason=grund)
             try:
                 await member.send(embed=dm)
             except:
                 pass
         except:
-            await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Ich habe hier keine Brechtigungen dazu.**", ephemeral=True)
+            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Ich habe hier keine Brechtigungen dazu.**", ephemeral=True)
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -77,7 +77,7 @@ class moderation(commands.Cog):
     @app_commands.checks.has_permissions(ban_members=True)
     async def ban(self, interaction: discord.Interaction, user: discord.User, grund: str, nachrichten_löschen: typing.Literal["Keine löschen","Letzte 24 Stunden","Letzte 7 Tage"]):
         """Sperrt einen Benutzer. Wenn möglich."""
-        if interaction.user.id == user.id: return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst dich nicht selber bannen.**", ephemeral=True)
+        if interaction.user.id == user.id: return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst dich nicht selber bannen.**", ephemeral=True)
         embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                 description=f"Der Benutzer {user.mention} (**{user.id}**) wurde gebannt.")
         embed.add_field(name=f"🎛️ Server:", value=f"{interaction.guild.name}", inline=False)
@@ -110,13 +110,13 @@ class moderation(commands.Cog):
                     await interaction.guild.ban(user=dobject, reason=grund, delete_message_days=7)
                 else:
                     await interaction.guild.ban(user=dobject, reason=grund)
-            await interaction.response.send_message(embed=embed)
+            await interaction.followup.send(embed=embed)
             try:
                 await user.send(embed=dm)
             except:
                 pass
         except:
-            await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Ich habe hier keine Berechtigungen dazu.**", ephemeral=True)
+            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Ich habe hier keine Berechtigungen dazu.**", ephemeral=True)
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -131,11 +131,11 @@ class moderation(commands.Cog):
                 user = ban_entry.user
                 if (user.name, user.discriminator) == (member_name, member_discriminator):
                     await interaction.guild.unban(user)
-                    await interaction.response.send_message(f"**<:v_haken:1119579684057907251> {userstag} wurde entbannt**")
+                    await interaction.followup.send(f"**<:v_haken:1119579684057907251> {userstag} wurde entbannt**")
                     return
-            await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Benutzer ist nicht gebannt. Bitte beachte folgenden Syntax: `/unban userstag: <name#tag>`**", ephemeral=True)
+            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Benutzer ist nicht gebannt. Bitte beachte folgenden Syntax: `/unban userstag: <name#tag>`**", ephemeral=True)
         except:
-            await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Benutzer ist nicht gebannt. Bitte beachte folgenden Syntax: `/unban userstag: <name#tag>`**", ephemeral=True)
+            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Benutzer ist nicht gebannt. Bitte beachte folgenden Syntax: `/unban userstag: <name#tag>`**", ephemeral=True)
 
 
     @app_commands.command()
@@ -162,17 +162,17 @@ class moderation(commands.Cog):
                         embed.set_thumbnail(url=interaction.guild.icon)
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         embed.set_footer(text=f"{a} gesperrte Benutzer in diesem Server.")
-                        await interaction.response.send_message(embed=embed)
+                        await interaction.followup.send(embed=embed)
                 except discord.HTTPException:
                     embed2 = discord.Embed(title="Banliste", description=f"{msg1}", color=await getcolour(self, interaction.user))
                     embed2.set_thumbnail(url=interaction.guild.icon)
                     embed2.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                     embed.set_footer(text=f"{a} gesperrte Benutzer in diesem Server.")
-                    await interaction.response.send_message(embed=embed2)
+                    await interaction.followup.send(embed=embed2)
             else:
-                await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Hier gibt es keine gebannten Nutzer.**", ephemeral=True)
+                await interaction.followup.send("**<:v_kreuz:1119580775411621908> Hier gibt es keine gebannten Nutzer.**", ephemeral=True)
         except:
-            await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Hier gibt es keine gebannten Nutzer.**", ephemeral=True)
+            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Hier gibt es keine gebannten Nutzer.**", ephemeral=True)
 
     clear = app_commands.Group(name='clear', description='Lösche bestimmte Nachrichten.', guild_only=True)
 
@@ -183,8 +183,8 @@ class moderation(commands.Cog):
         """Löscht eine bestimmte Anzahl von Nachrichten."""
         try:
             if anzahl > 100:
-                return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Das Limit liegt bei 100 Nachrichten.**", ephemeral=True)
-            await interaction.response.send_message(f"**<:v_info:1119579853092552715> Ich lösche jetzt {anzahl} {'Nachrichten' if anzahl >= 2 else 'Nachricht'} in {kanal.mention}. Einen Moment.**", ephemeral=True)
+                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Das Limit liegt bei 100 Nachrichten.**", ephemeral=True)
+            await interaction.followup.send(f"**<:v_info:1119579853092552715> Ich lösche jetzt {anzahl} {'Nachrichten' if anzahl >= 2 else 'Nachricht'} in {kanal.mention}. Einen Moment.**", ephemeral=True)
             deleted = await kanal.purge(limit=anzahl)
             await interaction.edit_original_response(content=f"**<:v_haken:1119579684057907251> Ich habe {len(deleted)} {'Nachrichten' if len(deleted) >= 2 else 'Nachricht'} in {kanal.mention} gelöscht.**")
         except:
@@ -199,15 +199,15 @@ class moderation(commands.Cog):
             int(erste_nachricht)
             int(zweite_nachricht)
         except:
-            await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> Ups, da ging etwas schief. Bitte stelle sicher, dass es sich bei deinem Input um Nachrichten ID's gehandelt hat.**", ephemeral=True)
+            await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> Ups, da ging etwas schief. Bitte stelle sicher, dass es sich bei deinem Input um Nachrichten ID's gehandelt hat.**", ephemeral=True)
             return
         try:
             message1 = await kanal.fetch_message(int(erste_nachricht))
             message2 = await kanal.fetch_message(int(zweite_nachricht))
             if message1 == None or message2 == None:
-                await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> Ups, da ging etwas schief. Bitte stelle sicher, dass es sich bei deinem Input um Nachrichten ID's gehandelt hat.**", ephemeral=True)
+                await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> Ups, da ging etwas schief. Bitte stelle sicher, dass es sich bei deinem Input um Nachrichten ID's gehandelt hat.**", ephemeral=True)
                 return
-            await interaction.response.send_message(f"**<:v_info:1119579853092552715> Ich lösche jetzt die Nachrichten in {kanal.mention} zwischen [dieser]({message1.jump_url}) und [dieser]({message2.jump_url}) Nachricht. Einen Moment.**")
+            await interaction.followup.send(f"**<:v_info:1119579853092552715> Ich lösche jetzt die Nachrichten in {kanal.mention} zwischen [dieser]({message1.jump_url}) und [dieser]({message2.jump_url}) Nachricht. Einen Moment.**")
             deleted = await kanal.purge(before=discord.Object(erste_nachricht), after=discord.Object(zweite_nachricht))
             if len(deleted) == 0:
                 await interaction.edit_original_response(content=f"**<:v_kreuz:1119580775411621908> Ups, da ging etwas schief. Bitte stelle sicher, dass es sich bei deinem Input um Nachrichten ID's gehandelt hat.**")

@@ -3,10 +3,10 @@ import typing
 import discord
 from discord.ext import commands
 from discord import app_commands
-from info import random_color, discord_timestamp
+from utils.utils import random_color, discord_timestamp, getcolour
 import math
 import datetime
-from info import getcolour
+from utils.MongoDB import getMongoDataBase
 
 class tictactoeherausforderung2(discord.ui.View):
     def __init__(self, member: discord.Member=None, membertwo: discord.Member=None, bot=None):
@@ -62,53 +62,47 @@ class TicTacToeButton2(discord.ui.Button):
             view.current_player = view.X
             content = f"**Tik-Tak-Toe BIG**\n{self.playerone.mention} wurde herausgefordert von {self.playertwo.mention}. Es steht noch kein Gewinner fest.\n**{self.playertwo.mention} ist am Zuge.**"
 
+        db = getMongoDataBase()
+
         winner = view.check_board_winner()
-        if winner is not None:
-            async with self.bot.pool.acquire() as conn:
-                async with conn.cursor() as cursor:
-                    await cursor.execute("SELECT wins, loses, ties FROM ttt WHERE userID = (%s)", (self.playerone.id))
-                    result1 = await cursor.fetchone()
-                    await cursor.execute("SELECT wins, loses, ties FROM ttt WHERE userID = (%s)", (self.playertwo.id))
-                    result2 = await cursor.fetchone()
-                    
-                    
-                    if winner == view.X:
-                        content = f'**Tik-Tak-Toe BIG**\n{self.playerone.mention} wurde herausgefordert von {self.playertwo.mention}. **{self.playertwo.mention} hat dieses Match gewonnen.**\n*Noch ein Spiel?*'
-                        await cursor.execute("UPDATE ttt SET wins = (%s) WHERE userID = (%s)", (result2[0] + 1, self.playertwo.id))
-                        await cursor.execute("UPDATE ttt SET loses = (%s) WHERE userID = (%s)", (result1[1] + 1, self.playerone.id))
-                        await cursor.execute("SELECT wins, loses, ties FROM ttt WHERE userID = (%s)", (self.playerone.id))
-                        rating1 = await cursor.fetchone()
-                        await cursor.execute("SELECT wins, loses, ties FROM ttt WHERE userID = (%s)", (self.playertwo.id))
-                        rating2 = await cursor.fetchone()
-                        await cursor.execute("UPDATE ttt SET rating = (%s) WHERE userID = (%s)", ((rating2[0] * 3) + (rating2[1] * -1) + (rating2[2] * 2), self.playertwo.id))
-                        await cursor.execute("UPDATE ttt SET rating = (%s) WHERE userID = (%s)", ((rating1[0] * 3) + (rating1[1] * -1) + (rating1[2] * 2), self.playerone.id))
-                    elif winner == view.O:
-                        content = f'**Tik-Tak-Toe BIG**\n{self.playerone.mention} wurde herausgefordert von {self.playertwo.mention}. **{self.playerone.mention} hat dieses Match gewonnen.**\n*Noch ein Spiel?*'
-                        await cursor.execute("UPDATE ttt SET loses = (%s) WHERE userID = (%s)", (result2[1] + 1, self.playertwo.id))
-                        await cursor.execute("UPDATE ttt SET wins = (%s) WHERE userID = (%s)", (result1[0] + 1, self.playerone.id))
-                        await cursor.execute("SELECT wins, loses, ties FROM ttt WHERE userID = (%s)", (self.playerone.id))
-                        rating1 = await cursor.fetchone()
-                        await cursor.execute("SELECT wins, loses, ties FROM ttt WHERE userID = (%s)", (self.playertwo.id))
-                        rating2 = await cursor.fetchone()
-                        await cursor.execute("UPDATE ttt SET rating = (%s) WHERE userID = (%s)", ((rating2[0] * 3) + (rating2[1] * -1) + (rating2[2] * 2), self.playertwo.id))
-                        await cursor.execute("UPDATE ttt SET rating = (%s) WHERE userID = (%s)", ((rating1[0] * 3) + (rating1[1] * -1) + (rating1[2] * 2), self.playerone.id))
-                    else:
-                        content = f'**Tik-Tak-Toe BIG**\n{self.playerone.mention} wurde herausgefordert von {self.playertwo.mention}. **Es gab keinen Gewinner. Unentschieden.**\n*Noch ein Spiel?*'
-                        await cursor.execute("UPDATE ttt SET ties = (%s) WHERE userID = (%s)", (result2[2] + 1, self.playertwo.id))
-                        await cursor.execute("UPDATE ttt SET ties = (%s) WHERE userID = (%s)", (result1[2] + 1, self.playerone.id))
-                        await cursor.execute("SELECT wins, loses, ties FROM ttt WHERE userID = (%s)", (self.playerone.id))
-                        rating1 = await cursor.fetchone()
-                        await cursor.execute("SELECT wins, loses, ties FROM ttt WHERE userID = (%s)", (self.playertwo.id))
-                        rating2 = await cursor.fetchone()
-                        await cursor.execute("UPDATE ttt SET rating = (%s) WHERE userID = (%s)", ((rating2[0] * 3) + (rating2[1] * -1) + (rating2[2] * 2), self.playertwo.id))
-                        await cursor.execute("UPDATE ttt SET rating = (%s) WHERE userID = (%s)", ((rating1[0] * 3) + (rating1[1] * -1) + (rating1[2] * 2), self.playerone.id))
-
-                    for child in view.children:
-                        child.disabled = True
-
-                    view.stop()
-
-        await interaction.response.edit_message(content=content, view=view)
+        
+        
+        if winner is None:
+            return
+        
+        playerone = db["ttt"].find_one({"userID": self.playerone.id})
+        playertwo = db["ttt"].find_one({"userID": self.playertwo.id})
+        
+        if winner == view.X:
+            content = f'**Tik-Tak-Toe BIG**\n{self.playerone.mention} wurde herausgefordert von {self.playertwo.mention}. **{self.playertwo.mention} hat dieses Match gewonnen.**\n*Noch ein Spiel?*'
+            
+            db["ttt"].update_one({"userID": self.playertwo.id}, {"$set": {"wins": playertwo["wins"] + 1}})
+            db["ttt"].update_one({"userID": self.playerone.id}, {"$set": {"loses": playerone["loses"] + 1}})
+            rating1 = (playerone["wins"] * 3) + (playerone["loses"] * -1) + (playerone["ties"] * 2)
+            rating2 = (playertwo["wins"] * 3) + (playertwo["loses"] * -1) + (playertwo["ties"] * 2)
+            db["ttt"].update_one({"userID": self.playertwo.id}, {"$set": {"rating": rating2}})
+            db["ttt"].update_one({"userID": self.playerone.id}, {"$set": {"rating": rating1}})
+        elif winner == view.O:
+            content = f'**Tik-Tak-Toe BIG**\n{self.playerone.mention} wurde herausgefordert von {self.playertwo.mention}. **{self.playerone.mention} hat dieses Match gewonnen.**\n*Noch ein Spiel?*'
+            db["ttt"].update_one({"userID": self.playertwo.id}, {"$set": {"loses": playertwo["loses"] + 1}})
+            db["ttt"].update_one({"userID": self.playerone.id}, {"$set": {"wins": playerone["wins"] + 1}})
+            rating1 = (playerone["wins"] * 3) + (playerone["loses"] * -1) + (playerone["ties"] * 2)
+            rating2 = (playertwo["wins"] * 3) + (playertwo["loses"] * -1) + (playertwo["ties"] * 2)
+            db["ttt"].update_one({"userID": self.playertwo.id}, {"$set": {"rating": rating2}})
+            db["ttt"].update_one({"userID": self.playerone.id}, {"$set": {"rating": rating1}})
+        else:
+            content = f'**Tik-Tak-Toe BIG**\n{self.playerone.mention} wurde herausgefordert von {self.playertwo.mention}. **Es gab keinen Gewinner. Unentschieden.**\n*Noch ein Spiel?*'
+            db["ttt"].update_one({"userID": self.playertwo.id}, {"$set": {"ties": playertwo["ties"] + 1}})
+            db["ttt"].update_one({"userID": self.playerone.id}, {"$set": {"ties": playerone["ties"] + 1}})
+            rating1 = (playerone["wins"] * 3) + (playerone["loses"] * -1) + (playerone["ties"] * 2)
+            rating2 = (playertwo["wins"] * 3) + (playertwo["loses"] * -1) + (playertwo["ties"] * 2)
+            db["ttt"].update_one({"userID": self.playertwo.id}, {"$set": {"rating": rating2}})
+            db["ttt"].update_one({"userID": self.playerone.id}, {"$set": {"rating": rating1}})
+            
+        for child in view.children:
+            child.disabled = True
+        
+        return await interaction.response.edit_message(content=content, view=view)
 
 class TicTacToe2(discord.ui.View):
     children: typing.List[TicTacToeButton2]
@@ -222,52 +216,45 @@ class TicTacToeButton(discord.ui.Button):
             content = f"**Tik-Tak-Toe**\n{self.playerone.mention} wurde herausgefordert von {self.playertwo.mention}. Es steht noch kein Gewinner fest.\n**{self.playertwo.mention} ist am Zuge.**"
 
         winner = view.check_board_winner()
-        if winner is not None:
-            async with self.bot.pool.acquire() as conn:
-                async with conn.cursor() as cursor:
-                    await cursor.execute("SELECT wins, loses, ties FROM ttt WHERE userID = (%s)", (self.playerone.id))
-                    result1 = await cursor.fetchone()
-                    await cursor.execute("SELECT wins, loses, ties FROM ttt WHERE userID = (%s)", (self.playertwo.id))
-                    result2 = await cursor.fetchone()
-                    
-                    
-                    if winner == view.X:
-                        content = f'**Tik-Tak-Toe**\n{self.playerone.mention} wurde herausgefordert von {self.playertwo.mention}. **{self.playertwo.mention} hat dieses Match gewonnen.**\n*Noch ein Spiel?*'
-                        await cursor.execute("UPDATE ttt SET wins = (%s) WHERE userID = (%s)", (result2[0] + 1, self.playertwo.id))
-                        await cursor.execute("UPDATE ttt SET loses = (%s) WHERE userID = (%s)", (result1[1] + 1, self.playerone.id))
-                        await cursor.execute("SELECT wins, loses, ties FROM ttt WHERE userID = (%s)", (self.playerone.id))
-                        rating1 = await cursor.fetchone()
-                        await cursor.execute("SELECT wins, loses, ties FROM ttt WHERE userID = (%s)", (self.playertwo.id))
-                        rating2 = await cursor.fetchone()
-                        await cursor.execute("UPDATE ttt SET rating = (%s) WHERE userID = (%s)", ((rating2[0] * 3) + (rating2[1] * -1) + (rating2[2] * 2), self.playertwo.id))
-                        await cursor.execute("UPDATE ttt SET rating = (%s) WHERE userID = (%s)", ((rating1[0] * 3) + (rating1[1] * -1) + (rating1[2] * 2), self.playerone.id))
-                    elif winner == view.O:
-                        content = f'**Tik-Tak-Toe**\n{self.playerone.mention} wurde herausgefordert von {self.playertwo.mention}. **{self.playerone.mention} hat dieses Match gewonnen.**\n*Noch ein Spiel?*'
-                        await cursor.execute("UPDATE ttt SET loses = (%s) WHERE userID = (%s)", (result2[1] + 1, self.playertwo.id))
-                        await cursor.execute("UPDATE ttt SET wins = (%s) WHERE userID = (%s)", (result1[0] + 1, self.playerone.id))
-                        await cursor.execute("SELECT wins, loses, ties FROM ttt WHERE userID = (%s)", (self.playerone.id))
-                        rating1 = await cursor.fetchone()
-                        await cursor.execute("SELECT wins, loses, ties FROM ttt WHERE userID = (%s)", (self.playertwo.id))
-                        rating2 = await cursor.fetchone()
-                        await cursor.execute("UPDATE ttt SET rating = (%s) WHERE userID = (%s)", ((rating2[0] * 3) + (rating2[1] * -1) + (rating2[2] * 2), self.playertwo.id))
-                        await cursor.execute("UPDATE ttt SET rating = (%s) WHERE userID = (%s)", ((rating1[0] * 3) + (rating1[1] * -1) + (rating1[2] * 2), self.playerone.id))
-                    else:
-                        content = f'**Tik-Tak-Toe**\n{self.playerone.mention} wurde herausgefordert von {self.playertwo.mention}. **Es gab keinen Gewinner. Unentschieden.**\n*Noch ein Spiel?*'
-                        await cursor.execute("UPDATE ttt SET ties = (%s) WHERE userID = (%s)", (result2[2] + 1, self.playertwo.id))
-                        await cursor.execute("UPDATE ttt SET ties = (%s) WHERE userID = (%s)", (result1[2] + 1, self.playerone.id))
-                        await cursor.execute("SELECT wins, loses, ties FROM ttt WHERE userID = (%s)", (self.playerone.id))
-                        rating1 = await cursor.fetchone()
-                        await cursor.execute("SELECT wins, loses, ties FROM ttt WHERE userID = (%s)", (self.playertwo.id))
-                        rating2 = await cursor.fetchone()
-                        await cursor.execute("UPDATE ttt SET rating = (%s) WHERE userID = (%s)", ((rating2[0] * 3) + (rating2[1] * -1) + (rating2[2] * 2), self.playertwo.id))
-                        await cursor.execute("UPDATE ttt SET rating = (%s) WHERE userID = (%s)", ((rating1[0] * 3) + (rating1[1] * -1) + (rating1[2] * 2), self.playerone.id))
-
-                    for child in view.children:
-                        child.disabled = True
-
-                    view.stop()
-
-        await interaction.response.edit_message(content=content, view=view)
+        
+        db = getMongoDataBase()
+        
+        if winner is None:
+            return
+        
+        playerone = db["ttt"].find_one({"userID": self.playerone.id})
+        playertwo = db["ttt"].find_one({"userID": self.playertwo.id})
+        
+        if winner == view.X:
+            content = f'**Tik-Tak-Toe**\n{self.playerone.mention} wurde herausgefordert von {self.playertwo.mention}. **{self.playertwo.mention} hat dieses Match gewonnen.**\n*Noch ein Spiel?*'
+            
+            db["ttt"].update_one({"userID": self.playertwo.id}, {"$set": {"wins": playertwo["wins"] + 1}})
+            db["ttt"].update_one({"userID": self.playerone.id}, {"$set": {"loses": playerone["loses"] + 1}})
+            rating1 = (playerone["wins"] * 3) + (playerone["loses"] * -1) + (playerone["ties"] * 2)
+            rating2 = (playertwo["wins"] * 3) + (playertwo["loses"] * -1) + (playertwo["ties"] * 2)
+            db["ttt"].update_one({"userID": self.playertwo.id}, {"$set": {"rating": rating2}})
+            db["ttt"].update_one({"userID": self.playerone.id}, {"$set": {"rating": rating1}})
+        elif winner == view.O:
+            content = f'**Tik-Tak-Toe**\n{self.playerone.mention} wurde herausgefordert von {self.playertwo.mention}. **{self.playerone.mention} hat dieses Match gewonnen.**\n*Noch ein Spiel?*'
+            db["ttt"].update_one({"userID": self.playertwo.id}, {"$set": {"loses": playertwo["loses"] + 1}})
+            db["ttt"].update_one({"userID": self.playerone.id}, {"$set": {"wins": playerone["wins"] + 1}})
+            rating1 = (playerone["wins"] * 3) + (playerone["loses"] * -1) + (playerone["ties"] * 2)
+            rating2 = (playertwo["wins"] * 3) + (playertwo["loses"] * -1) + (playertwo["ties"] * 2)
+            db["ttt"].update_one({"userID": self.playertwo.id}, {"$set": {"rating": rating2}})
+            db["ttt"].update_one({"userID": self.playerone.id}, {"$set": {"rating": rating1}})
+        else:
+            content = f'**Tik-Tak-Toe**\n{self.playerone.mention} wurde herausgefordert von {self.playertwo.mention}. **Es gab keinen Gewinner. Unentschieden.**\n*Noch ein Spiel?*'
+            db["ttt"].update_one({"userID": self.playertwo.id}, {"$set": {"ties": playertwo["ties"] + 1}})
+            db["ttt"].update_one({"userID": self.playerone.id}, {"$set": {"ties": playerone["ties"] + 1}})
+            rating1 = (playerone["wins"] * 3) + (playerone["loses"] * -1) + (playerone["ties"] * 2)
+            rating2 = (playertwo["wins"] * 3) + (playertwo["loses"] * -1) + (playertwo["ties"] * 2)
+            db["ttt"].update_one({"userID": self.playertwo.id}, {"$set": {"rating": rating2}})
+            db["ttt"].update_one({"userID": self.playerone.id}, {"$set": {"rating": rating1}})
+        
+        for child in view.children:
+            child.disabled = True
+            
+        return await interaction.response.edit_message(content=content, view=view)
 
 class TicTacToe(discord.ui.View):
     children: typing.List[TicTacToeButton]
@@ -337,46 +324,49 @@ class Ttt(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def start(self, interaction: discord.Interaction, spieler2: discord.Member, modus: typing.Literal["Klassisch", "BIG"]):
         """Spiele mit jemanden tictactoe"""
+        
+        await interaction.response.defer()
+        
+        db = getMongoDataBase()
+        
         if modus == "Klassisch":
             if spieler2 == interaction.user:
-                return await interaction.response.send_message("**❌ Du kannst nicht gegen dich selbst spielen.**", ephemeral=True)
-            async with self.bot.pool.acquire() as conn:
-                async with conn.cursor() as cursor:
-                    await cursor.execute("SELECT wins, loses, ties FROM ttt WHERE userID = (%s)", (interaction.user.id))
-                    result1 = await cursor.fetchone()
-                    if result1 == None:
-                        await cursor.execute("INSERT INTO ttt (userID, wins, loses, ties) VALUES (%s, %s, %s, %s)", (interaction.user.id, 0, 0, 0))
-
-                    await cursor.execute("SELECT wins, loses, ties FROM ttt WHERE userID = (%s)", (spieler2.id))
-                    result2 = await cursor.fetchone()
-                    if result2 == None:
-                        await cursor.execute("INSERT INTO ttt (userID, wins, loses, ties) VALUES (%s, %s, %s, %s)", (spieler2.id, 0, 0, 0))
+                return await interaction.followup.send("**❌ Du kannst nicht gegen dich selbst spielen.**", ephemeral=True)
+            
+            playerone = await db["ttt"].find_one({"userID": interaction.user.id})
+            
+            if playerone == None:
+                await db["ttt"].insert_one({"userID": interaction.user.id, "wins": 0, "loses": 0, "ties": 0, "rating": 0})
+                
+            playertwo = await db["ttt"].find_one({"userID": spieler2.id})
+            
+            if playertwo == None:
+                await db["ttt"].insert_one({"userID": spieler2.id, "wins": 0, "loses": 0, "ties": 0, "rating": 0})
             
             t1 = math.floor(datetime.datetime.now().timestamp() + 300)
             t2 = datetime.datetime.fromtimestamp(int(t1))
-            await interaction.response.send_message(f'**Tik-Tak-Toe**\n{spieler2.mention}, du wurdest von {interaction.user.mention} herausgefordert.\n*Die Herausforderung läuft {discord_timestamp(t2, "R")} aus.*', view=tictactoeherausforderung(spieler2, interaction.user, self.bot))
+            await interaction.followup.send(f'**Tik-Tak-Toe**\n{spieler2.mention}, du wurdest von {interaction.user.mention} herausgefordert.\n*Die Herausforderung läuft {discord_timestamp(t2, "R")} aus.*', view=tictactoeherausforderung(spieler2, interaction.user, self.bot))
             await asyncio.sleep(300)
             message = await interaction.original_response()
             if "Die Herausforderung läuft" in message.content:
                 await interaction.edit_original_response(content=f"**Tik-Tak-Toe**\n{spieler2.mention}, du wurdest von {interaction.user.mention} herausgefordert. Jedoch ist die Zeit abgelaufen, dem Match beizutreten.", view=None)
         if modus == "BIG":
             if spieler2 == interaction.user:
-                return await interaction.response.send_message("**❌ Du kannst nicht gegen dich selbst spielen.**", ephemeral=True)
-            async with self.bot.pool.acquire() as conn:
-                async with conn.cursor() as cursor:
-                    await cursor.execute("SELECT wins, loses, ties FROM ttt WHERE userID = (%s)", (interaction.user.id))
-                    result1 = await cursor.fetchone()
-                    if result1 == None:
-                        await cursor.execute("INSERT INTO ttt (userID, wins, loses, ties) VALUES (%s, %s, %s, %s)", (interaction.user.id, 0, 0, 0))
-
-                    await cursor.execute("SELECT wins, loses, ties FROM ttt WHERE userID = (%s)", (spieler2.id))
-                    result2 = await cursor.fetchone()
-                    if result2 == None:
-                        await cursor.execute("INSERT INTO ttt (userID, wins, loses, ties) VALUES (%s, %s, %s, %s)", (spieler2.id, 0, 0, 0))
+                return await interaction.followup.send("**❌ Du kannst nicht gegen dich selbst spielen.**", ephemeral=True)
+            
+            playerone = await db["ttt"].find_one({"userID": interaction.user.id})
+            
+            if playerone == None:
+                await db["ttt"].insert_one({"userID": interaction.user.id, "wins": 0, "loses": 0, "ties": 0, "rating": 0})
+                
+            playertwo = await db["ttt"].find_one({"userID": spieler2.id})
+            
+            if playertwo == None:
+                await db["ttt"].insert_one({"userID": spieler2.id, "wins": 0, "loses": 0, "ties": 0, "rating": 0})
             
             t1 = math.floor(datetime.datetime.now().timestamp() + 300)
             t2 = datetime.datetime.fromtimestamp(int(t1))
-            await interaction.response.send_message(f'**Tik-Tak-Toe**\n{spieler2.mention}, du wurdest von {interaction.user.mention} herausgefordert.\n*Die Herausforderung läuft {discord_timestamp(t2, "R")} aus.*', view=tictactoeherausforderung2(spieler2, interaction.user, self.bot))
+            await interaction.followup.send(f'**Tik-Tak-Toe**\n{spieler2.mention}, du wurdest von {interaction.user.mention} herausgefordert.\n*Die Herausforderung läuft {discord_timestamp(t2, "R")} aus.*', view=tictactoeherausforderung2(spieler2, interaction.user, self.bot))
             await asyncio.sleep(300)
             message = await interaction.original_response()
             if "Die Herausforderung läuft" in message.content:
@@ -386,30 +376,35 @@ class Ttt(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def stats(self, interaction: discord.Interaction, member: discord.Member=None):
         """Sieh dir deine tictactoe Stats an."""
+        
+        await interaction.response.defer()
+        
         if member == None:
             member = interaction.user
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute("SELECT wins, loses, ties FROM ttt WHERE userID = (%s)", (member.id))
-                result = await cursor.fetchone()
-                if result == None:
-                    if member == interaction.user:
-                        return await interaction.response.send_message("**❌ Du hast noch kein Match gespielt. Aufgrund dessen hast du auch keine Punkte. Du musst zuerst ein Match spielen.**", ephemeral=True)
-                    return await interaction.response.send_message(f"**❌ {member.mention} hat noch kein Match gespielt. Aufgrund dessen hat er/sie auch keine Punkte. Er/Sie muss zuerst ein Match spielen.**", ephemeral=True)
-                else:
-                    rating = (result[0] * 3) + (result[1] * -1) + (result[2] * 2)
-                    total_plays = result[0] + result[1] + result[2]
-                    embed = discord.Embed(color=await getcolour(self, interaction.user), title="❌ **| __TicTacToe Stats__ |** ⭕", description=f"""
+            
+        db = getMongoDataBase()
+        
+        result = await db["ttt"].find_one({"userID": member.id})
+        
+        if result == None:
+            if member == interaction.user:
+                return await interaction.followup.send("**❌ Du hast noch kein Match gespielt. Aufgrund dessen hast du auch keine Punkte. Du musst zuerst ein Match spielen.**", ephemeral=True)
+            return await interaction.followup.send(f"**❌ {member.mention} hat noch kein Match gespielt. Aufgrund dessen hat er/sie auch keine Punkte. Er/Sie muss zuerst ein Match spielen.**", ephemeral=True)
+        
+        rating = (result["wins"] * 3) + (result["loses"] * -1) + (result["ties"] * 2)
+        total_plays = result["wins"] + result["loses"] + result["ties"]
+        embed = discord.Embed(color=await getcolour(self, interaction.user), title="❌ **| __TicTacToe Stats__ |** ⭕", description=f"""
 Aktuelle Stats von {member.mention}
 **Rating: `{rating}`**
 
 Insgesamt gespielte Spiele: `{total_plays}`
-Davon gewonnen: `{total_plays - result[1] - result[2]}`
-Davon unentschieden: `{total_plays - result[0] - result[1]}`
-Davon verloren: `{total_plays - result[0] - result[2]}`""")
-                    embed.set_thumbnail(url=member.avatar)
-                    
-                    await interaction.response.send_message(embed=embed)
+Davon gewonnen: `{result["wins"]}`
+Davon unentschieden: `{result["ties"]}`
+Davon verloren: `{result["loses"]}`""")
+        
+        embed.set_thumbnail(url=member.avatar)
+        
+        await interaction.followup.send(embed=embed)
                 
 async def setup(bot):
     await bot.add_cog(Ttt(bot))

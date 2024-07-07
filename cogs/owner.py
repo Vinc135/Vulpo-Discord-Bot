@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import asyncio
 import sys
-from info import getcolour
+from utils.utils import getcolour
 
 class owner(commands.Cog):
     def __init__(self, bot):

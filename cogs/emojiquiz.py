@@ -5,8 +5,9 @@ import typing
 import discord
 from discord.ext import commands
 from discord import app_commands
-from info import random_color
-from info import getcolour
+from utils.utils import random_color, getcolour
+from utils.MongoDB import getMongoDataBase 
+from cogs.economy import open_acc, update_account
 import time
 
 class buttons(discord.ui.View):
@@ -17,132 +18,86 @@ class buttons(discord.ui.View):
     @discord.ui.button(label='Nächstes Wort', style=discord.ButtonStyle.grey, custom_id="jqvefkghwkcvh", emoji="⏩")
     async def skip(self, interaction: discord.Interaction, button: discord.ui.Button):
         acc = await open_acc(self, interaction.user)
-        rucksack = int(acc[0])
+        rucksack = int(acc["rucksack"])
         if 20 > int(rucksack):
-            return await interaction.response.send_message(f"<:v_kreuz:1119580775411621908> Du hast nicht **20 🍪** in deinem Rucksack. Es fehlen dir **{20 - rucksack} 🍪**. Entweder überweise dir die Cookies von deiner Bank in dein Rucksack oder gehe zuerst arbeiten oder betteln. Alle Commands siehst du mit `/help`.", ephemeral=True)
+            return await interaction.followup.send(f"<:v_kreuz:1119580775411621908> Du hast nicht **20 🍪** in deinem Rucksack. Es fehlen dir **{20 - rucksack} 🍪**. Entweder überweise dir die Cookies von deiner Bank in dein Rucksack oder gehe zuerst arbeiten oder betteln. Alle Commands siehst du mit `/help`.", ephemeral=True)
 
-        await update_acc(self, interaction.user, "rucksack", 0, 20)
+        await update_account(self, interaction.user, "rucksack", 0, 20)
         
         await interaction.response.defer(thinking=False, ephemeral=True)
         m = await interaction.channel.send(f"{interaction.user.mention} hat den Begriff übersprungen. (-20 🍪)")
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute("SELECT emojis, lösung, tipp FROM eq_begriffe ORDER BY RAND() LIMIT 1")
-                result = await cursor.fetchone()
-                embed = discord.Embed(color=await getcolour(self, interaction.user), title="Emojiquiz", description="Solltest du Probleme beim Lösen haben, kannst du die Buttons dieser Nachricht benutzen.")
-                embed.add_field(name="❓ Gesuchter Begriff", value=result[0])
-                embed.add_field(name="❗️ Tipp", value=f"||{result[2]}||")
-                embed.set_footer(text=f"Das letzte Quiz wurde übersprungen von {interaction.user}.", icon_url=interaction.user.avatar)
-                await asyncio.sleep(0.3)
-                m2 = await interaction.channel.send(embed=embed, view=buttons(self.bot))
-                await cursor.execute("DELETE FROM eqcurrent WHERE guildID = (%s)", (interaction.guild.id))
-                await cursor.execute("INSERT INTO eqcurrent(guildID, lösung, msgID) VALUES(%s, %s, %s)", (interaction.guild.id, result[1], m2.id))
+        
+        db = getMongoDataBase()
+        
+        result = await db["eq_begriffe"].aggregate([{"$sample": {"size": 1}}]).to_list(length=1)
+        embed = discord.Embed(color=await getcolour(self, interaction.user), title="Emojiquiz", description="Solltest du Probleme beim Lösen haben, kannst du die Buttons dieser Nachricht benutzen.")
+        embed.add_field(name="❓ Gesuchter Begriff", value=result[0]["emojis"])
+        embed.add_field(name="❗️ Tipp", value=f"||{result[0]['tipp']}||")
+        embed.set_footer(text=f"Das letzte Quiz wurde übersprungen von {interaction.user}.", icon_url=interaction.user.avatar)
+        m2 = await interaction.channel.send(embed=embed, view=buttons(self.bot))
+        await db["eqcurrent"].delete_one({"guildID": interaction.guild.id})
+        await db["eqcurrent"].insert_one({"guildID": interaction.guild.id, "lösung": result[0]['begriff'], "msgID": m2.id})
     
     @discord.ui.button(label='Anfangsbuchstabe', style=discord.ButtonStyle.grey, custom_id="dvekzlfdigqwjvliz", emoji="💡")
     async def letter(self, interaction: discord.Interaction, button: discord.ui.Button):
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute("SELECT lösung FROM eqcurrent WHERE guildID = (%s)", (interaction.guild.id))
-                result = await cursor.fetchone()
-                if result is not None:
-                    return await interaction.response.send_message(f"💡 Der erste Buchstabe des gesuchten Wortes ist __**{result[0][0]}**__. Mehr Tipps gebe ich aber nicht.", ephemeral=True)
-                await interaction.response.send_message(f"❌ Es gibt aktuell keine Lösung. Das Emojiquiz wurde wahrscheinlich auf diesem Sevrer ausgeschalten.", ephemeral=True)
-
-async def open_acc(self, user):
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute(f"SELECT rucksack, bank, job, stunden FROM economy WHERE userID = {user.id}")
-            result = await cursor.fetchone()
-            if result is None:
-                await cursor.execute("INSERT INTO economy(rucksack, bank, job, stunden, userID) VALUES(%s, %s, %s, %s, %s)",("0", "0", "Kein Job", "0", user.id))
-                
-                liste = ["0","0","Kein Job","0",user.id]
-                return liste
-            else:
-                return result
-
-async def update_acc(self, user, mode, sum, dif):
-    acc = await open_acc(self, user)
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            if mode == "rucksack":
-                bal = acc[0]
-                new = int(bal) + int(sum) - int(dif)
-                await cursor.execute("UPDATE economy SET rucksack = (%s) WHERE userID = (%s)", (new, user.id))
-                
-            if mode == "bank":
-                bal = acc[1]
-                new = int(bal) + int(sum) - int(dif)
-                await cursor.execute("UPDATE economy SET bank = (%s) WHERE userID = (%s)", (new, user.id))
+        result = await getMongoDataBase()["eqcurrent"].find_one({"guildID": interaction.guild.id})
+        if result is not None:
+            return await interaction.followup.send(f"💡 Der erste Buchstabe des gesuchten Wortes ist __**{result['begriff'][0]}**__. Mehr Tipps gebe ich aber nicht.", ephemeral=True)
+        await interaction.followup.send(f"❌ Es gibt aktuell keine Lösung. Das Emojiquiz wurde wahrscheinlich auf diesem Sevrer ausgeschalten.", ephemeral=True)
 
 async def updateLeaderbord(bot, userid):
-    async with bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute("SELECT anzahl FROM eq_leaderboard WHERE userID = (%s)", (userid))
-            r = await cursor.fetchone()
-            if r != None:
-                await cursor.execute("UPDATE eq_leaderboard SET anzahl = (%s) WHERE userID = (%s)", (int(r[0]) + 1, userid))
-            if r == None:
-                await cursor.execute("INSERT INTO eq_leaderboard(userID, anzahl) VALUES(%s, %s)", (userid, 1))
+    db = getMongoDataBase()
+    
+    r = await db["eq_leaderboard"].find_one({"userID": userid})
+    if r != None:
+        await db["eq_leaderboard"].update_one(
+            {"userID": userid},
+            {"$set": {"anzahl": int(r[0]) + 1}}
+        )
+    if r == None:
+        await db["eq_leaderboard"].insert_one({"userID": userid, "anzahl": 1})
 
 async def check_channel(self, msg):
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute("SELECT channelID FROM eq WHERE guildID = (%s)", (msg.guild.id))
-            result = await cursor.fetchone()
-            if result is None:
-                return False
-            else:
-                if int(result[0]) == int(msg.channel.id):
-                    return True
-                else:
-                    return False
+    result = await getMongoDataBase()["eq"].find_one({"guildID": msg.guild.id})
+    if result is None:
+        return False
+    else:
+        if int(result["channelID"]) == int(msg.channel.id):
+            return True
+        else:
+            return False
 
 async def check_word(self, msg: discord.Message):
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute("SELECT lösung FROM eqcurrent WHERE guildID = (%s)", (msg.guild.id))
-            result = await cursor.fetchone()
-            if result is None:
-                return False
-            if result[0].lower() == msg.content.lower():
-                await cursor.execute("DELETE FROM eqcurrent WHERE guildID = (%s)", (msg.guild.id))
-                return True
-            elif result[0].lower() != msg.content.lower():
-                return False
+    db = getMongoDataBase()
+    
+    result = await db["eqcurrent"].find_one({"guildID": msg.guild.id})
+    
+    if result is None:
+        return False
+    if result["begriff"].lower() == msg.content.lower():
+        await db["eqcurrent"].delete_one({"guildID": msg.guild.id})
+        return True
+    elif result["begriff"].lower() != msg.content.lower():
+        return False
                 
 async def answer_correct(self, msg):
     try:
         await msg.channel.send(f"{msg.author.mention} hat den gesuchten Begriff erraten. (+10 🍪)")
-        await update_acc(self, msg.author, "rucksack", 10, 0)
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute("SELECT emojis, lösung, tipp FROM eq_begriffe ORDER BY RAND() LIMIT 1")
-                result = await cursor.fetchone()
-                #a = random.randint(1, int(len(result)))
-                #b = 0
-                #startloop = time.time()
-                #for quiz in result:
-                #    if a == b:
-                #        embed = discord.Embed(color=await getcolour(self, msg.author), title="Emojiquiz", description="Solltest du Probleme beim Lösen haben, kannst du die Buttons dieser Nachricht benutzen.")
-                #        embed.add_field(name="❓ Gesuchter Begriff", value=quiz[0])
-                #        embed.add_field(name="❗️ Tipp", value=f"||{quiz[2]}||")
-                #        embed.set_footer(text=f"Das letzte Quiz wurde gelöst von {msg.author}.", icon_url=msg.author.avatar)
-                #        #await asyncio.sleep(0.3)
-                #        m2 = await msg.channel.send(embed=embed, view=buttons(self.bot))
-                #        await cursor.execute("INSERT INTO eqcurrent(guildID, lösung, msgID) VALUES(%s, %s, %s)", (msg.guild.id, quiz[1], m2.id))
-                #        await updateLeaderbord(self.bot, msg.author.id)
-                #        b += 100000
-                #    else:
-                #        b += 1
-                #print(f"loopend {time.time() - startloop}")
-                embed = discord.Embed(color=await getcolour(self, msg.author), title="Emojiquiz", description="Solltest du Probleme beim Lösen haben, kannst du die Buttons dieser Nachricht benutzen.")
-                embed.add_field(name="❓ Gesuchter Begriff", value=result[0])
-                embed.add_field(name="❗️ Tipp", value=f"||{result[2]}||")
-                embed.set_footer(text=f"Das letzte Quiz wurde gelöst von {msg.author}.", icon_url=msg.author.avatar)
-                m2 = await msg.channel.send(embed=embed, view=buttons(self.bot))
-                await cursor.execute("INSERT INTO eqcurrent(guildID, lösung, msgID) VALUES(%s, %s, %s)", (msg.guild.id, result[1], m2.id))
-                await updateLeaderbord(self.bot, msg.author.id)
+        await update_account(self, msg.author, "rucksack", 10, 0)
+        
+        db = getMongoDataBase()
+        
+        result = await db["eq_begriffe"].aggregate([{"$sample": {"size": 1}}]).to_list(length=1)
+        
+        embed = discord.Embed(color=await getcolour(self, msg.author), title="Emojiquiz", description="Solltest du Probleme beim Lösen haben, kannst du die Buttons dieser Nachricht benutzen.")
+        embed.add_field(name="❓ Gesuchter Begriff", value=result[0]["emojis"])
+        embed.add_field(name="❗️ Tipp", value=f"||{result[0]['tipp']}||")
+        embed.set_footer(text=f"Das letzte Quiz wurde gelöst von {msg.author}.", icon_url=msg.author.avatar)
+        m2 = await msg.channel.send(embed=embed, view=buttons(self.bot))
+        
+        
+        await db["eqcurrent"].insert_one({"guildID": msg.guild.id, "lösung": result[0]['begriff'], "msgID": m2.id})
+        await updateLeaderbord(self.bot, msg.author.id)
     except:
         pass
 
@@ -189,73 +144,58 @@ class Emojiquiz(commands.Cog):
     async def emojiquiz(self, interaction: discord.Interaction, modus: typing.Literal["Anschalten", "Ausschalten"], kanal: typing.Union[discord.TextChannel, discord.ForumChannel, discord.Thread]):
         """Verwalte das Emoji-Quiz deines Servers."""
 
+        await interaction.response.defer()
+
         # Check Server-Anforderungen
-        server = interaction.guild
-        server_age = (datetime.datetime.now(datetime.timezone.utc) - server.created_at).days
-        user_age = (datetime.datetime.now(datetime.timezone.utc) - interaction.user.created_at).days
-        owner_age = (datetime.datetime.now(datetime.timezone.utc) - interaction.guild.owner.created_at).days
+        #server = interaction.guild
+        #server_age = (datetime.datetime.now(datetime.timezone.utc) - server.created_at).days
+        #user_age = (datetime.datetime.now(datetime.timezone.utc) - interaction.user.created_at).days
+        #owner_age = (datetime.datetime.now(datetime.timezone.utc) - interaction.guild.owner.created_at).days
 
 
-        if server_age < 10:
-            return await interaction.response.send_message("Der Server muss mindestens 10 Tage alt sein, um das Emoji-Quiz zu verwenden.", ephemeral=True)
-        non_bot_members = sum(not member.bot for member in server.members)
-        if non_bot_members < 10:
-            return await interaction.response.send_message("Es müssen mindestens 10 Servermitglieder ohne Bots vorhanden sein, um das Emoji-Quiz zu verwenden.", ephemeral=True)
-        if owner_age < 30:
-            return await interaction.response.send_message("Der Account vom Serverowner muss mindestens 30 Tage alt sein, um das Emoji-Quiz zu verwenden.", ephemeral=True)
-        if user_age < 30:
-            return await interaction.response.send_message("Dein Account muss mindestens 30 Tage alt sein, um das Emoji-Quiz zu verwenden.", ephemeral=True)
+        #if server_age < 10:
+        #    return await interaction.followup.send("Der Server muss mindestens 10 Tage alt sein, um das Emoji-Quiz zu verwenden.", ephemeral=True)
+        #non_bot_members = sum(not member.bot for member in server.members)
+        #if non_bot_members < 10:
+        #    return await interaction.followup.send("Es müssen mindestens 10 Servermitglieder ohne Bots vorhanden sein, um das Emoji-Quiz zu verwenden.", ephemeral=True)
+        #if owner_age < 30:
+        #    return await interaction.followup.send("Der Account vom Serverowner muss mindestens 30 Tage alt sein, um das Emoji-Quiz zu verwenden.", ephemeral=True)
+        #if user_age < 30:
+        #    return await interaction.followup.send("Dein Account muss mindestens 30 Tage alt sein, um das Emoji-Quiz zu verwenden.", ephemeral=True)
+        
+        db = getMongoDataBase()
 
         if modus == "Anschalten":
-            async with self.bot.pool.acquire() as conn:
-                async with conn.cursor() as cursor:
-                    await cursor.execute("SELECT channelID FROM eq WHERE guildID = (%s)", (server.id))
-                    result = await cursor.fetchone()
-                    if result is None:
-                        await cursor.execute("INSERT INTO eq(guildID, channelID) VALUES(%s, %s)", (server.id, kanal.id))
-                        await cursor.execute("SELECT emojis, lösung, tipp FROM eq_begriffe")
-                        result2 = await cursor.fetchall()
-                        a = random.randint(1, int(len(result2)))
-                        b = 0
-                        for quiz in result2:
-                            if a == b:
-                                embed = discord.Embed(color=await getcolour(self, interaction.user), title="Emojiquiz", description="Solltest du Probleme beim Lösen haben, kannst du die Buttons dieser Nachricht benutzen.")
-                                embed.add_field(name="❓ Gesuchter Begriff", value=quiz[0])
-                                embed.add_field(name="❗️ Tipp", value=f"||{quiz[2]}||")
-                                
-                                m2 = await kanal.send(embed=embed, view=buttons(self.bot))
-                                await cursor.execute("INSERT INTO eqcurrent(guildID, lösung, msgID) VALUES(%s, %s, %s)", (server.id, quiz[1], m2.id))
-                                b += 100000
-                                return await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Das Emojiquiz wurde gestartet in {kanal.mention}.**", ephemeral=True)
-                            else:
-                                b += 1
-                    if result is not None:
-                        await cursor.execute("UPDATE eq SET channelID = (%s) WHERE guildID = (%s)", (kanal.id, server.id))
-                        await cursor.execute("SELECT emojis, lösung, tipp FROM eq_begriffe")
-                        result2 = await cursor.fetchall()
-                        a = random.randint(1, int(len(result2)))
-                        b = 0
-                        for quiz in result2:
-                            if a == b:
-                                embed = discord.Embed(color=await getcolour(self, interaction.user), title="Emojiquiz", description="Solltest du Probleme beim Lösen haben, kannst du die Buttons dieser Nachricht benutzen.")
-                                embed.add_field(name="❓ Gesuchter Begriff", value=quiz[0])
-                                embed.add_field(name="❗️ Tipp", value=f"||{quiz[2]}||")
-                                
-                                m2 = await kanal.send(embed=embed, view=buttons(self.bot))
-                                await cursor.execute("INSERT INTO eqcurrent(guildID, lösung, msgID) VALUES(%s, %s, %s)", (server.id, quiz[1], m2.id))
-                                b += 100000
-                                return await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Das Emojiquiz wurde neu gestartet in {kanal.mention}.**", ephemeral=True)
-                            else:
-                                b += 1
+            result = await db["eq"].find_one({"guildID": interaction.guild.id})
+            if result is None:
+                await db["eq"].insert_one({"guildID": interaction.guild.id, "channelID": kanal.id})
+                result = await db["eq_begriffe"].aggregate([{"$sample": {"size": 1}}]).to_list(length=1)
+               
+                embed = discord.Embed(color=await getcolour(self, interaction.user), title="Emojiquiz", description="Solltest du Probleme beim Lösen haben, kannst du die Buttons dieser Nachricht benutzen.")
+                embed.add_field(name="❓ Gesuchter Begriff", value=result[0]["emojis"])
+                embed.add_field(name="❗️ Tipp", value=f"||{result[0]['tipp']}||")
+                embed.set_footer(text=f"Das letzte Quiz wurde übersprungen von {interaction.user}.", icon_url=interaction.user.avatar)
+                m2 = await interaction.channel.send(embed=embed, view=buttons(self.bot))
+                await db["eqcurrent"].delete_one({"guildID": interaction.guild.id})
+                await db["eqcurrent"].insert_one({"guildID": interaction.guild.id, "lösung": result[0]['begriff'], "msgID": m2.id})
+            if result is not None:
+                await db["eq"].update_one({"guildID": interaction.guild.id}, {"$set": {"channelID": kanal.id}})
+                
+                result = await db["eq_begriffe"].aggregate([{"$sample": {"size": 1}}]).to_list(length=1)
+                
+                embed = discord.Embed(color=await getcolour(self, interaction.user), title="Emojiquiz", description="Solltest du Probleme beim Lösen haben, kannst du die Buttons dieser Nachricht benutzen.")
+                embed.add_field(name="❓ Gesuchter Begriff", value=result[0]["emojis"])
+                embed.add_field(name="❗️ Tipp", value=f"||{result[0]['tipp']}||")
+                embed.set_footer(text=f"Das letzte Quiz wurde übersprungen von {interaction.user}.", icon_url=interaction.user.avatar)
+                m2 = await interaction.channel.send(embed=embed, view=buttons(self.bot))
+                await db["eqcurrent"].delete_one({"guildID": interaction.guild.id})
+                await db["eqcurrent"].insert_one({"guildID": interaction.guild.id, "lösung": result[0]["begriff"], "msgID": m2.id})
         if modus == "Ausschalten":
-            async with self.bot.pool.acquire() as conn:
-                async with conn.cursor() as cursor:
-                    await cursor.execute("SELECT channelID FROM eq WHERE guildID = (%s)", (server.id))
-                    result = await cursor.fetchone()
-                    if result is None:
-                        return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Das Emojiquiz ist nicht in diesem Server aktiviert.**", ephemeral=True)
-                    await cursor.execute("DELETE FROM eq WHERE guildID = (%s)", (server.id))
-                    return await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Das Emojiquiz wurde in diesem Server ausgeschaltet.**", ephemeral=True)
+            result = await db["eq"].find_one({"guildID": interaction.guild.id})
+            if result is None:
+                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Das Emojiquiz ist nicht in diesem Server aktiviert.**", ephemeral=True)
+            await db["eq"].delete_one({"guildID": interaction.guild.id})
+            return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Das Emojiquiz wurde in diesem Server ausgeschaltet.**", ephemeral=True)
 
 async def setup(bot):
     await bot.add_cog(Emojiquiz(bot))

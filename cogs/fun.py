@@ -4,7 +4,7 @@ import random
 import discord
 from discord.ext import commands
 from discord import app_commands
-from info import getcolour
+from utils.utils import getcolour
 
 class fun(commands.Cog):
     def __init__(self, bot):
@@ -15,13 +15,16 @@ class fun(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def lostrate(self, interaction: discord.Interaction, user: discord.Member=None):
         """Berechnet mit einem hochkomplexen Prozess wie Lost der Benutzer ist."""
+        
+        await interaction.response.defer()
+        
         if user is None:
             user = interaction.user
         x = random.randint(1, 100)
         embed = discord.Embed(colour=await getcolour(self, interaction.user), description=f"{user.mention} ist LOST zu {x}%.")
         
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -44,7 +47,7 @@ class fun(commands.Cog):
         embed = discord.Embed(colour=await getcolour(self, interaction.user), description=f"Mit einem IQ von {x} ist {member.mention} {iq}")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -76,14 +79,14 @@ class fun(commands.Cog):
                     'https://tenor.com/view/merkel-n%C3%B6-n%C3%B6merkel-merkel-meme-gif-gif-16050778',
                     'https://tenor.com/view/angela-merkel-schmunzel-nicken-zufrieden-politik-gif-11862007']
         gif = random.choice(all_gifs)
-        await interaction.response.send_message(f"**{frage}**\n\n{gif}")
+        await interaction.followup.send(f"**{frage}**\n\n{gif}")
 
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def love(self, interaction: discord.Interaction, member: discord.Member, user: discord.Member):
         """Finde heraus, wie verliebt 2 Benutzer oder du und ein anderer Benutzer sind!"""
-        await interaction.response.send_message("**Mal sehen ob ihr verliebt seid 👀**")
+        await interaction.followup.send("**Mal sehen ob ihr verliebt seid 👀**")
         love_per = random.randint(1, 100)
 
         # erstes Einbetten
@@ -133,7 +136,7 @@ class fun(commands.Cog):
                                           f"{ergebnis7} {ergebnis8} {ergebnis9}\n")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         embed.set_footer(text="3 von 🔵 in vertikal, horizontal oder diagonal")
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -155,7 +158,7 @@ class fun(commands.Cog):
         embed = discord.Embed(title="Aktuell gespielte Spiele auf diesem Server", description=description, color=await getcolour(self, interaction.user))
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -194,7 +197,7 @@ class fun(commands.Cog):
         embed.add_field(name="Vorgschlagenes Passwort:", value=result)
         
         await user.send(embed=embed)
-        await interaction.response.send_message(f"{user.mention}, ich habe dir ein zufällig generiertes Passwort in deine Dm's geschickt!")
+        await interaction.followup.send(f"{user.mention}, ich habe dir ein zufällig generiertes Passwort in deine Dm's geschickt!")
         return
         
 async def setup(bot):

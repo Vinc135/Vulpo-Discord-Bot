@@ -5,7 +5,8 @@ import random
 from discord import app_commands
 import datetime
 import typing
-from info import getcolour
+from utils.utils import getcolour
+from utils.MongoDB import getMongoDataBase
 
 def random_color():
     return discord.Color.from_rgb(random.randint(1, 255), random.randint(1, 255), random.randint(1, 255))
@@ -36,13 +37,24 @@ class Supserver(commands.Cog):
             message = await channel.send(f"<:v_info:1119579853092552715> Hallo {member.mention}, wähle hier deine Rollen aus!")
             await asyncio.sleep(60)
             await message.delete()
+            
+    @commands.Cog.listener()
+    async def on_member_ban(self, guild, user):
+        if guild.id == 925729625580113951:
+            await getMongoDataBase()['banned'].insert_one({"userID": user.id, "reason": "Unbekannt"})
+            
+    @commands.Cog.listener()
+    async def on_member_unban(self, guild, user):
+        if guild.id == 925729625580113951:
+            await getMongoDataBase()['banned'].delete_one({"userID": user.id})
+        
 
     # @app_commands.command()
     # @app_commands.guild_only()
     # async def update(self, interaction: discord.Interaction, inhalt: str, status: typing.Literal["Neu","Bearbeitet","Entfernt"]):
     #     """Verkünde ein Update von Vulpo + Wochenrückblick."""
     #     if interaction.user.id != 824378909985341451:
-    #         return await interaction.response.send_message("<:v_kreuz:1119580775411621908> Diesen Befehl kann nur Vinc#6791 ausführen.", ephemeral=True)
+    #         return await interaction.followup.send("<:v_kreuz:1119580775411621908> Diesen Befehl kann nur Vinc#6791 ausführen.", ephemeral=True)
     #     async with self.bot.pool.acquire() as conn:
     #         async with conn.cursor() as cursor:
     #             await cursor.execute("SELECT msgID FROM updates")
@@ -59,7 +71,7 @@ class Supserver(commands.Cog):
     #             if status == "Entfernt":
     #                 embed.description += f"\n🔴 - {inhalt}"
     #             await msg.edit(content="", embed=embed)
-    #             await interaction.response.send_message("**<:v_haken:1119579684057907251> Erfolreich hinzugefügt!**")
+    #             await interaction.followup.send("**<:v_haken:1119579684057907251> Erfolreich hinzugefügt!**")
                 
     # @tasks.loop(minutes=1)
     # async def update_message(self):
