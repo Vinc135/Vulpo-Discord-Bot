@@ -1,13 +1,14 @@
 import discord
 from discord.ext import commands, tasks
-from info import convert, voicetime_to_xp
+from utils.utils import convert, voicetime_to_xp
 from discord import app_commands
 import typing
 from googletrans import Translator
 from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 import os
-from info import getcolour, haspremium_forserver
+from utils.utils import getcolour, haspremium_forserver
+from utils.MongoDB import getMongoDataBase
 import time
 import mplcyberpunk
 import json
@@ -72,77 +73,75 @@ async def get_user_data(bot, user_id):
 
     # Letzte 14 Tage
     last_14_days = current_datetime - timedelta(days=14)
+    
+    db = getMongoDataBase()
 
-    async with bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            # Anzahl der Nachrichten des Benutzers in den letzten 14 Tagen abrufen
-            await cursor.execute("SELECT COUNT(*) FROM nachrichten WHERE userID = %s AND datum >= %s", (user_id, last_14_days))
-            message_count_last_14_days = await cursor.fetchone()
-            user_data['message_count_last_14_days'] = message_count_last_14_days[0] if message_count_last_14_days else 0
+    # Anzahl der Nachrichten des Benutzers in den letzten 14 Tagen abrufen
+    
+    message_count_last_14_days = db['nachrichten'].count_documents({"userID": user_id, "datum": {"$gte": last_14_days}})
+    
+    user_data['message_count_last_14_days'] = message_count_last_14_days
+    
+    server_ranks = db['nachrichten'].aggregate([
+        {"$match": {"userID": user_id, "datum": {"$gte": last_14_days}}},
+        {"$group": {"_id": "$guildID", "message_count": {"$count": {}}}},
+        {"$sort": {"message_count": -1}}
+    ])
 
-            # Rang des Benutzers auf jedem Server basierend auf der Anzahl der Nachrichten in den letzten 14 Tagen abrufen
-            await cursor.execute("SELECT guildID, COUNT(*) AS message_count FROM nachrichten WHERE userID = %s AND datum >= %s GROUP BY guildID ORDER BY message_count DESC", (user_id, last_14_days))
-            server_ranks = await cursor.fetchall()
+    user_server_ranks = {}
+    for idx, rank in enumerate(server_ranks, start=1):
+        user_server_ranks[rank['guildID']] = idx
 
-            user_server_ranks = {}
-            for idx, rank in enumerate(server_ranks, start=1):
-                user_server_ranks[rank['guildID']] = idx
-
-            user_data['server_ranks_last_14_days'] = user_server_ranks
+    user_data['server_ranks_last_14_days'] = user_server_ranks
 
     return user_data
 
 
 async def bild_server_stats(bot, guild_id):
-    async with bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            stats = []
-            daten = []
-            all_messages = {}
-            statsvoice = []
-
-            for i in range(14):
-                tag = (datetime.now() - timedelta(days=13-i)).strftime('%Y-%m-%d')
-                tag_voice = (datetime.now() - timedelta(days=i)).strftime('%d.%m.%Y')
-
-                tag_format = (datetime.now() - timedelta(days=13-i)).strftime('%d.%m')
-                daten.append(tag_format)
-                
-                await cursor.execute("SELECT daten FROM nachrichten WHERE guildID = %s AND datum = %s", (guild_id, tag))
-                json_data_raw = await cursor.fetchone()
-                if json_data_raw is None:
-                    all_messages[tag] = 0
-                else:
-                    json_data = json.loads(json_data_raw[0])
-                    
-                    total_messages = 0
-                    for user_data in json_data.values():
-                        for channel_count in user_data.values():
-                            total_messages += channel_count
-                    all_messages[tag] = total_messages
-                    
-                #VOICE
-                await cursor.execute("SELECT anzahl FROM voice WHERE guildID = %s AND zeit = %s", (guild_id, tag_voice))
-                result = await cursor.fetchall()
- 
-                anzahl = 0
- 
-                for minuten in result:
-                    anzahl += minuten[0]
-                statsvoice.append(anzahl)
+    stats = []
+    daten = []
+    all_messages = {}
+    statsvoice = []
+    
+    db = getMongoDataBase()
+    
+    for i in range(14):
+        tag = (datetime.now() - timedelta(days=13-i)).strftime('%Y-%m-%d')
+        tag_voice = (datetime.now() - timedelta(days=i)).strftime('%d.%m.%Y')
+        tag_format = (datetime.now() - timedelta(days=13-i)).strftime('%d.%m')
+        daten.append(tag_format)  
+        
+        result = await db['nachrichten'].find_one({"guildID": guild_id, "datum": tag})
+        
+        if result is None:
+            all_messages[tag] = 0
+        else:
+            json_data = json.loads(result["daten"])   
+            total_messages = 0
+            for user_data in json_data.values():
+                for channel_count in user_data.values():
+                    total_messages += channel_count
+            all_messages[tag] = total_messages
             
-            for entry in all_messages.values():
-                stats.append(entry)
-                
-            statsvoice = statsvoice[::-1]
-            
-            return daten, stats, statsvoice
+        #VOICE
 
+        result = await db['voice'].find({"guildID": guild_id, "zeit": tag_voice}).to_list(length=None)
+        anzahl = 0
+        
+        for minuten in result:
+            anzahl += minuten["anzahl"]
+        statsvoice.append(anzahl)
+        
+    for entry in all_messages.values():
+        stats.append(entry)     
+    statsvoice = statsvoice[::-1]
+    return daten, stats, statsvoice
 
 async def get_server_stats(bot, guild_id):
-    async with bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
             #TEXT
+            
+            db = getMongoDataBase()
+            
             stats = {}
             alle_user_tages = {}
             alle_channel_letzte_7tage = {}
@@ -159,12 +158,16 @@ async def get_server_stats(bot, guild_id):
                 tag = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d')
                 tag_voice = (datetime.now() - timedelta(days=i)).strftime('%d.%m.%Y')
                 
-                await cursor.execute("SELECT daten FROM nachrichten WHERE guildID = %s AND datum = %s", (guild_id, tag))
-                json_data = await cursor.fetchone()
-                if json_data is None:
+                result = await db['nachrichten'].find_one({"guildID": guild_id, "datum": tag})
+                
+                if result is None:
                     continue
                 
-                server_stats = json.loads(json_data[0])
+                json_data = result["daten"]
+                
+                print (json_data)
+                
+                server_stats = json.loads(json_data)
                 
                 for user_id, user_data in server_stats.items():
                     for channel_id, channel_count in user_data.items():
@@ -178,9 +181,11 @@ async def get_server_stats(bot, guild_id):
                             else:
                                 alle_user_tages[user_id] = channel_count
                                 
-                            await cursor.execute("SELECT userid, anzahl FROM voice WHERE guildID = %s AND zeit = %s", (guild_id, tag_voice))
-                            result = await cursor.fetchall()
-                            for user, anzahl in result:
+                            result = await db['voice'].find({"guildID": guild_id, "zeit": tag_voice}).to_list(length=None)
+                                
+                            for r in result:
+                                user = r["userID"]
+                                anzahl = r["anzahl"]
                                 if user in alle_user_tages_voice:
                                     alle_user_tages_voice[user] += anzahl
                                 else:
@@ -193,8 +198,7 @@ async def get_server_stats(bot, guild_id):
                             alle_channel_letzte_7tage[channel_id] = channel_count
                 #VOICE
             
-                await cursor.execute("SELECT anzahl FROM voice WHERE guildID = %s AND zeit = %s", (guild_id, tag_voice))
-                result = await cursor.fetchall()
+                result = await db['voice'].find({"guildID": guild_id, "zeit": tag_voice}).to_list(length=None)
  
                 for minuten in result:
                     if(i <= 6):
@@ -249,12 +253,12 @@ async def get_server_stats(bot, guild_id):
             return stats
 
 async def bild_user_stats(bot, guild_id, user_id):
-    async with bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
             stats = []
             daten = []
             all_messages = {}
             statsvoice = []
+
+            db = getMongoDataBase()
 
             for i in range(14):
                 tag = (datetime.now() - timedelta(days=13-i)).strftime('%Y-%m-%d')
@@ -263,12 +267,12 @@ async def bild_user_stats(bot, guild_id, user_id):
                 tag_format = (datetime.now() - timedelta(days=13-i)).strftime('%d.%m')
                 daten.append(tag_format)
                 
-                await cursor.execute("SELECT daten FROM nachrichten WHERE guildID = %s AND datum = %s", (guild_id, tag))
-                json_data_raw = await cursor.fetchone()
-                if json_data_raw is None:
+                result = await db['nachrichten'].find_one({"guildID": guild_id, "datum": tag})
+                
+                if result is None:
                     all_messages[tag] = 0
                 else:
-                    json_data = json.loads(json_data_raw[0])
+                    json_data = json.loads(result["daten"])
                     
                     total_messages = 0
                     for id, user_data in json_data.items():
@@ -278,13 +282,12 @@ async def bild_user_stats(bot, guild_id, user_id):
                     all_messages[tag] = total_messages
                     
                 #VOICE
-                await cursor.execute("SELECT anzahl FROM voice WHERE guildID = %s AND zeit = %s AND userID = %s", (guild_id, tag_voice, user_id))
-                result = await cursor.fetchall()
+                result = await db["nachrichten"].find({"guildID": guild_id, "datum": tag, "userID": user_id}).to_list(length=None)
  
                 anzahl = 0
  
                 for minuten in result:
-                    anzahl += minuten[0]
+                    anzahl += minuten["anzahl"]
                 statsvoice.append(anzahl)
             
             for entry in all_messages.values():
@@ -296,8 +299,6 @@ async def bild_user_stats(bot, guild_id, user_id):
 
 
 async def get_user_stats(bot, user_id, guild_id):
-    async with bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
             #TEXT
             stats = {}
             voice7 = 0
@@ -308,16 +309,18 @@ async def get_user_stats(bot, user_id, guild_id):
             anzahl_letzte_7tage = 0
             anzahl_letzte_30tage = 0
             
+            db = getMongoDataBase()
+            
             for i in range(31):
                 tag = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d')
                 tag_voice = (datetime.now() - timedelta(days=i)).strftime('%d.%m.%Y')
                 
-                await cursor.execute("SELECT daten FROM nachrichten WHERE guildID = %s AND datum = %s", (guild_id, tag))
-                json_data = await cursor.fetchone()
-                if json_data is None:
+                result = await db['nachrichten'].find_one({"guildID": guild_id, "datum": tag})
+                
+                if result is None:
                     continue
                 
-                server_stats = json.loads(json_data[0])
+                server_stats = json.loads(result["daten"])
                 
                 for id, user_data in server_stats.items():
                     for channel_id, channel_count in user_data.items():
@@ -333,8 +336,7 @@ async def get_user_stats(bot, user_id, guild_id):
                                 
                 #VOICE
             
-                await cursor.execute("SELECT userID, anzahl FROM voice WHERE guildID = %s AND zeit = %s", (guild_id, tag_voice))
-                result = await cursor.fetchall()
+                result = await db['voice'].find({"guildID": guild_id, "zeit": tag_voice}).to_list(length=None)
  
                 for user in result:
                     id = user[0]
@@ -380,10 +382,7 @@ async def get_user_stats(bot, user_id, guild_id):
 
 
 async def update_all(self):
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute("SELECT guildID, channelID, text FROM upstats")
-            result = await cursor.fetchall()
+            result = await getMongoDataBase()["upstats"].find().to_list(length=None)
             for ergebnis in result:
                 try:
                     guild = self.bot.get_guild(int(ergebnis[0]))
@@ -428,14 +427,15 @@ class Stats(commands.Cog):
             
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute("SELECT time FROM voicedata WHERE userID = (%s)", (member.id))
-                result = await cursor.fetchone()
+        
+                db = getMongoDataBase()
+        
+                result = await db["voice"].find_one({"userID": member.id})
+
                 if result != None:
                     if before.channel:
                         voice_leave_time = datetime.now().time().strftime('%H:%M:%S')
-                        voice_join_time = result[0]
+                        voice_join_time = result["zeit"]
 
                         calculate_time = (
                                 datetime.strptime(voice_leave_time, '%H:%M:%S') - datetime.strptime(
@@ -447,34 +447,35 @@ class Stats(commands.Cog):
                             return
                         time_in_minutes = round(time_in_seconds / 60)
                             
-                        await cursor.execute("DELETE FROM voicedata WHERE userID = (%s)", (member.id))
+                        await db["voicedata"].delete_one({"userID": member.id})
                         if(time_in_minutes <= 1):
                             return
                         
-                        await cursor.execute("SELECT anzahl FROM voice WHERE guildID = (%s) AND userID = (%s) AND zeit = (%s) AND channelID = (%s)", (member.guild.id, member.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), before.channel.id))
-                        result = await cursor.fetchone()
+                        result = await db["voice"].find_one({"userID": member.id, "guildID": member.guild.id, "zeit": str(discord.utils.utcnow().__format__('%d.%m.%Y')), "channelID": before.channel.id})
+                        
                         if result is None:
-                            await cursor.execute("INSERT INTO voice(userID, guildID, zeit, anzahl, channelID) VALUES(%s, %s, %s, %s, %s)", (member.id, member.guild.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), time_in_minutes, before.channel.id))
+                            await db["voice"].insert_one({"userID": member.id, "guildID": member.guild.id, "zeit": str(discord.utils.utcnow().__format__('%d.%m.%Y')), "anzahl": time_in_minutes, "channelID": before.channel.id})
                         else:
-                            await cursor.execute("UPDATE voice SET anzahl = (%s) WHERE guildID = (%s) AND userID = (%s) AND zeit = (%s) AND channelID = (%s)", (round(result[0] + time_in_minutes), member.guild.id, member.id, str(discord.utils.utcnow().__format__('%d.%m.%Y')), before.channel.id))
+                            await db["voice"].update_one({"userID": member.id, "guildID": member.guild.id, "zeit": str(discord.utils.utcnow().__format__('%d.%m.%Y')), "channelID": before.channel.id}, {"$set": {"anzahl": result["anzahl"] + time_in_minutes}})
+                            
                         await voicetime_to_xp(self, member, time_in_minutes, before)
+                        
                         try:
-                            await cursor.execute("SELECT msgID FROM gewinnspiele WHERE guildID = (%s) AND status = (%s)", (member.guild.id, "Aktiv"))
-                            result2 = await cursor.fetchall()
+                            result2 = await db["gewinnspiele"].find({"guildID": member.guild.id, "status": "Aktiv"}).to_list()
+                            
                             if result2 == ():
                                 return
                             for gewinnspiel in result2:
-                                await cursor.execute("SELECT anzahl FROM gw_voice WHERE userID = (%s) AND guildID = (%s) AND gwID = (%s)", (member.id, member.guild.id, gewinnspiel[0]))
-                                result = await cursor.fetchone()
+                                result = await db["gw_voice"].find_one({"userID": member.id, "guildID": member.guild.id, "gwID": gewinnspiel[0]})
                                 if result == None:
-                                    await cursor.execute("INSERT INTO gw_voice(userID, guildID, gwID, anzahl) VALUES(%s, %s, %s, %s)", (member.id, member.guild.id, gewinnspiel[0], time_in_minutes))
+                                    await db["gw_voice"].insert_one({"userID": member.id, "guildID": member.guild.id, "gwID": gewinnspiel[0], "anzahl": time_in_minutes})
                                 else:
-                                    await cursor.execute("UPDATE gw_voice SET anzahl = (%s) WHERE guildID = (%s) AND userID = (%s) AND gwID = (%s)", (result[0] + time_in_minutes, member.guild.id, member.id, gewinnspiel[0]))
+                                    await db["gw_voice"].update_one({"userID": member.id, "guildID": member.guild.id, "gwID": gewinnspiel[0]}, {"$set": {"anzahl": result["anzahl"] + time_in_minutes}})
                         except:
                             pass
                 if after.channel:
                     new_voice_join_time = datetime.now().time().strftime('%H:%M:%S')
-                    await cursor.execute("INSERT INTO voicedata(time, userID) VALUES(%s, %s)", (new_voice_join_time, member.id))
+                    await db["voicedata"].insert_one({"time": new_voice_join_time, "userID": member.id})
 
     #Nachrichten Stats#
 
@@ -483,37 +484,37 @@ class Stats(commands.Cog):
         if msg.guild is None or msg.author.bot:
             return
         
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                current_datetime = datetime.now().strftime('%Y-%m-%d')
+        current_datetime = datetime.now().strftime('%Y-%m-%d')
+        
+        db = getMongoDataBase()
+        
+        result = await db["nachrichten"].find_one({"guildID": msg.guild.id, "datum": current_datetime})
                 
-                await cursor.execute("SELECT daten FROM nachrichten WHERE guildID = %s AND datum = %s", (msg.guild.id, current_datetime))
-                result = await cursor.fetchone()
-                if result is None:
-                    initial_data = {
-                        str(msg.author.id): {
-                            str(msg.channel.id): 1,
-                        }
-                    }
-                    json_data = json.dumps(initial_data)
-                    await cursor.execute("INSERT INTO nachrichten(guildID, datum, daten) VALUES(%s, %s, %s)", (msg.guild.id, current_datetime, json_data))
+        if result is None:
+            initial_data = {
+                str(msg.author.id): {
+                    str(msg.channel.id): 1,
+                }
+            }
+            json_data = json.dumps(initial_data)
+            await db["nachrichten"].insert_one({"guildID": msg.guild.id, "datum": current_datetime, "daten": json_data})
+        else:
+            # Laden des vorhandenen JSON aus der Datenbank und Aktualisieren der Daten
+            existing_json = json.loads(result["daten"])
+            user_id = str(msg.author.id)
+            channel_id = str(msg.channel.id)
+            if user_id in existing_json:
+                if channel_id in existing_json[user_id]:
+                    existing_json[user_id][channel_id] += 1
                 else:
-                    # Laden des vorhandenen JSON aus der Datenbank und Aktualisieren der Daten
-                    existing_json = json.loads(result[0])
-                    user_id = str(msg.author.id)
-                    channel_id = str(msg.channel.id)
-                    if user_id in existing_json:
-                        if channel_id in existing_json[user_id]:
-                            existing_json[user_id][channel_id] += 1
-                        else:
-                            existing_json[user_id][channel_id] = 1
-                    else:
-                        existing_json[user_id] = {channel_id: 1}
+                    existing_json[user_id][channel_id] = 1
+            else:
+                existing_json[user_id] = {channel_id: 1}
+            
+            updated_json = json.dumps(existing_json)
                     
-                    updated_json = json.dumps(existing_json)
-                    
-                    # Aktualisierten JSON in die Datenbank speichern
-                    await cursor.execute("UPDATE nachrichten SET daten = %s WHERE guildID = %s AND datum = %s", (updated_json, msg.guild.id, current_datetime))
+        # Aktualisierten JSON in die Datenbank speichern
+        await db["nachrichten"].update_one({"guildID": msg.guild.id, "datum": current_datetime}, {"$set": {"daten": updated_json}})
         
     stats = app_commands.Group(name='stats', description='Verwalte Stats.', guild_only=True)
     
@@ -521,7 +522,9 @@ class Stats(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def server(self, interaction: discord.Interaction):
         """Schau dir die Stats des Servers an."""
+        
         await interaction.response.defer()
+        
         server_stats = await get_server_stats(self.bot, interaction.guild.id)
         embed = discord.Embed(title=f"Stats für {interaction.guild.name}", color=await getcolour(self, interaction.user))
         for stat_name, stat_value in server_stats.items():
@@ -536,14 +539,16 @@ class Stats(commands.Cog):
         
         embed.set_image(url="attachment://ServerStats.png")       
         file = discord.File("ServerStats.png", filename="ServerStats.png")
+        await interaction.followup.send(file=file, embed=embed)
         os.remove("ServerStats.png")
-        return await interaction.followup.send(file=file, embed=embed)
 
     @stats.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def user(self, interaction: discord.Interaction, user: discord.Member = None):
         """Schau dir die Stats eines Users an."""
+        
         await interaction.response.defer()
+        
         member = user
         if(member is None):
             member = interaction.user
@@ -562,39 +567,47 @@ class Stats(commands.Cog):
         
         embed.set_image(url="attachment://stats.png")       
         file = discord.File("stats.png", filename="stats.png")
+        await interaction.followup.send(file=file, embed=embed)
         os.remove("stats.png")
-        return await interaction.followup.send(file=file, embed=embed)
 
     @stats.command()
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def blacklist(self, interaction: discord.Interaction, kanal: discord.TextChannel):
         """Setze Kanäle auf die Blacklist für Nachrichten."""
-        status = await haspremium_forserver(self, interaction.guild)
-        if status == False:
-            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute("SELECT channelID FROM stats_blacklist WHERE guildID = (%s) AND channelID = (%s)", (interaction.guild.id, kanal.id))
-                result = await cursor.fetchone()
-                if result == None:
-                    await cursor.execute("INSERT INTO stats_blacklist(guildID, channelID) VALUES(%s, %s)", (interaction.guild.id, kanal.id))
-                    return await interaction.response.send_message(f"**<:v_haken:1119579684057907251> {kanal.mention} ist nun auf der Blacklist.**")
-                await cursor.execute("DELETE FROM stats_blacklist WHERE guildID = (%s) AND channelID = (%s)", (interaction.guild.id, kanal.id))
-                return await interaction.response.send_message(f"**<:v_haken:1119579684057907251> {kanal.mention} ist nun nicht mehr auf der Blacklist.**")
+        
+        await interaction.response.defer()
+        
+        #status = await haspremium_forserver(self, interaction.guild)
+        #if status == False:
+        #    return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
+        
+        db = getMongoDataBase()
+        
+        result = await db["stats_blacklist"].insert_one({"guildID": interaction.guild.id, "channelID": kanal.id})
+        
+        if result == None:
+            await db["stats_blacklist"].insert_one({"guildID": interaction.guild.id, "channelID": kanal.id})
+            return await interaction.followup.send(f"**<:v_haken:1119579684057907251> {kanal.mention} ist nun auf der Blacklist.**")
+        
+        await db["stats_blacklist"].delete_one({"guildID": interaction.guild.id, "channelID": kanal.id})
+        return await interaction.followup.send(f"**<:v_haken:1119579684057907251> {kanal.mention} ist nun nicht mehr auf der Blacklist.**")
     
     @stats.command()
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def reset(self, interaction: discord.Interaction, bestätigung: typing.Literal["Ich verstehe dass diese Aktion unumkehrbar ist und dadurch alle Stats dieses Server gelöscht werden."]):
         """Setze alle Stats auf 0 zurück."""
-        status = await haspremium_forserver(self, interaction.guild)
-        if status == False:
-            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute("DELETE FROM nachrichten WHERE guildID = (%s)", (interaction.guild.id))
-                await interaction.response.send_message("**<:v_haken:1119579684057907251> Alle Stats dieses Servers wurden gelöscht.**")
+        
+        await interaction.response.defer()
+        
+        #status = await haspremium_forserver(self, interaction.guild)
+        #if status == False:
+        #    return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
+        
+        getMongoDataBase()["nachrichten"].delete_many({"guildID": interaction.guild.id})
+        
+        await interaction.followup.send("**<:v_haken:1119579684057907251> Alle Stats dieses Servers wurden gelöscht.**")
     
 #     @stats.command()
 #     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))

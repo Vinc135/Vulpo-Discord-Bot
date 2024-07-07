@@ -2,7 +2,8 @@ import typing
 import discord
 from discord.ext import commands
 from discord import app_commands
-from info import getcolour, haspremium_forserver
+from utils.utils import getcolour, haspremium_forserver
+from utils.MongoDB import getMongoDataBase
 #########
 
 class Dropdown(discord.ui.Select):
@@ -14,6 +15,9 @@ class Dropdown(discord.ui.Select):
         
         super().__init__(placeholder="Wähle Optionen aus", min_values=0, max_values=len(selectOptions), options=selectOptions, custom_id=str(id))
     async def callback(self, interaction: discord.Interaction):
+        
+        await interaction.response.defer()
+        
         text = ""
         for item in self.dict:
             rolle = interaction.guild.get_role(int(self.dict[str(item)]))
@@ -27,7 +31,7 @@ class Dropdown(discord.ui.Select):
                     text += f"\n <:v_pfeil_rechts:1119582171930300438> Dir wurde die Rolle {rolle.mention} entzogen."
 
         if text != "":
-            return await interaction.response.send_message(text, ephemeral=True)
+            return await interaction.followup.send(text, ephemeral=True)
         await interaction.response.defer(thinking=False, ephemeral=True)
 
 class DropdownView(discord.ui.View):
@@ -45,9 +49,12 @@ class fertig(discord.ui.Modal, title="Erstelle ein Embed"):
         self.add_item(discord.ui.TextInput(label="Embed Image", style=discord.TextStyle.short, required=False))
 
     async def on_submit(self, interaction: discord.Interaction):
+        
+        await interaction.response.defer()
+        
         emb = interaction.message.embeds[0]
         if emb.fields == []:
-            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du musst zuerst ein paar Optionen festlegen.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du musst zuerst ein paar Optionen festlegen.**", ephemeral=True)
         embed = discord.Embed(title=self.children[0].value, description=self.children[1].value, color=await getcolour(self, interaction.user))
         
         if self.children[2].value:
@@ -57,22 +64,18 @@ class fertig(discord.ui.Modal, title="Erstelle ein Embed"):
         
         dict = {}
         id = 0
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute("SELECT id FROM rr_select")
-                result = await cursor.fetchall()
-                if result == ():
-                    id = 1
-                else:
-                    id = len(result) + 1
-                    
-                for field in emb.fields:
-                    dict[field.name] = field.value
-                    await cursor.execute("INSERT INTO rr_select (label, roleID, guildID, id) VALUES (%s, %s, %s, %s)", (field.name, field.value, interaction.guild.id, id))
+        
+        db = getMongoDataBase()
+        
+        id = await db['rr_select'].count_documents({}) + 1
+            
+        for field in emb.fields:
+            dict[field.name] = field.value
+            await db['rr_select'].insert_one({"label": field.name, "roleID": field.value, "guildID": interaction.guild.id, "id": id})
                     
         await interaction.message.delete()
         await interaction.channel.send(embed=embed, view=DropdownView(dict, id))
-        await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Setup erfolgreich beendet.**", ephemeral=True)
+        await interaction.followup.send(f"**<:v_haken:1119579684057907251> Setup erfolgreich beendet.**", ephemeral=True)
 
 class select_role1(discord.ui.RoleSelect):
     def __init__(self, bot=None):
@@ -90,16 +93,19 @@ class option_hinzufügen(discord.ui.Modal, title="Füge eine Option hinzu"):
         self.add_item(discord.ui.TextInput(label="Spalten-Name", style=discord.TextStyle.short, required=True))
 
     async def on_submit(self, interaction: discord.Interaction):
+        
+        await interaction.response.defer()
+        
         embed = interaction.message.embeds[0]
-        premium_status = await haspremium_forserver(self, interaction.guild)
-        if premium_status == False:
-            if len(embed.fields) >= 3:
-                return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Optionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+        #premium_status = await haspremium_forserver(self, interaction.guild)
+        #if premium_status == False:
+        #    if len(embed.fields) >= 3:
+        #        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Optionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
         embed.add_field(name=self.children[0].value, value=self.roleID)
         embed.color = await getcolour(self, interaction.user)
         await interaction.message.edit(content="", embed=embed)
-        await interaction.response.send_message("**<:v_haken:1119579684057907251> Option wurde hinzugefügt.**", ephemeral=True)
+        await interaction.followup.send("**<:v_haken:1119579684057907251> Option wurde hinzugefügt.**", ephemeral=True)
                 
 class setup_select(discord.ui.View):
     def __init__(self, bot=None, user=None):
@@ -157,15 +163,16 @@ class option_hinzufügen_2(discord.ui.Modal, title="Füge eine Option hinzu"):
 
     async def on_submit(self, interaction: discord.Interaction):
         embed = interaction.message.embeds[0]
-        premium_status = await haspremium_forserver(self, interaction.guild)
-        if premium_status == False:
-            if len(embed.fields) >= 3:
-                return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Optionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+        
+        #premium_status = await haspremium_forserver(self, interaction.guild)
+        #if premium_status == False:
+        #    if len(embed.fields) >= 3:
+        #        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Optionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
         embed.add_field(name=self.children[0].value, value=self.roleID)
         embed.color = await getcolour(self, interaction.user)
         await interaction.message.edit(content="", embed=embed)
-        await interaction.response.send_message("**<:v_haken:1119579684057907251> Option wurde hinzugefügt.**", ephemeral=True)
+        await interaction.followup.send("**<:v_haken:1119579684057907251> Option wurde hinzugefügt.**", ephemeral=True)
 
 class fertig2(discord.ui.Modal, title="Erstelle ein Embed"):
     def __init__(self, bot=None):
@@ -179,7 +186,7 @@ class fertig2(discord.ui.Modal, title="Erstelle ein Embed"):
     async def on_submit(self, interaction: discord.Interaction):
         emb = interaction.message.embeds[0]
         if emb.fields == []:
-            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du musst zuerst ein paar Optionen festlegen.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du musst zuerst ein paar Optionen festlegen.**", ephemeral=True)
         embed = discord.Embed(title=self.children[0].value, description=self.children[1].value, color=await getcolour(self, interaction.user))
         
         if self.children[2].value:
@@ -190,25 +197,19 @@ class fertig2(discord.ui.Modal, title="Erstelle ein Embed"):
         id = 0
         custom_id = 0
         view = view_for_buttons()
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute("SELECT id FROM rr_buttons")
-                result = await cursor.fetchall()
-                if result == []:
-                    id = 1
-                    custom_id = 1
-                else:
-                    id = len(result) + 1
-                    custom_id = len(result) + 1
-                    
-                for field in emb.fields:
-                    custom_id += 1
-                    view.add_item(item=CounterButton(field.name, field.value, custom_id))
-                    await cursor.execute("INSERT INTO rr_buttons (label, roleID, guildID, id, custom_id) VALUES (%s, %s, %s, %s, %s)", (field.name, field.value, interaction.guild.id, id, custom_id))
+        
+        db = getMongoDataBase()
+        
+        id = await db['rr_buttons'].count_documents({}) + 1
+            
+        for field in emb.fields:
+            custom_id += 1
+            view.add_item(item=CounterButton(field.name, field.value, custom_id))
+            await db['rr_buttons'].insert_one({"label": field.name, "roleID": field.value, "guildID": interaction.guild.id, "id": id, "custom_id": custom_id})
                     
         await interaction.message.delete()
         await interaction.channel.send(embed=embed, view=view)
-        await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Setup erfolgreich beendet.**", ephemeral=True)
+        await interaction.followup.send(f"**<:v_haken:1119579684057907251> Setup erfolgreich beendet.**", ephemeral=True)
 
 class CounterButton(discord.ui.Button):
     def __init__(self, label, role, id):
@@ -219,11 +220,11 @@ class CounterButton(discord.ui.Button):
         rolle = interaction.guild.get_role(int(self.role))
         if rolle not in interaction.user.roles:
             await interaction.user.add_roles(rolle)
-            return await interaction.response.send_message(f" <:v_pfeil_rechts:1119582171930300438> Du hast die Rolle {rolle.mention} erhalten.", ephemeral=True)
+            return await interaction.followup.send(f" <:v_pfeil_rechts:1119582171930300438> Du hast die Rolle {rolle.mention} erhalten.", ephemeral=True)
 
         if rolle in interaction.user.roles:
             await interaction.user.remove_roles(rolle)
-            await interaction.response.send_message(f" <:v_pfeil_rechts:1119582171930300438> Dir wurde die Rolle {rolle.mention} entzogen", ephemeral=True)
+            await interaction.followup.send(f" <:v_pfeil_rechts:1119582171930300438> Dir wurde die Rolle {rolle.mention} entzogen", ephemeral=True)
                 
 class view_for_buttons(discord.ui.View):
     def __init__(self):
@@ -236,38 +237,35 @@ class reactionrole(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         self.bot.add_view(view=setup_select(self.bot, None))
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute("SELECT id, label, roleID, guildID FROM rr_select")
-                result = await cursor.fetchall()
-                if result != []:
-                    i = 0
-                    for a in result:
-                        i += 1
-                        dict1 = {}
-                        await cursor.execute("SELECT label, roleID, guildID FROM rr_select WHERE id = (%s)", (i))
-                        result2 = await cursor.fetchall()
-                        if result2 == []:
-                            continue
-                        for eintrag in result2:
-                            dict1[eintrag[0]] = eintrag[1]
-                        self.bot.add_view(view=DropdownView(dict1, i))
-                ##########
-                
-                await cursor.execute("SELECT id, label, roleID, guildID, custom_id FROM rr_buttons")
-                result = await cursor.fetchall()
-                if result != []:
-                    i = 0
-                    for a in result:
-                        i += 1
-                        view = view_for_buttons()
-                        await cursor.execute("SELECT label, roleID, guildID, custom_id FROM rr_buttons WHERE id = (%s)", (i))
-                        result2 = await cursor.fetchall()
-                        if result2 == []:
-                            continue
-                        for eintrag in result2:
-                            view.add_item(item=CounterButton(eintrag[0], eintrag[1], eintrag[3]))
-                        self.bot.add_view(view=view)
+        
+        db = getMongoDataBase()
+        
+        result = await db['rr_select'].find().to_list(length=None)
+        if result != []:
+            i = 0
+            for a in result:
+                i += 1
+                dict1 = {}
+                result2 = await db['rr_select'].find_one({"id": i})
+                if result2 == []:
+                    continue
+                for eintrag in result2:
+                    dict1[eintrag[0]] = eintrag[1]
+                self.bot.add_view(view=DropdownView(dict1, i))
+        
+        result = await db["rr_buttons"].find({}).to_list(length=None)
+        
+        if result != []:
+            i = 0
+            for a in result:
+                i += 1
+                view = view_for_buttons()
+                result2 = await db["rr_buttons"].find_one({"id": i})
+                if result2 == []:
+                    continue
+                for eintrag in result2:
+                    view.add_item(item=CounterButton(eintrag[0], eintrag[1], eintrag[3]))
+                self.bot.add_view(view=view)
         
     @app_commands.command()
     @app_commands.guild_only()
@@ -275,18 +273,21 @@ class reactionrole(commands.Cog):
     @app_commands.checks.has_permissions(manage_roles=True)
     async def reactionrole(self, interaction: discord.Interaction, erscheinungsbild: typing.Literal["Select Menü", "Buttons"]):
         """Lege Reaktionsrollen fest."""
+        
+        await interaction.response.defer()
+        
         if erscheinungsbild == "Select Menü":
             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Reaktionsrollen Setup", description="Hier kannst du mithilfe von Buttons, Reaktionsrollen dem Select Menü hinzufügen.")
             
             view = setup_select(self.bot, interaction.user)
             view.add_item(select_role1(self.bot))
-            await interaction.response.send_message(embed=embed, view=view)
+            await interaction.followup.send(embed=embed, view=view)
         if erscheinungsbild == "Buttons":
             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Reaktionsrollen Setup", description="Hier kannst du mithilfe von Buttons, Reaktionsrollen als Buttons hinzufügen.")
             
             view = setup_buttons(self.bot, interaction.user)
             view.add_item(select_role2(self.bot))
-            await interaction.response.send_message(embed=embed, view=view)
+            await interaction.followup.send(embed=embed, view=view)
 
 async def setup(bot):
     await bot.add_cog(reactionrole(bot))

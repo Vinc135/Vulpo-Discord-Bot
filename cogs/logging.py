@@ -3,7 +3,8 @@ from discord.ext import commands
 from discord import app_commands
 from datetime import datetime
 import typing
-from info import getcolour, haspremium_forserver
+from utils.utils import getcolour, haspremium_forserver
+from utils.MongoDB import getMongoDataBase
 
 class logging(commands.Cog):
     def __init__(self, bot):
@@ -15,38 +16,39 @@ class logging(commands.Cog):
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def reportlog(self, interaction: discord.Interaction, argument: typing.Literal["Einrichten (Kanal muss mit angegeben werden)","Anzeigen","Ausschalten"], kanal: discord.TextChannel=None):
-        """Lege einen Kanal fest für gemeldete Nachrichten von Usern."""
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
+                """Lege einen Kanal fest für gemeldete Nachrichten von Usern."""
+                
+                await interaction.response.defer()
+                
+                db = getMongoDataBase()
+                
                 if argument == "Ausschalten":
-                    await cursor.execute(f"SELECT channelID FROM reportlog WHERE guildID = {interaction.guild.id}")
-                    result = await cursor.fetchone()
+                    result = db["reportlog"].find_one({"guildID": interaction.guild.id})
                     if result == None:
-                        return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Auf diesem Server ist kein Reportlog eingerichtet.**", ephemeral=True)
-                    await cursor.execute("DELETE FROM reportlog WHERE guildID = (%s)", (interaction.guild.id))
-                    return await interaction.response.send_message("**<:v_haken:1119579684057907251> Der Reportlog wurde ausgeschaltet.**")
+                        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Auf diesem Server ist kein Reportlog eingerichtet.**", ephemeral=True)
+                    await db["reportlog"].delete_one({"guildID": interaction.guild.id})
+                    return await interaction.followup.send("**<:v_haken:1119579684057907251> Der Reportlog wurde ausgeschaltet.**")
                 if argument == "Einrichten (Kanal muss mit angegeben werden)":
                     if kanal == None:
-                        return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Beim Einrichten ist auch eine Kanal-Angabe erforderlich.**", ephemeral=True)
+                        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Beim Einrichten ist auch eine Kanal-Angabe erforderlich.**", ephemeral=True)
 
-                    await cursor.execute(f"SELECT channelID FROM reportlog WHERE guildID = {interaction.guild.id}")
-                    result = await cursor.fetchone()
+                    result = db["reportlog"].find_one({"guildID": interaction.guild.id})
+
                     if result:
-                        await cursor.execute("UPDATE reportlog SET channelID = (%s) WHERE guildID = (%s)", (kanal.id, interaction.guild.id))
+                        await db["reportlog"].update_one({"guildID": interaction.guild.id}, {"$set": {"channelID": kanal.id}})
                     else:
-                        await cursor.execute("INSERT INTO reportlog(guildID, channelID) VALUES(%s, %s)", (interaction.guild.id, kanal.id))
-                    await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Der Reportlog ist nun aktiv in {kanal.mention}.**")
+                        await db["reportlog"].insert_one({"guildID": interaction.guild.id, "channelID": kanal.id})
+                    await interaction.followup.send(f"**<:v_haken:1119579684057907251> Der Reportlog ist nun aktiv in {kanal.mention}.**")
                 if argument == "Anzeigen":
-                    await cursor.execute(f"SELECT channelID FROM reportlog WHERE guildID = {interaction.guild.id}")
-                    result = await cursor.fetchone()
+                    result = db["reportlog"].find_one({"guildID": interaction.guild.id})
                     try:
-                        channel = interaction.guild.get_channel(int(result[0]))
+                        channel = await interaction.guild.fetch_channel(int(result["channelID"]))
                     except:
-                        return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Kanal des Reportlogs existiert nicht mehr. Bitte deaktiviere den Reportlog und richte ihn erneut ein.**", ephemeral=True)
+                        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Kanal des Reportlogs existiert nicht mehr. Bitte deaktiviere den Reportlog und richte ihn erneut ein.**", ephemeral=True)
 
                     embed = discord.Embed(title="Reportlog", description=f"Der aktuelle Reportlog ist aktiv in {channel.mention}", color=await getcolour(self, interaction.user))
                     
-                    await interaction.response.send_message(embed=embed)
+                    await interaction.followup.send(embed=embed)
     #messagelog
 
     @app_commands.command()
@@ -55,105 +57,100 @@ class logging(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def messagelog(self, interaction: discord.Interaction, modus: typing.Literal["An","Aus"], kanal: discord.TextChannel):
         """Setze den Nachrichtenlog."""
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                if modus == "An":
-                    await cursor.execute(f"SELECT channelid FROM messagelog WHERE guildid = {interaction.guild.id}")
-                    result = await cursor.fetchone()
-                    if result is None:
-                        await cursor.execute("INSERT INTO messagelog(guildid, channelid) VALUES(%s, %s)", (interaction.guild.id, kanal.id))
-                        
+        
+        await interaction.response.defer()
+        
+        db = getMongoDataBase()
+        
+        if modus == "An":
+            result = await db["messagelog"].find_one({"guildID": interaction.guild.id})
+            if result is None:
+                await db["messagelog"].insert_one({"guildID": interaction.guild.id, "channelID": kanal.id})                
 
-                        embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Nachrichtenlog", description=f"Der Nachrichtenlog ist nun aktiv in {kanal.mention}.")
-                        embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Nachrichtenlog", description=f"Der Nachrichtenlog ist nun aktiv in {kanal.mention}.")
+                embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+
+                await interaction.followup.send(embed=embed)
+                return
+            if result != None:
+                await db["messagelog"].update_one({"guildID": interaction.guild.id}, {"$set": {"channelID": kanal.id}})
                         
-                        await interaction.response.send_message(embed=embed)
-                        return
-                    if result != None:
-                        await cursor.execute(f"UPDATE messagelog SET channelid = {kanal.id} WHERE guildid = {interaction.guild.id}")
+                embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Nachrichtenlog", description=f"Der Nachrichtenlog ist nun aktiv in {kanal.mention}.")
                         
-                        embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Nachrichtenlog", description=f"Der Nachrichtenlog ist nun aktiv in {kanal.mention}.")
-                        
-                        embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-                        await interaction.response.send_message(embed=embed)
-                        return
+                embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                await interaction.followup.send(embed=embed)
+                return
             
-                if modus == "Aus":
-                    await cursor.execute(f"SELECT channelid FROM messagelog WHERE guildid = {interaction.guild.id}")
-                    result = await cursor.fetchone()
-                    if result is None:
-                        embed = discord.Embed(colour=discord.Colour.orange(), title="Messagelog", description=f"Der Nachrichtenlog ist nicht aktiviert auf diesem Server.")
-                        embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+        if modus == "Aus":
+            result = await db["messagelog"].find_one({"guildID": interaction.guild.id})
+            if result is None:
+                embed = discord.Embed(colour=discord.Colour.orange(), title="Messagelog", description=f"Der Nachrichtenlog ist nicht aktiviert auf diesem Server.")
+                embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         
-                        await interaction.response.send_message(embed=embed)
-                        return
-                    if result != None:
-                        await cursor.execute(f"DELETE FROM messagelog WHERE guildid = {interaction.guild.id}")
-                        
+                await interaction.followup.send(embed=embed)
+                return
+            if result != None:
+                await db["messagelog"].delete_one({"guildID": interaction.guild.id})                        
 
-                        embed = discord.Embed(colour=discord.Colour.orange(), title="Messagelog deaktiviert", description=f"Der Nachrichtenlog ist nun deaktiviert auf diesem Server.")
-                        embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                embed = discord.Embed(colour=discord.Colour.orange(), title="Messagelog deaktiviert", description=f"Der Nachrichtenlog ist nun deaktiviert auf diesem Server.")
+                embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         
-                        await interaction.response.send_message(embed=embed)
-                        return
+                await interaction.followup.send(embed=embed)
+                return
         
     @commands.Cog.listener()
     async def on_message_delete(self, message):
         if message.guild == None:
             return
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                try:
-                    await cursor.execute(f"SELECT channelid FROM messagelog WHERE guildid = {message.guild.id}")
-                    result = await cursor.fetchone()
-                    if result is None:
-                        return
-                    if result != None:
-                        channel = message.guild.get_channel(int(result[0]))
-                        if channel is None:
-                            return
-                        else:
-                            embed = discord.Embed(title="Eine Nachricht wurde gelöscht", color=discord.Color.orange(), timestamp=datetime.now())
-                            embed.add_field(name="<:v_user:1119585450923929672> Autor", value=message.author)
-                            embed.add_field(name="<:v_auge:1119578772207849472> Kanal", value=message.channel.mention)
-                            embed.add_field(name="<:v_chat:1119577968457568327> Nachricht", value=message.content)
-                            
-                            await channel.send(embed=embed)
-                except:
-                    pass
+        
+        try:
+            result = await getMongoDataBase()["messagelog"].find_one({"guildID": message.guild.id})
+            if result is None:
+                return
+            if result != None:
+                channel = await message.guild.fetch_channel(int(result["channelID"]))
+                if channel is None:
+                    return
+                else:
+                    embed = discord.Embed(title="Eine Nachricht wurde gelöscht", color=discord.Color.orange(), timestamp=datetime.now())
+                    embed.add_field(name="<:v_user:1119585450923929672> Autor", value=message.author)
+                    embed.add_field(name="<:v_auge:1119578772207849472> Kanal", value=message.channel.mention)
+                    embed.add_field(name="<:v_chat:1119577968457568327> Nachricht", value=message.content)
+                    
+                    await channel.send(embed=embed)
+        except:
+            pass
 
     @commands.Cog.listener()
     async def on_bulk_message_delete(self, messages):
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                for message in messages:
-                    await cursor.execute(f"SELECT channelid FROM messagelog WHERE guildid = {message.guild.id}")
-                    break
-                result = await cursor.fetchone()
-                if result is None:
-                    return
-                if result != None:
-                    channel = message.guild.get_channel(int(result[0]))
-                    if channel is None:
-                        return
-                    else:
-                        embed = discord.Embed(description=f"**{len(messages)} Nachrichten in {message.channel.mention} gelöscht**", color=discord.Color.orange(), timestamp=datetime.now())
-                        
-                        await channel.send(embed=embed)
+        
+        db = getMongoDataBase()
+        
+        result = await db["messagelog"].find_one({"guildID": messages[0].guild.id})
+        if result is None:
+            return
+        if result != None:
+            channel = await messages.guild.fetch_channel(int(result["channelID"]))
+            if channel is None:
+                return
+            else:
+                embed = discord.Embed(description=f"**{len(messages)} Nachrichten in {messages.channel.mention} gelöscht**", color=discord.Color.orange(), timestamp=datetime.now())
+                
+                await channel.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
-        if after.guild == None:
-            return
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
+                if after.guild == None:
+                    return
+                
+                db = getMongoDataBase()
+                
                 try:
-                    await cursor.execute(f"SELECT channelid FROM messagelog WHERE guildid = {after.guild.id}")
-                    result = await cursor.fetchone()
+                    result = await db["messagelog"].find_one({"guildID": after.guild.id})
                     if result is None:
                         return
                     if result != None:
-                        channel = after.guild.get_channel(int(result[0]))
+                        channel = await after.guild.fetch_channel(int(result["channelID"]))
                         if channel is None:
                             return
                         else:
@@ -199,232 +196,209 @@ class logging(commands.Cog):
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def modlog(self, interaction: discord.Interaction,  modus: typing.Literal["An","Aus"], kanal: discord.TextChannel):
-        """Setze den Modlog."""
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
+                """Setze den Modlog."""
+                
+                await interaction.response.defer()
+                
+                db = getMongoDataBase()
+                
                 if modus == "An":
-                    await cursor.execute(f"SELECT channelid FROM modlog WHERE guildid = {interaction.guild.id}")
-                    result = await cursor.fetchone()
+                    result = await db["modlog"].find_one({"guildID": interaction.guild.id})
                     if result is None:
-                        await cursor.execute("INSERT INTO modlog(guildid, channelid) VALUES(%s, %s)", (interaction.guild.id, kanal.id))
-                        
+                        await db["modlog"].insert_one({"guildID": interaction.guild.id, "channelID": kanal.id})                        
 
                         embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Modlog", description=f"Der Modlog ist nun aktiv in {kanal.mention}.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         
-                        await interaction.response.send_message(embed=embed)
+                        await interaction.followup.send(embed=embed)
                         return
                     if result != None:
-                        await cursor.execute(f"UPDATE modlog SET channelid = {kanal.id} WHERE guildid = {interaction.guild.id}")
-                        
+                        await db["modlog"].update_one({"guildID": interaction.guild.id}, {"$set": {"channelID": kanal.id}})                        
 
                         embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Modlog", description=f"Der Modlog ist nun aktiv in {kanal.mention}.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         
-                        await interaction.response.send_message(embed=embed)
+                        await interaction.followup.send(embed=embed)
                         return
                 
                 if modus == "Aus":
-                    await cursor.execute(f"SELECT channelid FROM modlog WHERE guildid = {interaction.guild.id}")
-                    result = await cursor.fetchone()
+                    result = await db["modlog"].find_one({"guildID": interaction.guild.id})
                     if result is None:
                         embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Modlog", description=f"Der Modlog ist nicht aktiviert auf diesem Server.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         
-                        await interaction.response.send_message(embed=embed)
+                        await interaction.followup.send(embed=embed)
                         return
                     if result != None:
-                        await cursor.execute(f"DELETE FROM modlog WHERE guildid = {interaction.guild.id}")
-                        
+                        await db["modlog"].delete_one({"guildID": interaction.guild.id})
 
                         embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Modlog deaktiviert", description=f"Der Modlog ist auf diesem Server nun deaktiviert.")
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         
-                        await interaction.response.send_message(embed=embed)
+                        await interaction.followup.send(embed=embed)
                         return
 
     @commands.Cog.listener()
     async def on_member_ban(self, guild, user):
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute(f"SELECT channelid FROM modlog WHERE guildid = {guild.id}")
-                result = await cursor.fetchone()
-                if result is None:
-                    return
-                if result != None:
-                    channel = guild.get_channel(int(result[0]))
-                    if channel is None:
-                        return
-                    else:
-                        async for entry in guild.audit_logs(limit=1, action=discord.AuditLogAction.ban):
-                            embed = discord.Embed(title="Jemand wurde gebannt", color=discord.Color.orange(), timestamp=datetime.now())
-                            embed.add_field(name="<:v_user:1119585450923929672> User", value=f"{entry.target.mention}({entry.target})")
-                            embed.add_field(name="<:v_mod:1119581819122241621> Moderator", value=f"{entry.user.mention}({entry.user})")
-                            embed.add_field(name="<:v_warnung:1119585706310905886> Grund", value=entry.reason if entry.reason else 'Kein grund angegeben')
-                            
-                            await channel.send(embed=embed)
-                            break
+        result = await getMongoDataBase()["modlog"].find_one({"guildID": guild.id})
+        if result is None:
+            return
+        if result != None:
+            channel = await guild.fetch_channel(int(result["channelID"]))
+            if channel is None:
+                return
+            else:
+                async for entry in guild.audit_logs(limit=1, action=discord.AuditLogAction.ban):
+                    embed = discord.Embed(title="Jemand wurde gebannt", color=discord.Color.orange(), timestamp=datetime.now())
+                    embed.add_field(name="<:v_user:1119585450923929672> User", value=f"{entry.target.mention}({entry.target})")
+                    embed.add_field(name="<:v_mod:1119581819122241621> Moderator", value=f"{entry.user.mention}({entry.user})")
+                    embed.add_field(name="<:v_warnung:1119585706310905886> Grund", value=entry.reason if entry.reason else 'Kein grund angegeben')
+                    
+                    await channel.send(embed=embed)
+                    break
 
     @commands.Cog.listener()
     async def on_member_unban(self, guild, user):
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute(f"SELECT channelid FROM modlog WHERE guildid = {guild.id}")
-                result = await cursor.fetchone()
-                if result is None:
-                    return
-                if result != None:
-                    channel = guild.get_channel(int(result[0]))
-                    if channel is None:
-                        return
-                    else:
-                        async for entry in guild.audit_logs(limit=1, action=discord.AuditLogAction.ban):
-                            embed = discord.Embed(title="Jemand wurde entbannt", color=discord.Color.orange(), timestamp=datetime.now())
-                            embed.add_field(name="<:v_user:1119585450923929672> User", value=f"{entry.target.mention}({entry.target})")
-                            embed.add_field(name="<:v_mod:1119581819122241621> Moderator", value=f"{entry.user.mention}({entry.user})")
-                            embed.add_field(name="<:v_warnung:1119585706310905886> Grund", value=entry.reason if entry.reason else 'Kein grund angegeben')
-                            
-                            await channel.send(embed=embed)
-                            break
+        result = await getMongoDataBase()["modlog"].find_one({"guildID": guild.id})
+        if result is None:
+            return
+        if result != None:
+            channel = await guild.fetch_channel(int(result["channelID"]))
+            if channel is None:
+                return
+            else:
+                async for entry in guild.audit_logs(limit=1, action=discord.AuditLogAction.ban):
+                    embed = discord.Embed(title="Jemand wurde entbannt", color=discord.Color.orange(), timestamp=datetime.now())
+                    embed.add_field(name="<:v_user:1119585450923929672> User", value=f"{entry.target.mention}({entry.target})")
+                    embed.add_field(name="<:v_mod:1119581819122241621> Moderator", value=f"{entry.user.mention}({entry.user})")
+                    embed.add_field(name="<:v_warnung:1119585706310905886> Grund", value=entry.reason if entry.reason else 'Kein grund angegeben')
+                    
+                    await channel.send(embed=embed)
+                    break
 
     @commands.Cog.listener()
     async def on_guild_channel_create(self, channel):
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                try:
-                    await cursor.execute(f"SELECT channelid FROM modlog WHERE guildid = {channel.guild.id}")
-                    result = await cursor.fetchone()
-                    if result is None:
-                        return
-                    if result != None:
-                        chan = channel.guild.get_channel(int(result[0]))
-                        if chan is None:
-                            return
-                        else:
-                            async for entry in channel.guild.audit_logs(limit=1, action=discord.AuditLogAction.channel_create):
-                                embed = discord.Embed(title=f"Ein {entry.target.type}kanal wurde erstellt", color=discord.Color.orange(), timestamp=datetime.now())
-                                embed.add_field(name="<:v_chat:1119577968457568327> Name", value=f"{entry.target.mention}({entry.target.name})")
-                                embed.add_field(name="<:v_user:1119585450923929672> User", value=f"{entry.user.mention}({entry.user})")
-                                embed.add_field(name="<:v_einstellungen:1119578559086874636> Kategorie", value=entry.target.category)
-                                
-                                await chan.send(embed=embed)
-                                break
-                except:
-                    pass
+        try:
+            result = await getMongoDataBase()["modlog"].find_one({"guildID": channel.guild.id})
+            if result is None:
+                return
+            if result != None:
+                chan = await channel.guild.fetch_channel(int(result["channelID"]))
+                if chan is None:
+                    return
+                else:
+                    async for entry in channel.guild.audit_logs(limit=1, action=discord.AuditLogAction.channel_create):
+                        embed = discord.Embed(title=f"Ein {entry.target.type}kanal wurde erstellt", color=discord.Color.orange(), timestamp=datetime.now())
+                        embed.add_field(name="<:v_chat:1119577968457568327> Name", value=f"{entry.target.mention}({entry.target.name})")
+                        embed.add_field(name="<:v_user:1119585450923929672> User", value=f"{entry.user.mention}({entry.user})")
+                        embed.add_field(name="<:v_einstellungen:1119578559086874636> Kategorie", value=entry.target.category)
+                        
+                        await chan.send(embed=embed)
+                        break
+        except:
+            pass
 
     @commands.Cog.listener()
     async def on_guild_channel_update(self, before, after):
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                try:
-                    await cursor.execute(f"SELECT channelid FROM modlog WHERE guildid = {after.guild.id}")
-                    result = await cursor.fetchone()
-                    if result is None:
+            try:
+                result = await getMongoDataBase()["modlog"].find_one({"guildID": after.guild.id})
+                if result is None:
+                    return
+                if result != None:
+                    chan = await after.guild.fetch_channel(int(result["channelID"]))
+                    if chan is None:
                         return
-                    if result != None:
-                        chan = after.guild.get_channel(int(result[0]))
-                        if chan is None:
-                            return
-                        else:
-                            async for entry in after.guild.audit_logs(limit=1, action=discord.AuditLogAction.channel_update):
-                                if before.name != after.name:
-                                    embed = discord.Embed(title="Ein Kanal wurde umbenannt", color=discord.Color.orange(), timestamp=datetime.now())
-                                    embed.add_field(name="<:v_pfeil_links:1119582015042371604> Alt", value=before.name)
-                                    embed.add_field(name="<:v_pfeil_rechts:1119582171930300438> Neu", value=after.name)
-                                    embed.add_field(name="<:v_user:1119585450923929672> User", value=f"{entry.user.mention}({entry.user})")
-                                    
-                                    await chan.send(embed=embed)
-                                    break
-                                if before.topic != after.topic:
-                                    embed = discord.Embed(title="Eine Kanalbeschreibung wurde geändert", color=discord.Color.orange(), timestamp=datetime.now())
-                                    embed.add_field(name="<:v_pfeil_links:1119582015042371604> Alt", value=before.topic if before.topic else 'Keine Beschreibung')
-                                    embed.add_field(name="<:v_pfeil_rechts:1119582171930300438> Neu", value=after.topic if after.topic else 'Keine Beschreibung')
-                                    embed.add_field(name="<:v_user:1119585450923929672> User", value=f"{entry.user.mention}({entry.user})")
-                                    
-                                    await chan.send(embed=embed)
-                                    break
-                except:
-                    pass
-
-    @commands.Cog.listener()
-    async def on_guild_channel_delete(self, channel):
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                try:
-                    await cursor.execute(f"SELECT channelid FROM modlog WHERE guildid = {channel.guild.id}")
-                    result = await cursor.fetchone()
-                    if result is None:
-                        return
-                    if result != None:
-                        chan = channel.guild.get_channel(int(result[0]))
-                        if chan is None:
-                            return
-                        else:
-                            async for entry in channel.guild.audit_logs(limit=1, action=discord.AuditLogAction.channel_delete):
-                                embed = discord.Embed(title=f"Ein {channel.type}kanal wurde gelöscht", color=discord.Color.orange(), timestamp=datetime.now())
-                                embed.add_field(name="<:v_chat:1119577968457568327> Name", value=f"{channel.name}")
+                    else:
+                        async for entry in after.guild.audit_logs(limit=1, action=discord.AuditLogAction.channel_update):
+                            if before.name != after.name:
+                                embed = discord.Embed(title="Ein Kanal wurde umbenannt", color=discord.Color.orange(), timestamp=datetime.now())
+                                embed.add_field(name="<:v_pfeil_links:1119582015042371604> Alt", value=before.name)
+                                embed.add_field(name="<:v_pfeil_rechts:1119582171930300438> Neu", value=after.name)
                                 embed.add_field(name="<:v_user:1119585450923929672> User", value=f"{entry.user.mention}({entry.user})")
                                 
                                 await chan.send(embed=embed)
                                 break
-                except:
-                    pass
+                            if before.topic != after.topic:
+                                embed = discord.Embed(title="Eine Kanalbeschreibung wurde geändert", color=discord.Color.orange(), timestamp=datetime.now())
+                                embed.add_field(name="<:v_pfeil_links:1119582015042371604> Alt", value=before.topic if before.topic else 'Keine Beschreibung')
+                                embed.add_field(name="<:v_pfeil_rechts:1119582171930300438> Neu", value=after.topic if after.topic else 'Keine Beschreibung')
+                                embed.add_field(name="<:v_user:1119585450923929672> User", value=f"{entry.user.mention}({entry.user})")
+                                
+                                await chan.send(embed=embed)
+                                break
+            except:
+                pass
+
+    @commands.Cog.listener()
+    async def on_guild_channel_delete(self, channel):
+        try:
+            result = await getMongoDataBase()["modlog"].find_one({"guildID": channel.guild.id})
+            if result is None:
+                return
+            if result != None:
+                chan = await channel.guild.fetch_channel(int(result["channelID"]))
+                if chan is None:
+                    return
+                else:
+                    async for entry in channel.guild.audit_logs(limit=1, action=discord.AuditLogAction.channel_delete):
+                        embed = discord.Embed(title=f"Ein {channel.type}kanal wurde gelöscht", color=discord.Color.orange(), timestamp=datetime.now())
+                        embed.add_field(name="<:v_chat:1119577968457568327> Name", value=f"{channel.name}")
+                        embed.add_field(name="<:v_user:1119585450923929672> User", value=f"{entry.user.mention}({entry.user})")
+                        
+                        await chan.send(embed=embed)
+                        break
+        except:
+            pass
 
     @commands.Cog.listener()
     async def on_guild_role_create(self, role):
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute(f"SELECT channelid FROM modlog WHERE guildid = {role.guild.id}")
-                result = await cursor.fetchone()
-                if result is None:
-                    return
-                if result != None:
-                    chan = role.guild.get_channel(int(result[0]))
-                    if chan is None:
-                        return
-                    else:
-                        async for entry in role.guild.audit_logs(limit=1, action=discord.AuditLogAction.role_create):
-                            embed = discord.Embed(title=f"Eine Rolle wurde erstellt", color=discord.Color.orange(), timestamp=datetime.now())
-                            embed.add_field(name="<:v_chat:1119577968457568327> Name", value=f"{role.name}")
-                            embed.add_field(name="<:v_user:1119585450923929672> User", value=f"{entry.user.mention}({entry.user})")
-                            
-                            await chan.send(embed=embed)
-                            break
+        result = await getMongoDataBase()["modlog"].find_one({"guildID": role.guild.id})
+        if result is None:
+            return
+        if result != None:
+            chan = await role.guild.fetch_channel(int(result["channelID"]))
+            if chan is None:
+                return
+            else:
+                async for entry in role.guild.audit_logs(limit=1, action=discord.AuditLogAction.role_create):
+                    embed = discord.Embed(title=f"Eine Rolle wurde erstellt", color=discord.Color.orange(), timestamp=datetime.now())
+                    embed.add_field(name="<:v_chat:1119577968457568327> Name", value=f"{role.name}")
+                    embed.add_field(name="<:v_user:1119585450923929672> User", value=f"{entry.user.mention}({entry.user})")
+                    
+                    await chan.send(embed=embed)
+                    break
 
     @commands.Cog.listener()
     async def on_guild_role_delete(self, role):
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute(f"SELECT channelid FROM modlog WHERE guildid = {role.guild.id}")
-                result = await cursor.fetchone()
-                if result is None:
-                    return
-                if result != None:
-                    chan = role.guild.get_channel(int(result[0]))
-                    if chan is None:
-                        return
-                    else:
-                        async for entry in role.guild.audit_logs(limit=1, action=discord.AuditLogAction.role_delete):
-                            embed = discord.Embed(title=f"Eine Rolle wurde gelöscht", color=discord.Color.orange(), timestamp=datetime.now())
-                            embed.add_field(name="<:v_chat:1119577968457568327> Name", value=f"{role.name}")
-                            embed.add_field(name="<:v_user:1119585450923929672> User", value=f"{entry.user.mention}({entry.user})")
-                            
-                            await chan.send(embed=embed)
-                            break
+        result = await getMongoDataBase()["modlog"].find_one({"guildID": role.guild.id})
+        if result is None:
+            return
+        if result != None:
+            chan = await role.guild.fetch_channel(int(result["channelID"]))
+            if chan is None:
+                return
+            else:
+                async for entry in role.guild.audit_logs(limit=1, action=discord.AuditLogAction.role_delete):
+                    embed = discord.Embed(title=f"Eine Rolle wurde gelöscht", color=discord.Color.orange(), timestamp=datetime.now())
+                    embed.add_field(name="<:v_chat:1119577968457568327> Name", value=f"{role.name}")
+                    embed.add_field(name="<:v_user:1119585450923929672> User", value=f"{entry.user.mention}({entry.user})")
+                    
+                    await chan.send(embed=embed)
+                    break
 
     @commands.Cog.listener()
     async def on_member_update(self, before, after):
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
+        
+                db = getMongoDataBase()
+        
                 try:
                     if before.bot:
                         return
-                    await cursor.execute(f"SELECT channelid FROM modlog WHERE guildid = {before.guild.id}")
-                    result = await cursor.fetchone()
+                    result = await db["modlog"].find_one({"guildID": after.guild.id})
                     if result is None:
                         return
                     if result != None:
-                        chan = before.guild.get_channel(int(result[0]))
+                        chan = await before.guild.fetch_channel(int(result["channelID"]))
                         if chan is None:
                             return
                         if len(before.roles) > len(after.roles):
@@ -474,52 +448,52 @@ class logging(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def ticketlog(self, interaction: discord.Interaction,  modus: typing.Literal["An","Aus"], kanal: discord.TextChannel):
         """Setze den Ticketlog."""
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                premium_status = await haspremium_forserver(self, interaction.guild)
-                if premium_status == False:
-                    return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst dies nicht tun, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+        
+        await interaction.response.defer()
+        
+        #premium_status = await haspremium_forserver(self, interaction.guild)
+        #if premium_status == False:
+        #    return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst dies nicht tun, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
-                if modus == "An":
-                    await cursor.execute("SELECT channelid FROM ticketlog WHERE guildid = (%s)", (interaction.guild.id))
-                    result = await cursor.fetchone()
-                    if result is None:
-                        await cursor.execute("INSERT INTO ticketlog(guildid, channelid) VALUES(%s, %s)", (interaction.guild.id, kanal.id))
-                        
+        db = getMongoDataBase()
 
-                        embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Ticketlog", description=f"Der Ticketlog ist nun aktiv in {kanal.mention}.")
-                        embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-                        
-                        await interaction.response.send_message(embed=embed)
-                        return
-                    if result != None:
-                        await cursor.execute("UPDATE ticketlog SET channelid = (%s) WHERE guildid = (%s)", (kanal.id, interaction.guild.id))
-                        
+        if modus == "An":
+            result = await db["ticketlog"].find_one({"guildID": interaction.guild.id})
+            
+            if result is None:
+                await db["ticketlog"].insert_one({"guildID": interaction.guild.id, "channelID": kanal.id})                
 
-                        embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Ticketlog", description=f"Der Ticketlog ist nun aktiv in {kanal.mention}.")
-                        embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-                        
-                        await interaction.response.send_message(embed=embed)
-                        return
+                embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Ticketlog", description=f"Der Ticketlog ist nun aktiv in {kanal.mention}.")
+                embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                 
-                if modus == "Aus":
-                    await cursor.execute("SELECT channelid FROM ticketlog WHERE guildid = (%s)", (interaction.guild.id))
-                    result = await cursor.fetchone()
-                    if result is None:
-                        embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Ticketlog", description=f"Der Ticketlog ist nicht aktiviert auf diesem Server.")
-                        embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-                        
-                        await interaction.response.send_message(embed=embed)
-                        return
-                    if result != None:
-                        await cursor.execute("DELETE FROM ticketlog WHERE guildid = (%s)", (interaction.guild.id))
-                        
+                await interaction.followup.send(embed=embed)
+                return
+            if result != None:
+                await db["ticketlog"].update_one({"guildID": interaction.guild.id}, {"$set": {"channelID": kanal.id}})                
 
-                        embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Ticketlog deaktiviert", description=f"Der Ticketlog ist auf diesem Server nun deaktiviert.")
-                        embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Ticketlog", description=f"Der Ticketlog ist nun aktiv in {kanal.mention}.")
+                embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                
+                await interaction.followup.send(embed=embed)
+                return
+                
+        if modus == "Aus":
+            result = await db["ticketlog"].find_one({"guildID": interaction.guild.id})
+            if result is None:
+                embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Ticketlog", description=f"Der Ticketlog ist nicht aktiviert auf diesem Server.")
+                embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+
+                await interaction.followup.send(embed=embed)
+                return
+            if result != None:
+                await db["ticketlog"].delete_one({"guildID": interaction.guild.id})
+
+
+                embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Ticketlog deaktiviert", description=f"Der Ticketlog ist auf diesem Server nun deaktiviert.")
+                embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         
-                        await interaction.response.send_message(embed=embed)
-                        return
+                await interaction.followup.send(embed=embed)
+                return
         
 async def setup(bot):
     await bot.add_cog(logging(bot))

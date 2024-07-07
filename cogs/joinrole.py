@@ -2,7 +2,8 @@ import typing
 import discord
 from discord.ext import commands
 from discord import app_commands
-from info import getcolour, haspremium_forserver
+from utils.utils import getcolour, haspremium_forserver
+from utils.MongoDB import getMongoDataBase
 ##########
 
 class joinrole(commands.Cog):
@@ -11,74 +12,78 @@ class joinrole(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                if member.bot:
-                    try:
-                        await cursor.execute(f"SELECT role_id FROM botroles WHERE guild_id = {member.guild.id}")
-                        result = await cursor.fetchall()
-                        if result == None:
-                            return
-                        for role in result:
-                            r = discord.utils.get(member.guild.roles, id=int(role[0]))
-                            if r is not None:
-                                await member.add_roles(r)
-                        return
-                    except:
-                        return
-                else:
-                    try:
-                        await cursor.execute(f"SELECT role_id FROM joinroles WHERE guild_id = {member.guild.id}")
-                        result = await cursor.fetchall()
-                        if result == None:
-                            return
-                        for role in result:
-                            r = discord.utils.get(member.guild.roles, id=int(role[0]))
-                            if r is not None:
-                                await member.add_roles(r)
-                        return
-                    except:
-                        return
+        
+        db = getMongoDataBase()
+        
+        if member.bot:
+            try:
+                result = await db['botroles'].find({"guild_id": member.guild.id}).to_list(length=None)
+                if result == None:
+                    return
+                for role in result:
+                    r = discord.utils.get(member.guild.roles, id=int(role[0]))
+                    if r is not None:
+                        await member.add_roles(r)
+                return
+            except:
+                return
+        else:
+            try:
+                result = await db['joinroles'].find({"guild_id": member.guild.id}).to_list(length=None)
+                if result == None:
+                    return
+                for role in result:
+                    r = discord.utils.get(member.guild.roles, id=int(role[0]))
+                    if r is not None:
+                        await member.add_roles(r)
+                return
+            except:
+                return
 
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.has_permissions(manage_roles=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def joinrole(self, interaction: discord.Interaction, argument: typing.Literal["Hinzufügen (Rolle muss mit angegeben werden)", "Löschen","Anzeigen"], rolle: discord.Role=None):
-        """Lege Joinrollen für User fest."""
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
+                """Lege Joinrollen für User fest."""
+        
+                await interaction.response.defer()
+                
+                db = getMongoDataBase()
+        
                 if argument == "Löschen":
-                    await cursor.execute(f"DELETE FROM joinroles WHERE guild_id = {interaction.guild.id}")
-                    await interaction.response.send_message("**<:v_haken:1119579684057907251> Alle Joinrollen gelöscht.**")           
+                    await db['joinroles'].delete_many({"guild_id": interaction.guild.id})
+                    await interaction.followup.send("**<:v_haken:1119579684057907251> Alle Joinrollen gelöscht.**")           
                     return
                 if argument == "Hinzufügen (Rolle muss mit angegeben werden)":
                     if rolle is None:
-                        await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Eine Rollen-Angabe ist erforderlich beim Einrichten.**", ephemeral=True)           
+                        await interaction.followup.send("**<:v_kreuz:1119580775411621908> Eine Rollen-Angabe ist erforderlich beim Einrichten.**", ephemeral=True)           
                         return
                     
-                    await cursor.execute(f"SELECT role_id FROM joinroles WHERE guild_id = {interaction.guild.id}")
-                    a = await cursor.fetchall()
+                    #a = await db['joinroles'].find({"guild_id": interaction.guild.id}).to_list(length=None)
 
-                    premium_status = await haspremium_forserver(self, interaction.guild)
-                    if premium_status == False:
-                        if len(a) >= 3:
-                            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Joinrollen für Mitglieder erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+                    #premium_status = await haspremium_forserver(self, interaction.guild)
+                    #if premium_status == False:
+                    #    if len(a) >= 3:
+                    #        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Joinrollen für Mitglieder erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
-                    await cursor.execute(f"SELECT guild_id FROM joinroles WHERE role_id = {rolle.id}")
-                    result = await cursor.fetchone()
+                    result = await db['joinroles'].find({"role_id": rolle.id}).to_list(length=None)
+
                     if result:
-                        await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Diese Rolle ist bereits eingestellt.**", ephemeral=True)           
+                        await interaction.followup.send("**<:v_kreuz:1119580775411621908> Diese Rolle ist bereits eingestellt.**", ephemeral=True)           
                         return
-                    await cursor.execute("INSERT INTO joinroles (role_id, guild_id) VALUES (%s, %s)", (rolle.id, interaction.guild.id))
+                    
+                    
+                    db["joinroles"].insert_one({"role_id": rolle.id, "guild_id": interaction.guild.id})
                     embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                             description=f"{rolle.mention} wurde zu den Joinrollen für User hinzugefügt.")
                     embed.set_footer(text="Stell sicher, dass meine Rolle höher als die Joinrollen gelistet ist.", icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
                     embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-                    await interaction.response.send_message(embed=embed)
+                    await interaction.followup.send(embed=embed)
                 if argument == "Anzeigen":
-                    await cursor.execute(f"SELECT role_id FROM joinroles WHERE guild_id = {interaction.guild.id}")
-                    result = await cursor.fetchall()
+                    
+                    result = await db['joinroles'].find({"guild_id": interaction.guild.id}).to_list(length=None)
+                    
                     if str(result) != "[]":
                         rollen = ""
                         for r in result:
@@ -90,7 +95,7 @@ class joinrole(commands.Cog):
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         embed.set_footer(text="Stell sicher, dass meine Rolle höher als die Joinrollen gelistet ist.",
                                         icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
-                        await interaction.response.send_message(embed=embed)
+                        await interaction.followup.send(embed=embed)
                         return
                     if str(result) == "[]":
                         embed = discord.Embed(colour=await getcolour(self, interaction.user),
@@ -98,7 +103,7 @@ class joinrole(commands.Cog):
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         embed.set_footer(text="Stell sicher, dass meine Rolle höher als die Joinrollen gelistet ist.",
                                         icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
-                        await interaction.response.send_message(embed=embed)
+                        await interaction.followup.send(embed=embed)
                         return
 
     @app_commands.command()
@@ -106,40 +111,45 @@ class joinrole(commands.Cog):
     @app_commands.checks.has_permissions(manage_roles=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def botrole(self, interaction: discord.Interaction, argument: typing.Literal["Hinzufügen (Rolle muss mit angegeben werden)", "Löschen","Anzeigen"], rolle: discord.Role=None):
-        """Lege Joinrollen für Bots fest."""
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
+                """Lege Joinrollen für Bots fest."""
+                
+                await interaction.response.defer()
+                
+                db = getMongoDataBase()
+                
                 if argument == "Löschen":
-                    await cursor.execute(f"DELETE FROM botroles WHERE guild_id = {interaction.guild.id}")
-                    await interaction.response.send_message("**<:v_haken:1119579684057907251> Alle Joinrollen gelöscht.**")           
+                    db["botroles"].delete_many({"guild_id": interaction.guild.id})
+                    await interaction.followup.send("**<:v_haken:1119579684057907251> Alle Joinrollen gelöscht.**")           
                     return
                 if argument == "Hinzufügen (Rolle muss mit angegeben werden)":
                     if rolle is None:
-                        await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Eine Rollen-Angabe ist erforderlich beim Einrichten.**", ephemeral=True)           
+                        await interaction.followup.send("**<:v_kreuz:1119580775411621908> Eine Rollen-Angabe ist erforderlich beim Einrichten.**", ephemeral=True)           
                         return
                     
-                    await cursor.execute(f"SELECT role_id FROM botroles WHERE guild_id = {interaction.guild.id}")
-                    a = await cursor.fetchall()
+                    #a = await db['botroles'].find({"guild_id": interaction.guild.id}).to_list(length=None)
 
-                    premium_status = await haspremium_forserver(self, interaction.guild)
-                    if premium_status == False:
-                        if len(a) >= 3:
-                            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Joinrollen für Bots erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+                    #premium_status = await haspremium_forserver(self, interaction.guild)
+                    #if premium_status == False:
+                    #    if len(a) >= 3:
+                    #        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Joinrollen für Bots erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
-                    await cursor.execute(f"SELECT guild_id FROM botroles WHERE role_id = {rolle.id}")
-                    result = await cursor.fetchone()
+
+                    result = await db['botroles'].find({"role_id": rolle.id}).to_list(length=None)
+
                     if result:
-                        await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Diese Rolle ist bereits eingestellt.**", ephemeral=True)           
+                        await interaction.followup.send("**<:v_kreuz:1119580775411621908> Diese Rolle ist bereits eingestellt.**", ephemeral=True)           
                         return
-                    await cursor.execute("INSERT INTO botroles (role_id, guild_id) VALUES (%s, %s)", (rolle.id, interaction.guild.id))
+                    
+                    await db['botroles'].insert_one({"role_id": rolle.id, "guild_id": interaction.guild.id})
                     embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                             description=f"{rolle.mention} wurde zu den Joinrollen für Bots hinzugefügt.")
                     embed.set_footer(text="Stell sicher, dass meine Rolle höher als die Joinrollen gelistet ist.", icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
                     embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-                    await interaction.response.send_message(embed=embed)
+                    await interaction.followup.send(embed=embed)
                 if argument == "Anzeigen":
-                    await cursor.execute(f"SELECT role_id FROM botroles WHERE guild_id = {interaction.guild.id}")
-                    result = await cursor.fetchall()
+                    
+                    result = await db['botroles'].find({"guild_id": interaction.guild.id}).to_list(length=None)
+                    
                     if str(result) != "[]":
                         rollen = ""
                         for r in result:
@@ -151,7 +161,7 @@ class joinrole(commands.Cog):
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         embed.set_footer(text="Stell sicher, dass meine Rolle höher als die Joinrollen gelistet ist.",
                                         icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
-                        await interaction.response.send_message(embed=embed)
+                        await interaction.followup.send(embed=embed)
                         return
                     if str(result) == "[]":
                         embed = discord.Embed(colour=await getcolour(self, interaction.user),
@@ -159,7 +169,7 @@ class joinrole(commands.Cog):
                         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                         embed.set_footer(text="Stell sicher, dass meine Rolle höher als die Joinrollen gelistet ist.",
                                         icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
-                        await interaction.response.send_message(embed=embed)
+                        await interaction.followup.send(embed=embed)
                         return
  
 async def setup(bot):

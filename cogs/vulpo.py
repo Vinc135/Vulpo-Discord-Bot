@@ -8,13 +8,13 @@ import time
 import sys
 import psutil
 from discord import app_commands
-from info import discord_timestamp
-from info import getcolour
+from utils.utils import discord_timestamp, getcolour
+from utils.MongoDB import getMongoDataBase
 
 class Dropdown(discord.ui.Select):
     def __init__(self, user, farbe, bot):
         selectOptions = [
-            discord.SelectOption(label="Premium", emoji="<:v_ticket:1119584819597279242>"),
+            #discord.SelectOption(label="Premium", emoji="<:v_ticket:1119584819597279242>"),
             discord.SelectOption(label="Information", emoji="<:v_info:1119579853092552715>"),
             discord.SelectOption(label="Settings & Setup", emoji="<:v_einstellungen:1119578559086874636>"),
             discord.SelectOption(label="Basic Moderation", emoji="<:v_mod:1119581819122241621>"),
@@ -392,32 +392,34 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def vote(self, interaction: discord.Interaction):
         """Zeigt an, wann du wieder für Vulpo voten kannst."""
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute("SELECT endtime FROM vote WHERE userid = (%s)", (interaction.user.id))
-                result = await cursor.fetchone()
-                if result == None:
-                    embed = discord.Embed(title="Du kannst voten", url="https://top.gg/bot/925799559576322078/vote", description="""
+                
+        result = await getMongoDataBase()["vote"].find_one({"userid": interaction.user.id})
+        
+        if result == None:
+            embed = discord.Embed(title="Du kannst voten", url="https://top.gg/bot/925799559576322078/vote", description="""
 <:v_info:1119579853092552715> Der Vote-Cooldown von 12 Stunden ist abgelaufen. Es wäre sehr schön, wenn du wieder für mich votest.
 
 <:herz:941398727501955113> Als Belohnung für einen weiteren Vote bekommst du **300 🍪 im Economy System** und eine besondere **Rolle in [Vulpos Wald](https://discord.gg/49jD3VXksp)**""", colour=await getcolour(self, interaction.user))
-                    embed.set_footer(text="Danke für deine Unterstützung", icon_url="https://media.discordapp.net/attachments/965302660871884840/965315155816767548/Vulpo_neu.png?width=1572&height=1572")
-                    return await interaction.response.send_message(embed=embed)
-                t1 = int(result[0])
-                t2 = datetime.fromtimestamp(int(t1))
-                embed = discord.Embed(title="Du kannst noch nicht voten", url="https://top.gg/bot/925799559576322078/vote", description=f"""
+            embed.set_footer(text="Danke für deine Unterstützung", icon_url="https://media.discordapp.net/attachments/965302660871884840/965315155816767548/Vulpo_neu.png?width=1572&height=1572")
+            return await interaction.followup.send(embed=embed)
+        t1 = int(result["timestamp"])
+        t2 = datetime.fromtimestamp(int(t1))
+        embed = discord.Embed(title="Du kannst noch nicht voten", url="https://top.gg/bot/925799559576322078/vote", description=f"""
 <:v_info:1119579853092552715> Der Vote-Cooldown von 12 Stunden ist noch nicht abgelaufen. Du kannst wieder {discord_timestamp(t2, "R")} voten.
 
 <:herz:941398727501955113> Als Belohnung für einen weiteren Vote bekommst du **300 🍪 im Economy System** und eine besondere **Rolle in [Vulpos Wald](https://discord.gg/49jD3VXksp)**""", colour=await getcolour(self, interaction.user))
-                embed.set_footer(text="Danke für deine Unterstützung", icon_url="https://media.discordapp.net/attachments/965302660871884840/965315155816767548/Vulpo_neu.png?width=1572&height=1572")
-                await interaction.response.send_message(embed=embed)
+        embed.set_footer(text="Danke für deine Unterstützung", icon_url="https://media.discordapp.net/attachments/965302660871884840/965315155816767548/Vulpo_neu.png?width=1572&height=1572")
+        await interaction.followup.send(embed=embed)
         
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def about(self, interaction: discord.Interaction):
         """Zeigt Infos über mich."""
-        bot = await interaction.guild.fetch_member(925799559576322078)
+        
+        await interaction.response.defer()
+        
+        bot = self.bot.user
         erstellt1 = math.floor(bot.created_at.timestamp())
         erstellt2 = datetime.fromtimestamp(int(erstellt1))
         
@@ -456,49 +458,57 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
 🎛 CPU: {psutil.cpu_percent()}%
 """)
         
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
 
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def invite(self, interaction: discord.Interaction):
         """Zeigt einen Link um mich einzuladen."""
+        
+        await interaction.response.defer()
+        
         embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"Vulpo auf anderen Servern verwenden", description=f"Du kannst Vulpo mit [diesem Link](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands) zu deinem Server hinzufügen.", url="https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands")
         
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
 
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def support(self, interaction: discord.Interaction):
         """Zeigt einen Link für den Support-Server."""
+        
+        await interaction.response.defer()
+        
         embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"Bekomme Hilfe", description=f"Wenn du Hilfe benötigst, kannst du meinem Supportserver über [diesen Link](https://discord.gg/49jD3VXksp) beitreten.\nFalls du ein Ticket eröffnen möchtest kannst du das [auf dieser Webseite](https://vulpo-bot.de/ticketsystem) tun.")
         
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
 
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def ping(self, interaction: discord.Interaction):
         """Zeigt den Ping von den verschiedensten Funktionen."""
+        
+        await interaction.response.defer()
+        
         #db
         t_1 = time.perf_counter()
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute("SELECT user_xp FROM levelsystem WHERE client_id = 925729625580113951")
-                r = await cursor.fetchall()
+        
+        await getMongoDataBase()["levelsystem"].find_one({"client_id": 925729625580113951})
 
         t_2 = time.perf_counter()
         time_delta1 = round((t_2 - t_1) * 1000)
 
         bot = round(self.bot.latency * 1000)
-        t_3 = time.perf_counter()
         embed = discord.Embed(title="Internetgeschwindigkeit", description=f"```Bot: {bot} ms\nDatenbank: {time_delta1} ms```", color=await getcolour(self, interaction.user))
         
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-        await interaction.response.send_message(embed=embed)
+        
+        t_3 = time.perf_counter()
+        await interaction.followup.send(embed=embed)
 
         #Answer
         t_4 = time.perf_counter()

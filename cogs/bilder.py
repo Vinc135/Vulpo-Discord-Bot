@@ -9,7 +9,7 @@ import aiohttp
 from PIL import Image
 from io import BytesIO
 from discord import app_commands
-from info import getcolour
+from utils.utils import getcolour
 import asyncio
 import random
 

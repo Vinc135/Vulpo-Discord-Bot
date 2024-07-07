@@ -3,7 +3,8 @@ import typing
 import discord
 from discord.ext import commands
 from discord import app_commands
-from info import getcolour, haspremium_forserver, addwarn
+from utils.utils import getcolour, haspremium_forserver, addwarn
+from utils.MongoDB import getMongoDataBase
 
 class Automod(commands.Cog):
     def __init__(self, bot):
@@ -11,64 +12,75 @@ class Automod(commands.Cog):
         self._cd = commands.CooldownMapping.from_cooldown(5, 2.5, commands.BucketType.user)
 
     automod = app_commands.Group(name='automod', description='Nehme Einstellungen am Automod vor.', guild_only=True)
-    
 
     @automod.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(kick_members=True)
     async def addaction(self, interaction: discord.Interaction, warnanzahl: typing.Literal[1,2,3,4,5,6,7,8,9,10], aktion: typing.Literal["Kick","Ban","Timeout"]):
         """Füge eine Aktion für die automatische Moderation hinzu."""
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute("SELECT aktion FROM automod WHERE guildID = (%s)", (interaction.guild.id))
-                a = await cursor.fetchall()
-                premium_status = await haspremium_forserver(self, interaction.guild)
-                if premium_status == False:
-                    if len(a) >= 3:
-                        return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Aktionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+        
+        await interaction.response.defer()
+        
+        guild_id = interaction.guild.id
+        db = getMongoDataBase()
+        
+        existing_actions = await db['automod'].find({"guildID": guild_id}).to_list(length=None)
+        
+        #premium_status = await haspremium_forserver(self, interaction.guild)
+        #if not premium_status and len(existing_actions) >= 3:
+        #    return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Aktionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+        
+        existing_action = await db['automod'].find_one({"guildID": guild_id, "warnanzahl": warnanzahl})
+        if existing_action is not None:
+            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst für eine Warnanzahl nur eine Aktion hinzufügen. Bitte wähle eine andere Warnanzahl oder entferne diese Aktion mit `/automod removeaction <warnanzahl>`.**", ephemeral=True)
+            return
 
-                await cursor.execute("SELECT aktion FROM automod WHERE guildID = (%s) AND warnanzahl = (%s)", (interaction.guild.id, warnanzahl))
-                result = await cursor.fetchone()
-                if result != None:
-                    await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst für eine Warnanzahl nur eine Aktion hinzufügen. Bitte wähle eine andere Warnanzahl oder entferne diese Aktion mit `/automod removeaction <warnanzahl>`.**", ephemeral=True)
-                    return
-                await cursor.execute("INSERT INTO automod(guildID, warnanzahl, aktion) VALUES(%s,%s,%s)", (interaction.guild.id, warnanzahl, aktion))
+        await db['automod'].insert_one({"guildID": guild_id, "warnanzahl": warnanzahl, "aktion": aktion})
+        
+        await interaction.followup.send(f"**<:v_haken:1119579684057907251> Eintrag erstellt. Jeder User mit einer Anzahl an Verwarnungen von {warnanzahl} wird erhält bei der nächsten Verwarnung einen {aktion}.**")
                 
-                await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Eintrag erstellt. Jeder User mit einer Anzahl an Verwarnungen von {warnanzahl} wird erhält bei der nächsten Verwarnung einen {aktion}.**")
-
-    @automod.command()
-    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
-    @app_commands.checks.has_permissions(kick_members=True)
-    async def removeaction(self, interaction: discord.Interaction, warnanzahl: typing.Literal[1,2,3,4,5,6,7,8,9,10]):
+    async def removeaction(self, interaction: discord.Interaction, warnanzahl: typing.Literal[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]):
         """Entferne eine Aktion von der automatischen Moderation."""
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute("SELECT aktion FROM automod WHERE guildID = (%s) AND warnanzahl = (%s)", (interaction.guild.id, warnanzahl))
-                result = await cursor.fetchone()
-                if result == None:
-                    await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Dieser Eintrag existiert nicht. Bitte wähle eine andere Warnanzahl oder füge eine Aktion mit `/automod addaction <warnanzahl> <aktion>` hinzu**", ephemeral=True)
-                    return
-                await cursor.execute("DELETE FROM automod WHERE guildID = (%s) AND warnanzahl = (%s)", (interaction.guild.id, warnanzahl))
-                
-                await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Eintrag gelöscht.**")
+        
+        await interaction.response.defer()
+        
+        db = getMongoDataBase()
+        
+        guild_id = interaction.guild.id
+        
+        existing_action = await db['automod'].find_one({"guildID": guild_id, "warnanzahl": warnanzahl})
+        if existing_action is None:
+            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Dieser Eintrag existiert nicht. Bitte wähle eine andere Warnanzahl oder füge eine Aktion mit `/automod addaction <warnanzahl> <aktion>` hinzu**", ephemeral=True)
+            return
+
+        await db['automod'].delete_one({"guildID": guild_id, "warnanzahl": warnanzahl})
+        
+        await interaction.followup.send(f"**<:v_haken:1119579684057907251> Eintrag gelöscht.**")
 
     @automod.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(kick_members=True)
     async def liste(self, interaction: discord.Interaction):
         """Erhalte eine Liste von den Automod Aktionen."""
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute("SELECT aktion, warnanzahl FROM automod WHERE guildID = (%s)", (interaction.guild.id))
-                result = await cursor.fetchall()
-                if result == None:
-                    await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Hier wurden keine Aktionen gefunden. Füge eine Aktion mit `/automod addaction <warnanzahl> <aktion>` hinzu**", ephemeral=True)
-                    return
-                embed = discord.Embed(title="Alle Aktionen vom Automod", description="Hier nähere Infos:", color=await getcolour(self, interaction.user))
-                for i in result:
-                    embed.add_field(name=i[0], value=f"Verwarnungen benötigt: {i[1]}")
-                
-                await interaction.response.send_message(embed=embed)
+        
+        await interaction.response.defer()
+        
+        db = getMongoDataBase()
+        
+        guild_id = interaction.guild.id
+        
+        result = await db['automod'].find({"guildID": guild_id}).to_list(length=None)
+        
+        if not result:
+            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Hier wurden keine Aktionen gefunden. Füge eine Aktion mit `/automod addaction <warnanzahl> <aktion>` hinzu**", ephemeral=True)
+            return
+        
+        embed = discord.Embed(title="Alle Aktionen vom Automod", description="Hier nähere Infos:", color=await getcolour(self, interaction.user))
+        
+        for i in result:
+            embed.add_field(name=i["aktion"], value=f"Verwarnungen benötigt: {i['warnanzahl']}")
+            
+        await interaction.followup.send(embed=embed)
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -105,23 +117,25 @@ class Automod(commands.Cog):
     @app_commands.checks.has_permissions(kick_members=True)
     async def unwarn(self, interaction: discord.Interaction, user: discord.User, warnid: str):
         """Entwarnt eine Warnung."""
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute("SELECT grund FROM warns WHERE guildID = (%s) AND userID = (%s) AND warnID = (%s)", (interaction.guild.id, user.id, warnid))
-                result = await cursor.fetchone()
-                if result is None:
-                    await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> Die Verwarnung mit der ID {warnid} von {user} wurde nicht gefunden.**")
-                    return
-                await cursor.execute("DELETE FROM warns WHERE userID = (%s) AND guildID = (%s) AND warnID = (%s)", (user.id, interaction.guild.id, warnid))
+        
+        await interaction.response.defer()
+        
+        db = getMongoDataBase()
+        
+        result = await db['warns'].find_one({"guildID": interaction.guild.id, "userID": user.id, "warnID": warnid})
+        if result is None:
+            await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> Die Verwarnung mit der ID {warnid} von {user} wurde nicht gefunden.**")
+            return
+        await db['warns'].delete_one({"guildID": interaction.guild.id, "userID": user.id, "warnID": warnid})
         
         embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                 description=f"Die Verwarnung mit der ID {warnid} von {user} (**{user.id}**) wurde entfernt.")
         
         embed.add_field(name=f"🎛️ Server:", value=f"{interaction.guild.name}", inline=False)
         embed.add_field(name=f"👮 Moderator:", value=f"{interaction.user} (**{interaction.user.id}**)", inline=False)
-        embed.add_field(name=f"📄 Verwarnung:", value=f"{result[0]}", inline=False)
+        embed.add_field(name=f"📄 Verwarnung:", value=f"{result['grund']}", inline=False)
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
         
     @app_commands.command()
     @app_commands.guild_only()
@@ -129,12 +143,13 @@ class Automod(commands.Cog):
     @app_commands.checks.has_permissions(kick_members=True)
     async def listwarns(self, interaction: discord.Interaction, user: discord.User):
         """Bekomme eine Liste an Warns eines bestimmten Benutzers."""
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute("SELECT grund, warnID FROM warns WHERE guildID = (%s) AND userID = (%s)", (interaction.guild.id, user.id))
-                result = await cursor.fetchall()
+        
+        await interaction.response.defer()
+        
+        result = await getMongoDataBase()['warns'].find({"guildID": interaction.guild.id, "userID": user.id}).to_list(length=None)
+        
         if result is None:
-            await interaction.response.send_message(f"Der User {user} hat keine Verwarnungen hier.")
+            await interaction.followup.send(f"Der User {user} hat keine Verwarnungen hier.")
             return
         warnembed = discord.Embed(colour=await getcolour(self, interaction.user), description=f"Alle Verwarnungen von {user} (**{user.id}**).")
         warnembed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
@@ -144,9 +159,9 @@ class Automod(commands.Cog):
             a += 1
             warnembed.add_field(name=f"Verwarnung {warn[1]}", value=f"{warn[0]}", inline=False)
         if a != 0:
-            await interaction.response.send_message(embed=warnembed)
+            await interaction.followup.send(embed=warnembed)
         if a == 0:
-            await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> Der User {user} hat keine Verwarnungen hier.**", ephemeral=True) 
+            await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> Der User {user} hat keine Verwarnungen hier.**", ephemeral=True) 
     
     blacklist = app_commands.Group(name='blacklist', description='Nehme Einstellungen am Blacklist-System vor.', guild_only=True)
 
@@ -155,134 +170,142 @@ class Automod(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def show(self, interaction: discord.Interaction):
         """Zeigt alle Wörter auf der Blacklist an."""
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute(f"SELECT word FROM blacklist WHERE guildID = {interaction.guild.id}")
-                result = await cursor.fetchall()
-                if result is None:
-                    await interaction.response.send_message(f"Die Blacklist dieses Servers ist leer.\nWort der Blacklist hinzufügen: `/blacklist add <wort>\n`Wort von der Blacklist entfernen: `/blacklist remove <wort>`")
-                    return
-                desc = ""
-                for word in result:
-                    desc += f"{word[0]}\n"
-                if desc == "":
-                    desc = f"Die Blacklist dieses Servers ist leer.\nWort der Blacklist hinzufügen: `/blacklist add <wort>\n`Wort von der Blacklist entfernen: `/blacklist remove <wort>`"
-                embed = discord.Embed(title="Die Blacklist", description=desc + f"\nWort der Blacklist hinzufügen: `/blacklist add <wort>\n`Wort von der Blacklist entfernen: `/blacklist remove <wort>`", color=await getcolour(self, interaction.user))
-                
-                await interaction.response.send_message(embed=embed)
+        
+        await interaction.response.defer()
+        
+        result = getMongoDataBase()['blacklist'].find({"guildID": interaction.guild.id}).to_list(length=None)
+        if result is None:
+            await interaction.followup.send(f"Die Blacklist dieses Servers ist leer.\nWort der Blacklist hinzufügen: `/blacklist add <wort>\n`Wort von der Blacklist entfernen: `/blacklist remove <wort>`")
+            return
+        desc = ""
+        for word in result:
+            desc += f"{word[0]}\n"
+        if desc == "":
+            desc = f"Die Blacklist dieses Servers ist leer.\nWort der Blacklist hinzufügen: `/blacklist add <wort>\n`Wort von der Blacklist entfernen: `/blacklist remove <wort>`"
+        embed = discord.Embed(title="Die Blacklist", description=desc + f"\nWort der Blacklist hinzufügen: `/blacklist add <wort>\n`Wort von der Blacklist entfernen: `/blacklist remove <wort>`", color=await getcolour(self, interaction.user))
+        
+        await interaction.followup.send(embed=embed)
 
     @blacklist.command()
     @app_commands.checks.has_permissions(manage_messages=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def add(self, interaction: discord.Interaction, wort: str):
         """Füge ein Wort der Blacklist hinzu."""
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute("SELECT word FROM blacklist WHERE guildID = (%s) AND word = (%s)", (interaction.guild.id, wort))
-                result = await cursor.fetchone()
-                if result != None:
-                    await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> Das Wort `{wort}` existiert bereits in der Blacklist.**", ephemeral=True)
-                    return
-                
-                await cursor.execute("SELECT word FROM blacklist WHERE guildID = (%s)", (interaction.guild.id))
-                a = await cursor.fetchall()
-                premium_status = await haspremium_forserver(self, interaction.guild)
-                if premium_status == False:
-                    if len(a) >= 15:
-                        return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Wörter hinzufügen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+        
+        await interaction.response.defer()
+        
+        db = getMongoDataBase()
+        
+        result = await db['blacklist'].find_one({"guildID": interaction.guild.id, "word": wort})
+        
+        if result != None:
+            await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> Das Wort `{wort}` existiert bereits in der Blacklist.**", ephemeral=True)
+            return
+        
+        #await cursor.execute("SELECT word FROM blacklist WHERE guildID = (%s)", (interaction.guild.id))
+        #a = await cursor.fetchall()
+        #premium_status = await haspremium_forserver(self, interaction.guild)
+        #if premium_status == False:
+        #    if len(a) >= 15:
+        #        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Wörter hinzufügen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
-                
-                await cursor.execute("INSERT INTO blacklist(guildID, word) VALUES(%s, %s)", (interaction.guild.id, wort))
-                await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Das Wort `{wort}` ist nun auf der Blacklist.**")
+        await db['blacklist'].insert_one({"guildID": interaction.guild.id, "word": wort})
+        await interaction.followup.send(f"**<:v_haken:1119579684057907251> Das Wort `{wort}` ist nun auf der Blacklist.**")
 
     @blacklist.command()
     @app_commands.checks.has_permissions(manage_messages=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def remove(self, interaction: discord.Interaction, wort: str=None):
         """Entferne ein Wort von der Blacklist."""
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute("SELECT word FROM blacklist WHERE guildID = (%s) AND word = (%s)", (interaction.guild.id, wort))
-                result = await cursor.fetchone()
-                if result is None or result == "()":
-                    await interaction.response.send_message(f"**<:v_kreuz:1119580775411621908> Das Wort `{wort}` existiert nicht in der Blacklist.**", ephemeral=True)
-                    return
-                await cursor.execute("DELETE FROM blacklist WHERE word = (%s) AND guildID = (%s)", (wort, interaction.guild.id))
-                await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Das Wort `{wort}` ist nun nicht mehr auf der Blacklist.**")
+        
+        await interaction.response.defer()
+        
+        db = getMongoDataBase()
+        
+        result = await db['blacklist'].find_one({"guildID": interaction.guild.id, "word": wort})
+        if result is None or result == "()":
+            await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> Das Wort `{wort}` existiert nicht in der Blacklist.**", ephemeral=True)
+            return
+        await db['blacklist'].delete_one({"guildID": interaction.guild.id, "word": wort})
+        await interaction.followup.send(f"**<:v_haken:1119579684057907251> Das Wort `{wort}` ist nun nicht mehr auf der Blacklist.**")
 
     @automod.command()
     @app_commands.checks.has_permissions(manage_messages=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def caps(self, interaction: discord.Interaction, modus: typing.Literal["Anschalten (Prozent Angabe erforderlich)", "Ausschalten"], prozent: typing.Literal[10, 20, 30, 40, 50, 60, 70, 80, 90, 100]=None):
         """Füge einen Caps Filter hinzu."""
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                if modus == "Anschalten (Prozent Angabe erforderlich)":
-                    if prozent == None:
-                        return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Eine Prozentangabe ist zum Aktivieren erforderlich.", ephemeral=True)
-                    await cursor.execute("SELECT prozent FROM caps WHERE guildID = (%s)", (interaction.guild.id))
-                    result = await cursor.fetchone()
-                    if result != None:
-                        await cursor.execute("UPDATE caps SET prozent = (%s) WHERE guildID = (%s)", (prozent, interaction.guild.id))
-                        return await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Jede Nachricht die mindestens {prozent} Caps beihnaltet, wird ab sofort gelöscht und der User verwarnt.**")
-                    if result == None:
-                        await cursor.execute("INSERT INTO caps(guildID, prozent) VALUES(%s, %s)", (interaction.guild.id, prozent))
-                        return await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Jede Nachricht die mindestens {prozent} Caps beihnaltet, wird ab sofort gelöscht und der User verwarnt.**")
-                if modus == "Ausschalten":
-                    await cursor.execute("DELETE FROM caps WHERE guildID = (%s)", (interaction.guild.id))
-                    return await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Der Caps Filter wurde deaktiviert.**")
+        
+        await interaction.response.defer()
+        
+        db = getMongoDataBase()
+        
+        if modus == "Anschalten (Prozent Angabe erforderlich)":
+            if prozent == None:
+                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Eine Prozentangabe ist zum Aktivieren erforderlich.", ephemeral=True)
+            result = await db['caps'].find_one({"guildID": interaction.guild.id})
+
+            if result != None:
+                await db['caps'].update_one({"guildID": interaction.guild.id}, {"$set": {"prozent": prozent}})
+                return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Jede Nachricht die mindestens {prozent} Caps beihnaltet, wird ab sofort gelöscht und der User verwarnt.**")
+            if result == None:
+                await db['caps'].insert_one({"guildID": interaction.guild.id, "prozent": prozent})
+                return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Jede Nachricht die mindestens {prozent} Caps beihnaltet, wird ab sofort gelöscht und der User verwarnt.**")
+        if modus == "Ausschalten":
+            await db['caps'].delete_one({"guildID": interaction.guild.id})
+            return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Der Caps Filter wurde deaktiviert.**")
     
     @automod.command()
     @app_commands.checks.has_permissions(manage_messages=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def spam(self, interaction: discord.Interaction, modus: typing.Literal["Anschalten (5 Nachrichten in 2,5 Sekunden gilt als Spam)", "Ausschalten"]):
         """Füge einen Spam Filter hinzu."""
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                if modus == "Anschalten (5 Nachrichten in 2,5 Sekunden gilt als Spam)":
-                    await cursor.execute("SELECT status FROM spam WHERE guildID = (%s)", (interaction.guild.id))
-                    result = await cursor.fetchone()
-                    if result != None:
-                        await cursor.execute("UPDATE spam SET status = (%s) WHERE guildID = (%s)", (1, interaction.guild.id))
-                        return await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Jeder User, der mindestens 5 Nachrichten in 2,5 Sekunden sendet, wird verwarnt. Außerdem werden die Nachrichten gelöscht.**")
-                    if result == None:
-                        await cursor.execute("INSERT INTO spam(guildID, status) VALUES(%s, %s)", (interaction.guild.id, 1))
-                        return await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Jeder User, der mindestens 5 Nachrichten in 2,5 Sekunden sendet, wird verwarnt. Außerdem werden die Nachrichten gelöscht.**")
-                if modus == "Ausschalten":
-                    await cursor.execute("DELETE FROM spam WHERE guildID = (%s)", (interaction.guild.id))
-                    return await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Der Spam Filter wurde deaktiviert.**")
+        
+        await interaction.response.defer()
+        
+        db = getMongoDataBase()
+        
+        if modus == "Anschalten (5 Nachrichten in 2,5 Sekunden gilt als Spam)":
+            result = await db['spam'].find_one({"guildID": interaction.guild.id})
+            if result != None:
+                await db['spam'].update_one({"guildID": interaction.guild.id}, {"$set": {"status": True}})
+                return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Jeder User, der mindestens 5 Nachrichten in 2,5 Sekunden sendet, wird verwarnt. Außerdem werden die Nachrichten gelöscht.**")
+            if result == None:
+                await db['spam'].insert_one({"guildID": interaction.guild.id, "status": True})
+                return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Jeder User, der mindestens 5 Nachrichten in 2,5 Sekunden sendet, wird verwarnt. Außerdem werden die Nachrichten gelöscht.**")
+        if modus == "Ausschalten":
+            await db['spam'].delete_one({"guildID": interaction.guild.id})
+            return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Der Spam Filter wurde deaktiviert.**")
             
     @commands.Cog.listener()
     async def on_message(self, msg):
-        if msg.guild == None:
-            return
-        if msg.author.bot:
-            return
-        try:
-            if msg.author.guild_permissions.manage_messages:
-                return
-        except:
-            pass
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
+                if msg.guild == None:
+                    return
+                if msg.author.bot:
+                    return
+                try:
+                    if msg.author.guild_permissions.manage_messages:
+                        return
+                except:
+                    pass
+                
+                db = getMongoDataBase()
+                
                 try:
                     bucket = self._cd.get_bucket(msg)
                     retry_after = bucket.update_rate_limit()
                     if retry_after:
-                        await cursor.execute("SELECT status FROM spam WHERE guildID = (%s)", (msg.guild.id))
-                        result = await cursor.fetchone()
+                        result = await db['spam'].find_one({"guildID": msg.guild.id})
                         if result:
-                            if result[0] == "1":
+                            if result["enabled"] == True:
                                 time_end = discord.utils.utcnow()
                                 dt = time_end + datetime.timedelta(hours=2)
                                 await msg.author.timeout(dt ,reason="Hat die Spam Grenze von 5 Nachrichten innerhalb 2,5 Sekunden überschritten.")
                                 await msg.channel.send(f"{msg.author.mention} Bitte unterlasse Nachrichten-Spam. Du wurdest verwarnt!")
                                 await addwarn(self, msg.author, msg, f"Hat die Spam Grenze von 5 Nachrichten innerhalb 2,5 Sekunden überschritten.")
 
-                                await cursor.execute(f"SELECT channelid FROM modlog WHERE guildid = {msg.guild.id}")
-                                result = await cursor.fetchone()
+                                result = await db['modlog'].find_one({"guildID": msg.guild.id})
                                 if result != None:
-                                    chan = msg.guild.get_channel(int(result[0]))
+                                    chan = await msg.guild.fetch_channel(int(result["channelID"]))
                                     if chan:
                                         embed = discord.Embed(colour=await getcolour(self, msg.author),
                                                         description=f"Der Benutzer {msg.author} (**{msg.author.id}**) wurde verwarnt.")
@@ -296,8 +319,7 @@ class Automod(commands.Cog):
                     pass
                                 
                 try:
-                    await cursor.execute(f"SELECT prozent FROM caps WHERE guildID = {msg.guild.id}")
-                    prozent = await cursor.fetchone()
+                    prozent = await db['caps'].find_one({"guildID": msg.guild.id})
                     if prozent:
                         if len(msg.content) > 5:
                             upper = 0
@@ -313,10 +335,9 @@ class Automod(commands.Cog):
                                 await msg.channel.send(f"{msg.author.mention} Bitte unterlasse diese große Anzahl an Caps. Du wurdest verwarnt!")
                                 await addwarn(self, msg.author, msg, f"Hat die Caps Sperre von {prozent[0]}% überschritten. Die Nachricht beinhaltete {procent}% Caps.")
 
-                                await cursor.execute(f"SELECT channelid FROM modlog WHERE guildid = {msg.guild.id}")
-                                result = await cursor.fetchone()
+                                result = await db['modlog'].find_one({"guildID": msg.guild.id})
                                 if result != None:
-                                    chan = msg.guild.get_channel(int(result[0]))
+                                    chan = await msg.guild.fetch_channel(int(result["channelID"]))
                                     if chan:
                                         embed = discord.Embed(colour=await getcolour(self, msg.author),
                                                         description=f"Der Benutzer {msg.author} (**{msg.author.id}**) wurde verwarnt.")
@@ -330,18 +351,16 @@ class Automod(commands.Cog):
                     pass
 
                 try:
-                    await cursor.execute(f"SELECT word FROM blacklist WHERE guildID = {msg.guild.id}")
-                    result = await cursor.fetchall()
+                    result = await db["blacklist"].find({"guildID": msg.guild.id}).to_list(length=None)
                     if result:
                         for word in result:
                             if str(word[0].lower()) in str(msg.content.lower()):
                                 await msg.delete()
                                 await addwarn(self, msg.author, msg, f"Hat ein verbotenes Wort gesendet: ||{word[0]}||")
 
-                                await cursor.execute(f"SELECT channelid FROM modlog WHERE guildid = {msg.guild.id}")
-                                result = await cursor.fetchone()
+                                result = await db['modlog'].find_one({"guildID": msg.guild.id})
                                 if result != None:
-                                    chan = msg.guild.get_channel(int(result[0]))
+                                    chan = await msg.guild.fetch_channel(int(result["channelID"]))
                                     if chan != None:
                                         embed = discord.Embed(colour=await getcolour(self, msg.author),
                                                         description=f"Der Benutzer {msg.author} (**{msg.author.id}**) wurde verwarnt.")

@@ -8,10 +8,11 @@ from discord import app_commands
 import re
 import random
 from googletrans import Translator
-from info import discord_timestamp
+from utils.utils import discord_timestamp
 from openai.api_resources.chat_completion import ChatCompletion
 import openai
-from info import getcolour
+from utils.utils import getcolour, getLevelSystemEnabled
+from utils.MongoDB import getMongoDataBase
 
 openai.api_key = "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"
 
@@ -67,9 +68,9 @@ class EmbedMaker(discord.ui.Modal, title="Embed-Maker"):
             if self.image.value != None:
                 embed.set_image(url=self.image.value)
             await interaction.channel.send(embed=embed)
-            await interaction.response.send_message("**<:v_haken:1119579684057907251> Das Embed wurde erfolgreich erstellt und gesendet.**", ephemeral=True)
+            await interaction.followup.send("**<:v_haken:1119579684057907251> Das Embed wurde erfolgreich erstellt und gesendet.**", ephemeral=True)
         except:
-            await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Etwas mit deinen Angaben stimmt nicht überein. Bitte versuche es erneut.**", ephemeral=True)
+            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Etwas mit deinen Angaben stimmt nicht überein. Bitte versuche es erneut.**", ephemeral=True)
 
 class meta(commands.Cog):
     def __init__(self, bot):
@@ -101,7 +102,7 @@ class meta(commands.Cog):
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         embed.set_footer(text="Diese Zahl basiert auf allen Invites, seitdem du auf dem Server bist.", icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
 
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -121,7 +122,7 @@ class meta(commands.Cog):
             embed.set_image(url=member.avatar)
         
                 
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -154,7 +155,7 @@ class meta(commands.Cog):
             if a == 9:
                 c += "nine"
             if a == 10:
-                return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Du kannst nur maximal neun Antwortmöglichkeiten geben.**", ephemeral=True)
+                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst nur maximal neun Antwortmöglichkeiten geben.**", ephemeral=True)
             desc += f":{c}: - {answer}\n"
         embed = discord.Embed(color=await getcolour(self, interaction.user), title=frage, description=desc)
         embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/925799559576322078/a2f839c85ee1dd3ef9a1b1fa511e332b.png?size=1024")
@@ -215,7 +216,7 @@ class meta(commands.Cog):
             await message.add_reaction("8️⃣")
             await message.add_reaction("9️⃣")
 
-        await interaction.response.send_message("**<:v_haken:1119579684057907251> Die Umfrage wurde geschickt.**", ephemeral=True)
+        await interaction.followup.send("**<:v_haken:1119579684057907251> Die Umfrage wurde geschickt.**", ephemeral=True)
 
     info = app_commands.Group(name='info', description='Bekomme Infos zu bestimmten Usern, Rollen und Kanälen.', guild_only=True)
 
@@ -241,7 +242,7 @@ class meta(commands.Cog):
                             inline=False)
             embed.set_author(name=f"Kanal info {channel.name}")
             
-            await interaction.response.send_message(embed=embed)
+            await interaction.followup.send(embed=embed)
             return
         if textkanal == None and sprachkanal != None:
             channel = sprachkanal
@@ -257,10 +258,10 @@ class meta(commands.Cog):
             embed.add_field(name=f"🔊 Bitrate", value=f"{channel.bitrate/1000} kbps", inline=False)
             embed.set_author(name=f"Kanal info {channel.name}")
             
-            await interaction.response.send_message(embed=embed)
+            await interaction.followup.send(embed=embed)
             return
         else:
-            return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Eine Kanalangabe ist erforderlich.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Eine Kanalangabe ist erforderlich.**", ephemeral=True)
     
     @info.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -322,7 +323,7 @@ class meta(commands.Cog):
         if user.banner:
             embed.set_image(url=user.banner)
         embed.set_author(name=f"Userinfo {member}", icon_url=member.avatar)
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
     
     @info.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -445,7 +446,7 @@ class meta(commands.Cog):
         embed.set_thumbnail(url=interaction.guild.icon)
         embed.set_author(name=f"Serverinfo {interaction.guild.name}", icon_url=interaction.guild.icon)
         
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
     
     @info.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -463,7 +464,7 @@ class meta(commands.Cog):
                         value=f"{len(rolle.members)} von {guild.member_count} Mitgliedern", inline=False)
         embed.set_author(name=f"Rolleninfo {rolle.name}")
         
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -475,7 +476,7 @@ class meta(commands.Cog):
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         embed.set_image(url=guild.icon)
         
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -499,13 +500,13 @@ class meta(commands.Cog):
                     embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                     embed.set_thumbnail(url=f"https://openweathermap.org/img/wn/{icon}@2x.png")
                     
-                    await interaction.response.send_message(embed=embed)
+                    await interaction.followup.send(embed=embed)
         except:
             embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                     description=f"Stadt **{stadt}** nicht gefunden")
             embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
             
-            await interaction.response.send_message(embed=embed)
+            await interaction.followup.send(embed=embed)
             return
 
     @app_commands.command()
@@ -552,15 +553,15 @@ class meta(commands.Cog):
         try:
             emoj = discord.PartialEmoji.from_str(emoji)
             if emoj is None:
-                return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch in und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch in und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)
             embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                 description=f"Hier der Link: {emoj.url}")
             
             embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
             embed.set_image(url=f"{emoj.url}")
-            await interaction.response.send_message(embed=embed)
+            await interaction.followup.send(embed=embed)
         except:
-            return await interaction.response.send_message(content="**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch in und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+            return await interaction.followup.send(content="**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch in und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -592,7 +593,7 @@ class meta(commands.Cog):
     async def random(self, interaction: discord.Interaction, erstezahl: int, zweitezahl: int):
         """Erhalte eine random Zahl von deinen ausgewählten Zahlen."""
         drittezahl = random.randint(erstezahl, zweitezahl)
-        await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Deine zufällige Zahl zwischen `{erstezahl}` und `{zweitezahl}` ist `{drittezahl}`.**")
+        await interaction.followup.send(f"**<:v_haken:1119579684057907251> Deine zufällige Zahl zwischen `{erstezahl}` und `{zweitezahl}` ist `{drittezahl}`.**")
         
     @app_commands.command()
     @app_commands.guild_only()
@@ -631,19 +632,20 @@ class meta(commands.Cog):
         embed.add_field(name="Nachher", value=translation.text)
         embed.set_thumbnail(url=interaction.user.avatar)
         
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
     
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 10, key=lambda i: (i.guild_id, i.user.id))
     async def bestenliste(self, interaction: discord.Interaction, system: typing.Literal["Economy", "Emojiquiz", "Flaggenquiz", "Levelsystem", "TicTacToe", "Speedgame", "Votes"]):
-        """Bekomme Bestenlisten verschiedenster Funktionen."""
-        await interaction.response.defer()
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
+                """Bekomme Bestenlisten verschiedenster Funktionen."""
+                
+                await interaction.response.defer()
+                
+                db = getMongoDataBase()
+                
                 if system == "Economy":
-                    await cursor.execute(f"SELECT bank, rucksack, userID FROM economy ORDER BY bank DESC")
-                    leaderboard = await cursor.fetchall()
+                    leaderboard = await db["economy"].find().sort([("bank", -1)]).limit(10)
                     embed = discord.Embed(title="Bestenliste (Economy)", color=await getcolour(self, interaction.user))
                     
                     for i, pos in enumerate(leaderboard, start=1):
@@ -663,8 +665,7 @@ class meta(commands.Cog):
                         await interaction.followup.send(embed=embed)
                         
                 if system == "Emojiquiz":
-                    await cursor.execute("SELECT anzahl, userID FROM eq_leaderboard ORDER BY anzahl DESC")
-                    leaderboard = await cursor.fetchall()
+                    leaderboard = await db["emojiquiz"].find().sort([("anzahl", -1)]).limit(10)
                     
                     embed = discord.Embed(title="Bestenliste (Emojiquiz)", color=await getcolour(self, interaction.user))
                     
@@ -683,8 +684,7 @@ class meta(commands.Cog):
                         await interaction.followup.send(embed=embed)
 
                 if system == "Flaggenquiz":
-                    await cursor.execute("SELECT anzahl, userID FROM fq_leaderboard ORDER BY anzahl DESC")
-                    leaderboard = await cursor.fetchall()
+                    leaderboard = await db["flaggenquiz"].find().sort([("anzahl", -1)]).limit(10)
                     
                     embed = discord.Embed(title="Bestenliste (Flaggenquiz)", color=await getcolour(self, interaction.user))
                     
@@ -703,13 +703,11 @@ class meta(commands.Cog):
                         await interaction.followup.send(embed=embed)
                     
                 if system == "Levelsystem":
-                    await cursor.execute(f"SELECT enabled FROM levelstatus WHERE guild_id = {interaction.guild.id}")
-                    enabled = await cursor.fetchone()
-                    if enabled == None or int(enabled[0]) == 0:
-                        await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
+                    if not getLevelSystemEnabled(self, interaction.guild.id):
+                        await interaction.followup.send("**<:v_kreuz:1119580775411621908> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
                         return
-                    await cursor.execute(f"SELECT user_level, user_xp, client_id FROM levelsystem WHERE guild_id = {interaction.guild.id} ORDER BY user_level DESC, user_xp DESC")
-                    leaderboard = await cursor.fetchall()
+                    
+                    leaderboard = await db["levels"].find().sort([("user_level", -1), ("user_xp", -1)]).limit(10)
                     embed = discord.Embed(title="Bestenliste (Levelsystem)", color=await getcolour(self, interaction.user))
                     
                     i = 0
@@ -730,8 +728,7 @@ class meta(commands.Cog):
                         await interaction.followup.send(embed=embed)
                 
                 if system == "TicTacToe":
-                    await cursor.execute("SELECT wins, loses, ties, userID, rating FROM ttt ORDER BY rating DESC")
-                    leaderboard = await cursor.fetchall()
+                    leaderboard = await db["ttt"].find().sort([("rating", -1)]).limit(10)
                     
                     embed = discord.Embed(title="Bestenliste (TicTacToe)", color=await getcolour(self, interaction.user))
                     
@@ -751,8 +748,7 @@ class meta(commands.Cog):
                         await interaction.followup.send(embed=embed)
                         
                 if system == "Speedgame":
-                    await cursor.execute("SELECT zeit, userID, guildID FROM speedgame ORDER BY zeit ASC")
-                    leaderboard = await cursor.fetchall()
+                    leaderboard = await db["speedgame"].find().sort([("zeit", 1)]).limit(10)
                     embed = discord.Embed(title="Bestenliste (Speedgame)", color=await getcolour(self, interaction.user))
                     
                     for i, pos in enumerate(leaderboard, start=1):
@@ -771,8 +767,7 @@ class meta(commands.Cog):
                         await interaction.followup.send(embed=embed)
                         
                 if system == "Votes":
-                    await cursor.execute("SELECT votes, userID FROM topgg ORDER BY votes DESC")
-                    leaderboard = await cursor.fetchall()
+                    leaderboard = await db["topgg"].find().sort([("votes", -1)]).limit(10)
                     embed = discord.Embed(title="Bestenliste (Votes)", description="💎 [VOTE](https://top.gg/bot/925799559576322078/vote) auch du für Vulpo um vielleicht bald in der Top 10 zu sein. 💎", color=await getcolour(self, interaction.user))
                     
                     for i, pos in enumerate(leaderboard, start=1):

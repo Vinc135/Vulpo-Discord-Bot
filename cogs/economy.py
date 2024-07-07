@@ -5,7 +5,8 @@ import random
 import asyncio
 from datetime import datetime, timedelta
 from discord import app_commands
-from utils import getcolour
+from utils.utils import getcolour
+from utils.MongoDB import getMongoDataBase
 
 class joblist(discord.ui.View):
     def __init__(self, interaction=None, bot=None, s=None, author=None):
@@ -21,7 +22,7 @@ class joblist(discord.ui.View):
         if(self.author != interaction.user):
                 embed = discord.Embed(color=await getcolour(self, interaction.user), title="<:v_kreuz:1119580775411621908> Das ist nicht dein Button")
                 
-                await interaction.response.send_message(embed=embed, ephemeral=True)
+                await interaction.followup.send(embed=embed, ephemeral=True)
                 return
         
         page = int(interaction.message.embeds[0].footer.text.split(" ")[1])
@@ -38,7 +39,7 @@ class joblist(discord.ui.View):
         if(self.author != interaction.user):
                 embed = discord.Embed(color=await getcolour(self, interaction.user), title="<:v_kreuz:1119580775411621908> Das ist nicht dein Button")
                 
-                await interaction.response.send_message(embed=embed, ephemeral=True)
+                await interaction.followup.send(embed=embed, ephemeral=True)
                 return
         
         page = int(interaction.message.embeds[0].footer.text.split(" ")[1])
@@ -66,7 +67,7 @@ class ShopItemEntfernenBestaetigung(discord.ui.View):
             if(self.author != interaction.user):
                 embed = discord.Embed(color=await getcolour(self, interaction.user), title="<:v_kreuz:1119580775411621908> Das ist nicht dein Button")
                 
-                await interaction.response.send_message(embed=embed, ephemeral=True)
+                await interaction.followup.send(embed=embed, ephemeral=True)
                 return
             
             view = button.view
@@ -88,7 +89,7 @@ class ShopItemEntfernenBestaetigung(discord.ui.View):
             if(self.author != interaction.user):
                 embed = discord.Embed(color=await getcolour(self, interaction.user), title="<:v_kreuz:1119580775411621908> Das ist nicht dein Button")
                 
-                await interaction.response.send_message(embed=embed, ephemeral=True)
+                await interaction.followup.send(embed=embed, ephemeral=True)
                 return
             
             view = button.view
@@ -348,168 +349,149 @@ async def job_list(self, interaction, page):
 
 async def has_job_req(self, interaction, job):
     acc = await open_acc(self, interaction.user)
-    if int(acc[3]) >= jobs[job]["req"]:
+    if int(acc["stunden"]) >= jobs[job]["req"]:
         return True
     else:
         return False
 
 async def open_acc(self, user):
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute("SELECT rucksack, bank, job, stunden FROM economy WHERE userID = (%s)", (user.id))
-            result = await cursor.fetchone()
-            if result is None:
-                await cursor.execute("INSERT INTO economy(rucksack, bank, job, stunden, userID) VALUES(%s, %s, %s, %s, %s)",("0", "0", "Kein Job", "0", user.id))
-                
-                liste = ["0","0","Kein Job","0",user.id]
-                return liste
-            else:
-                return result
+    db = getMongoDataBase()
+    result = await db["economy"].find_one({"userID": user.id})
+    if result is None:
+        await db["economy"].insert_one({"userID": user.id, "rucksack": 0, "bank": 0, "job": "Kein Job", "stunden": 0})
+        
+        liste = {"rucksack": 0, "bank": 0, "job": "Kein Job", "stunden": 0}
+        return liste
+    else:
+        return result
 
 async def update_account(self, user, mode, sum, dif):
     acc = await open_acc(self, user)
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            if mode == "rucksack":
-                bal = acc[0]
-                new = int(bal) + int(sum) - int(dif)
-                await cursor.execute(f"UPDATE economy SET rucksack = {new} WHERE userID = {user.id}")
-                
-            if mode == "bank":
-                bal = acc[1]
-                new = int(bal) + int(sum) - int(dif)
-                await cursor.execute(f"UPDATE economy SET bank = {new} WHERE userID = {user.id}")
-            
+
+    db = getMongoDataBase()
+
+    if mode == "rucksack":
+        bal = acc["rucksack"]
+        new = int(bal) + int(sum) - int(dif)
+        await db["economy"].update_one({"userID": user.id}, {"$set": {"rucksack": new}})
+        
+    if mode == "bank":
+        bal = acc["bank"]
+        new = int(bal) + int(sum) - int(dif)
+        await db["economy"].update_one({"userID": user.id}, {"$set": {"bank": new}})        
 
 async def get_job(self, user):
     acc = await open_acc(self, user)
-    job = acc[2]
+    job = acc["job"]
     return job
 
 async def set_job(self, user, job):
     await open_acc(self, user)
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute("UPDATE economy SET job = (%s) WHERE userID = (%s)", (job, user.id))
+    
+    await getMongoDataBase()["economy"].update_one({"userID": user.id}, {"$set": {"job": job}})
         
 
 async def work(self, user):
     await open_acc(self, user)
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute("SELECT stunden FROM economy WHERE userID = (%s)", (user.id))
-            result = await cursor.fetchone()
-            await cursor.execute("UPDATE economy SET stunden = (%s) WHERE userID = (%s)", (int(result[0]) + 1, user.id))
+    
+    db = getMongoDataBase()
+    
+    
+    await db["economy"].update_one({"userID": user.id}, {"$inc": {"stunden": 1}})
 
 #SHOP
 async def addshopitem(self, guild, titel, beschreibung, preis, rolle):
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            if rolle:
-                return await cursor.execute("INSERT INTO economy_shop(guildID, titel, beschreibung, preis, roleID) VALUES(%s, %s, %s, %s, %s)", (guild.id, titel, beschreibung, preis, rolle.id))
-            await cursor.execute("INSERT INTO economy_shop(guildID, titel, beschreibung, preis) VALUES(%s, %s, %s, %s)", (guild.id, titel, beschreibung, preis))
-
+    
+    db = getMongoDataBase()
+    
+    if rolle:
+        return await db["economy_shop"].insert_one({"guildID": guild.id, "titel": titel, "beschreibung": beschreibung, "preis": preis, "roleID": rolle.id})
+    await db["economy_shop"].insert_one({"guildID": guild.id, "titel": titel, "beschreibung": beschreibung, "preis": preis})
 
 async def getshopitem(self, guild, titel):
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute("SELECT titel, beschreibung, preis, roleID FROM economy_shop WHERE guildID = (%s) AND titel = (%s)", (guild.id, titel))
-            result = await cursor.fetchone()
-            if result is None:
-                return False
-            if result is not None:
-                return True
+    
+    result = await getMongoDataBase()["economy_shop"].find_one({"guildID": guild.id, "titel": titel})
+    
+    if result is None:
+        return False
+    if result is not None:
+        return True
 
 async def removeshopitem(self, guild, titel):
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            #Verkaufspreis bekommen
-            await cursor.execute("SELECT preis FROM economy_shop WHERE guildID = (%s) AND titel = (%s)", (guild.id, titel))
-            preis = await cursor.fetchone()
-            
-            #Leute, die das Item noch haben bekommen
-            await cursor.execute("SELECT * FROM economy_items WHERE guildID = (%s) AND titel = (%s)", (guild.id, titel))
-            result = await cursor.fetchall()
-            
-            #Allen, die das Item noch haben das item entfernen und Geld zurückgeben
-            for value in result:
-                user = await guild.fetch_member(value[0])
-                await sellitem(self, user, titel)
-                await update_account(self, user, "rucksack", preis[0], 0)
-            
-            await cursor.execute("DELETE FROM economy_shop WHERE guildID = (%s) AND titel = (%s)", (guild.id, titel))
+    db = getMongoDataBase()
+    
+    preis = await db["economy_shop"].find_one({"guildID": guild.id, "titel": titel})
+    
+    result = await db["economy_items"].find({"guildID": guild.id, "titel": titel})
+    
+    for value in result:
+        user = await guild.fetch_member(value[0])
+        await sellitem(self, user, titel)
+        await update_account(self, user, "rucksack", preis[0], 0)
+    
+    await db["economy_shop"].delete_one({"guildID": guild.id, "titel": titel})
 
 async def listshopitems(self, guild):
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute("SELECT * FROM economy_shop WHERE guildID = (%s)", (guild.id))
-            result = await cursor.fetchall()
-            if result == ():
-                return False
-            else:
-                return result
+    result = await getMongoDataBase()["economy_shop"].find({"guildID": guild.id})
+    if result == ():
+        return False
+    else:
+        return result
             
 #ITEMS
 async def buyitem(self, user, guild, titel):
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute("SELECT titel, beschreibung, preis, roleID FROM economy_shop WHERE guildID = (%s) AND titel = (%s)", (guild.id, titel))
-            item = await cursor.fetchone()
-            if item is None:
-                return False
-            if item is not None:
-                if item[3] == None:
-                    await cursor.execute("INSERT INTO economy_items(userID, titel, beschreibung, preis, guildID) VALUES(%s, %s, %s, %s, %s)", (user.id, titel, item[1], item[2], guild.id))
-                else:
-                    rolle = guild.get_role(int(item[3]))
-                    await user.add_roles(rolle)
-                    await cursor.execute("INSERT INTO economy_items(userID, titel, beschreibung, preis, guildID, roleID) VALUES(%s, %s, %s, %s, %s, %s)", (user.id, titel, item[1], item[2], guild.id, item[3]))
+    
+    db = getMongoDataBase()
+    
+    item = await db["economy_shop"].find_one({"guildID": guild.id, "titel": titel})
+    
+    if item is None:
+        return False
+    if item is not None:
+        if item[3] == None:
+            await db["economy_items"].insert_one({"userID": user.id, "titel": titel, "beschreibung": item[1], "preis": item[2], "guildID": guild.id})
+        else:
+            rolle = guild.get_role(int(item[3]))
+            await user.add_roles(rolle)
+            await db["economy_items"].insert_one({"userID": user.id, "titel": titel, "beschreibung": item[1], "preis": item[2], "guildID": guild.id, "roleID": item[3]})
 
 async def sellitem(self, user, titel):
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute("SELECT titel, beschreibung, preis, roleID FROM economy_shop WHERE guildID = (%s) AND titel = (%s)", (user.guild.id, titel))
-            item = await cursor.fetchone()
-            if item is None:
-                return False
-            if item is not None:
-                if item[3] == None:
-                    await cursor.execute("DELETE FROM economy_items WHERE userID = (%s) AND titel = (%s) AND guildID = (%s)", (user.id, titel, user.guild.id))
-                else:
-                    rolle = user.guild.get_role(int(item[3]))
-                    await user.remove_roles(rolle)
-                    await cursor.execute("DELETE FROM economy_items WHERE userID = (%s) AND titel = (%s) AND guildID = (%s)", (user.id, titel, user.guild.id))
+    
+    db = getMongoDataBase()
+    
+    item = await db["economy_items"].find_one({"guildID": user.guild.id, "titel": titel})
+    if item is None:
+        return False
+    if item is not None:
+        if item[3] == None:
+            await db["economy_items"].delete_one({"userID": user.id, "titel": titel, "guildID": user.guild.id})
+        else:
+            rolle = user.guild.get_role(int(item[3]))
+            await user.remove_roles(rolle)
+            await db["economy_items"].delete_one({"userID": user.id, "titel": titel, "guildID": user.guild.id})
 
 async def checkbalance(self, user, preis):
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute("SELECT rucksack FROM economy WHERE userID = (%s)", (user.id))
-            result = await cursor.fetchone()
-            rucksack = int(result[0])
-            if int(rucksack) >= int(preis):
-                return True
-            if int(rucksack) < int(preis):
-                return False
+    result = await getMongoDataBase()["economy"].find_one({"userID": user.id})
+
+    rucksack = int(result["rucksack"])
+    if int(rucksack) >= int(preis):
+        return True
+    if int(rucksack) < int(preis):
+        return False
 
 async def getuseritems(self, user):
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute("SELECT * FROM economy_items WHERE userID = (%s) AND guildID = (%s)", (user.id, user.guild.id))
-            result = await cursor.fetchall()
-            if result == ():
-                return False
-            else:        
-                return result 
+    result = await getMongoDataBase()["economy_items"].find({"userID": user.id, "guildID": user.guild.id}).to_list(length=None)
+    if result == ():
+        return False
+    else:        
+        return result 
 
 async def userhasItem(self, user, titel):
-    async with self.bot.pool.acquire() as conn:
-        async with conn.cursor() as cursor:
-            await cursor.execute("SELECT * FROM economy_items WHERE userID = (%s) AND guildID = (%s) AND titel=(%s)", (user.id, user.guild.id, titel))
-            result = await cursor.fetchall()
-            if result == ():
-                return False
-            else:        
-                return True
+    result = await getMongoDataBase()["economy_items"].find({"userID": user.id, "guildID": user.guild.id, "titel": titel}).to_list(length=None)
+    if result == ():
+        return False
+    else:        
+        return True
 
 class economy(commands.Cog):
     def __init__(self, bot):
@@ -521,13 +503,15 @@ class economy(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def anzeigen(self, interaction: discord.Interaction, user: discord.User=None):
         """Verwalte dein Geld."""
+        
         await interaction.response.defer()
+        
         member = user or interaction.user  
         acc = await open_acc(self, member)
         em = discord.Embed(title=f"{member.name}'s supertolles Konto", color=await getcolour(self, member), description="> Dein Rucksack hat viel Platz. Dort findest du deine Items und deine Cookies.")
-        em.add_field(name="Rucksack", value=f"{acc[0]} 🍪")
-        em.add_field(name="Bank", value=f"{acc[1]} 🍪")
-        em.add_field(name='Beruf', value=f"{acc[2]}, :stopwatch: {acc[3]} Stunden")
+        em.add_field(name="Rucksack", value=f"{acc['rucksack']} 🍪")
+        em.add_field(name="Bank", value=f"{acc['bank']} 🍪")
+        em.add_field(name='Beruf', value=f"{acc['job']}, :stopwatch: {acc['stunden']} Stunden")
         items = await getuseritems(self, member)
         if items != False:
             string = ""
@@ -551,8 +535,8 @@ class economy(commands.Cog):
         """Bekomme Geld von der Bank."""
         await interaction.response.defer()
         acc = await open_acc(self, interaction.user)
-        rucksack = int(acc[0])
-        bank = int(acc[1])
+        rucksack = int(acc["rucksack"])
+        bank = int(acc["bank"])
         if betrag > int(bank):
             await interaction.followup.send(f"<:v_kreuz:1119580775411621908> Du hast nicht **{betrag} 🍪** auf deiner Bank. Es fehlen dir **{betrag - bank} 🍪**.", ephemeral=True)
             return
@@ -569,10 +553,12 @@ class economy(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def einzahlen(self, interaction: discord.Interaction, betrag: int):
         """Überweise Geld auf deine Bank."""
+        
         await interaction.response.defer()
+        
         acc = await open_acc(self, interaction.user)
-        rucksack = int(acc[0])
-        bank = int(acc[1])
+        rucksack = int(acc["rucksack"])
+        bank = int(acc["bank"])
         if betrag > int(rucksack):
             await interaction.followup.send(f"<:v_kreuz:1119580775411621908> Du hast nicht **{betrag} 🍪** auf deiner Bank. Es fehlen dir **{betrag - rucksack} 🍪**.", ephemeral=True)
             return
@@ -590,7 +576,9 @@ class economy(commands.Cog):
     @app_commands.checks.cooldown(1, 3600, key=lambda i: (i.user.id))
     async def beg(self, interaction: discord.Interaction):
         """Bettle für Münzen."""
+        
         await interaction.response.defer()
+        
         x = random.randint(0, 1000)
         if int(x) <= 400:
             earnings = random.randint(30, 50)
@@ -638,49 +626,52 @@ class economy(commands.Cog):
     @app_commands.checks.cooldown(1, 86400 , key=lambda i: (i.user.id))
     async def daily(self, interaction: discord.Interaction):
         """Sammle deinen täglichen Cookie-Bonus ein."""
+        
         await interaction.response.defer()
-        async with self.bot.pool.acquire() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute("SELECT streak, timestamp FROM economy_streak WHERE userID = (%s)", (interaction.user.id))
-                result = await cursor.fetchone()
-                now = datetime.now()
-                if result is not None:
-                    streak = result[0]
-                    last_claim_stamp = result[1]
-                    last_claim = datetime.fromtimestamp(float(last_claim_stamp))
-                    delta = now - last_claim
-                    if delta > timedelta(hours=48):
-                        await cursor.execute("UPDATE economy_streak SET streak = (%s) WHERE userID = (%s)", (1, interaction.user.id))
-                        await cursor.execute("UPDATE economy_streak SET timestamp = (%s) WHERE userID = (%s)", (str(now.timestamp()), interaction.user.id))
-                        earnings = 50
-                        await update_account(self, interaction.user, "rucksack", earnings, 0)
-                        embed = discord.Embed(title="Täglicher Bonus", description=f"Du hast deinen täglichen Bonus eingefordert und dafür **{earnings} 🍪** bekommen. Leider warst du zu spät und dein Daily Streak von **{streak}🔥** wurde auf **1** zurückgesetzt.", color=await getcolour(self, interaction.user))
-                        
-                        await interaction.followup.send(embed=embed)
-                        return
-                    else:
-                        await cursor.execute("UPDATE economy_streak SET streak = (%s) WHERE userID = (%s)", (int(streak) + 1, interaction.user.id))
-                        await cursor.execute("UPDATE economy_streak SET timestamp = (%s) WHERE userID = (%s)", (str(now.timestamp()), interaction.user.id))
-                        earnings = 50 + ((streak + 1) * 5)
-                        await update_account(self, interaction.user, "rucksack", earnings, 0)
-                        embed = discord.Embed(title="Täglicher Bonus", description=f"Du hast deinen täglichen Bonus eingefordert und dafür **{earnings} 🍪** bekommen. Du kamst rechtzeitig und hast deinen Streak erhöht.", color=await getcolour(self, interaction.user))
-                        embed.set_footer(text=f"Er liegt nun bei {streak + 1}🔥", icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
-                        await interaction.followup.send(embed=embed)
-                        return
-                if result is None:
-                    await cursor.execute("INSERT INTO economy_streak(streak, timestamp, userID) VALUES(%s,%s,%s)", (1, str(now.timestamp()), interaction.user.id))
-                    earnings = 50
-                    await update_account(self, interaction.user, "rucksack", earnings, 0)
-                    embed = discord.Embed(title="Täglicher Bonus", description=f"Du hast deinen täglichen Bonus eingefordert und dafür **{earnings} 🍪** bekommen. Oh, du bist neu 🔎! Wenn du innerhalb von 48 Stunden diesen Befehl erneut ausführst, bekommst du immer mehr Cookies.", color=await getcolour(self, interaction.user))
-                    embed.set_footer(text=f"Er liegt nun bei 1🔥", icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
-                    await interaction.followup.send(embed=embed)
+        
+        db = getMongoDataBase()
+        
+        result = await db["economy_streak"].find_one({"userID": interaction.user.id})
+        now = datetime.now()
+        if result is not None:
+            streak = result["streak"]
+            last_claim_stamp = result["timestamp"]
+            last_claim = datetime.fromtimestamp(float(last_claim_stamp))
+            delta = now - last_claim
+            if delta > timedelta(hours=48):
+                await db["economy_streak"].update_one({"userID": interaction.user.id}, {"$set": {"streak": 1}})
+                await db["economy_streak"].update_one({"userID": interaction.user.id}, {"$set": {"timestamp": str(now.timestamp())}})
+                earnings = 50
+                await update_account(self, interaction.user, "rucksack", earnings, 0)
+                embed = discord.Embed(title="Täglicher Bonus", description=f"Du hast deinen täglichen Bonus eingefordert und dafür **{earnings} 🍪** bekommen. Leider warst du zu spät und dein Daily Streak von **{streak}🔥** wurde auf **1** zurückgesetzt.", color=await getcolour(self, interaction.user))
+                
+                await interaction.followup.send(embed=embed)
+                return
+            else:
+                await db["economy_streak"].update_one({"userID": interaction.user.id}, {"$set": {"streak": int(streak) + 1}})
+                await db["economy_streak"].update_one({"userID": interaction.user.id}, {"$set": {"timestamp": str(now.timestamp())}})
+                earnings = 50 + ((streak + 1) * 5)
+                await update_account(self, interaction.user, "rucksack", earnings, 0)
+                embed = discord.Embed(title="Täglicher Bonus", description=f"Du hast deinen täglichen Bonus eingefordert und dafür **{earnings} 🍪** bekommen. Du kamst rechtzeitig und hast deinen Streak erhöht.", color=await getcolour(self, interaction.user))
+                embed.set_footer(text=f"Er liegt nun bei {streak + 1}🔥", icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
+                await interaction.followup.send(embed=embed)
+                return
+        if result is None:
+            await db["economy_streak"].insert_one({"streak": 1, "timestamp": str(now.timestamp()), "userID": interaction.user.id})
+            earnings = 50
+            await update_account(self, interaction.user, "rucksack", earnings, 0)
+            embed = discord.Embed(title="Täglicher Bonus", description=f"Du hast deinen täglichen Bonus eingefordert und dafür **{earnings} 🍪** bekommen. Oh, du bist neu 🔎! Wenn du innerhalb von 48 Stunden diesen Befehl erneut ausführst, bekommst du immer mehr Cookies.", color=await getcolour(self, interaction.user))
+            embed.set_footer(text=f"Er liegt nun bei 1🔥", icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
+            await interaction.followup.send(embed=embed)
 
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3600, key=lambda i: (i.user.id))
     async def work(self, interaction: discord.Interaction):
         """Gehe zur Arbeit mit deinem aktuellen Job."""
+        
         await interaction.response.defer()
+        
         try:
             if await get_job(self, interaction.user) != "Kein Job":
                 beruf = await get_job(self, interaction.user)
@@ -693,24 +684,26 @@ class economy(commands.Cog):
                         await update_account(self, interaction.user, "bank", earnings, 0)
                         embed = discord.Embed(title="Du hast gearbeitet", description=endtext, color=await getcolour(self, interaction.user))
                         acc = await open_acc(self, interaction.user)
-                        embed.set_footer(text=f"Deine Arbeitsstunden: {acc[3]}", icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
+                        embed.set_footer(text=f"Deine Arbeitsstunden: {acc['stunden']}", icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
                         await interaction.followup.send(embed=embed)
             else:
                 await interaction.followup.send(f"<:v_kreuz:1119580775411621908> Du musst dich zuerst für einen Job bewerben!\nAlle Jobs siehst du mit dem Befehl `/job list`\nNutze `/job apply <job>` um dich für einen Job zu bewerben.", ephemeral=True)
-        except:
-            pass
+        except Exception as e:
+            print("work: " + e.with_traceback())
         
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def send(self, interaction: discord.Interaction, user: discord.User, betrag: int):
         """Sende Geld zu einem anderen User."""
+        
         await interaction.response.defer()
+        
         if user == interaction.user:
             await interaction.followup.send("<:v_kreuz:1119580775411621908> Du kannst dir kein Geld selber senden.", ephemeral=True)
             return
         acc = await open_acc(self, interaction.user)
-        rucksack = int(acc[0])
+        rucksack = int(acc["rucksack"])
         if betrag > int(rucksack):
             await interaction.followup.send(f"<:v_kreuz:1119580775411621908> Du hast nicht so viel Geld in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
             return
@@ -727,12 +720,14 @@ class economy(commands.Cog):
     @app_commands.checks.cooldown(1, 3500, key=lambda i: (i.user.id))
     async def rob(self, interaction: discord.Interaction, user: discord.User):
         """Raube einen User aus."""
+        
         await interaction.response.defer()
+        
         if user == interaction.user:
             await interaction.followup.send("<:v_kreuz:1119580775411621908> Du kannst dir kein Geld selber senden.", ephemeral=True)
             return
         acc = await open_acc(self, user)
-        rucksack = int(acc[0])
+        rucksack = int(acc["rucksack"])
         if rucksack < 50:
             await interaction.followup.send(f"<:v_kreuz:1119580775411621908> {user} hat nicht viel Geld. Versuche jemand anderen auszurauben.", ephemeral=True)
             return
@@ -766,13 +761,13 @@ class economy(commands.Cog):
         """Teste dein Glück."""
         # überprüfen ob er geld hat
         acc = await open_acc(self, interaction.user)
-        rucksack = int(acc[0])
+        rucksack = int(acc["rucksack"])
 
         if betrag < 0:
-            await interaction.response.send_message(f"<:v_kreuz:1119580775411621908> Der Betrag muss eine positive Zahl sein. Beispiel: `/send @Vinc {betrag}`", ephemeral=True)
+            await interaction.followup.send(f"<:v_kreuz:1119580775411621908> Der Betrag muss eine positive Zahl sein. Beispiel: `/send @Vinc {betrag}`", ephemeral=True)
             return
         if betrag > rucksack:
-            await interaction.response.send_message(f"<:v_kreuz:1119580775411621908> Du hast nicht so viel Geld in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
+            await interaction.followup.send(f"<:v_kreuz:1119580775411621908> Du hast nicht so viel Geld in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
             return
         # results
         choices = ["🍇", "🍋", "🍒", "🍓", "🍊"]
@@ -808,7 +803,7 @@ class economy(commands.Cog):
         
         # ergebnisse überprüfen
         # embedchanges
-        await interaction.response.send_message(embed=embed1)
+        await interaction.followup.send(embed=embed1)
         await asyncio.sleep(1.5)
         await interaction.edit_original_response(embed=embed2)
         await asyncio.sleep(1.5)
@@ -858,15 +853,15 @@ class economy(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def rps(self, interaction: discord.Interaction, betrag: int):
         """Game, Schere Stein Papier. Deine Reaktion ist deine Entscheidung."""
-        return await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der Befehl ist zurzeit nicht verfügbar.**", ephemeral=True)
+        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Befehl ist zurzeit nicht verfügbar.**", ephemeral=True)
         # überprüfen ob er geld hat
         acc = await open_acc(self, interaction.user)
         rucksack = int(acc[0])
         if betrag < 0:
-            await interaction.response.send_message(f"<:v_kreuz:1119580775411621908> Der Betrag muss eine positive Zahl sein.", ephemeral=True)
+            await interaction.followup.send(f"<:v_kreuz:1119580775411621908> Der Betrag muss eine positive Zahl sein.", ephemeral=True)
             return
         if betrag > rucksack:
-            await interaction.response.send_message(f"<:v_kreuz:1119580775411621908> Du hast nicht so viel Geld in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
+            await interaction.followup.send(f"<:v_kreuz:1119580775411621908> Du hast nicht so viel Geld in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
             return
         embed = discord.Embed(
             color=await getcolour(self, interaction.user),
@@ -877,7 +872,7 @@ class economy(commands.Cog):
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         filename = ["✌️", "✊", "✋"]
         choice = random.choice(filename)
-        await interaction.response.send_message(embed=embed, view=rps(choice, betrag, interaction.user, self.bot, interaction))
+        await interaction.followup.send(embed=embed, view=rps(choice, betrag, interaction.user, self.bot, interaction))
 
     job = app_commands.Group(name='job', description='Bewirb dich für Jobs, kündige diese oder lass sie dir alle anzeigen.', guild_only=True)
     
@@ -888,8 +883,8 @@ class economy(commands.Cog):
         """Bewirb dich für einen Job."""
         await interaction.response.defer()
         acc = await open_acc(self, interaction.user)
-        job = acc[2]
-        user_hours = acc[3]
+        job = acc["job"]
+        user_hours = acc['stunden']
         a = 0
         if await get_job(self, interaction.user) == "Kein Job":
             for job in jobs:
@@ -969,7 +964,9 @@ class economy(commands.Cog):
     @app_commands.checks.has_permissions(administrator=True)
     async def entfernen(self, interaction: discord.Interaction, titel: str):
         """Entferne ein Item aus dem Shop."""
+        
         await interaction.response.defer()
+        
         item = await getshopitem(self, interaction.guild, titel)
         if item is True:
             embed = discord.Embed(color=await getcolour(self, interaction.user), title=f"Willst du das Item {titel} wirklich entfernen?", description=f"<:v_info:1119579853092552715> Dadurch wird das Item allen Nutzern entfernt und möglicherweise auch die zugewiesene Rolle")
@@ -984,7 +981,9 @@ class economy(commands.Cog):
     @shop.command()
     async def anzeigen(self, interaction: discord.Interaction):
         """Zeigt dir alle Items im Shop."""
+        
         await interaction.response.defer()
+        
         items = await listshopitems(self, interaction.guild)
         if items == False:
             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Keine Items vorhanden", description=f"Es gibt keine Items in dem Shop dieses Servers.\nFüge Items hinzu mit dem Command `/shop item hinzufügen`")
@@ -1014,6 +1013,7 @@ class economy(commands.Cog):
     @item.command()
     async def kaufen(self, interaction: discord.Interaction, item: str):
         """Kaufe ein Item aus dem Shop."""
+        
         await interaction.response.defer()
         
         alreadyhasItem = await userhasItem(self, interaction.user, item)
@@ -1030,34 +1030,33 @@ class economy(commands.Cog):
             await interaction.followup.send(embed=embed)
             return
         if i == True:
-            async with self.bot.pool.acquire() as conn:
-                async with conn.cursor() as cursor:
-                    await cursor.execute("SELECT preis FROM economy_shop WHERE guildID = (%s) AND titel = (%s)", (interaction.guild.id, item))
-                    result = await cursor.fetchone()
-                    if result is None:
-                        embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item nicht vorhanden", description=f"Das Item {item} gibt es nicht im Shop dieses Servers. Bitte gib den korrekten Namen für das Item an.")
-                        
-                        await interaction.followup.send(embed=embed, ephemeral=True)
-                        return
-                    else:
-                        canbuy = await checkbalance(self, interaction.user, result[0])
-                        if canbuy == True:
-                            await buyitem(self, interaction.user, interaction.guild, item)
-                            await update_account(self, interaction.user, "rucksack", 0, result[0])
-                            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item gekauft", description=f"Das Item {item} wurde von dir gekauft. Ich habe es für dich in deinen Rucksack getan!")
-                            
-                            await interaction.followup.send(embed=embed)
-                            return
-                        if canbuy == False:
-                            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item nicht gekauft", description=f"Das Item {item} wurde von dir nicht gekauft. Du hast zu wenig Geld in deinem Rucksack!")
-                            
-                            await interaction.followup.send(embed=embed, ephemeral=True)
-                            return
+            result = await getMongoDataBase()["economy_shop"].find_one({"guildID": interaction.guild.id, "titel": item})
+            if result is None:
+                embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item nicht vorhanden", description=f"Das Item {item} gibt es nicht im Shop dieses Servers. Bitte gib den korrekten Namen für das Item an.")
+                
+                await interaction.followup.send(embed=embed, ephemeral=True)
+                return
+            else:
+                canbuy = await checkbalance(self, interaction.user, result["preis"])
+                if canbuy == True:
+                    await buyitem(self, interaction.user, interaction.guild, item)
+                    await update_account(self, interaction.user, "rucksack", 0, result["preis"])
+                    embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item gekauft", description=f"Das Item {item} wurde von dir gekauft. Ich habe es für dich in deinen Rucksack getan!")
+                    
+                    await interaction.followup.send(embed=embed)
+                    return
+                if canbuy == False:
+                    embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item nicht gekauft", description=f"Das Item {item} wurde von dir nicht gekauft. Du hast zu wenig Geld in deinem Rucksack!")
+                    
+                    await interaction.followup.send(embed=embed, ephemeral=True)
+                    return
 
     @item.command()
     async def meine(self, interaction: discord.Interaction):
         """Zeigt alle deine gekauften Items vom Shop."""
+        
         await interaction.response.defer()
+        
         items = await getuseritems(self, interaction.user)
         if items == False:
             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Keine Items vorhanden", description=f"Es gibt keine Items in deinem Rucksack.\nKaufe Items mit dem Command `/shop item kaufen`")
@@ -1081,7 +1080,9 @@ class economy(commands.Cog):
     @item.command()
     async def verkaufen(self, interaction: discord.Interaction, item: str):
         """Verkaufe ein Item aus deinem Rucksack. Du bekommst zufällige Prozente des Kaufpreises wieder. Prozente im Bereich von 65% bis 115%"""
+        
         await interaction.response.defer()
+        
         items = await getuseritems(self, interaction.user)
         if items == False:
             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Keine Items vorhanden", description=f"Es gibt keine Items in deinem Rucksack.\nKaufe Items mit dem Command `/shop item kaufen`")
@@ -1089,17 +1090,14 @@ class economy(commands.Cog):
             await interaction.followup.send(embed=embed, ephemeral=True)
             return
         else:
-            async with self.bot.pool.acquire() as conn:
-                async with conn.cursor() as cursor:
-                    await cursor.execute("SELECT preis FROM economy_shop WHERE guildID = (%s) AND titel = (%s)", (interaction.guild.id, item))
-                    preis = await cursor.fetchone()
-                    Prozente = random.uniform(0.65, 1.15)
-                    verkaufspreis = round(Prozente * int(preis[0]))
-                    await sellitem(self, interaction.user, item)
-                    await update_account(self, interaction.user, "rucksack", verkaufspreis, 0)
-                    embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item verkauft", description=f"Das Item {item} wurde für {verkaufspreis} 🍪 verkauft. Du hast es nun nicht mehr im Rucksack.")
-                    
-                    await interaction.followup.send(embed=embed)
+            preis = await getMongoDataBase()["economy_shop"].find_one({"guildID": interaction.guild.id, "titel": item})
+            Prozente = random.uniform(0.65, 1.15)
+            verkaufspreis = round(Prozente * int(preis[0]))
+            await sellitem(self, interaction.user, item)
+            await update_account(self, interaction.user, "rucksack", verkaufspreis, 0)
+            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item verkauft", description=f"Das Item {item} wurde für {verkaufspreis} 🍪 verkauft. Du hast es nun nicht mehr im Rucksack.")
+            
+            await interaction.followup.send(embed=embed)
             
 async def setup(bot):
     await bot.add_cog(economy(bot))
