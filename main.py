@@ -14,13 +14,11 @@ import aiomysql
 from googletrans import Translator
 from utils.utils import discord_timestamp
 import time
-#from credentials import token
+from credentials import token
 from utils.MongoDB import getMongoDataBase
 from cogs.economy import update_account
 
 dbl_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjkyNTc5OTU1OTU3NjMyMjA3OCIsImJvdCI6dHJ1ZSwiaWF0IjoxNjQyODc4ODc1fQ.PJVIOEUe25WxuUbD1E68UF7bXpRZR_k4XXwr8ukue-c"
-
-token = "MTIyMDAyOTIwODE4NTY2NzYwNA.GjqVga.RqXdfyLRu_MQsKilBdo1ljKW3H8NxWolMKKWYQ"
 
 class voteView(discord.ui.View):
     def __init__(self):
@@ -435,8 +433,6 @@ async def on_app_command_error(interaction: discord.Interaction, error: AppComma
         return
     else:
         await send_error("Unbekannt", "<:v_kreuz:1119580775411621908> Ein unbekannter Fehler ist aufgetreten.\nBitte öffne ein Ticket im [Supportserver](https://discord.gg/49jD3VXksp)", interaction)
-        #guilds = await bot.fetch_guild(787341728716816424)
-        #channels = await guilds.fetch_channel(1220037646408089600)
         guilds = await bot.fetch_guild(787341728716816424)
         channels = await guilds.fetch_channel(1220037646408089600)
 
