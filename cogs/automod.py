@@ -3,7 +3,7 @@ import typing
 import discord
 from discord.ext import commands
 from discord import app_commands
-from utils.utils import getcolour, haspremium_forserver, addwarn
+from utils.utils import getcolour, haspremium_forserver, addwarn, convert
 from utils.MongoDB import getMongoDataBase
 
 class Automod(commands.Cog):
@@ -16,7 +16,7 @@ class Automod(commands.Cog):
     @automod.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(kick_members=True)
-    async def addaction(self, interaction: discord.Interaction, warnanzahl: typing.Literal[1,2,3,4,5,6,7,8,9,10], aktion: typing.Literal["Kick","Ban","Timeout"]):
+    async def addaction(self, interaction: discord.Interaction, warnanzahl: typing.Literal[1,2,3,4,5,6,7,8,9,10], aktion: typing.Literal["Kick","Ban","Timeout (Bitte Zeit angeben)"], time: str = None):
         """Füge eine Aktion für die automatische Moderation hinzu."""
         
         await interaction.response.defer()
@@ -34,6 +34,20 @@ class Automod(commands.Cog):
         if existing_action is not None:
             await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst für eine Warnanzahl nur eine Aktion hinzufügen. Bitte wähle eine andere Warnanzahl oder entferne diese Aktion mit `/automod removeaction <warnanzahl>`.**", ephemeral=True)
             return
+
+        if aktion == "Timeout (Bitte Zeit angeben)":
+            if time == None or time == "":
+                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Bitte gib eine Zeit an, wie lange der Timeout dauern soll.**", ephemeral=True)
+                
+            seconds = convert(time)
+            
+            if seconds == None or seconds == 0:
+                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Bitte gib eine gültige Zeit an.**", ephemeral=True)
+            
+            await db['automod'].insert_one({"guildID": guild_id, "warnanzahl": warnanzahl, "aktion": f"Timeout ({time})", "time": seconds})
+            
+            return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Eintrag erstellt. Jeder User mit einer Anzahl an Verwarnungen von {warnanzahl} wird erhält bei der nächsten Verwarnung einen Timeout von {time}.**")
+            
 
         await db['automod'].insert_one({"guildID": guild_id, "warnanzahl": warnanzahl, "aktion": aktion})
         

@@ -5,6 +5,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from utils.utils import getcolour
+import string
 
 class fun(commands.Cog):
     def __init__(self, bot):
@@ -163,34 +164,18 @@ class fun(commands.Cog):
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
-    async def password(self, interaction: discord.Interaction):
+    async def password(self, interaction: discord.Interaction, länge: int = None):
         """Generiert ein zufälliges Passwort für dich!"""
         user = interaction.user
-        letters = ["a","A","b","B","c","C","d","D","e","E","f","F","g","G","h","H","i","I","j","J","k","K","l","L","m","M","n","N","o","O","p","P","q","Q","r","R","s","S","t","T","u","U","v","V","w","W","x","X","y","Y","z","Z"]
-        choices = [f"{random.choice(letters)}",f"{random.randint(1, 9)}",f"{random.choice(letters)}",f"{random.randint(1, 9)}",f"{random.choice(letters)}",f"{random.randint(1, 9)}",f"{random.choice(letters)}",f"{random.randint(1, 9)}",f"{random.choice(letters)}"]
-        x1 = random.choice(choices)
-        x2 = random.choice(choices)
-        x3 = random.choice(choices)
-        x4 = random.choice(choices)
-        x5 = random.choice(choices)
-        x6 = random.choice(choices)
-        x7 = random.choice(choices)
-        x8 = random.choice(choices)
-        x9 = random.choice(choices)
-        x10 = random.choice(choices)
-        x11 = random.choice(choices)
-        x12 = random.choice(choices)
-        x13 = random.choice(choices)
-        x14 = random.choice(choices)
-        x15 = random.choice(choices)
-        x16 = random.choice(choices)
-        x17 = random.choice(choices)
-        x18 = random.choice(choices)
-        x19 = random.choice(choices)
-        x20 = random.choice(choices)
-        x21 = random.choice(choices)
-        x22 = random.choice(choices)
-        result = f"||{x1}{x2}{x3}{x4}{x5}{x6}{x7}{x8}{x9}{x10}{x11}{x12}{x13}{x14}{x15}{x16}{x17}{x18}{x19}{x20}{x21}{x22}||"
+        
+        characters = string.ascii_letters + string.digits + string.punctuation
+        
+        if länge is None:
+            länge = 20
+        
+        password = "".join(random.random(characters) for i in range(länge))
+        
+        result = f"||{password}||"
 
         embed = discord.Embed(colour=await getcolour(self, interaction.user), title="🔐 Passwort", description=f"**Nicht anderen Personen zeigen, falls du dieses Passwort verwenden solltest!**")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)

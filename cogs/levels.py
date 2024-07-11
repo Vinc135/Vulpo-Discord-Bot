@@ -396,9 +396,7 @@ class levelsystem(commands.Cog):
                 result = await db['levelstatus'].find_one({"guildID": str(interaction.guild.id), "userID": member.id})
 
                 if result == None or result == False:
-                    if member == None:
-                        return await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> Du bist noch nicht eingestuft. Sende erst noch ein paar Nachrichten.**", ephemeral=True)
-                    return await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> {member} ist noch nicht eingestuft. Er/Sie muss erst noch ein paar Nachrichten.**", ephemeral=True)
+                    return await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> {member} ist noch nicht eingestuft. Er/Sie muss erst noch ein paar Nachrichten senden.**", ephemeral=True)
                 try:
                     xp_start = result["xp"]
                     lvl_start = result["level"]
@@ -406,9 +404,7 @@ class levelsystem(commands.Cog):
                     multiplication = 100 / xp_end
                     prozent = round(xp_start) * multiplication
                 except:
-                    if member == None:
-                        return await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> Du bist noch nicht eingestuft. Sende erst noch ein paar Nachrichten.**", ephemeral=True)
-                    return await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> {member} ist noch nicht eingestuft. Er/Sie muss erst noch ein paar Nachrichten.**", ephemeral=True)
+                    return await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> {member} ist noch nicht eingestuft. Er/Sie muss erst noch ein paar Nachrichten senden.**", ephemeral=True)
                 
                 result = await db['levelsystem'].find({"guildID": str(interaction.guild.id)}).to_list(length=None)
                       

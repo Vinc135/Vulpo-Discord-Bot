@@ -40,8 +40,8 @@ class Dropdown(discord.ui.Select):
 > <:v_info:1119579853092552715> Spezielle Befehle und Funkt/helpionen, nur für Premium Nutzer.
 
 __<:v_user:1119585450923929672> User Befehle__
-</premium embedfarbe:1220399538943168523> Ändere die Farbe aller Embeds, die dir gesendet werden von Vulpo.
-</premium rangkarte:1220399538943168523> Ändere das Bild deiner Rangkarte.
+</premium embedfarbe:1091635833217486939> Ändere die Farbe aller Embeds, die dir gesendet werden von Vulpo.
+</premium rangkarte:1091635833217486939> Ändere das Bild deiner Rangkarte.
 
 __<:v_ticket:1119584819597279242> Premium erhalten__
 Es sind noch sehr viel mehr Funktionen in Premium enthalten. Du kannst alle Vorteile unter https://vulpo-bot.de/premium sehen.
@@ -55,14 +55,11 @@ Premium ist heiß begehrt. Du kannst es bekommen, indem du ein Abonnement wirst:
 > <:v_info:1119579853092552715> Vulpos Stats System basiert auf Tracking von Mitgliedern, wie aktiv sie in Text- und Sprachkanälen sind.
 
 __<:v_user:1119585450923929672> User Befehle__
-</stats anzeigen:1220399540302118925> Zeigt Stats für Member und Kanäle.
-</stats top:1220399540302118925> Lass dir die besten Stats dieses Servers anzeigen.
-</stats lookback:1220399540302118925> Zeigt Stats für Member und Kanäle von einem bestimmten Zeitraum.
+</stats user:1002985831713226833> Schau dir die Stats eines Users an.
+</stats server:1002985831713226833> Schau dir die Stats des Servers an.
 
 __<:v_einstellungen:1119578559086874636> Team Befehle__
-</stats blacklist:1220399540302118925> Setze Kanäle auf die Blacklist für Nachrichten.
-</stats reset:1220399540302118925> Setze alle Stats auf 0 zurück.
-</statschannel:1220399540302118926> Richte einen Stats-Kanal ein."""
+</stats reset:1002985831713226833> Setze alle Stats auf 0 zurück."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
@@ -75,22 +72,22 @@ __<:v_user:1119585450923929672> User Befehle__
 Keine User Befehle.
 
 __<:v_einstellungen:1119578559086874636> Team Befehle__
-</warn:1220399539203211429> Warne einen User.
-</unwarn:1220399539203211430> Entferne eine Warnung eines Users.
-</listwarns:1220399539203211431> Zeigt wie viele Warnungen ein User hat.
+</warn:967681545190117423> Warne einen User.
+</unwarn:967681545190117424> Entferne eine Warnung eines Users.
+</listwarns:967681545190117425> Zeigt wie viele Warnungen ein User hat.
 
-</modlog:1220399539203211426> Richte einen Moderationlog ein.
-</messagelog:1220399539203211425> Richte einen MessageLog ein.
+</modlog:967681544917495871> Richte einen Moderationlog ein.
+</messagelog:967681544917495870> Richte einen MessageLog ein.
 
-</automod addaction:1220399539203211428> Füge eine Aktion für die Automatische Moderation hinzu.
-</automod removeaction:1220399539203211428> Entferne eine Aktion von der Automatischen Moderation.
-</automod liste:1220399539203211428> Lass dir alle Automod-Aktionen anzeigen.
-</automod caps:1220399539203211428> Füge einen Caps Filter hinzu.
-</automod spam:1220399539203211428> Füge einen Spam Filter hinzu.
+</automod addaction:970000987706232882> Füge eine Aktion für die Automatische Moderation hinzu.
+</automod removeaction:970000987706232882> Entferne eine Aktion von der Automatischen Moderation.
+</automod liste:970000987706232882> Lass dir alle Automod-Aktionen anzeigen.
+</automod caps:970000987706232882> Füge einen Caps Filter hinzu.
+</automod spam:970000987706232882> Füge einen Spam Filter hinzu.
 
-</blacklist show:1220399539203211432> Zeigt alle Wörter auf der Blacklist an.
-</blacklist add:1220399539203211432> Füge ein Wort der Blacklist hinzu.
-</blacklist remove:1220399539203211432> Entferne ein Wort von der Blacklist."""
+</blacklist show:967681544917495877> Zeigt alle Wörter auf der Blacklist an.
+</blacklist add:967681544917495877> Füge ein Wort der Blacklist hinzu.
+</blacklist remove:967681544917495877> Entferne ein Wort von der Blacklist."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
@@ -103,8 +100,8 @@ __<:v_user:1119585450923929672> User Befehle__
 Keine User Befehle.
 
 __<:v_einstellungen:1119578559086874636> Team Befehle__
-</createpanel:1220399538943168524> Erstelle ein Panel, womit User ein Ticket öffnen können.
-</ticketlog:1220399539203211427> Richte einen Ticketlog ein."""
+</createpanel:967681545307570177> Erstelle ein Panel, womit User ein Ticket öffnen können.
+</ticketlog:967681544917495872> Richte einen Ticketlog ein."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
@@ -117,18 +114,18 @@ __<:v_user:1119585450923929672> User Befehle__
 Keine User Befehle.
 
 __<:v_einstellungen:1119578559086874636> Team Befehle__
-</joinmsg:1220399538519412834> Lege eine Nachricht fest, wenn jemand joint.
-</testjoin:1220399538519412833> Überprüfe die Join Nachricht.
-</leavemsg:1220399538943168522> Lege eine Leave Nachricht fest.
-</testleave:1220399538519412836> Überprüfe die Leave Nachricht.
-</autoreact add:1220399539505074308> Richte Auto Reaktionen in Channels ein.
-</autoreact delete:1220399539505074308> Entferne automatische Reaktionen von Kanälen.
-</autoreact liste:1220399539505074308> Lass dir alle automatischen Reaktionen anzeigen.
-</embed:1220399538066554971> Mache eine eine eingebettete Nachricht.
-</tag add:1220399540742393927> Erstelle einen Tag.
-</tag delete:1220399540742393927> Entferne einen Tag.
-</tag liste:1220399540742393927> Lass dir alle Tags anzeigen.
-</reportlog:1220399538943168531> Lege einen Kanal fest für gemeldete Nachrichten von Usern.
+</joinmsg:1223292369223549080> Lege eine Nachricht fest, wenn jemand joint.
+</testjoin:1223292369223549079> Überprüfe die Join Nachricht.
+</leavemsg:1223292369223549082> Lege eine Leave Nachricht fest.
+</testleave:1223292369223549081> Überprüfe die Leave Nachricht.
+</autoreact add:972922964829945856> Richte Auto Reaktionen in Channels ein.
+</autoreact delete:972922964829945856> Entferne automatische Reaktionen von Kanälen.
+</autoreact liste:972922964829945856> Lass dir alle automatischen Reaktionen anzeigen.
+</embed:972456398166294538> Mache eine eine eingebettete Nachricht.
+</tag add:970388955684016258> Erstelle einen Tag.
+</tag delete:970388955684016258> Entferne einen Tag.
+</tag liste:970388955684016258> Lass dir alle Tags anzeigen.
+</reportlog:1027577595816050708> Lege einen Kanal fest für gemeldete Nachrichten von Usern.
 
 Außerdem:
 Jeder Nutzer kann die Custom Befehle des Tags System nutzen. Wenn erstmal ein Tag erstellt wurde kann jeder User ihn mit `!tag tagname` ausführen.
@@ -143,23 +140,23 @@ Jeder Nutzer kann die Custom Befehle des Tags System nutzen. Wenn erstmal ein Ta
 > <:v_info:1119579853092552715> Hier stehen Befehle, die hauptsächlich Informationen ausgeben oder nützlich sind.
 
 __<:v_user:1119585450923929672> User Befehle__
-</about:1220399539958190158> Infos über Vulpo.
-</help:1220399539958190156> Alle wichtigen Links und Befehle.
-</invite:1220399539958190159> Link, um Vulpo einzuladen.
-</support:1220399540302118922> Zeigt einen Link für den Support-Server.
-</vote:1220399539958190157> Zeigt an, wann du wieder für Vulpo voten kannst.
-</info server:1220399538066554976> Infos zum Server.
-</servericon:1220399538066554977> Zeigt das Server Profilbild.
-</info member:1220399538066554976> Infos zu einem Member.
-</info rolle:1220399538066554976> Infos zu einer Rolle.
-</info kanal:1220399538066554976> Infos zu einem Channel.
-</permissions:1220399538066554979> Listet alle Berechtigungen von jemandem auf.
-</ping:1220399540302118923>  Zeigt den Ping.
-</umfrage:1220399538066554975> Erstelle eine Umfrage.
-</random:1220399538519412829> Erhalte eine random Zahl von deinen ausgewählten Zahlen.
-</translate:1220399538519412830> Übersetze einen Text in mehrere Sprachen.
-</bestenliste:1220399538519412831> Erhalte Bestenlisten verschiedenster Funktionen.
-</invites:1220399538066554972> Zeigt die Einladungen eines Users.
+</about:967681545307570178> Infos über Vulpo.
+</help:972109932033892352> Alle wichtigen Links und Befehle.
+</invite:967681545307570179> Link, um Vulpo einzuladen.
+</support:967681545307570180> Zeigt einen Link für den Support-Server.
+</vote:1011653776832213022> Zeigt an, wann du wieder für Vulpo voten kannst.
+</info server:967681545013960767> Infos zum Server.
+</servericon:967681545013960768> Zeigt das Server Profilbild.
+</info member:967681545013960767> Infos zu einem Member.
+</info rolle:967681545013960767> Infos zu einer Rolle.
+</info kanal:967681545013960767> Infos zu einem Channel.
+</permissions:967681545013960770> Listet alle Berechtigungen von jemandem auf.
+</ping:967681545307570181>  Zeigt den Ping.
+</umfrage:967681545013960766> Erstelle eine Umfrage.
+</random:996395516910895125> Erhalte eine random Zahl von deinen ausgewählten Zahlen.
+</translate:996795931099943044> Übersetze einen Text in mehrere Sprachen.
+</bestenliste:1000783908071284846> Erhalte Bestenlisten verschiedenster Funktionen.
+</invites:967681545013960764> Zeigt die Einladungen eines Users.
 
 __<:v_einstellungen:1119578559086874636> Team Befehle__
 Keine Team Befehle."""
@@ -172,17 +169,17 @@ Keine Team Befehle."""
 > <:v_info:1119579853092552715> Diese Kategorie bietet dir Einstellungen für deinen Server wie Joinrollen und Tags. Außerdem findest du dort nützliche Befehle für dich selbst.
 
 __<:v_user:1119585450923929672> User Befehle__
-</erinnerung erstellen:1220399539203211434> Erstelle dir eine Erinnerung für eine bestimmte Uhrzeit.
-</erinnerung löschen:1220399539203211434> Entfernt eine Erinnerung.
-</erinnerung anzeigen:1220399539203211434> Bekomme eine Liste von deinen Erinnerungen.
-</afk:1220399540302118927> Setze dich AFK.
-</starboard:1220399540302118924> - Lege einen Kanal fest für Nachrichten mit 5 Sternen von Usern.
+</erinnerung erstellen:1002275443786911865> Erstelle dir eine Erinnerung für eine bestimmte Uhrzeit.
+</erinnerung löschen:1002275443786911865> Entfernt eine Erinnerung.
+</erinnerung anzeigen:1002275443786911865> Bekomme eine Liste von deinen Erinnerungen.
+</afk:1010289696351465492> Setze dich AFK.
+</starboard:1052926756853661827> - Lege einen Kanal fest für Nachrichten mit 5 Sternen von Usern.
 
 __<:v_einstellungen:1119578559086874636> Team Befehle__
-</joinrole:1220399539958190154> Lege eine Joinrolle fest.
-</botrole:1220399539958190155> Lege eine Botrolle fest.
-</voicesetup:1220399540302118929> Erstelle einen "Join to Create" Kanal.
-</reactionrole:1220399539203211433> Erstelle Reaktionsrollen."""
+</joinrole:967681544917495868> Lege eine Joinrolle fest.
+</botrole:967681544917495869> Lege eine Botrolle fest.
+</voicesetup:967681545307570183> Erstelle einen "Join to Create" Kanal.
+</reactionrole:967681545307570176> Erstelle Reaktionsrollen."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
@@ -195,12 +192,12 @@ __<:v_user:1119585450923929672> User Befehle__
 Keine User Befehle.
 
 __<:v_einstellungen:1119578559086874636> Team Befehle__
-</kick:1220399537743597593> Kicke einen User.
-</ban:1220399537743597594> Banne einen User.
-</unban:1220399537743597595> Entbanne einen User.
-</banlist:1220399537743597596> Zeigt dir eine Liste, die Gebannt wurden.
-</clear channel:1220399537743597597> Lösche Nachrichten in einem Channel.
-</clear between:1220399537743597597> Lösche alle Nachrichten zwischen zwei Nachrichten eines Kanals.
+</kick:967681545190117416> Kicke einen User.
+</ban:967681545190117417> Banne einen User.
+</unban:967681545190117419> Entbanne einen User.
+</banlist:967681545190117420> Zeigt dir eine Liste, die Gebannt wurden.
+</clear channel:967681545190117422> Lösche Nachrichten in einem Channel.
+</clear between:967681545190117422> Lösche alle Nachrichten zwischen zwei Nachrichten eines Kanals.
 
 ❓ Du suchst nach Verwarnungs Befehlen? Guck mal in der Kategorie Auto Moderation nach! ;)"""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
@@ -212,19 +209,19 @@ __<:v_einstellungen:1119578559086874636> Team Befehle__
 > <:v_info:1119579853092552715> Das Levelsystem vonn Vulpo ist umfassend. Coole Rangnachrichten und viele Einstellungsmöglichkeiten für Moderatoren.
 
 __<:v_user:1119585450923929672> User Befehle__
-</rang:1220399538943168527> Zeigt dir welches Level du bist.
+</rang:1223292369718349885> Zeigt dir welches Level du bist.
 
 __<:v_einstellungen:1119578559086874636> Team Befehle__
-</levelsystem status:1220399538943168526> Zeigt, ob das Levelystem aktiviert/deaktiviert ist.
-</levelsystem role add:1220399538943168526> Setzte eine neue Levelrolle.
-</levelsystem role delete:1220399538943168526> Entferne eine Levelrolle.
-</levelsystem role list:1220399538943168526> Liste von allen Levelrollen in diesem Server.
-</levelsystem levelupmessage:1220399538943168526> Richte eine Levelup Nachricht ein.
-</levelsystem levelupkanal:1220399538943168526> Richte ein, in welchem Kanal die Levelup Nachricht geschickt werden soll.
-</levelsystem block channel:1220399538943168526> Entferne einen Kanal vom Levelsystem
-</levelsystem block rolle:1220399538943168526> Entferne eine Rolle vom Levelsystem
-</setlevel:1220399538943168528> Setze einen User zu einem bestimmten Level.
-</xpboost:1220399538943168529> Starte einen XP Boost auf deinem Server."""
+</levelsystem status:1223292369223549083> Zeigt, ob das Levelystem aktiviert/deaktiviert ist.
+</levelsystem role add:1223292369223549083> Setzte eine neue Levelrolle.
+</levelsystem role delete:1223292369223549083> Entferne eine Levelrolle.
+</levelsystem role list:1223292369223549083> Liste von allen Levelrollen in diesem Server.
+</levelsystem levelupmessage:1223292369223549083> Richte eine Levelup Nachricht ein.
+</levelsystem levelupkanal:1223292369223549083> Richte ein, in welchem Kanal die Levelup Nachricht geschickt werden soll.
+</levelsystem block channel:1223292369223549083> Entferne einen Kanal vom Levelsystem
+</levelsystem block rolle:1223292369223549083> Entferne eine Rolle vom Levelsystem
+</setlevel:1223292369718349886> Setze einen User zu einem bestimmten Level.
+</xpboost:1223292369718349887> Starte einen XP Boost auf deinem Server."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
@@ -238,10 +235,10 @@ __<:v_user:1119585450923929672> User Befehle__
 Keine User Befehle.
 
 __<:v_einstellungen:1119578559086874636> Team Befehle__
-</gewinnspiel starten:1220399540742393926> Starte ein neues Gewinnspiel.
-</gewinnspiel verwalten:1220399540742393926> Verwalte Gewinnspiele. 
-</gewinnspiel bypassrolle:1220399540742393926> Bearbeite Rollen, die die Bedingungen umgehen. 
-</gewinnspiel blockieren:1220399540742393926> Setze Member und Rollen auf die Blacklist."""
+</gewinnspiel starten:1000350325804388382> Starte ein neues Gewinnspiel.
+</gewinnspiel verwalten:1000350325804388382> Verwalte Gewinnspiele. 
+</gewinnspiel bypassrolle:1000350325804388382> Bearbeite Rollen, die die Bedingungen umgehen. 
+</gewinnspiel blockieren:1000350325804388382> Setze Member und Rollen auf die Blacklist."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
@@ -251,23 +248,23 @@ __<:v_einstellungen:1119578559086874636> Team Befehle__
 > <:v_info:1119579853092552715> Schon lange nicht mehr gelacht xD? Dann wird es mal Zeit. Denn mit diesen Befehlen wirst du zu 99% lachen!
 
 __<:v_user:1119585450923929672> User Befehle__
-</ask:1220399540742393931> Frage eine berühmte Person eine Frage
-</avatar:1220399538066554973> Zeigt das Profilbild eines Users an
-</animal:1220399537743597590> Schicke ein zufälliges Bild eines bestimmten Tieres.
-</emojiurl:1220399538519412827> Bekomme das URL eines filename
-</games:1220399540742393934> Zeigt alle Spiele an, die grade gespielt werden
-</iq:1220399540742393930> Zeigt das IQ von einem User an.
-</lostrate:1220399540742393929> Zeigt wie lost ein User ist.
-</los:1220399540742393933> Ziehe ein Ticket und reibe es auf, indem du auf die schwarzen Blöcke tippst.
-</love:1220399540742393932> Finde heraus wie verliebt zwei User sind
-</meme:1220399537743597591> Bekomme ein zufälliges Meme.
-</password:1220399540742393935> Generiert ein zufälliges Passwort für dich.
-</pix:1220399537743597589> Verpixelt ein Profilbild eines Users.
-</tictactoe start:1220399538066554970> Spiele mit jemanden tictactoe.
-</tictactoe stats:1220399538066554970> Spiele tictacoe mit jemanden und sieh dir deine Tik Tak Toe Stats an.
-</wanted:1220399537743597588> Erstellt ein "Gesucht" Plakat mit dem Profilbild eines Users.
-</wetter:1220399538066554978> Zeigt das Wetter eines bestimmten Orts.
-</stealemoji:1220399538519412828> Stiehlt ein emoji von einem Server.
+</ask:967681544762294293> Frage eine berühmte Person eine Frage
+</avatar:967681545013960765> Zeigt das Profilbild eines Users an
+</animal:1124745277471993957> Schicke ein zufälliges Bild eines bestimmten Tieres.
+</emojiurl:1223304030202237058> Bekomme das URL eines filename
+</games:967681544762294296> Zeigt alle Spiele an, die grade gespielt werden
+</iq:967681544762294292> Zeigt das IQ von einem User an.
+</lostrate:967681544674230292> Zeigt wie lost ein User ist.
+</los:967681544762294295> Ziehe ein Ticket und reibe es auf, indem du auf die schwarzen Blöcke tippst.
+</love:967681544762294294> Finde heraus wie verliebt zwei User sind
+</meme:977874383261564972> Bekomme ein zufälliges Meme.
+</password:967681544762294297> Generiert ein zufälliges Passwort für dich.
+</pix:977874382804369472> Verpixelt ein Profilbild eines Users.
+</tictactoe start:972881753570152538> Spiele mit jemanden tictactoe.
+</tictactoe stats:972881753570152538> Spiele tictacoe mit jemanden und sieh dir deine Tik Tak Toe Stats an.
+</wanted:1103348883293216911> Erstellt ein "Gesucht" Plakat mit dem Profilbild eines Users.
+</wetter:967681545013960769> Zeigt das Wetter eines bestimmten Orts.
+</stealemoji:967681545013960772> Stiehlt ein emoji von einem Server.
 
 __<:v_einstellungen:1119578559086874636> Team Befehle__
 Keine Team Befehle."""
@@ -280,15 +277,15 @@ Keine Team Befehle."""
 > <:v_info:1119579853092552715> Du langweilst dich? Dann probier mal diese Spiele aus. Sie werden dir die Langeweile vertreiben!
 
 __<:v_user:1119585450923929672> User Befehle__
-</speedgame profil:1220399538519412832> Zeigt deine Bestzeit
-</speedgame start:1220399538519412832> Teste deine Schnelligkeit und steige im Rang auf
+</speedgame profil:1052926756853661828> Zeigt deine Bestzeit
+</speedgame start:1052926756853661828> Teste deine Schnelligkeit und steige im Rang auf
 
 __<:v_einstellungen:1119578559086874636> Team Befehle__
-`/emojiquiz` Verwalte das Emojiquiz deines Servers.
-</counting set:1220399538943168530> Richte den Zählkanal ein.
-</counting zahl:1220399538943168530> Stelle die aktuelle Zahl des Counting Kanals ein.
-</counting disable:1220399538943168530> Deaktiviere das Minispiel.
-</guessthenumber:1220399540302118930> Verwalte das Minispiel 'Guess the number' auf deinem Server."""
+</emojiquiz:1223304030202237058> Verwalte das Emojiquiz deines Servers.
+</counting set:967681545307570184> Richte den Zählkanal ein.
+</counting zahl:967681545307570184> Stelle die aktuelle Zahl des Counting Kanals ein.
+</counting disable:967681545307570184> Deaktiviere das Minispiel.
+</guessthenumber:999645444684644352> Verwalte das Minispiel 'Guess the number' auf deinem Server."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
@@ -298,34 +295,34 @@ __<:v_einstellungen:1119578559086874636> Team Befehle__
 > <:v_info:1119579853092552715> Das globale Wirtschaftssystem von Vulpo bietet viel Spaß und Strategie. Messe dich mit anderen und steige in der Berufsleiter nach oben auf!
 
 __<:v_user:1119585450923929672> User Befehle__
-</cookies anzeigen:1220399539505074309> Öffne das Profil eines Users.
-</cookies abheben:1220399539505074309> Hebe Geld von der Bank ab.
-</cookies einzahlen:1220399539505074309> Überweise Geld auf die Bank.
+</cookies anzeigen:1040642429860184126> Öffne das Profil eines Users.
+</cookies abheben:1040642429860184126> Hebe Geld von der Bank ab.
+</cookies einzahlen:1040642429860184126> Überweise Geld auf die Bank.
 
-</daily:1220399539505074311> Hole tägliche Cookies ab.
-</work:1220399539505074312> Gehe Arbeiten.
-</beg:1220399539505074310> Bettle für Münzen.
-</send:1220399539505074313> Gebe einem User Cookies.
-</rob:1220399539505074314> Raube einen User aus.
-</rps:1220399539958190150> Spiele Schere, Stein, Papier um Cookies.
-</slot:1220399539505074315> Spiele Casino.
+</daily:1040642429860184128> Hole tägliche Cookies ab.
+</work:1040642429860184129> Gehe Arbeiten.
+</beg:1040642429860184127> Bettle für Münzen.
+</send:1040642429860184130> Gebe einem User Cookies.
+</rob:1040642429860184131> Raube einen User aus.
+</rps:1040642429860184133> Spiele Schere, Stein, Papier um Cookies.
+</slot:1040642429860184132> Spiele Casino.
 
 **Job System**
-</job apply:1220399539958190151> Bewerbe dich für einen Job.
-</job quit:1220399539958190151> Verlasse deinen Job.
-</job list:1220399539958190151> Zeigt dir eine Liste aller Jobs.
+</job apply:1040642429860184134> Bewerbe dich für einen Job.
+</job quit:1040642429860184134> Verlasse deinen Job.
+</job list:1040642429860184134> Zeigt dir eine Liste aller Jobs.
 
 
 **Shop System**
-</shop anzeigen:1220399539958190152> Zeigt dir alle Items im Shop.
-</shop item kaufen:1220399539958190152> Kaufe ein Item aus dem Shop.
-</shop item verkaufen:1220399539958190152> Verkaufe ein Item aus deinem Rucksack. Du bekommst zufällige Prozente des Kaufpreises wieder. Prozente im Bereich von 65% bis 115%
-</shop item meine:1220399539958190152> Zeigt alle deine gekauften Items vom Shop.
+</shop anzeigen:1040642429860184135> Zeigt dir alle Items im Shop.
+</shop item kaufen:1040642429860184135> Kaufe ein Item aus dem Shop.
+</shop item verkaufen:1040642429860184135> Verkaufe ein Item aus deinem Rucksack. Du bekommst zufällige Prozente des Kaufpreises wieder. Prozente im Bereich von 65% bis 115%
+</shop item meine:1040642429860184135> Zeigt alle deine gekauften Items vom Shop.
 
 __<:v_einstellungen:1119578559086874636> Team Befehle__
 **Shop System**
-</shop item hinzufügen:1220399539958190152> Füge ein Item dem Shop hinzu.
-</shop item entfernen:1220399539958190152> Entferne ein Item aus dem Shop."""
+</shop item hinzufügen:1040642429860184135> Füge ein Item dem Shop hinzu.
+</shop item entfernen:1040642429860184135> Entferne ein Item aus dem Shop."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
