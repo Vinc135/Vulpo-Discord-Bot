@@ -154,7 +154,6 @@ def random_color():
 
 async def addwarn(self, user, interaction, grund):
     
-    
     db = await getMongoDataBase()
     
     warns = await db["warns"].find_one({"guildID": interaction.guild.id, "client": user.id})
@@ -179,11 +178,21 @@ async def automod(self, user, guild, warnanzahl, interaction):
     if(actions == None):
         return
     
-    if actions["aktion"] == "Timeout":
+    print("Automod wurde ausgelöst")
+    
+    if "Timeout" in actions["aktion"]:
         time_end = discord.utils.utcnow()
-        dt = time_end + datetime.timedelta(days=1)
+        
+        seconds = 86400
+        
+        if "time" in actions:
+            seconds = convert(actions["time"])
+        
+        print(seconds)
+        
+        dt = time_end + datetime.timedelta(seconds=seconds)
         await user.timeout(dt ,reason="Automod wurde ausgelöst")
-        await interaction.channel.send(f"🚨 **Der Benutzer {user.mention} wurde getimeoutet.** 🚨\nGrund: Automod wurde ausgelöst ({warnanzahl} Verwarnungen).")
+        await interaction.channel.send(f"🚨 **Der Benutzer {user.mention} wurde für {seconds} Sekunden getimeoutet.** 🚨\nGrund: Automod wurde ausgelöst ({warnanzahl} Verwarnungen).")
         
     if actions["aktion"] == "Kick":
         await user.kick(reason="Automod wurde ausgelöst")

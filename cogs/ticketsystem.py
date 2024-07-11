@@ -138,7 +138,7 @@ class ClosebuttonView(discord.ui.View):
         
         view = DeletebuttonView(self.bot)
         
-        await channel.send(f"{member.mention} hat das Ticket geschlossen.\nDrücke unter dieser Nachricht auf den Mülleimer um das Ticket zu löschen.", view=view)
+        await channel.send(f"{member.mention} hat das Ticket geschlossen", view=view)
         
         button.disabled = True
         

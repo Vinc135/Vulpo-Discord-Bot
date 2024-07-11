@@ -14,7 +14,7 @@ class moderation(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(manage_roles=True)
     async def rolle(self, interaction: discord.Interaction, member: discord.Member, rolle: discord.Role):
-        """Auf diese Weise können Sie Rollen zu einem Benutzer hinzufügen und entfernen."""
+        """Auf diese Weise kannst du Rollen zu einem Benutzer hinzufügen und entfernen."""
         if rolle not in member.roles:
             try:
                 embed = discord.Embed(colour=await getcolour(self, interaction.user),

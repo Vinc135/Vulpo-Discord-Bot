@@ -502,7 +502,7 @@ class economy(commands.Cog):
     @cookies.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def anzeigen(self, interaction: discord.Interaction, user: discord.User=None):
-        """Verwalte dein Geld."""
+        """Verwalte deine Cookies."""
         
         await interaction.response.defer()
         
@@ -522,7 +522,7 @@ class economy(commands.Cog):
                     string += f"{item[1]}({item[3]}🍪)"
                 else:
                     string += f", {item[1]}({item[3]}🍪)"
-            string += f"\n\n**Items Wert: {wert}.** Mit Glück bekommst du mehr Geld beim Verkauf als du ausgegeben hast."
+            string += f"\n\n**Items Wert: {wert}.** Mit Glück bekommst du mehr Cookies beim Verkauf als du ausgegeben hast."
             em.add_field(name="Items", value=string)
         
         em.set_thumbnail(url=member.avatar)
@@ -532,7 +532,7 @@ class economy(commands.Cog):
     @cookies.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def abheben(self, interaction: discord.Interaction, betrag: int):
-        """Bekomme Geld von der Bank."""
+        """Bekomme Cookies von der Bank."""
         await interaction.response.defer()
         acc = await open_acc(self, interaction.user)
         rucksack = int(acc["rucksack"])
@@ -552,7 +552,7 @@ class economy(commands.Cog):
     @cookies.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def einzahlen(self, interaction: discord.Interaction, betrag: int):
-        """Überweise Geld auf deine Bank."""
+        """Überweise Cookies auf deine Bank."""
         
         await interaction.response.defer()
         
@@ -575,7 +575,7 @@ class economy(commands.Cog):
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3600, key=lambda i: (i.user.id))
     async def beg(self, interaction: discord.Interaction):
-        """Bettle für Münzen."""
+        """Bettle für Cookies."""
         
         await interaction.response.defer()
         
@@ -695,17 +695,17 @@ class economy(commands.Cog):
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def send(self, interaction: discord.Interaction, user: discord.User, betrag: int):
-        """Sende Geld zu einem anderen User."""
+        """Sende Cookies zu einem anderen User."""
         
         await interaction.response.defer()
         
         if user == interaction.user:
-            await interaction.followup.send("<:v_kreuz:1119580775411621908> Du kannst dir kein Geld selber senden.", ephemeral=True)
+            await interaction.followup.send("<:v_kreuz:1119580775411621908> Du kannst dir keine Cookies selber senden.", ephemeral=True)
             return
         acc = await open_acc(self, interaction.user)
         rucksack = int(acc["rucksack"])
         if betrag > int(rucksack):
-            await interaction.followup.send(f"<:v_kreuz:1119580775411621908> Du hast nicht so viel Geld in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
+            await interaction.followup.send(f"<:v_kreuz:1119580775411621908> Du hast nicht so viele Cookies in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
             return
         if betrag < 0:
             await interaction.followup.send(f"<:v_kreuz:1119580775411621908> Der Betrag muss eine positive Zahl sein. Beispiel: `/send @Vinc {betrag*-1}`", ephemeral=True)
@@ -724,12 +724,12 @@ class economy(commands.Cog):
         await interaction.response.defer()
         
         if user == interaction.user:
-            await interaction.followup.send("<:v_kreuz:1119580775411621908> Du kannst dir kein Geld selber senden.", ephemeral=True)
+            await interaction.followup.send("<:v_kreuz:1119580775411621908> Du kannst dir keine Cookies selber senden.", ephemeral=True)
             return
         acc = await open_acc(self, user)
         rucksack = int(acc["rucksack"])
         if rucksack < 50:
-            await interaction.followup.send(f"<:v_kreuz:1119580775411621908> {user} hat nicht viel Geld. Versuche jemand anderen auszurauben.", ephemeral=True)
+            await interaction.followup.send(f"<:v_kreuz:1119580775411621908> {user} hat nicht viele Cookies. Versuche jemand anderen auszurauben.", ephemeral=True)
             return
         if rucksack > 50:
             x = random.randint(1, 100)
@@ -764,10 +764,10 @@ class economy(commands.Cog):
         rucksack = int(acc["rucksack"])
 
         if betrag < 0:
-            await interaction.followup.send(f"<:v_kreuz:1119580775411621908> Der Betrag muss eine positive Zahl sein. Beispiel: `/send @Vinc {betrag}`", ephemeral=True)
+            await interaction.followup.send(f"<:v_kreuz:1119580775411621908> Der Betrag muss eine positive Zahl sein. Beispiel: `/slot {betrag*-1}`", ephemeral=True)
             return
         if betrag > rucksack:
-            await interaction.followup.send(f"<:v_kreuz:1119580775411621908> Du hast nicht so viel Geld in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
+            await interaction.followup.send(f"<:v_kreuz:1119580775411621908> Du hast nicht so viele Cookies in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
             return
         # results
         choices = ["🍇", "🍋", "🍒", "🍓", "🍊"]
