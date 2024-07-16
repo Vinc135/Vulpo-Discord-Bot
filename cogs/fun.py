@@ -14,7 +14,7 @@ class fun(commands.Cog):
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
-    async def lostrate(self, interaction: discord.Interaction, user: discord.Member=None):
+    async def lostrate(self, interaction: discord.Interaction, user: discord.Member = None):
         """Berechnet mit einem hochkomplexen Prozess wie Lost der Benutzer ist."""
         
         await interaction.response.defer()
@@ -164,13 +164,13 @@ class fun(commands.Cog):
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
-    async def password(self, interaction: discord.Interaction, länge: int = None):
+    async def password(self, interaction: discord.Interaction, länge: int = 0):
         """Generiert ein zufälliges Passwort für dich!"""
         user = interaction.user
         
         characters = string.ascii_letters + string.digits + string.punctuation
         
-        if länge is None:
+        if länge == 0:
             länge = 20
         
         password = "".join(random.random(characters) for i in range(länge))

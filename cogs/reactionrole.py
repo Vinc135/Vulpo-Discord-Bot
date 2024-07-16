@@ -97,10 +97,11 @@ class option_hinzufügen(discord.ui.Modal, title="Füge eine Option hinzu"):
         await interaction.response.defer()
         
         embed = interaction.message.embeds[0]
-        #premium_status = await haspremium_forserver(self, interaction.guild)
-        #if premium_status == False:
-        #    if len(embed.fields) >= 3:
-        #        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Optionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+        
+        premium_status = await haspremium_forserver(self, interaction.guild)
+        
+        if premium_status == False and len(embed.fields) >= 3:
+            return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Optionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
         embed.add_field(name=self.children[0].value, value=self.roleID)
         embed.color = await getcolour(self, interaction.user)
@@ -164,10 +165,10 @@ class option_hinzufügen_2(discord.ui.Modal, title="Füge eine Option hinzu"):
     async def on_submit(self, interaction: discord.Interaction):
         embed = interaction.message.embeds[0]
         
-        #premium_status = await haspremium_forserver(self, interaction.guild)
-        #if premium_status == False:
-        #    if len(embed.fields) >= 3:
-        #        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Optionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+        premium_status = await haspremium_forserver(self, interaction.guild)
+        
+        if premium_status == False and len(embed.fields) >= 3:
+            return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Optionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
         embed.add_field(name=self.children[0].value, value=self.roleID)
         embed.color = await getcolour(self, interaction.user)
@@ -255,7 +256,7 @@ class reactionrole(commands.Cog):
         
         result = await db["rr_buttons"].find({}).to_list(length=None)
         
-        if result != []:
+        if len(result) != 0:
             i = 0
             for a in result:
                 i += 1

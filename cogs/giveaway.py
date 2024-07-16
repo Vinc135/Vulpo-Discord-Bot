@@ -431,7 +431,7 @@ class giveaway(commands.Cog):
         await interaction.response.defer()
         
         try:
-            member = self.bot.get_user(int(id))
+            member = await self.bot.fetch_user(int(id))
             rolle = interaction.guild.get_role(int(id))
             if member == None and rolle == None:
                 return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Die ID muss entweder eine Rollen ID oder eine Member ID sein.**", ephemeral=True)

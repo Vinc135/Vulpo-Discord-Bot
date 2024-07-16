@@ -451,9 +451,10 @@ class logging(commands.Cog):
         
         await interaction.response.defer()
         
-        #premium_status = await haspremium_forserver(self, interaction.guild)
-        #if premium_status == False:
-        #    return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst dies nicht tun, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+        premium = await haspremium_forserver(self, interaction.guild)
+        
+        if premium == False:
+            return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst dies nicht tun, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
         db = getMongoDataBase()
 
