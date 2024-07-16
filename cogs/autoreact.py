@@ -37,21 +37,23 @@ class Autoreact(commands.Cog):
         """Füge ein Emoji für ein Kanal hinzu."""
         
         await interaction.response.defer()
+        db = getMongoDataBase()
         
         try:
             await interaction.response.defer()
             emoj = discord.PartialEmoji.from_str(emoji)
             if emoj is None:
                 return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)
-            #await cursor.execute(f"SELECT emoji FROM autoreact WHERE channelID = {kanal.id} AND guildID = {interaction.guild.id}")
-            #a = await cursor.fetchall()
+            
+            
+            existing = await db["autoreact"].find({"guildID": str(interaction.guild.id), "channelID": str(kanal.id)}).to_list(length=None)
+            
+            premium = await haspremium_forserver(self, interaction.guild)
+            
+            if not premium and len(existing) >= 2:
+                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Reaktionen für diesen Kanal erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
-            #premium_status = await haspremium_forserver(self, interaction.guild)
-            #if premium_status == False:
-            #    if len(a) >= 2:
-            #        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Reaktionen für diesen Kanal erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
-
-            await getMongoDataBase()["autoreact"].insert_one({"guildID": str(interaction.guild.id), "channelID": str(kanal.id), "emoji": str(emoji)})
+            await db["autoreact"].insert_one({"guildID": str(interaction.guild.id), "channelID": str(kanal.id), "emoji": str(emoji)})
             await interaction.followup.send(f"**<:v_haken:1119579684057907251> Eintrag erstellt. Jede Nachricht aus dem Kanal {kanal.mention} erhält das Emoji {emoj}.**")
         except:
             return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)

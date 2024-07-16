@@ -60,12 +60,13 @@ class joinrole(commands.Cog):
                         await interaction.followup.send("**<:v_kreuz:1119580775411621908> Eine Rollen-Angabe ist erforderlich beim Einrichten.**", ephemeral=True)           
                         return
                     
-                    #a = await db['joinroles'].find({"guild_id": interaction.guild.id}).to_list(length=None)
-
-                    #premium_status = await haspremium_forserver(self, interaction.guild)
-                    #if premium_status == False:
-                    #    if len(a) >= 3:
-                    #        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Joinrollen für Mitglieder erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+                    
+                    existing = await db['joinroles'].find({"guild_id": interaction.guild.id}).to_list(length=None)
+                    
+                    premium = await haspremium_forserver(self, interaction.guild)
+                    
+                    if not premium and len(existing) >= 3:
+                        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Joinrollen für Mitglieder erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
                     result = await db['joinroles'].find({"role_id": rolle.id}).to_list(length=None)
 
@@ -126,13 +127,12 @@ class joinrole(commands.Cog):
                         await interaction.followup.send("**<:v_kreuz:1119580775411621908> Eine Rollen-Angabe ist erforderlich beim Einrichten.**", ephemeral=True)           
                         return
                     
-                    #a = await db['botroles'].find({"guild_id": interaction.guild.id}).to_list(length=None)
-
-                    #premium_status = await haspremium_forserver(self, interaction.guild)
-                    #if premium_status == False:
-                    #    if len(a) >= 3:
-                    #        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Joinrollen für Bots erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
-
+                    existing = await db['botroles'].find({"guild_id": interaction.guild.id}).to_list(length=None)
+                    
+                    premium = await haspremium_forserver(self, interaction.guild)
+                    
+                    if not premium and len(existing) >= 3:
+                        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Joinrollen für Bots erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")               
 
                     result = await db['botroles'].find({"role_id": rolle.id}).to_list(length=None)
 
@@ -150,7 +150,7 @@ class joinrole(commands.Cog):
                     
                     result = await db['botroles'].find({"guild_id": interaction.guild.id}).to_list(length=None)
                     
-                    if str(result) != "[]":
+                    if len(result) != 0:
                         rollen = ""
                         for r in result:
                             r = discord.utils.get(interaction.guild.roles, id=int(r[0]))
@@ -163,14 +163,14 @@ class joinrole(commands.Cog):
                                         icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
                         await interaction.followup.send(embed=embed)
                         return
-                    if str(result) == "[]":
-                        embed = discord.Embed(colour=await getcolour(self, interaction.user),
-                                            description=f"Es wurde noch keine Joinrolle für Bots festgelegt. Füge eine mit **/joinrole <role/ID>** hinzu.")
-                        embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-                        embed.set_footer(text="Stell sicher, dass meine Rolle höher als die Joinrollen gelistet ist.",
-                                        icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
-                        await interaction.followup.send(embed=embed)
-                        return
+                    
+                    embed = discord.Embed(colour=await getcolour(self, interaction.user),
+                                        description=f"Es wurde noch keine Joinrolle für Bots festgelegt. Füge eine mit **/joinrole <role/ID>** hinzu.")
+                    embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                    embed.set_footer(text="Stell sicher, dass meine Rolle höher als die Joinrollen gelistet ist.",
+                                    icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
+                    await interaction.followup.send(embed=embed)
+                    return
  
 async def setup(bot):
     await bot.add_cog(joinrole(bot))

@@ -58,41 +58,44 @@ class NameModal(discord.ui.Modal, title="Beschreibung für Erinnerung"):
                 
         self.button.disabled = True
         await interaction.edit_original_response(embed=self.embed, view=self.view)
-        
+
+async def haspremium(self, user):
+    db = getMongoDataBase()
+    
+    premium = await db["premium"].find_one({"userID": user.id})
+    
+    if premium == None:
+        return False
+    
+    return premium["status"]
+
 async def haspremium_forserver(self, guild):
-    #if(guild.owner.id == 730734267704934422):
-    #    return True
-    #async with self.bot.pool.acquire() as conn:
-    #    async with conn.cursor() as cursor:
-    #        await cursor.execute("SELECT status FROM premium WHERE userID = (%s)", (guild.owner.id))
-    #        status = await cursor.fetchone()
-    #        if status == None:
-    #            return False
-    #        if status[0] == 1:
-    #            return True
-    #        if status[0] == 0:
-    #            return False
-    return True
+    db = getMongoDataBase()
+    
+    premium = await db["premium"].find_one({"userID": guild.owner.id})
+    
+    if premium == None:
+        return False
+    
+    return premium["status"]
             
 async def getcolour(self, user):
+    db = getMongoDataBase()
     
-    return discord.Colour.orange()
+    premium = await db["premium"].find_one({"userID": user.id})
     
-    #async with self.bot.pool.acquire() as conn:
-    #    async with conn.cursor() as cursor:
-    #        await cursor.execute("SELECT status FROM premium WHERE userID = (%s)", (user.id))
-    #        status = await cursor.fetchone()
-    #        if status == None:
-    #            return discord.Colour.orange()
-    #        if status[0] == 0:
-    #            return discord.Colour.orange()
-    #        if status[0] == 1:
-    #            await cursor.execute("SELECT farbe FROM embedfarben WHERE userID = (%s)", (user.id))
-    #            farbe = await cursor.fetchone()
-    #            if farbe == None:
-    #                return discord.Colour.orange()
-    #            else:
-    #                return discord.Colour(int(farbe[0], 16))
+    if premium == None:
+        return discord.Colour.orange()
+    
+    if premium["status"] == False:
+        return discord.Colour.orange()
+    
+    farbe = await db["embedfarben"].find_one({"userID": user.id})
+    
+    if farbe == None:
+        return discord.Colour.orange()
+    
+    return discord.Colour(int(farbe["farbe"], 16))
 
 async def getLevelSystemEnabled(self, guild):
     
@@ -177,8 +180,6 @@ async def automod(self, user, guild, warnanzahl, interaction):
     
     if(actions == None):
         return
-    
-    print("Automod wurde ausgelöst")
     
     if "Timeout" in actions["aktion"]:
         time_end = discord.utils.utcnow()

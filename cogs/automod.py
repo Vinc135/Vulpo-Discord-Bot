@@ -26,9 +26,9 @@ class Automod(commands.Cog):
         
         existing_actions = await db['automod'].find({"guildID": guild_id}).to_list(length=None)
         
-        #premium_status = await haspremium_forserver(self, interaction.guild)
-        #if not premium_status and len(existing_actions) >= 3:
-        #    return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Aktionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+        premium_status = await haspremium_forserver(self, interaction.guild)
+        if not premium_status and len(existing_actions) >= 3:
+            return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Aktionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
         
         existing_action = await db['automod'].find_one({"guildID": guild_id, "warnanzahl": warnanzahl})
         if existing_action is not None:
@@ -216,12 +216,12 @@ class Automod(commands.Cog):
             await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> Das Wort `{wort}` existiert bereits in der Blacklist.**", ephemeral=True)
             return
         
-        #await cursor.execute("SELECT word FROM blacklist WHERE guildID = (%s)", (interaction.guild.id))
-        #a = await cursor.fetchall()
-        #premium_status = await haspremium_forserver(self, interaction.guild)
-        #if premium_status == False:
-        #    if len(a) >= 15:
-        #        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Wörter hinzufügen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+        existing_words = await db['blacklist'].find({"guildID": interaction.guild.id}).to_list(length=None)
+        
+        premium = await haspremium_forserver(self, interaction.guild)
+        
+        if not premium and len(existing_words) >= 15:
+            return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Wörter hinzufügen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**", ephemeral=True)
 
         await db['blacklist'].insert_one({"guildID": interaction.guild.id, "word": wort})
         await interaction.followup.send(f"**<:v_haken:1119579684057907251> Das Wort `{wort}` ist nun auf der Blacklist.**")
@@ -254,8 +254,6 @@ class Automod(commands.Cog):
         db = getMongoDataBase()
         
         if modus == "Anschalten (Prozent Angabe erforderlich)":
-            if prozent == None:
-                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Eine Prozentangabe ist zum Aktivieren erforderlich.", ephemeral=True)
             result = await db['caps'].find_one({"guildID": interaction.guild.id})
 
             if result != None:

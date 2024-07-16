@@ -14,7 +14,7 @@ from utils.MongoDB import getMongoDataBase
 class Dropdown(discord.ui.Select):
     def __init__(self, user, farbe, bot):
         selectOptions = [
-            #discord.SelectOption(label="Premium", emoji="<:v_ticket:1119584819597279242>"),
+            discord.SelectOption(label="Premium", emoji="<:v_ticket:1119584819597279242>"),
             discord.SelectOption(label="Information", emoji="<:v_info:1119579853092552715>"),
             discord.SelectOption(label="Settings & Setup", emoji="<:v_einstellungen:1119578559086874636>"),
             discord.SelectOption(label="Basic Moderation", emoji="<:v_mod:1119581819122241621>"),
@@ -44,8 +44,9 @@ __<:v_user:1119585450923929672> User Befehle__
 </premium rangkarte:1091635833217486939> Ändere das Bild deiner Rangkarte.
 
 __<:v_ticket:1119584819597279242> Premium erhalten__
-Es sind noch sehr viel mehr Funktionen in Premium enthalten. Du kannst alle Vorteile unter https://vulpo-bot.de/premium sehen.
-Premium ist heiß begehrt. Du kannst es bekommen, indem du ein Abonnement wirst: https://vulpo-bot.de/premium."""
+Mit premium kannst du viele für normale Nutzer beschränkte Funktionen erhalten und unterstützt gleichzeitig die Entwicklung von Vulpo. 
+Alle Vorteile siehst du unter https://vulpo-bot.de/premium"""
+
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
             
