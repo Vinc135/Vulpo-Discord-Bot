@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from info import getcolour, haspremium_forserver
+from utils.utils import getcolour, haspremium_forserver
 from datetime import date
 
 async def change_points(bot, userID, punkte, p_n, tag):

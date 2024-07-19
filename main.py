@@ -35,39 +35,39 @@ class reportmsg(discord.ui.View):
 
     @discord.ui.button(label='Gemeldeten Nutzer verwarnen', style=discord.ButtonStyle.red, custom_id="fbiuwerzgfiuwzevfizuk", emoji="🔨")
     async def warn(self, interaction: discord.Interaction, button: discord.ui.Button):
-                await interaction.message.edit(content=f"**🔒 Dieser Nutzer wurde von {interaction.user.mention} verwarnt.**", embed=interaction.message.embeds[0], view=None)
-                user = self.message.author
-                grund = "Unangemessene Nachricht"
+        await interaction.message.edit(content=f"**🔒 Dieser Nutzer wurde von {interaction.user.mention} verwarnt.**", embed=interaction.message.embeds[0], view=None)
+        user = self.message.author
+        grund = "Unangemessene Nachricht"
 
-                db = getMongoDataBase()
+        db = getMongoDataBase()
 
-                warnID = 1
-                
-                result = await db['warns'].find({"userID": user.id, "guildID": interaction.guild.id}).to_list()
-                if result is None:
-                    await db['warns'].insert_one({"guildID": interaction.guild.id, "userID": user.id, "grund": grund + f"\n`Verwarnung erstellt am {discord.utils.utcnow().__format__('%d.%m.%Y')}`", "warnID": 1})
-                    
-                    warnID += 1
-                if result != None:
-                    for warn in result:
-                        warnID += 1
-                    await db['warns'].insert_one({"guildID": interaction.guild.id, "userID": user.id, "grund": grund + f"\n`Verwarnung erstellt am {discord.utils.utcnow().__format__('%d.%m.%Y')}`", "warnID": warnID})
+        warnID = 1
+        
+        result = await db['warns'].find({"userID": user.id, "guildID": interaction.guild.id}).to_list()
+        if result is None:
+            await db['warns'].insert_one({"guildID": interaction.guild.id, "userID": user.id, "grund": grund + f"\n`Verwarnung erstellt am {discord.utils.utcnow().__format__('%d.%m.%Y')}`", "warnID": 1})
+            
+            warnID += 1
+        if result != None:
+            for warn in result:
+                warnID += 1
+            await db['warns'].insert_one({"guildID": interaction.guild.id, "userID": user.id, "grund": grund + f"\n`Verwarnung erstellt am {discord.utils.utcnow().__format__('%d.%m.%Y')}`", "warnID": warnID})
 
-                result2 = await db['automod'].find({"guildID": interaction.guild.id, "warnanzahl": warnID}).to_list()
-                if result2:
-                    if result2["aktion"] == "Timeout":
-                        time_end = discord.utils.utcnow()
-                        dt = time_end + datetime.timedelta(days=1)
-                        await user.timeout(dt ,reason="Automod wurde ausgelöst")
-                        await interaction.channel.send(f"🚨 **Der Benutzer {user.mention} wurde getimeoutet.** 🚨\nGrund: Automod wurde ausgelöst ({warnID} Verwarnungen).")
-                    if result2["aktion"] == "Kick":
-                        await user.kick(reason="Automod wurde ausgelöst")
-                        await interaction.channel.send(f"🚨 **Der Benutzer {user.mention} wurde gekickt.** 🚨\nGrund: Automod wurde ausgelöst ({warnID} Verwarnungen).")
-                    if result2["aktion"] == "Ban":
-                        await user.ban(reason="Automod wurde ausgelöst")
-                        await interaction.channel.send(f"🚨 **Der Benutzer {user.mention} wurde gebannt.** 🚨\nGrund: Automod wurde ausgelöst ({warnID} Verwarnungen).")
+        result2 = await db['automod'].find({"guildID": interaction.guild.id, "warnanzahl": warnID}).to_list()
+        if result2:
+            if result2["aktion"] == "Timeout":
+                time_end = discord.utils.utcnow()
+                dt = time_end + datetime.timedelta(days=1)
+                await user.timeout(dt ,reason="Automod wurde ausgelöst")
+                await interaction.channel.send(f"🚨 **Der Benutzer {user.mention} wurde getimeoutet.** 🚨\nGrund: Automod wurde ausgelöst ({warnID} Verwarnungen).")
+            if result2["aktion"] == "Kick":
+                await user.kick(reason="Automod wurde ausgelöst")
+                await interaction.channel.send(f"🚨 **Der Benutzer {user.mention} wurde gekickt.** 🚨\nGrund: Automod wurde ausgelöst ({warnID} Verwarnungen).")
+            if result2["aktion"] == "Ban":
+                await user.ban(reason="Automod wurde ausgelöst")
+                await interaction.channel.send(f"🚨 **Der Benutzer {user.mention} wurde gebannt.** 🚨\nGrund: Automod wurde ausgelöst ({warnID} Verwarnungen).")
 
-                await interaction.followup.send("**<:v_haken:1119579684057907251> Nutzer wurde verwarnt.**", ephemeral=True)
+        await interaction.followup.send("**<:v_haken:1119579684057907251> Nutzer wurde verwarnt.**", ephemeral=True)
 
 class MyTree(CommandTree):
     async def interaction_check(self, interaction: discord.Interaction):
@@ -159,117 +159,117 @@ class Vulpo(commands.AutoShardedBot):
             pass
     
     async def on_dbl_vote(self, data):
-                if data["type"] == "test":
-                    return bot.dispatch('dbl_test', data)
-                
-                db = getMongoDataBase()
-                
-                userid = int(data["user"])
-                guild = await bot.fetch_guild(925729625580113951)
-                channel = await guild.fetch_channel(934036224413417472)
-                result = await db['topgg'].find_one({"userID": userid})
-                if result is None or result is False:
-                    await db['topgg'].insert_one({"userID": userid, "votes": 1})
-                    
-                    times = 1
+        if data["type"] == "test":
+            return bot.dispatch('dbl_test', data)
+        
+        db = getMongoDataBase()
+        
+        userid = int(data["user"])
+        guild = await bot.fetch_guild(925729625580113951)
+        channel = await guild.fetch_channel(934036224413417472)
+        result = await db['topgg'].find_one({"userID": userid})
+        if result is None or result is False:
+            await db['topgg'].insert_one({"userID": userid, "votes": 1})
+            
+            times = 1
+        else:
+            await db['topgg'].update_one({"userID": userid}, {"$set": {"votes": int(result["votes"]) + 1}})
+            
+            times = int(result["votes"]) + 1
+
+        time_to_convert = math.floor(datetime.datetime.now().timestamp() + 43200)
+        time_converted = datetime.datetime.fromtimestamp(int(time_to_convert))
+        asyncio.create_task(vote_reminder(time_converted, bot, userid))
+        await db['vote'].insert_one({"userid": userid, "endtime": time_to_convert})
+
+        user = await bot.fetch_user(userid)
+        rolle = guild.get_role(1041046601394815127)
+        member = await guild.fetch_member(int(userid))
+        if user:
+            embed = discord.Embed(title=f"Danke vielmals {user.name}!", description=f"{user.mention} hat insgesammt {times} Mal gevotet.", colour=discord.Colour.orange())
+            embed.set_thumbnail(url=user.avatar)
+            if member:
+                embed.set_footer(text="Durch einen Vote erhältst du 300 Cookies und die Voter Rolle", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508227117289472/herz.png")
+                if rolle in member.roles:
+                    embed.description += f"\n<:v_zeit:1119585888054296676> Du wirst in 12 Stunden erinnert, wieder zu voten."
                 else:
-                    await db['topgg'].update_one({"userID": userid}, {"$set": {"votes": int(result["votes"]) + 1}})
-                    
-                    times = int(result["votes"]) + 1
+                    embed.description += f"\n<:v_zeit:1119585888054296676> Deine Vote Erinnerungen sind aus. Du kannst sie in <#926224205639467108> aktivieren."
+            if member == None:
+                embed.set_footer(text="Durch einen Vote erhältst du 300 Cookies", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508227117289472/herz.png")
+            await channel.send(embed=embed, view=voteView())
+        else:
+            embed = discord.Embed(title=f"Danke vielmals {userid}!", description=f"{userid} hat insgesammt {times} Mal gevotet.", colour=discord.Colour.orange())
+            embed.set_footer(text="Durch einen Vote erhältst du 300 Cookies", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508227117289472/herz.png")
+            await channel.send(embed=embed, view=voteView())
+            
+        await update_account(self, userid, "rucksack", 300, 0)       
 
-                time_to_convert = math.floor(datetime.datetime.now().timestamp() + 43200)
-                time_converted = datetime.datetime.fromtimestamp(int(time_to_convert))
-                asyncio.create_task(vote_reminder(time_converted, bot, userid))
-                await db['vote'].insert_one({"userid": userid, "endtime": time_to_convert})
-
-                user = await bot.fetch_user(userid)
-                rolle = guild.get_role(1041046601394815127)
-                member = await guild.fetch_member(int(userid))
-                if user:
-                    embed = discord.Embed(title=f"Danke vielmals {user.name}!", description=f"{user.mention} hat insgesammt {times} Mal gevotet.", colour=discord.Colour.orange())
-                    embed.set_thumbnail(url=user.avatar)
-                    if member:
-                        embed.set_footer(text="Durch einen Vote erhältst du 300 Cookies und die Voter Rolle", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508227117289472/herz.png")
-                        if rolle in member.roles:
-                            embed.description += f"\n<:v_zeit:1119585888054296676> Du wirst in 12 Stunden erinnert, wieder zu voten."
-                        else:
-                            embed.description += f"\n<:v_zeit:1119585888054296676> Deine Vote Erinnerungen sind aus. Du kannst sie in <#926224205639467108> aktivieren."
-                    if member == None:
-                        embed.set_footer(text="Durch einen Vote erhältst du 300 Cookies", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508227117289472/herz.png")
-                    await channel.send(embed=embed, view=voteView())
-                else:
-                    embed = discord.Embed(title=f"Danke vielmals {userid}!", description=f"{userid} hat insgesammt {times} Mal gevotet.", colour=discord.Colour.orange())
-                    embed.set_footer(text="Durch einen Vote erhältst du 300 Cookies", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508227117289472/herz.png")
-                    await channel.send(embed=embed, view=voteView())
-                 
-                await update_account(self, userid, "rucksack", 300, 0)       
-
-                dblpy = topgg.DBLClient(bot, dbl_token, autopost_interval=0)
-                votedata = await dblpy.get_bot_info()
-                votes = int(votedata["monthly_points"])
-                guild = await bot.fetch_guild(925729625580113951)
-                votechannel = await guild.fetch_channel(934036446271139860)
-                mydate = datetime.datetime.now()
-                translator = Translator()
-                translation = translator.translate(f'Month {mydate.strftime("%B")}' , dest="de")
-                await votechannel.edit(name=f"Votes {translation.text}: {votes}")
-                try:
-                    m = guild.get_member(userid)
-                    if m is not None:
-                        voter = guild.get_role(962753309997932554)
-                        await m.add_roles(voter)
-                        if int(times) >= 200:
-                            votemeister = guild.get_role(962753328679358515)
-                            await m.add_roles(votemeister)
-                            return
-                        if int(times) >= 100:
-                            megavoter = guild.get_role(962753332139663390)
-                            await m.add_roles(megavoter)
-                            return
-                        if int(times) >= 50:
-                            ehrenhaftervoter = guild.get_role(962753335507701780)
-                            await m.add_roles(ehrenhaftervoter)
-                            return
-                        if int(times) >= 20:
-                            aktivervoter = guild.get_role(962753338666008607)
-                            await m.add_roles(aktivervoter)
-                            return
-                except:
-                    pass
-                
+        dblpy = topgg.DBLClient(bot, dbl_token, autopost_interval=0)
+        votedata = await dblpy.get_bot_info()
+        votes = int(votedata["monthly_points"])
+        guild = await bot.fetch_guild(925729625580113951)
+        votechannel = await guild.fetch_channel(934036446271139860)
+        mydate = datetime.datetime.now()
+        translator = Translator()
+        translation = translator.translate(f'Month {mydate.strftime("%B")}' , dest="de")
+        await votechannel.edit(name=f"Votes {translation.text}: {votes}")
+        try:
+            m = guild.get_member(userid)
+            if m is not None:
+                voter = guild.get_role(962753309997932554)
+                await m.add_roles(voter)
+                if int(times) >= 200:
+                    votemeister = guild.get_role(962753328679358515)
+                    await m.add_roles(votemeister)
+                    return
+                if int(times) >= 100:
+                    megavoter = guild.get_role(962753332139663390)
+                    await m.add_roles(megavoter)
+                    return
+                if int(times) >= 50:
+                    ehrenhaftervoter = guild.get_role(962753335507701780)
+                    await m.add_roles(ehrenhaftervoter)
+                    return
+                if int(times) >= 20:
+                    aktivervoter = guild.get_role(962753338666008607)
+                    await m.add_roles(aktivervoter)
+                    return
+        except:
+            pass
+        
     async def on_dbl_test(self, data):
-                userid = int(data["user"])
+        userid = int(data["user"])
 
-                db = getMongoDataBase()
+        db = getMongoDataBase()
 
-                guild = await bot.fetch_guild(925729625580113951)
-                channel = await guild.fetch_channel(934036224413417472)
-                result = await db['topgg'].find_one({"userID": userid})
-                times = result["votes"]
+        guild = await bot.fetch_guild(925729625580113951)
+        channel = await guild.fetch_channel(934036224413417472)
+        result = await db['topgg'].find_one({"userID": userid})
+        times = result["votes"]
 
-                rolle = guild.get_role(1041046601394815127)
-                member = await guild.fetch_member(int(userid))
+        rolle = guild.get_role(1041046601394815127)
+        member = await guild.fetch_member(int(userid))
 
-                user = await bot.fetch_user(userid)
-                if user:
-                    embed = discord.Embed(title=f"Danke vielmals {user}!", description=f"{user.mention} hat insgesammt {times} Mal gevotet.", colour=discord.Colour.yellow())
-                    embed.set_thumbnail(url=user.avatar)
-                    embed.set_author(name="Testvote erfolgreich", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1037064093124788284/v_info.png")
-                    if member:
-                        embed.set_footer(text="Durch einen Vote erhältst du 300 Cookies und die Voter Rolle", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508227117289472/herz.png")
-                        if rolle in member.roles:
-                            embed.description += f"\n<:v_zeit:1119585888054296676> Du wirst in 12 Stunden erinnert, wieder zu voten."
-                        else:
-                            embed.description += f"\n<:v_zeit:1119585888054296676> Deine Vote Erinnerungen sind aus. Du kannst sie in <#926224205639467108> aktivieren."
-                    if member == None:
-                        embed.set_footer(text="Durch einen Vote erhältst du 300 Cookies", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508227117289472/herz.png")
-                    await channel.send(embed=embed, view=voteView())
+        user = await bot.fetch_user(userid)
+        if user:
+            embed = discord.Embed(title=f"Danke vielmals {user}!", description=f"{user.mention} hat insgesammt {times} Mal gevotet.", colour=discord.Colour.yellow())
+            embed.set_thumbnail(url=user.avatar)
+            embed.set_author(name="Testvote erfolgreich", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1037064093124788284/v_info.png")
+            if member:
+                embed.set_footer(text="Durch einen Vote erhältst du 300 Cookies und die Voter Rolle", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508227117289472/herz.png")
+                if rolle in member.roles:
+                    embed.description += f"\n<:v_zeit:1119585888054296676> Du wirst in 12 Stunden erinnert, wieder zu voten."
                 else:
-                    embed = discord.Embed(title=f"Danke vielmals {userid}!", description=f"{userid} hat insgesammt {times} Mal gevotet.", colour=discord.Colour.yellow())
-                    embed.set_footer(text="Durch einen Vote erhältst du 300 Cookies", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508227117289472/herz.png")
-                    embed.set_author(name="Testvote erfolgreich", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1037064093124788284/v_info.png")
-                    await channel.send(embed=embed, view=voteView())
-                
+                    embed.description += f"\n<:v_zeit:1119585888054296676> Deine Vote Erinnerungen sind aus. Du kannst sie in <#926224205639467108> aktivieren."
+            if member == None:
+                embed.set_footer(text="Durch einen Vote erhältst du 300 Cookies", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508227117289472/herz.png")
+            await channel.send(embed=embed, view=voteView())
+        else:
+            embed = discord.Embed(title=f"Danke vielmals {userid}!", description=f"{userid} hat insgesammt {times} Mal gevotet.", colour=discord.Colour.yellow())
+            embed.set_footer(text="Durch einen Vote erhältst du 300 Cookies", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508227117289472/herz.png")
+            embed.set_author(name="Testvote erfolgreich", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1037064093124788284/v_info.png")
+            await channel.send(embed=embed, view=voteView())
+        
     async def setup_hook(self):
         try:
             topgg_webhook = topgg.WebhookManager(bot).dbl_webhook("/dblwebhook", "Vulpo123321")
