@@ -104,7 +104,7 @@ class logging(commands.Cog):
             return
         
         try:
-            result = await getMongoDataBase()["messagelog"].find_one({"guildID": message.guild.id})
+            result = getMongoDataBase()["messagelog"].find_one({"guildID": message.guild.id})
             if result is None:
                 return
             if result != None:
@@ -240,7 +240,7 @@ class logging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_ban(self, guild, user):
-        result = await getMongoDataBase()["modlog"].find_one({"guildID": guild.id})
+        result = getMongoDataBase()["modlog"].find_one({"guildID": guild.id})
         if result is None:
             return
         if result != None:
@@ -259,7 +259,7 @@ class logging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_unban(self, guild, user):
-        result = await getMongoDataBase()["modlog"].find_one({"guildID": guild.id})
+        result = getMongoDataBase()["modlog"].find_one({"guildID": guild.id})
         if result is None:
             return
         if result != None:
@@ -279,7 +279,7 @@ class logging(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_channel_create(self, channel):
         try:
-            result = await getMongoDataBase()["modlog"].find_one({"guildID": channel.guild.id})
+            result = getMongoDataBase()["modlog"].find_one({"guildID": channel.guild.id})
             if result is None:
                 return
             if result != None:
@@ -301,7 +301,7 @@ class logging(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_channel_update(self, before, after):
             try:
-                result = await getMongoDataBase()["modlog"].find_one({"guildID": after.guild.id})
+                result = getMongoDataBase()["modlog"].find_one({"guildID": after.guild.id})
                 if result is None:
                     return
                 if result != None:
@@ -332,7 +332,7 @@ class logging(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, channel):
         try:
-            result = await getMongoDataBase()["modlog"].find_one({"guildID": channel.guild.id})
+            result = getMongoDataBase()["modlog"].find_one({"guildID": channel.guild.id})
             if result is None:
                 return
             if result != None:
@@ -352,7 +352,7 @@ class logging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_role_create(self, role):
-        result = await getMongoDataBase()["modlog"].find_one({"guildID": role.guild.id})
+        result = getMongoDataBase()["modlog"].find_one({"guildID": role.guild.id})
         if result is None:
             return
         if result != None:
@@ -370,7 +370,7 @@ class logging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_role_delete(self, role):
-        result = await getMongoDataBase()["modlog"].find_one({"guildID": role.guild.id})
+        result = getMongoDataBase()["modlog"].find_one({"guildID": role.guild.id})
         if result is None:
             return
         if result != None:

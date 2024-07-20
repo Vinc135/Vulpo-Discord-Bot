@@ -7,7 +7,7 @@ from utils.MongoDB import getMongoDataBase
 
 async def isTempChannel(self, member, channel):
     
-    result = await getMongoDataBase()['tempchannel'].find_one({"guildID": member.guild.id, "channelID": channel.id})
+    result = getMongoDataBase()['tempchannel'].find_one({"guildID": member.guild.id, "channelID": channel.id})
     
     if result:
         return channel
@@ -16,7 +16,7 @@ async def isTempChannel(self, member, channel):
     
 async def isJoinHub(self, channel):
     
-    result = await getMongoDataBase()['tempchannels'].find_one({"guildID": channel.guild.id, "channelID": channel.id})
+    result = getMongoDataBase()['tempchannels'].find_one({"guildID": channel.guild.id, "channelID": channel.id})
     
     if result:
         return channel
@@ -25,7 +25,7 @@ async def isJoinHub(self, channel):
 
 async def isOwner(self, member, channel):
     
-    result = await getMongoDataBase()['tempchannel'].find_one({"guildID": member.guild.id, "channelID": channel.id, "userID": member.id})
+    result = getMongoDataBase()['tempchannel'].find_one({"guildID": member.guild.id, "channelID": channel.id, "userID": member.id})
     
     if result:
         return member
@@ -206,12 +206,12 @@ class tempchannel(commands.Cog):
         await interaction.followup.send(embed=embed)
 
         if existing_channel:
-            await getMongoDataBase()["tempchannels"].update_one(
+            getMongoDataBase()["tempchannels"].update_one(
                 {"guildID": interaction.guild.id},
                 {"$set": {"channelID": vc.id}}
             )
         else:
-            await getMongoDataBase()["tempchannels"].insert_one({"channelID": vc.id, "guildID": interaction.guild.id})
+            getMongoDataBase()["tempchannels"].insert_one({"channelID": vc.id, "guildID": interaction.guild.id})
                 
         if interfacekanal:
             embed = discord.Embed(title="Tempchannel Interface", description=f"""

@@ -9,7 +9,7 @@ from utils.MongoDB import getMongoDataBase
 from cogs.economy import open_acc, update_account
 
 async def check_channel(self, msg):
-    result = await getMongoDataBase()["gtn"].find_one({"guildID": str(msg.guild.id)})
+    result = getMongoDataBase()["gtn"].find_one({"guildID": str(msg.guild.id)})
     if result is None:
         return False
     else:
@@ -45,7 +45,7 @@ async def answer_correct(self, msg):
     await asyncio.sleep(2)
     m2 = await msg.channel.send(embed=embed)
     
-    await getMongoDataBase()["gtncurrent"].insert_one({"guildID": str(msg.guild.id), "zahl": b, "msgID": m2.id})
+    getMongoDataBase()["gtncurrent"].insert_one({"guildID": str(msg.guild.id), "zahl": b, "msgID": m2.id})
 
 async def answer_incorrect(self, msg):
     pass

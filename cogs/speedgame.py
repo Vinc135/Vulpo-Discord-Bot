@@ -153,7 +153,7 @@ class Speedgame(commands.Cog):
         if member == None:
             member = interaction.user
             
-        result = await getMongoDataBase()["speedgame"].find_one({"userID": member.id})
+        result = getMongoDataBase()["speedgame"].find_one({"userID": member.id})
             
         if result == None:
             if member == interaction.user:

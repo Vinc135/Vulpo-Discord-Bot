@@ -25,9 +25,9 @@ class Modal(discord.ui.Modal, title="Modal"):
                 embed.set_thumbnail(url=interaction.user.avatar.url)
                 
                 await channel.send(embed=embed)
-                await interaction.followup.send("**<:v_haken:1119579684057907251> Dein Formular wurde gesendet.**", ephemeral=True)
+                await interaction.response.send_message("**<:v_haken:1119579684057907251> Dein Formular wurde gesendet.**", ephemeral=True)
             else:
-                await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der festgelegte Kanal zum Senden der Formulare existiert nicht mehr. Bitte informiere einen Admin.**", ephemeral=True)
+                await interaction.response.send_message("**<:v_kreuz:1119580775411621908> Der festgelegte Kanal zum Senden der Formulare existiert nicht mehr. Bitte informiere einen Admin.**", ephemeral=True)
 
 class CounterButton(discord.ui.Button):
     def __init__(self, dict=None, id=None, bot=None):
@@ -76,7 +76,7 @@ class fertig(discord.ui.Modal, title="Erstelle ein Embed"):
         
         await interaction.message.delete()
         await interaction.channel.send(embed=embed, view=CounterButtonView(dict, summe, self.bot))
-        await interaction.followup.send(f"**<:v_haken:1119579684057907251> Setup erfolgreich beendet.**", ephemeral=True)
+        await interaction.response.send_message(f"**<:v_haken:1119579684057907251> Setup erfolgreich beendet.**", ephemeral=True)
 
 class frage_hinzufügen(discord.ui.Modal, title="Füge eine Frage hinzu"):
     def __init__(self, bot=None):
@@ -91,9 +91,9 @@ class frage_hinzufügen(discord.ui.Modal, title="Füge eine Frage hinzu"):
             embed.add_field(name=self.children[0].value, value=self.children[1].value)
             embed.color = await getcolour(self, interaction.user)
             await interaction.message.edit(content="", embed=embed)
-            await interaction.followup.send("**<:v_haken:1119579684057907251> Frage wurde hinzugefügt.**", ephemeral=True)
+            await interaction.response.send_message("**<:v_haken:1119579684057907251> Frage wurde hinzugefügt.**", ephemeral=True)
         except:
-            await interaction.followup.send("❌ Dein angegebener Text ist zu lang.")
+            await interaction.response.send_message("❌ Dein angegebener Text ist zu lang.")
                 
 class setup_select(discord.ui.View):
     def __init__(self, bot=None, user=None, kanal=None):
@@ -146,6 +146,7 @@ class modal(commands.Cog):
     @app_commands.checks.has_permissions(manage_roles=True)
     async def modal(self, interaction: discord.Interaction, empfangskanal: discord.TextChannel):
         """Erstelle Modals."""
+        await interaction.response.defer()
         embed = discord.Embed(color=await getcolour(self, interaction.user), title="Modal Setup", description="Hier kannst du mithilfe von Buttons, Fragen zum Modal hinzufügen.")
         
         await interaction.followup.send(embed=embed, view=setup_select(self.bot, interaction.user, empfangskanal.id))
