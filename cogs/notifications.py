@@ -19,18 +19,18 @@ class nachricht(discord.ui.Modal, title="Eigene Nachricht"):
         
         await interaction.response.defer()
         
-        await getMongoDataBase()["channels"].insert_one({"guildID": interaction.guild.id, "channelID": self.kanal.id, "name": self.name, "username": self.username, "format": self.children[0].value})
+        getMongoDataBase()["channels"].insert_one({"guildID": interaction.guild.id, "channelID": self.kanal.id, "name": self.name, "username": self.username, "format": self.children[0].value})
         embed = discord.Embed(color=await getcolour(self, interaction.user), title="Youtube Benachrichtigung", description=f"Vulpo wird nun jedes neue Video vom Youtube Kanal mit dem Usernamen `@{self.username}` im Kanal {self.kanal.mention} posten (innerhalb von 60 Sekunden nach der Veröffentlichung eines Videos).")
         
         await interaction.followup.send(embed=embed)
     
 async def fetch_videos_from_database(self, channel_name):
     
-    document = await getMongoDataBase()["videos"].find({"channel_name": channel_name}).to_list(length=None)
+    document = getMongoDataBase()["videos"].find({"channel_name": channel_name}).to_list(length=None)
     return [doc["video_id"] for doc in document]
 
 async def insert_video_to_database(self, channel_name, video_id):
-    await getMongoDataBase()["videos"].insert_one({"channel_name": channel_name, "video_id": video_id})
+    getMongoDataBase()["videos"].insert_one({"channel_name": channel_name, "video_id": video_id})
 
 async def check_videos(self):
     try:

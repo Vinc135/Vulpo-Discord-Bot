@@ -388,7 +388,7 @@ async def get_job(self, user):
 async def set_job(self, user, job):
     await open_acc(self, user)
     
-    await getMongoDataBase()["economy"].update_one({"userID": user.id}, {"$set": {"job": job}})
+    getMongoDataBase()["economy"].update_one({"userID": user.id}, {"$set": {"job": job}})
         
 
 async def work(self, user):
@@ -410,7 +410,7 @@ async def addshopitem(self, guild, titel, beschreibung, preis, rolle):
 
 async def getshopitem(self, guild, titel):
     
-    result = await getMongoDataBase()["economy_shop"].find_one({"guildID": guild.id, "titel": titel})
+    result = getMongoDataBase()["economy_shop"].find_one({"guildID": guild.id, "titel": titel})
     
     if result is None:
         return False
@@ -432,7 +432,7 @@ async def removeshopitem(self, guild, titel):
     await db["economy_shop"].delete_one({"guildID": guild.id, "titel": titel})
 
 async def listshopitems(self, guild):
-    result = await getMongoDataBase()["economy_shop"].find({"guildID": guild.id})
+    result = getMongoDataBase()["economy_shop"].find({"guildID": guild.id})
     if result == ():
         return False
     else:
@@ -471,7 +471,7 @@ async def sellitem(self, user, titel):
             await db["economy_items"].delete_one({"userID": user.id, "titel": titel, "guildID": user.guild.id})
 
 async def checkbalance(self, user, preis):
-    result = await getMongoDataBase()["economy"].find_one({"userID": user.id})
+    result = getMongoDataBase()["economy"].find_one({"userID": user.id})
 
     rucksack = int(result["rucksack"])
     if int(rucksack) >= int(preis):
@@ -480,14 +480,14 @@ async def checkbalance(self, user, preis):
         return False
 
 async def getuseritems(self, user):
-    result = await getMongoDataBase()["economy_items"].find({"userID": user.id, "guildID": user.guild.id}).to_list(length=None)
+    result = getMongoDataBase()["economy_items"].find({"userID": user.id, "guildID": user.guild.id}).to_list(length=None)
     if result == ():
         return False
     else:        
         return result 
 
 async def userhasItem(self, user, titel):
-    result = await getMongoDataBase()["economy_items"].find({"userID": user.id, "guildID": user.guild.id, "titel": titel}).to_list(length=None)
+    result = getMongoDataBase()["economy_items"].find({"userID": user.id, "guildID": user.guild.id, "titel": titel}).to_list(length=None)
     if result == ():
         return False
     else:        
@@ -1030,7 +1030,7 @@ class economy(commands.Cog):
             await interaction.followup.send(embed=embed)
             return
         if i == True:
-            result = await getMongoDataBase()["economy_shop"].find_one({"guildID": interaction.guild.id, "titel": item})
+            result = getMongoDataBase()["economy_shop"].find_one({"guildID": interaction.guild.id, "titel": item})
             if result is None:
                 embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item nicht vorhanden", description=f"Das Item {item} gibt es nicht im Shop dieses Servers. Bitte gib den korrekten Namen für das Item an.")
                 
@@ -1090,7 +1090,7 @@ class economy(commands.Cog):
             await interaction.followup.send(embed=embed, ephemeral=True)
             return
         else:
-            preis = await getMongoDataBase()["economy_shop"].find_one({"guildID": interaction.guild.id, "titel": item})
+            preis = getMongoDataBase()["economy_shop"].find_one({"guildID": interaction.guild.id, "titel": item})
             Prozente = random.uniform(0.65, 1.15)
             verkaufspreis = round(Prozente * int(preis[0]))
             await sellitem(self, interaction.user, item)

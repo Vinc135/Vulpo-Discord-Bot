@@ -213,7 +213,7 @@ class message(commands.Cog):
     @commands.Cog.listener()
     async def on_member_remove(self, member):
         
-        result = await getMongoDataBase()['leavemsg'].find_one({"guildID": member.guild.id})
+        result = getMongoDataBase()['leavemsg'].find_one({"guildID": member.guild.id})
         
         if result == None:
             return
@@ -238,7 +238,7 @@ class message(commands.Cog):
         """Sendet die Verlassensnachricht an den Kanal, um zu sehen ob sie funktioniert."""
         member = interaction.user
         
-        result = await getMongoDataBase()['leavemsg'].find_one({"guildID": interaction.guild.id})
+        result = getMongoDataBase()['leavemsg'].find_one({"guildID": interaction.guild.id})
         
         if result == None:
             return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Auf diesem Server ist keine Verlassensnachricht eingerichtet. Deaktiviere diese zuerst!**", ephemeral=True)

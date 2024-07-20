@@ -138,277 +138,277 @@ async def bild_server_stats(bot, guild_id):
     return daten, stats, statsvoice
 
 async def get_server_stats(bot, guild_id):
-            #TEXT
-            
-            db = getMongoDataBase()
-            
-            stats = {}
-            alle_user_tages = {}
-            alle_channel_letzte_7tage = {}
-            alle_user_tages_voice = {}
-            voice7 = 0
-            voice30 = 0
-            
-            anzahl_letzte_7tage = 0
-            anzahl_letzte_30tage = 0
+    #TEXT
+    
+    db = getMongoDataBase()
+    
+    stats = {}
+    alle_user_tages = {}
+    alle_channel_letzte_7tage = {}
+    alle_user_tages_voice = {}
+    voice7 = 0
+    voice30 = 0
+    
+    anzahl_letzte_7tage = 0
+    anzahl_letzte_30tage = 0
 
-            heute = datetime.now().strftime('%Y-%m-%d')
-            
-            for i in range(31):
-                tag = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d')
-                tag_voice = (datetime.now() - timedelta(days=i)).strftime('%d.%m.%Y')
-                
-                result = await db['nachrichten'].find_one({"guildID": guild_id, "datum": tag})
-                
-                if result is None:
-                    continue
-                
-                json_data = result["daten"]
-                
-                print (json_data)
-                
-                server_stats = json.loads(json_data)
-                
-                for user_id, user_data in server_stats.items():
-                    for channel_id, channel_count in user_data.items():
-                        if(i <= 6):
-                            anzahl_letzte_7tage += channel_count
-                        anzahl_letzte_30tage += channel_count
-                        if tag == heute:
-                            # Aktivster Nutzer des Tages
-                            if user_id in alle_user_tages:
-                                alle_user_tages[user_id] += channel_count
-                            else:
-                                alle_user_tages[user_id] = channel_count
-                                
-                            result = await db['voice'].find({"guildID": guild_id, "zeit": tag_voice}).to_list(length=None)
-                                
-                            for r in result:
-                                user = r["userID"]
-                                anzahl = r["anzahl"]
-                                if user in alle_user_tages_voice:
-                                    alle_user_tages_voice[user] += anzahl
-                                else:
-                                    alle_user_tages_voice[user] = anzahl
-                            
-                        # Top-Kanal der letzten 7 Tage
-                        if channel_id in alle_channel_letzte_7tage:
-                            alle_channel_letzte_7tage[channel_id] += channel_count
+    heute = datetime.now().strftime('%Y-%m-%d')
+    
+    for i in range(31):
+        tag = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d')
+        tag_voice = (datetime.now() - timedelta(days=i)).strftime('%d.%m.%Y')
+        
+        result = await db['nachrichten'].find_one({"guildID": guild_id, "datum": tag})
+        
+        if result is None:
+            continue
+        
+        json_data = result["daten"]
+        
+        print (json_data)
+        
+        server_stats = json.loads(json_data)
+        
+        for user_id, user_data in server_stats.items():
+            for channel_id, channel_count in user_data.items():
+                if(i <= 6):
+                    anzahl_letzte_7tage += channel_count
+                anzahl_letzte_30tage += channel_count
+                if tag == heute:
+                    # Aktivster Nutzer des Tages
+                    if user_id in alle_user_tages:
+                        alle_user_tages[user_id] += channel_count
+                    else:
+                        alle_user_tages[user_id] = channel_count
+                        
+                    result = await db['voice'].find({"guildID": guild_id, "zeit": tag_voice}).to_list(length=None)
+                        
+                    for r in result:
+                        user = r["userID"]
+                        anzahl = r["anzahl"]
+                        if user in alle_user_tages_voice:
+                            alle_user_tages_voice[user] += anzahl
                         else:
-                            alle_channel_letzte_7tage[channel_id] = channel_count
-                #VOICE
-            
-                result = await db['voice'].find({"guildID": guild_id, "zeit": tag_voice}).to_list(length=None)
- 
-                for minuten in result:
-                    if(i <= 6):
-                        voice7 += int(minuten[0])
-                    voice30 += int(minuten[0])
+                            alle_user_tages_voice[user] = anzahl
                     
-            
-            #MESSAGES
-                           
-            stats["<:v_chat:1119577968457568327> Nachrichten (7 Tage)"] = anzahl_letzte_7tage
-            stats["<:v_chat:1119577968457568327> Nachrichten (30 Tage)"] = anzahl_letzte_30tage
-            
-            #CHANNEL
-            
-            msgs_channel = 0
-            
-            aktivster_channel = max(alle_channel_letzte_7tage.items(), key=lambda x: x[1])[0] if alle_channel_letzte_7tage else "Es gibt keinen aktivsten Kanal"   
-            if aktivster_channel != "Es gibt keinen aktivsten Kanal":
-                msgs_channel = alle_channel_letzte_7tage[aktivster_channel]
-            
-                stats["<:v_stats:1119583678083895346> Top Channel (7 Tage)"] = f"<#{aktivster_channel}> - {msgs_channel} Nachrichten"
-            else:
-                stats["<:v_stats:1119583678083895346> Top Channel (7 Tage)"] = f"{aktivster_channel} - {msgs_channel} Nachrichten"
+                # Top-Kanal der letzten 7 Tage
+                if channel_id in alle_channel_letzte_7tage:
+                    alle_channel_letzte_7tage[channel_id] += channel_count
+                else:
+                    alle_channel_letzte_7tage[channel_id] = channel_count
+        #VOICE
+    
+        result = await db['voice'].find({"guildID": guild_id, "zeit": tag_voice}).to_list(length=None)
 
-            stats["<:v_stats:1119583678083895346> Voice Minuten (7 Tage)"] = f"{voice7} Minuten"
-            stats["<:v_stats:1119583678083895346> Voice Minuten (30 Tage)"] = f"{voice30} Minuten"
+        for minuten in result:
+            if(i <= 6):
+                voice7 += int(minuten[0])
+            voice30 += int(minuten[0])
+            
+    
+    #MESSAGES
+                    
+    stats["<:v_chat:1119577968457568327> Nachrichten (7 Tage)"] = anzahl_letzte_7tage
+    stats["<:v_chat:1119577968457568327> Nachrichten (30 Tage)"] = anzahl_letzte_30tage
+    
+    #CHANNEL
+    
+    msgs_channel = 0
+    
+    aktivster_channel = max(alle_channel_letzte_7tage.items(), key=lambda x: x[1])[0] if alle_channel_letzte_7tage else "Es gibt keinen aktivsten Kanal"   
+    if aktivster_channel != "Es gibt keinen aktivsten Kanal":
+        msgs_channel = alle_channel_letzte_7tage[aktivster_channel]
+    
+        stats["<:v_stats:1119583678083895346> Top Channel (7 Tage)"] = f"<#{aktivster_channel}> - {msgs_channel} Nachrichten"
+    else:
+        stats["<:v_stats:1119583678083895346> Top Channel (7 Tage)"] = f"{aktivster_channel} - {msgs_channel} Nachrichten"
 
-            #USER
-            
-            msgs_user = 0
-            talk_user = 0
-            talk_msgs_user = 0
-            
-            aktivster_nutzer_voice_str = "Es gibt keinen aktivsten Nutzer"
-            aktivster_nutzer_str = "Es gibt keinen aktivsten Nutzer"
-            
-            aktivster_nutzer_voice = max(alle_user_tages_voice.items(), key=lambda x: x[1])[0] if alle_user_tages_voice else "Es gibt keinen aktivsten Nutzer"
-            aktivster_nutzer = max(alle_user_tages.items(), key=lambda x: x[1])[0] if alle_user_tages else "Es gibt keinen aktivsten Nutzer"
-            if aktivster_nutzer != "Es gibt keinen aktivsten Nutzer":
-                aktivster_nutzer_str = f"<@{aktivster_nutzer}>"
-                msgs_user = alle_user_tages[aktivster_nutzer]
-                talk_msgs_user = alle_user_tages_voice[aktivster_nutzer] if aktivster_nutzer in alle_user_tages_voice else "0"
-            if aktivster_nutzer_voice != "Es gibt keinen aktivsten Nutzer":
-                aktivster_nutzer_voice_str = f"<@{aktivster_nutzer_voice}>"
-                talk_user = alle_user_tages_voice[aktivster_nutzer_voice]
-            
-            if(aktivster_nutzer_str != aktivster_nutzer_voice_str):
-                stats["<:v_user:1119585450923929672> Aktivste Nutzer des Tages"] = f"{aktivster_nutzer_str} - {msgs_user} Nachrichten \n{aktivster_nutzer_voice_str} - {talk_user} Minuten"
-            else:
-                stats["<:v_user:1119585450923929672> Aktivste Nutzer des Tages"] = f"{aktivster_nutzer_str} - {msgs_user} Nachrichten, {talk_msgs_user} Minuten"
-            
-            return stats
+    stats["<:v_stats:1119583678083895346> Voice Minuten (7 Tage)"] = f"{voice7} Minuten"
+    stats["<:v_stats:1119583678083895346> Voice Minuten (30 Tage)"] = f"{voice30} Minuten"
+
+    #USER
+    
+    msgs_user = 0
+    talk_user = 0
+    talk_msgs_user = 0
+    
+    aktivster_nutzer_voice_str = "Es gibt keinen aktivsten Nutzer"
+    aktivster_nutzer_str = "Es gibt keinen aktivsten Nutzer"
+    
+    aktivster_nutzer_voice = max(alle_user_tages_voice.items(), key=lambda x: x[1])[0] if alle_user_tages_voice else "Es gibt keinen aktivsten Nutzer"
+    aktivster_nutzer = max(alle_user_tages.items(), key=lambda x: x[1])[0] if alle_user_tages else "Es gibt keinen aktivsten Nutzer"
+    if aktivster_nutzer != "Es gibt keinen aktivsten Nutzer":
+        aktivster_nutzer_str = f"<@{aktivster_nutzer}>"
+        msgs_user = alle_user_tages[aktivster_nutzer]
+        talk_msgs_user = alle_user_tages_voice[aktivster_nutzer] if aktivster_nutzer in alle_user_tages_voice else "0"
+    if aktivster_nutzer_voice != "Es gibt keinen aktivsten Nutzer":
+        aktivster_nutzer_voice_str = f"<@{aktivster_nutzer_voice}>"
+        talk_user = alle_user_tages_voice[aktivster_nutzer_voice]
+    
+    if(aktivster_nutzer_str != aktivster_nutzer_voice_str):
+        stats["<:v_user:1119585450923929672> Aktivste Nutzer des Tages"] = f"{aktivster_nutzer_str} - {msgs_user} Nachrichten \n{aktivster_nutzer_voice_str} - {talk_user} Minuten"
+    else:
+        stats["<:v_user:1119585450923929672> Aktivste Nutzer des Tages"] = f"{aktivster_nutzer_str} - {msgs_user} Nachrichten, {talk_msgs_user} Minuten"
+    
+    return stats
 
 async def bild_user_stats(bot, guild_id, user_id):
-            stats = []
-            daten = []
-            all_messages = {}
-            statsvoice = []
+    stats = []
+    daten = []
+    all_messages = {}
+    statsvoice = []
 
-            db = getMongoDataBase()
+    db = getMongoDataBase()
 
-            for i in range(14):
-                tag = (datetime.now() - timedelta(days=13-i)).strftime('%Y-%m-%d')
-                tag_voice = (datetime.now() - timedelta(days=i)).strftime('%d.%m.%Y')
+    for i in range(14):
+        tag = (datetime.now() - timedelta(days=13-i)).strftime('%Y-%m-%d')
+        tag_voice = (datetime.now() - timedelta(days=i)).strftime('%d.%m.%Y')
 
-                tag_format = (datetime.now() - timedelta(days=13-i)).strftime('%d.%m')
-                daten.append(tag_format)
-                
-                result = await db['nachrichten'].find_one({"guildID": guild_id, "datum": tag})
-                
-                if result is None:
-                    all_messages[tag] = 0
-                else:
-                    json_data = json.loads(result["daten"])
-                    
-                    total_messages = 0
-                    for id, user_data in json_data.items():
-                        if(id == str(user_id)):
-                            for channel_count in user_data.values():
-                                total_messages += channel_count
-                    all_messages[tag] = total_messages
-                    
-                #VOICE
-                result = await db["nachrichten"].find({"guildID": guild_id, "datum": tag, "userID": user_id}).to_list(length=None)
- 
-                anzahl = 0
- 
-                for minuten in result:
-                    anzahl += minuten["anzahl"]
-                statsvoice.append(anzahl)
+        tag_format = (datetime.now() - timedelta(days=13-i)).strftime('%d.%m')
+        daten.append(tag_format)
+        
+        result = await db['nachrichten'].find_one({"guildID": guild_id, "datum": tag})
+        
+        if result is None:
+            all_messages[tag] = 0
+        else:
+            json_data = json.loads(result["daten"])
             
-            for entry in all_messages.values():
-                stats.append(entry)
-                
-            statsvoice = statsvoice[::-1]
+            total_messages = 0
+            for id, user_data in json_data.items():
+                if(id == str(user_id)):
+                    for channel_count in user_data.values():
+                        total_messages += channel_count
+            all_messages[tag] = total_messages
             
-            return daten, stats, statsvoice
+        #VOICE
+        result = await db["nachrichten"].find({"guildID": guild_id, "datum": tag, "userID": user_id}).to_list(length=None)
+
+        anzahl = 0
+
+        for minuten in result:
+            anzahl += minuten["anzahl"]
+        statsvoice.append(anzahl)
+    
+    for entry in all_messages.values():
+        stats.append(entry)
+        
+    statsvoice = statsvoice[::-1]
+    
+    return daten, stats, statsvoice
 
 
 async def get_user_stats(bot, user_id, guild_id):
-            #TEXT
-            stats = {}
-            voice7 = 0
-            voice30 = 0
-            all_users_msgs = {}
-            all_users_talk = {}
-            
-            anzahl_letzte_7tage = 0
-            anzahl_letzte_30tage = 0
-            
-            db = getMongoDataBase()
-            
-            for i in range(31):
-                tag = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d')
-                tag_voice = (datetime.now() - timedelta(days=i)).strftime('%d.%m.%Y')
+    #TEXT
+    stats = {}
+    voice7 = 0
+    voice30 = 0
+    all_users_msgs = {}
+    all_users_talk = {}
+    
+    anzahl_letzte_7tage = 0
+    anzahl_letzte_30tage = 0
+    
+    db = getMongoDataBase()
+    
+    for i in range(31):
+        tag = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d')
+        tag_voice = (datetime.now() - timedelta(days=i)).strftime('%d.%m.%Y')
+        
+        result = await db['nachrichten'].find_one({"guildID": guild_id, "datum": tag})
+        
+        if result is None:
+            continue
+        
+        server_stats = json.loads(result["daten"])
+        
+        for id, user_data in server_stats.items():
+            for channel_id, channel_count in user_data.items():
+                if(id == str(user_id)):
+                    if(i <= 6):
+                        anzahl_letzte_7tage += channel_count
+                    anzahl_letzte_30tage += channel_count
+                if(id in all_users_msgs):
+                    all_users_msgs[id] += channel_count
+                else:
+                    all_users_msgs[id] = channel_count
                 
-                result = await db['nachrichten'].find_one({"guildID": guild_id, "datum": tag})
-                
-                if result is None:
-                    continue
-                
-                server_stats = json.loads(result["daten"])
-                
-                for id, user_data in server_stats.items():
-                    for channel_id, channel_count in user_data.items():
-                        if(id == str(user_id)):
-                            if(i <= 6):
-                                anzahl_letzte_7tage += channel_count
-                            anzahl_letzte_30tage += channel_count
-                        if(id in all_users_msgs):
-                            all_users_msgs[id] += channel_count
-                        else:
-                            all_users_msgs[id] = channel_count
                         
-                                
-                #VOICE
-            
-                result = await db['voice'].find({"guildID": guild_id, "zeit": tag_voice}).to_list(length=None)
- 
-                for user in result:
-                    id = user[0]
-                    if(user[0] == str(user_id)):
-                        if(i <= 6):
-                            voice7 += int(user[1])
-                        voice30 += int(user[1])
-                    
-                    if(id in all_users_talk):
-                        all_users_talk[id] += user[1]
-                    else:
-                        all_users_talk[id] = user[1]
-                    
-            
-            #MESSAGES
-                           
-            stats["<:v_chat:1119577968457568327> Nachrichten (7 Tage)"] = anzahl_letzte_7tage
-            stats["<:v_chat:1119577968457568327> Nachrichten (30 Tage)"] = anzahl_letzte_30tage
+        #VOICE
+    
+        result = await db['voice'].find({"guildID": guild_id, "zeit": tag_voice}).to_list(length=None)
 
-            stats["<:v_stats:1119583678083895346> Voice Minuten (7 Tage)"] = f"{voice7} Minuten"
-            stats["<:v_stats:1119583678083895346> Voice Minuten (30 Tage)"] = f"{voice30} Minuten"
+        for user in result:
+            id = user[0]
+            if(user[0] == str(user_id)):
+                if(i <= 6):
+                    voice7 += int(user[1])
+                voice30 += int(user[1])
             
-            #RANK
-            
-            rank_msg = ""
-            
-            sortedUsersMSGS = dict(sorted(all_users_msgs.items(), key=lambda item: item[1], reverse=True))
-            sortedUsersTalk = dict(sorted(all_users_talk.items(), key=lambda item: item[1], reverse=True))
-            if(str(user_id) in sortedUsersMSGS):
-                MSGRank = list(sortedUsersMSGS.keys()).index(str(user_id))+1
-                rank_msg = f"**#{MSGRank}** (Nachrichten)"
+            if(id in all_users_talk):
+                all_users_talk[id] += user[1]
             else:
-                rank_msg = f"**#{len(sortedUsersMSGS)+1}** (Nachrichten)"
-            if(str(user_id) in sortedUsersTalk):
-                MSGRank = list(sortedUsersTalk.keys()).index(str(user_id))+1
-                rank_msg += f"\n\n**#{MSGRank}** (Sprachzeit)"
-            else:
-                rank_msg += f"\n\n**#{len(sortedUsersTalk)+1}** (Sprachzeit)"
+                all_users_talk[id] = user[1]
             
-            stats["<:v_stats:1119583678083895346> Server Rank"] = rank_msg
-            
-            return stats
+    
+    #MESSAGES
+                    
+    stats["<:v_chat:1119577968457568327> Nachrichten (7 Tage)"] = anzahl_letzte_7tage
+    stats["<:v_chat:1119577968457568327> Nachrichten (30 Tage)"] = anzahl_letzte_30tage
+
+    stats["<:v_stats:1119583678083895346> Voice Minuten (7 Tage)"] = f"{voice7} Minuten"
+    stats["<:v_stats:1119583678083895346> Voice Minuten (30 Tage)"] = f"{voice30} Minuten"
+    
+    #RANK
+    
+    rank_msg = ""
+    
+    sortedUsersMSGS = dict(sorted(all_users_msgs.items(), key=lambda item: item[1], reverse=True))
+    sortedUsersTalk = dict(sorted(all_users_talk.items(), key=lambda item: item[1], reverse=True))
+    if(str(user_id) in sortedUsersMSGS):
+        MSGRank = list(sortedUsersMSGS.keys()).index(str(user_id))+1
+        rank_msg = f"**#{MSGRank}** (Nachrichten)"
+    else:
+        rank_msg = f"**#{len(sortedUsersMSGS)+1}** (Nachrichten)"
+    if(str(user_id) in sortedUsersTalk):
+        MSGRank = list(sortedUsersTalk.keys()).index(str(user_id))+1
+        rank_msg += f"\n\n**#{MSGRank}** (Sprachzeit)"
+    else:
+        rank_msg += f"\n\n**#{len(sortedUsersTalk)+1}** (Sprachzeit)"
+    
+    stats["<:v_stats:1119583678083895346> Server Rank"] = rank_msg
+    
+    return stats
 
 
 async def update_all(self):
-            result = await getMongoDataBase()["upstats"].find().to_list(length=None)
-            for ergebnis in result:
-                try:
-                    guild = self.bot.get_guild(int(ergebnis[0]))
-                    if guild:
-                        kanal = guild.get_channel(int(ergebnis[1]))
-                        if kanal:
-                            online = 0
-                            offline = 0
-                            dnd = 0
-                            idle = 0
-                            bots = 0
-                            for user in guild.members:
-                                if str(user.status.name) == "online":
-                                    online += 1
-                                if str(user.status.name) == "dnd":
-                                    dnd += 1
-                                if str(user.status.name) == "idle":
-                                    idle += 1
-                                if str(user.status.name) == "offline":
-                                    offline += 1
-                                if user.bot:
-                                    bots += 1
-                            finaltext = ergebnis[2].replace("%usercount", str(guild.member_count)).replace("%notoffline", str(int(guild.member_count) - offline)).replace("%membercount", str(int(guild.member_count) - bots)).replace("%botcount", str(bots)).replace("%online", str(online)).replace("%dnd", str(dnd)).replace("%idle", str(idle)).replace("%offline", str(offline))
-                            await kanal.edit(name=finaltext)
-                except:
-                    continue
+    result = getMongoDataBase()["upstats"].find().to_list(length=None)
+    for ergebnis in result:
+        try:
+            guild = self.bot.get_guild(int(ergebnis[0]))
+            if guild:
+                kanal = guild.get_channel(int(ergebnis[1]))
+                if kanal:
+                    online = 0
+                    offline = 0
+                    dnd = 0
+                    idle = 0
+                    bots = 0
+                    for user in guild.members:
+                        if str(user.status.name) == "online":
+                            online += 1
+                        if str(user.status.name) == "dnd":
+                            dnd += 1
+                        if str(user.status.name) == "idle":
+                            idle += 1
+                        if str(user.status.name) == "offline":
+                            offline += 1
+                        if user.bot:
+                            bots += 1
+                    finaltext = ergebnis[2].replace("%usercount", str(guild.member_count)).replace("%notoffline", str(int(guild.member_count) - offline)).replace("%membercount", str(int(guild.member_count) - bots)).replace("%botcount", str(bots)).replace("%online", str(online)).replace("%dnd", str(dnd)).replace("%idle", str(idle)).replace("%offline", str(offline))
+                    await kanal.edit(name=finaltext)
+        except:
+            continue
 
 
 class Stats(commands.Cog):

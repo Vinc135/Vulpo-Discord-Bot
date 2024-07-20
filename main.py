@@ -14,7 +14,7 @@ import aiomysql
 from googletrans import Translator
 from utils.utils import discord_timestamp
 import time
-from credentials import token
+#from credentials import token
 from utils.MongoDB import getMongoDataBase
 from cogs.economy import update_account
 
@@ -327,7 +327,7 @@ class Vulpo(commands.AutoShardedBot):
         
         await db["banned"].delete_many({})
         
-        guild = await bot.fetch_guild(787341728716816424)
+        guild = await bot.fetch_guild(925729625580113951)
         banned_users = [ban async for ban in guild.bans()]
         for entry in banned_users:
             banned_user = entry.user
@@ -433,8 +433,8 @@ async def on_app_command_error(interaction: discord.Interaction, error: AppComma
         return
     else:
         await send_error("Unbekannt", "<:v_kreuz:1119580775411621908> Ein unbekannter Fehler ist aufgetreten.\nBitte öffne ein Ticket im [Supportserver](https://discord.gg/49jD3VXksp)", interaction)
-        guilds = await bot.fetch_guild(787341728716816424)
-        channels = await guilds.fetch_channel(1220037646408089600)
+        guilds = await bot.fetch_guild(925729625580113951)
+        channels = await guilds.fetch_channel(925732898634600458)
 
         traceback_string = traceback.format_exception(type(error), error, error.__traceback__)
 
@@ -453,7 +453,7 @@ async def on_app_command_error(interaction: discord.Interaction, error: AppComma
 
 @bot.command()
 @commands.is_owner()
-async def sync(ctx, serverid: int=None):
+async def sync(ctx, serverid=None):
     """Synchronisiere bestimmte Commands."""
     if serverid is None:
         try:
@@ -476,26 +476,26 @@ async def sync(ctx, serverid: int=None):
 
 @bot.tree.context_menu(name="Nachricht melden")
 async def nachricht_melden(interaction: discord.Interaction, message: discord.Message):
-            result = await getMongoDataBase()["reportlog"].find_one({"guildID": interaction.guild.id})
-            if result == None:
-                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Diese Funktion ist hier nicht aktiviert.**", ephemeral=True)
-            try:
-                channel = await interaction.guild.fetch_channel(int(result["channelID"]))
-                if channel == None:
-                    return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Kanal des Reportlogs existiert nicht mehr. Bitte melde dies dem lokalen Serverteam.**", ephemeral=True)
-                else:
-                    embed = discord.Embed(title="Nachricht Meldung", description=f"""
+    result = getMongoDataBase()["reportlog"].find_one({"guildID": interaction.guild.id})
+    if result == None:
+        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Diese Funktion ist hier nicht aktiviert.**", ephemeral=True)
+    try:
+        channel = await interaction.guild.fetch_channel(int(result["channelID"]))
+        if channel == None:
+            return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Kanal des Reportlogs existiert nicht mehr. Bitte melde dies dem lokalen Serverteam.**", ephemeral=True)
+        else:
+            embed = discord.Embed(title="Nachricht Meldung", description=f"""
 Der User {interaction.user.mention} hat eine Nachricht von {message.author.mention} gemeldet.
 
 `Nachricht`: {message.content}
 """, color=discord.Color.red())
-                    
-                    embed.set_thumbnail(url=interaction.guild.icon)
-                    embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-                    await channel.send(embed=embed, view=reportmsg(message, bot))
-                    await interaction.followup.send(f"`Du hast eine Nachricht von` {message.author.mention} `gemeldet.`", ephemeral=True)
-            except:
-                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Kanal des Reportlogs existiert nicht mehr. Bitte melde dies dem lokalen Serverteam.**", ephemeral=True)
+            
+            embed.set_thumbnail(url=interaction.guild.icon)
+            embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+            await channel.send(embed=embed, view=reportmsg(message, bot))
+            await interaction.followup.send(f"`Du hast eine Nachricht von` {message.author.mention} `gemeldet.`", ephemeral=True)
+    except:
+        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Kanal des Reportlogs existiert nicht mehr. Bitte melde dies dem lokalen Serverteam.**", ephemeral=True)
 
 
-bot.run(token, reconnect=True)
+bot.run("OTM4NTAxODA3NzA4MTkyODQ5.GNd5eH.puo8MwQQ1W6owkdu2y8XafqfHw6qz1oKtU_JrU", reconnect=True)

@@ -391,7 +391,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
     async def vote(self, interaction: discord.Interaction):
         """Zeigt an, wann du wieder für Vulpo voten kannst."""
                 
-        result = await getMongoDataBase()["vote"].find_one({"userid": interaction.user.id})
+        result = getMongoDataBase()["vote"].find_one({"userid": interaction.user.id})
         
         if result == None:
             embed = discord.Embed(title="Du kannst voten", url="https://top.gg/bot/925799559576322078/vote", description="""
@@ -495,7 +495,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
         #db
         t_1 = time.perf_counter()
         
-        await getMongoDataBase()["levelsystem"].find_one({"client_id": 925729625580113951})
+        getMongoDataBase()["levelsystem"].find_one({"client_id": 925729625580113951})
 
         t_2 = time.perf_counter()
         time_delta1 = round((t_2 - t_1) * 1000)

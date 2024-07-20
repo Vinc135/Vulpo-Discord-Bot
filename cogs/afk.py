@@ -94,6 +94,7 @@ AFK gegangen {discord_timestamp(t2, 'R')}.""")
     @app_commands.guild_only()
     async def afk(self, interaction: discord.Interaction, grund: str="Bitte nicht stören"):
         """Setze dich AFK."""
+        await interaction.response.defer()
         db = getMongoDataBase()
         afk_collection = db['afk']
         afk_nachrichten_collection = db['afk_nachrichten']

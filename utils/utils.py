@@ -157,7 +157,7 @@ def random_color():
 
 async def addwarn(self, user, interaction, grund):
     
-    db = await getMongoDataBase()
+    db = getMongoDataBase()
     
     warns = await db["warns"].find_one({"guildID": interaction.guild.id, "client": user.id})
     
@@ -174,8 +174,7 @@ async def addwarn(self, user, interaction, grund):
 
 async def automod(self, user, guild, warnanzahl, interaction):
     
-    db = await getMongoDataBase()
-    
+    db = getMongoDataBase()
     actions = await db["automod"].find_one({"guildID": guild.id, "warnanzahl": warnanzahl})
     
     if(actions == None):
@@ -186,12 +185,7 @@ async def automod(self, user, guild, warnanzahl, interaction):
         
         seconds = 86400
         
-        if "time" in actions:
-            seconds = convert(actions["time"])
-        
-        print(seconds)
-        
-        dt = time_end + datetime.timedelta(seconds=seconds)
+        dt = time_end + datetime.timedelta(seconds=int(actions["time"]))
         await user.timeout(dt ,reason="Automod wurde ausgelöst")
         await interaction.channel.send(f"🚨 **Der Benutzer {user.mention} wurde für {seconds} Sekunden getimeoutet.** 🚨\nGrund: Automod wurde ausgelöst ({warnanzahl} Verwarnungen).")
         

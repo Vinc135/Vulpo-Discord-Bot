@@ -18,7 +18,6 @@ class Automod(commands.Cog):
     @app_commands.checks.has_permissions(kick_members=True)
     async def addaction(self, interaction: discord.Interaction, warnanzahl: typing.Literal[1,2,3,4,5,6,7,8,9,10], aktion: typing.Literal["Kick","Ban","Timeout (Bitte Zeit angeben)"], time: str = None):
         """Füge eine Aktion für die automatische Moderation hinzu."""
-        
         await interaction.response.defer()
         
         guild_id = interaction.guild.id
@@ -52,7 +51,10 @@ class Automod(commands.Cog):
         await db['automod'].insert_one({"guildID": guild_id, "warnanzahl": warnanzahl, "aktion": aktion})
         
         await interaction.followup.send(f"**<:v_haken:1119579684057907251> Eintrag erstellt. Jeder User mit einer Anzahl an Verwarnungen von {warnanzahl} wird erhält bei der nächsten Verwarnung einen {aktion}.**")
-                
+
+    @automod.command()
+    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
+    @app_commands.checks.has_permissions(kick_members=True)     
     async def removeaction(self, interaction: discord.Interaction, warnanzahl: typing.Literal[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]):
         """Entferne eine Aktion von der automatischen Moderation."""
         
@@ -76,7 +78,6 @@ class Automod(commands.Cog):
     @app_commands.checks.has_permissions(kick_members=True)
     async def liste(self, interaction: discord.Interaction):
         """Erhalte eine Liste von den Automod Aktionen."""
-        
         await interaction.response.defer()
         
         db = getMongoDataBase()
@@ -121,9 +122,9 @@ class Automod(commands.Cog):
         
         try:
             await user.send(embed=dm)
-            await interaction.followup.send(embed=embed)
         except:
-            await interaction.followup.send(embed=embed)
+            pass
+        await interaction.followup.send(embed=embed)
         
     @app_commands.command()
     @app_commands.guild_only()
@@ -167,7 +168,6 @@ class Automod(commands.Cog):
             return
         warnembed = discord.Embed(colour=await getcolour(self, interaction.user), description=f"Alle Verwarnungen von {user} (**{user.id}**).")
         warnembed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-        warn
         a = 0
         for warn in result:
             a += 1

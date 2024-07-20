@@ -196,6 +196,7 @@ class ClosebuttonView(discord.ui.View):
         embed.add_field(name=Themaheader, value=Thema)
         embed.add_field(name=Claimer, value=interaction.user.mention)
 
+        # Overwrites dictionary
         overwrites = {
             interaction.guild.default_role: discord.PermissionOverwrite(
                 read_messages=False,
@@ -221,7 +222,7 @@ class ClosebuttonView(discord.ui.View):
             
         await message.edit(content=f"{member.mention}", embed=embed, view=self)
 
-        log = await getMongoDataBase()["ticketlog"].find_one({"guildID": interaction.guild_id})
+        log = getMongoDataBase()["ticketlog"].find_one({"guildID": interaction.guild_id})
         if log:
             ticketlog = await interaction.guild.fetch_channel(int(log['channelID']))
             if ticketlog:
@@ -229,7 +230,6 @@ class ClosebuttonView(discord.ui.View):
                 embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
                     
                 await ticketlog.send(embed=embed)
-                
 
     @discord.ui.button(label="Userinfo", emoji="<:v_karte:1119580106822795324>", custom_id="Button-UserInfo", style=discord.ButtonStyle.grey)
     async def button_userinfo(self, interaction: discord.Interaction, button):

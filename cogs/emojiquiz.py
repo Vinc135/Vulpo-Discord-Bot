@@ -40,7 +40,7 @@ class buttons(discord.ui.View):
     
     @discord.ui.button(label='Anfangsbuchstabe', style=discord.ButtonStyle.grey, custom_id="dvekzlfdigqwjvliz", emoji="💡")
     async def letter(self, interaction: discord.Interaction, button: discord.ui.Button):
-        result = await getMongoDataBase()["eqcurrent"].find_one({"guildID": interaction.guild.id})
+        result = getMongoDataBase()["eqcurrent"].find_one({"guildID": interaction.guild.id})
         if result is not None:
             return await interaction.followup.send(f"💡 Der erste Buchstabe des gesuchten Wortes ist __**{result['begriff'][0]}**__. Mehr Tipps gebe ich aber nicht.", ephemeral=True)
         await interaction.followup.send(f"❌ Es gibt aktuell keine Lösung. Das Emojiquiz wurde wahrscheinlich auf diesem Sevrer ausgeschalten.", ephemeral=True)
@@ -58,7 +58,7 @@ async def updateLeaderbord(bot, userid):
         await db["eq_leaderboard"].insert_one({"userID": userid, "anzahl": 1})
 
 async def check_channel(self, msg):
-    result = await getMongoDataBase()["eq"].find_one({"guildID": msg.guild.id})
+    result = getMongoDataBase()["eq"].find_one({"guildID": msg.guild.id})
     if result is None:
         return False
     else:

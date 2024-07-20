@@ -41,12 +41,12 @@ class Supserver(commands.Cog):
     @commands.Cog.listener()
     async def on_member_ban(self, guild, user):
         if guild.id == 925729625580113951:
-            await getMongoDataBase()['banned'].insert_one({"userID": user.id, "reason": "Unbekannt"})
+            getMongoDataBase()['banned'].insert_one({"userID": user.id, "reason": "Unbekannt"})
             
     @commands.Cog.listener()
     async def on_member_unban(self, guild, user):
         if guild.id == 925729625580113951:
-            await getMongoDataBase()['banned'].delete_one({"userID": user.id})
+            getMongoDataBase()['banned'].delete_one({"userID": user.id})
         
 
     # @app_commands.command()
