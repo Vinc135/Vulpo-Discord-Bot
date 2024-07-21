@@ -208,8 +208,8 @@ async def get_server_stats(bot, guild_id):
     
     #MESSAGES
                     
-    stats["<:v_chat:1119577968457568327> Nachrichten (7 Tage)"] = anzahl_letzte_7tage
-    stats["<:v_chat:1119577968457568327> Nachrichten (30 Tage)"] = anzahl_letzte_30tage
+    stats["<:v_31:1264264994774585445> Nachrichten (7 Tage)"] = anzahl_letzte_7tage
+    stats["<:v_31:1264264994774585445> Nachrichten (30 Tage)"] = anzahl_letzte_30tage
     
     #CHANNEL
     
@@ -219,12 +219,12 @@ async def get_server_stats(bot, guild_id):
     if aktivster_channel != "Es gibt keinen aktivsten Kanal":
         msgs_channel = alle_channel_letzte_7tage[aktivster_channel]
     
-        stats["<:v_stats:1119583678083895346> Top Channel (7 Tage)"] = f"<#{aktivster_channel}> - {msgs_channel} Nachrichten"
+        stats["<:v_32:1264265009475747841> Top Channel (7 Tage)"] = f"<#{aktivster_channel}> - {msgs_channel} Nachrichten"
     else:
-        stats["<:v_stats:1119583678083895346> Top Channel (7 Tage)"] = f"{aktivster_channel} - {msgs_channel} Nachrichten"
+        stats["<:v_32:1264265009475747841> Top Channel (7 Tage)"] = f"{aktivster_channel} - {msgs_channel} Nachrichten"
 
-    stats["<:v_stats:1119583678083895346> Voice Minuten (7 Tage)"] = f"{voice7} Minuten"
-    stats["<:v_stats:1119583678083895346> Voice Minuten (30 Tage)"] = f"{voice30} Minuten"
+    stats["<:v_32:1264265009475747841> Voice Minuten (7 Tage)"] = f"{voice7} Minuten"
+    stats["<:v_32:1264265009475747841> Voice Minuten (30 Tage)"] = f"{voice30} Minuten"
 
     #USER
     
@@ -246,9 +246,9 @@ async def get_server_stats(bot, guild_id):
         talk_user = alle_user_tages_voice[aktivster_nutzer_voice]
     
     if(aktivster_nutzer_str != aktivster_nutzer_voice_str):
-        stats["<:v_user:1119585450923929672> Aktivste Nutzer des Tages"] = f"{aktivster_nutzer_str} - {msgs_user} Nachrichten \n{aktivster_nutzer_voice_str} - {talk_user} Minuten"
+        stats["<:v_56:1264265471339925575> Aktivste Nutzer des Tages"] = f"{aktivster_nutzer_str} - {msgs_user} Nachrichten \n{aktivster_nutzer_voice_str} - {talk_user} Minuten"
     else:
-        stats["<:v_user:1119585450923929672> Aktivste Nutzer des Tages"] = f"{aktivster_nutzer_str} - {msgs_user} Nachrichten, {talk_msgs_user} Minuten"
+        stats["<:v_56:1264265471339925575> Aktivste Nutzer des Tages"] = f"{aktivster_nutzer_str} - {msgs_user} Nachrichten, {talk_msgs_user} Minuten"
     
     return stats
 
@@ -353,11 +353,11 @@ async def get_user_stats(bot, user_id, guild_id):
     
     #MESSAGES
                     
-    stats["<:v_chat:1119577968457568327> Nachrichten (7 Tage)"] = anzahl_letzte_7tage
-    stats["<:v_chat:1119577968457568327> Nachrichten (30 Tage)"] = anzahl_letzte_30tage
+    stats["<:v_31:1264264994774585445> Nachrichten (7 Tage)"] = anzahl_letzte_7tage
+    stats["<:v_31:1264264994774585445> Nachrichten (30 Tage)"] = anzahl_letzte_30tage
 
-    stats["<:v_stats:1119583678083895346> Voice Minuten (7 Tage)"] = f"{voice7} Minuten"
-    stats["<:v_stats:1119583678083895346> Voice Minuten (30 Tage)"] = f"{voice30} Minuten"
+    stats["<:v_32:1264265009475747841> Voice Minuten (7 Tage)"] = f"{voice7} Minuten"
+    stats["<:v_32:1264265009475747841> Voice Minuten (30 Tage)"] = f"{voice30} Minuten"
     
     #RANK
     
@@ -376,7 +376,7 @@ async def get_user_stats(bot, user_id, guild_id):
     else:
         rank_msg += f"\n\n**#{len(sortedUsersTalk)+1}** (Sprachzeit)"
     
-    stats["<:v_stats:1119583678083895346> Server Rank"] = rank_msg
+    stats["<:v_32:1264265009475747841> Server Rank"] = rank_msg
     
     return stats
 
@@ -528,7 +528,7 @@ class Stats(commands.Cog):
         server_stats = await get_server_stats(self.bot, interaction.guild.id)
         embed = discord.Embed(title=f"Stats für {interaction.guild.name}", color=await getcolour(self, interaction.user))
         for stat_name, stat_value in server_stats.items():
-            if stat_name == "<:v_user:1119585450923929672> Aktivste Nutzer des Tages" or stat_name == "<:v_stats:1119583678083895346> Top Channel (7 Tage)":
+            if stat_name == "<:v_56:1264265471339925575> Aktivste Nutzer des Tages" or stat_name == "<:v_32:1264265009475747841> Top Channel (7 Tage)":
                 embed.add_field(name=f"{stat_name}", value=stat_value, inline=False)
             else:
                 embed.add_field(name=stat_name, value=stat_value, inline=True)
@@ -556,7 +556,7 @@ class Stats(commands.Cog):
         embed = discord.Embed(title=f"Stats für {member}", color=await getcolour(self, interaction.user))
         for stat_name, stat_value in server_stats.items():
             embed.add_field(name=stat_name, value=stat_value, inline=False)
-            #if stat_name == "<:v_stats:1119583678083895346> Voice Minuten (7 Tage)" or stat_name == "<:v_stats:1119583678083895346> Server Rank":
+            #if stat_name == "<:v_32:1264265009475747841> Voice Minuten (7 Tage)" or stat_name == "<:v_32:1264265009475747841> Server Rank":
             #    embed.add_field(name=f"{stat_name}", value=stat_value, inline=False)
             #else:
             #    embed.add_field(name=stat_name, value=stat_value, inline=True)
@@ -580,7 +580,7 @@ class Stats(commands.Cog):
         
         #status = await haspremium_forserver(self, interaction.guild)
         #if status == False:
-        #    return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
+        #    return await interaction.followup.send("**<:v_9:1264264656831119462> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
         
         db = getMongoDataBase()
         
@@ -588,10 +588,10 @@ class Stats(commands.Cog):
         
         if result == None:
             await db["stats_blacklist"].insert_one({"guildID": interaction.guild.id, "channelID": kanal.id})
-            return await interaction.followup.send(f"**<:v_haken:1119579684057907251> {kanal.mention} ist nun auf der Blacklist.**")
+            return await interaction.followup.send(f"**<:v_158:1264268251916009553> {kanal.mention} ist nun auf der Blacklist.**")
         
         await db["stats_blacklist"].delete_one({"guildID": interaction.guild.id, "channelID": kanal.id})
-        return await interaction.followup.send(f"**<:v_haken:1119579684057907251> {kanal.mention} ist nun nicht mehr auf der Blacklist.**")
+        return await interaction.followup.send(f"**<:v_158:1264268251916009553> {kanal.mention} ist nun nicht mehr auf der Blacklist.**")
     
     @stats.command()
     @app_commands.checks.has_permissions(administrator=True)
@@ -603,11 +603,11 @@ class Stats(commands.Cog):
         
         #status = await haspremium_forserver(self, interaction.guild)
         #if status == False:
-        #    return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
+        #    return await interaction.followup.send("**<:v_9:1264264656831119462> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
         
         getMongoDataBase()["nachrichten"].delete_many({"guildID": interaction.guild.id})
         
-        await interaction.followup.send("**<:v_haken:1119579684057907251> Alle Stats dieses Servers wurden gelöscht.**")
+        await interaction.followup.send("**<:v_158:1264268251916009553> Alle Stats dieses Servers wurden gelöscht.**")
     
 #     @stats.command()
 #     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -617,9 +617,9 @@ class Stats(commands.Cog):
 #         start = time.time()
 #         status = await haspremium_forserver(self, interaction.guild)
 #         if status == False:
-#             return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
+#             return await interaction.followup.send("**<:v_9:1264264656831119462> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
 #         print(f"Zeit:  {time.time() - start}")
-#         await interaction.followup.send("**<:v_einstellungen:1119578559086874636> Ich generiere die Embeds und die Graphen. Einen kleinen Moment bitte.**", ephemeral=True)
+#         await interaction.followup.send("**<:v_82:1264266106307215370> Ich generiere die Embeds und die Graphen. Einen kleinen Moment bitte.**", ephemeral=True)
         
 #         maxdays = 7
         
@@ -725,11 +725,11 @@ class Stats(commands.Cog):
 #                         text2 += "Keine Daten"
                        
                     
-#                     embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1119583678083895346> Statistiken der aktivsten {art}", description=f"""
-# <:v_chat:1119577968457568327> **Aktivste Nutzer in Textkanälen:**
+#                     embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_32:1264265009475747841> Statistiken der aktivsten {art}", description=f"""
+# <:v_31:1264264994774585445> **Aktivste Nutzer in Textkanälen:**
 # {text}
 
-# <:v_mikrofon:1119581634216329266> **Aktivste Nutzer in Sprachkanälen:**
+# <:v_3:1264264503810592778> **Aktivste Nutzer in Sprachkanälen:**
 # {text2}""")
 #                     embed.set_thumbnail(url=interaction.guild.icon)
 #                     embed.set_image(url="attachment://stats.png")
@@ -812,11 +812,11 @@ class Stats(commands.Cog):
                 #    plt.xticks(rotation=45)
                 #    plt.savefig("stats.png")
                 #    plt.close()
-                #    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_stats:1119583678083895346> Statistiken der aktivsten {art}", description=f"""
-#<:v_chat:1119577968457568327> **Aktivste Textkanäle:**
+                #    embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"<:v_32:1264265009475747841> Statistiken der aktivsten {art}", description=f"""
+#<:v_31:1264264994774585445> **Aktivste Textkanäle:**
 #{text}
 
-#<:v_mikrofon:1119581634216329266> **Aktivste Sprachkanäle:**
+#<:v_3:1264264503810592778> **Aktivste Sprachkanäle:**
 #{text2}""")
                 #    embed.set_thumbnail(url=interaction.guild.icon)
                 #    embed.set_image(url="attachment://stats.png")

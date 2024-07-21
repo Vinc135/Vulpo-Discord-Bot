@@ -53,11 +53,11 @@ class joinrole(commands.Cog):
         
                 if argument == "Löschen":
                     await db['joinroles'].delete_many({"guild_id": interaction.guild.id})
-                    await interaction.followup.send("**<:v_haken:1119579684057907251> Alle Joinrollen gelöscht.**")           
+                    await interaction.followup.send("**<:v_158:1264268251916009553> Alle Joinrollen gelöscht.**")           
                     return
                 if argument == "Hinzufügen (Rolle muss mit angegeben werden)":
                     if rolle is None:
-                        await interaction.followup.send("**<:v_kreuz:1119580775411621908> Eine Rollen-Angabe ist erforderlich beim Einrichten.**", ephemeral=True)           
+                        await interaction.followup.send("**<:v_9:1264264656831119462> Eine Rollen-Angabe ist erforderlich beim Einrichten.**", ephemeral=True)           
                         return
                     
                     
@@ -66,12 +66,12 @@ class joinrole(commands.Cog):
                     premium = await haspremium_forserver(self, interaction.guild)
                     
                     if not premium and len(existing) >= 3:
-                        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Joinrollen für Mitglieder erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+                        return await interaction.followup.send("**<:v_9:1264264656831119462> Du kannst keine weiteren Joinrollen für Mitglieder erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
                     result = await db['joinroles'].find({"role_id": rolle.id}).to_list(length=None)
 
                     if result:
-                        await interaction.followup.send("**<:v_kreuz:1119580775411621908> Diese Rolle ist bereits eingestellt.**", ephemeral=True)           
+                        await interaction.followup.send("**<:v_9:1264264656831119462> Diese Rolle ist bereits eingestellt.**", ephemeral=True)           
                         return
                     
                     
@@ -120,11 +120,11 @@ class joinrole(commands.Cog):
                 
                 if argument == "Löschen":
                     db["botroles"].delete_many({"guild_id": interaction.guild.id})
-                    await interaction.followup.send("**<:v_haken:1119579684057907251> Alle Joinrollen gelöscht.**")           
+                    await interaction.followup.send("**<:v_158:1264268251916009553> Alle Joinrollen gelöscht.**")           
                     return
                 if argument == "Hinzufügen (Rolle muss mit angegeben werden)":
                     if rolle is None:
-                        await interaction.followup.send("**<:v_kreuz:1119580775411621908> Eine Rollen-Angabe ist erforderlich beim Einrichten.**", ephemeral=True)           
+                        await interaction.followup.send("**<:v_9:1264264656831119462> Eine Rollen-Angabe ist erforderlich beim Einrichten.**", ephemeral=True)           
                         return
                     
                     existing = await db['botroles'].find({"guild_id": interaction.guild.id}).to_list(length=None)
@@ -132,12 +132,12 @@ class joinrole(commands.Cog):
                     premium = await haspremium_forserver(self, interaction.guild)
                     
                     if not premium and len(existing) >= 3:
-                        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Joinrollen für Bots erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")               
+                        return await interaction.followup.send("**<:v_9:1264264656831119462> Du kannst keine weiteren Joinrollen für Bots erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")               
 
                     result = await db['botroles'].find({"role_id": rolle.id}).to_list(length=None)
 
                     if result:
-                        await interaction.followup.send("**<:v_kreuz:1119580775411621908> Diese Rolle ist bereits eingestellt.**", ephemeral=True)           
+                        await interaction.followup.send("**<:v_9:1264264656831119462> Diese Rolle ist bereits eingestellt.**", ephemeral=True)           
                         return
                     
                     await db['botroles'].insert_one({"role_id": rolle.id, "guild_id": interaction.guild.id})

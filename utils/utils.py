@@ -49,8 +49,8 @@ class NameModal(discord.ui.Modal, title="Beschreibung für Erinnerung"):
         await db["erinnerungen"].insert_one({"userID": interaction.user.id, "endtime": t1, "zeit": self.zeit, "beschreibung": self.beschreibung.value, "id": id})
         
         embed = discord.Embed(color=await getcolour(self, interaction.user), title=f"Erinnerung gestellt (ID {id})", description=f"""
-<:v_info:1119579853092552715> Erinnerung gesetzt auf {discord_timestamp(t2, 'f')}
- <:v_pfeil_rechts:1119582171930300438> {self.beschreibung.value}""")
+<:v_12:1264264683427336259> Erinnerung gesetzt auf {discord_timestamp(t2, 'f')}
+<:v_24:1264264867511144479> {self.beschreibung.value}""")
         
         
         asyncio.create_task(reminder_end(t2, self.bot, interaction.user.id, id), name=f"Erinnerung - {id}")
@@ -161,29 +161,24 @@ async def addwarn(self, user, interaction, grund):
     
     if warns == None:
         await db["warns"].insert_one({"guild": interaction.guild.id, "client": user.id, "warns": [{"grund": grund + f"\n`Verwarnung erstellt am {discord.utils.utcnow().__format__('%d.%m.%Y')}`", "time": datetime.datetime.now()}]})
-        
         return await automod(self, user, interaction.guild, 1, interaction)
     
     warnID = len(warns["warns"]) + 1
-    
     await db["warns"].update_one({"guild": interaction.guild.id, "client": user.id}, {"$push": {"warns": {"grund": grund, "time": datetime.datetime.now()}}})
-    
     await automod(self, user, interaction.guild, warnID, interaction)
 
 async def automod(self, user, guild, warnanzahl, interaction):
-    
     db = getMongoDataBase()
     actions = await db["automod"].find_one({"guildID": guild.id, "warnanzahl": warnanzahl})
-    
+
     if(actions == None):
         return
     
     if "Timeout" in actions["aktion"]:
         time_end = discord.utils.utcnow()
-        
         dt = time_end + datetime.timedelta(seconds=int(actions["time"]))
         await user.timeout(dt ,reason="Automod wurde ausgelöst")
-        await interaction.channel.send(f"🚨 **Der Benutzer {user.mention} wurde für {int(actions["time"])} Sekunden getimeoutet.** 🚨\nGrund: Automod wurde ausgelöst ({warnanzahl} Verwarnungen).")
+        await interaction.channel.send(f"🚨 **Der Benutzer {user.mention} wurde für {int(actions['time'])} Sekunden getimeoutet.** 🚨\nGrund: Automod wurde ausgelöst ({warnanzahl} Verwarnungen).")
         
     if actions["aktion"] == "Kick":
         await user.kick(reason="Automod wurde ausgelöst")
@@ -204,7 +199,6 @@ async def reminder_end(when: datetime.datetime, bot, user_id, id):
     await discord.utils.sleep_until(when=when)
     
     db = getMongoDataBase()
-    
     user = await bot.fetch_user(user_id)
     
     if not user:
@@ -212,13 +206,11 @@ async def reminder_end(when: datetime.datetime, bot, user_id, id):
         return
     
     result = await db["erinnerungen"].find_one({"userID": user_id, "id": id})
-    
     if result == None:
         return
     
     await db["erinnerungen"].delete_one({"userID": user_id, "id": id})
-    
-    embed = discord.Embed(title="<:v_zeit:1119585888054296676> Timer abgelaufen", description=result["beschreibung"], color=discord.Color.green())
+    embed = discord.Embed(title="<:v_65:1264265724386480148> Timer abgelaufen", description=result["beschreibung"], color=discord.Color.green())
     
     try:
         await user.send(embed=embed, view=NewTimerName(bot, result["beschreibung"], result["zeit"], embed))
@@ -243,13 +235,12 @@ async def vote_reminder(when: datetime.datetime, bot, user_id):
         return
     
     embed = discord.Embed(title="Du kannst voten", url="https://top.gg/bot/925799559576322078/vote", description="""
-<:v_zeit:1119585888054296676> Der Vote-Cooldown von 12 Stunden ist abgelaufen. Es wäre sehr schön, wenn du wieder für mich votest.
+<:v_65:1264265724386480148> Der Vote-Cooldown von 12 Stunden ist abgelaufen. Es wäre sehr schön, wenn du wieder für mich votest.
 <:herz:941398727501955113> Als Belohnung für einen weiteren Vote bekommst du **300 🍪 im Economy System** und eine besondere **Rolle in [Vulpos Wald](https://discord.gg/49jD3VXksp)**
 
-<:v_info:1119579853092552715> Du kannst Vote Erinnerungen in <#926224205639467108> ausschalten.""", colour=discord.Colour.green())
+<:v_12:1264264683427336259> Du kannst Vote Erinnerungen in <#926224205639467108> ausschalten.""", colour=discord.Colour.green())
     
-    embed.set_footer(text="Danke für deine Unterstützung", icon_url="https://media.discordapp.net/attachments/965302660871884840/965315155816767548/Vulpo_neu.png?width=1572&height=1572")
-                
+    embed.set_footer(text="Danke für deine Unterstützung", icon_url="https://media.discordapp.net/attachments/965302660871884840/965315155816767548/Vulpo_neu.png?width=1572&height=1572")      
     await member.remove_roles(voter)
     try:
         if rolle in member.roles:
@@ -261,7 +252,6 @@ async def vote_reminder(when: datetime.datetime, bot, user_id):
 async def giveaway_end(when: datetime.datetime, bot, msgID, status=None):
     await bot.wait_until_ready()
     await discord.utils.sleep_until(when=when)
-    
     db = getMongoDataBase()
     
     if(status == None):
@@ -282,7 +272,6 @@ async def giveaway_end(when: datetime.datetime, bot, msgID, status=None):
         return
     
     await db["gewinnspiele"].update_one({"guildID": guild.id, "channelID": kanal.id, "msgID": msgID}, {"$set": {"status": "Inaktiv"}})
-    
     t1 = int(datetime.datetime.now().timestamp())
     t2 = datetime.datetime.fromtimestamp(int(t1))
     
@@ -293,20 +282,18 @@ async def giveaway_end(when: datetime.datetime, bot, msgID, status=None):
         embed = discord.Embed(title=f"🏆 {result['gewinn']}", description=f"""
 `🤖` · [Lade den Bot hier ein](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands)
         
-<:v_geschenk:1119579279274025060>
+<:v_165:1264268434783604777>
 › __**Wer hat gewonnen?**__
-<:v_pfeil_rechts:1119582171930300438> Niemand hat gewonnen.
-<:v_pfeil_rechts:1119582171930300438> Das Gewinnspiel endete {discord_timestamp(t2, 'R')}
-<:v_pfeil_rechts:1119582171930300438> Es gab 0 Teilnehmer.""", color=discord.Color.red())
+<:v_24:1264264867511144479> Niemand hat gewonnen.
+<:v_24:1264264867511144479> Das Gewinnspiel endete {discord_timestamp(t2, 'R')}
+<:v_24:1264264867511144479> Es gab 0 Teilnehmer.""", color=discord.Color.red())
         
         embed.set_thumbnail(url=msg.guild.icon)
         
         return await msg.edit(content="**⛔️ Gewinnspiel beendet ⛔️**", embed=embed, view=None)
     
     participants = [userid["userID"] for userid in participantResults]
-    
     winner = random.sample(participants, k=len(participants) if len(participants) < result["gewinner"] else result["gewinner"])
-    
     winners = ""
     
     for win in winner:
@@ -333,12 +320,11 @@ async def giveaway_end(when: datetime.datetime, bot, msgID, status=None):
     embed = discord.Embed(title=f"🏆 {result[10]}", description=f"""
 `🤖` · [Lade den Bot hier ein](https://discord.com/oauth2/authorize?client_id=925799559576322078&permissions=8&scope=bot%20applications.commands)
         
-<:v_geschenk:1119579279274025060>
+<:v_165:1264268434783604777>
 › __**Wer hat gewonnen?**__
-<:v_pfeil_rechts:1119582171930300438> {winners} {'hat' if len(winner) == 1 else 'haben'} {result[10]} gewonnen.
-<:v_pfeil_rechts:1119582171930300438> Das Gewinnspiel endete {discord_timestamp(t2, 'R')}
-<:v_pfeil_rechts:1119582171930300438> Es gab {len(participantResults)} Teilnehmer.""", color=discord.Color.red())
-    
+<:v_24:1264264867511144479> {winners} {'hat' if len(winner) == 1 else 'haben'} {result[10]} gewonnen.
+<:v_24:1264264867511144479> Das Gewinnspiel endete {discord_timestamp(t2, 'R')}
+<:v_24:1264264867511144479> Es gab {len(participantResults)} Teilnehmer.""", color=discord.Color.red())
     embed.set_footer(text=f"🍀 Die Wahrscheinlichkeit zu gewinnen lag bei {round((int(result[5]) / len(participantResults)) * 100)}%")
     embed.set_thumbnail(url=msg.guild.icon)
     await msg.edit(content="**⛔️ Gewinnspiel beendet ⛔️**", embed=embed, view=None)
@@ -403,7 +389,7 @@ async def send_error(title, description, interaction):
     except Exception as e:
         print(e)
         try:
-            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Mir fehlt die Berechtigung 'Nachrichten einbetten'.**", ephemeral=True)
+            await interaction.followup.send("**<:v_9:1264264656831119462> Mir fehlt die Berechtigung 'Nachrichten einbetten'.**", ephemeral=True)
         except:
             pass
 

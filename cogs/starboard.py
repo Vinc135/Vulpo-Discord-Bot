@@ -23,25 +23,25 @@ class starboard(commands.Cog):
                 if argument == "Ausschalten":
                     result = await db['starboard'].find_one({"guildID": interaction.guild.id})
                     if result == None:
-                        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Auf diesem Server ist kein Starboard eingerichtet.**", ephemeral=True)
+                        return await interaction.followup.send("**<:v_9:1264264656831119462> Auf diesem Server ist kein Starboard eingerichtet.**", ephemeral=True)
                     await db["starboard"].delete_one({"guildID": interaction.guild.id})
-                    return await interaction.followup.send("**<:v_haken:1119579684057907251> Das Starboard wurde ausgeschaltet.**")
+                    return await interaction.followup.send("**<:v_158:1264268251916009553> Das Starboard wurde ausgeschaltet.**")
                 if argument == "Einrichten (Kanal muss mit angegeben werden)":
                     if kanal == None:
-                        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Beim Einrichten ist auch eine Kanal-Angabe erforderlich.**", ephemeral=True)
+                        return await interaction.followup.send("**<:v_9:1264264656831119462> Beim Einrichten ist auch eine Kanal-Angabe erforderlich.**", ephemeral=True)
 
                     result = await db['starboard'].find_one({"guildID": interaction.guild.id})
                     if result:
                         await db["starboard"].update_one({"guildID": interaction.guild.id}, {"$set": {"channelID": kanal.id}})
                     else:
                         await db["starboard"].insert_one({"guildID": interaction.guild.id, "channelID": kanal.id})
-                    await interaction.followup.send(f"**<:v_haken:1119579684057907251> Das Starboard ist nun aktiv in {kanal.mention}.**")
+                    await interaction.followup.send(f"**<:v_158:1264268251916009553> Das Starboard ist nun aktiv in {kanal.mention}.**")
                 if argument == "Anzeigen":
                     result = await db['starboard'].find_one({"guildID": interaction.guild.id})
                     try:
                         channel = await interaction.guild.fetch_channel(int(result["channelID"]))
                     except:
-                        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Kanal des Starboards existiert nicht mehr. Bitte deaktiviere das Starboard und richte ihn erneut ein.**", ephemeral=True)
+                        return await interaction.followup.send("**<:v_9:1264264656831119462> Der Kanal des Starboards existiert nicht mehr. Bitte deaktiviere das Starboard und richte ihn erneut ein.**", ephemeral=True)
 
                     embed = discord.Embed(title="Starboard", description=f"Das aktuelle Starboard ist aktiv in {channel.mention}", color=discord.Color.orange())
                     

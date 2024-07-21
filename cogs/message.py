@@ -23,22 +23,22 @@ class Willkommensnachricht(discord.ui.Modal, title="Willkommensnachricht"):
         if str(self.alte_nachricht) == "%member-Member#0000 | %name-Member | %mention-@Member | %guild-Servername | %usercount-Memberanzahl":
             if str(self.children[1].value).lower() == "ja":
                 await db['welcome'].insert_one({"guildID": interaction.guild.id, "channelID": self.kanal.id, "msg": f"{self.children[0].value} B9xV123"})
-                return await interaction.followup.send("**<:v_haken:1119579684057907251> Die Willkommensnachricht ist nun aktiv.**")
+                return await interaction.followup.send("**<:v_158:1264268251916009553> Die Willkommensnachricht ist nun aktiv.**")
             if str(self.children[1].value).lower() == "nein":
                 await db['welcome'].insert_one({"guildID": interaction.guild.id, "channelID": self.kanal.id, "msg": f"{self.children[0].value}"})
-                return await interaction.followup.send("**<:v_haken:1119579684057907251> Die Willkommensnachricht ist nun aktiv.**")
+                return await interaction.followup.send("**<:v_158:1264268251916009553> Die Willkommensnachricht ist nun aktiv.**")
             else:
-                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Gib beim nächsten Mal deine Antwort beim Feld '**Mit Bild?**' mit einem klaren 'Ja' oder 'Nein' wider.**", ephemeral=True)
+                return await interaction.followup.send("**<:v_9:1264264656831119462> Gib beim nächsten Mal deine Antwort beim Feld '**Mit Bild?**' mit einem klaren 'Ja' oder 'Nein' wider.**", ephemeral=True)
                     
                 
         if str(self.children[1].value).lower() == "ja":
             await db['welcome'].update_one({"guildID": interaction.guild.id}, {"$set": {"channelID": self.kanal.id, "msg": f"{self.children[0].value} B9xV123"}})
-            return await interaction.followup.send("**<:v_haken:1119579684057907251> Die Willkommensnachricht ist nun geändert.**")
+            return await interaction.followup.send("**<:v_158:1264268251916009553> Die Willkommensnachricht ist nun geändert.**")
         if str(self.children[1].value).lower() == "nein":
             await db['welcome'].update_one({"guildID": interaction.guild.id}, {"$set": {"channelID": self.kanal.id, "msg": f"{self.children[0].value}"}})
-            return await interaction.followup.send("**<:v_haken:1119579684057907251> Die Willkommensnachricht ist nun geändert.**")
+            return await interaction.followup.send("**<:v_158:1264268251916009553> Die Willkommensnachricht ist nun geändert.**")
         else:
-            return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Gib beim nächsten Mal deine Antwort beim Feld '**Mit Bild?**' mit einem klaren 'Ja' oder 'Nein' wider.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_9:1264264656831119462> Gib beim nächsten Mal deine Antwort beim Feld '**Mit Bild?**' mit einem klaren 'Ja' oder 'Nein' wider.**", ephemeral=True)
                 
 
 class Verlassensnachricht(discord.ui.Modal, title="Verlassensnachricht"):
@@ -53,9 +53,9 @@ class Verlassensnachricht(discord.ui.Modal, title="Verlassensnachricht"):
         db = getMongoDataBase()
         if str(self.alte_nachricht) == "%member-Member#0000 | %name-Member | %mention-@Member | %guild-Servername | %usercount-Memberanzahl":
             await db['leavemsg'].insert_one({"guildID": interaction.guild.id, "channelID": self.kanal.id, "msg": self.children[0].value})
-            return await interaction.followup.send("**<:v_haken:1119579684057907251> Die Verlassensnachricht ist nun aktiv.**")
+            return await interaction.followup.send("**<:v_158:1264268251916009553> Die Verlassensnachricht ist nun aktiv.**")
         db["leavemsg"].update_one({"guildID": interaction.guild.id}, {"$set": {"channelID": self.kanal.id, "msg": self.children[0].value}})
-        return await interaction.followup.send("**<:v_haken:1119579684057907251> Die Verlassensnachricht ist nun geändert.**")
+        return await interaction.followup.send("**<:v_158:1264268251916009553> Die Verlassensnachricht ist nun geändert.**")
 
 ##########
 
@@ -132,16 +132,16 @@ class message(commands.Cog):
                 result = await db['welcome'].find_one({"guildID": interaction.guild.id})
                 
                 if result == None:
-                    return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Auf diesem Server ist keine Willkommensnachricht eingerichtet.**", ephemeral=True)
+                    return await interaction.followup.send("**<:v_9:1264264656831119462> Auf diesem Server ist keine Willkommensnachricht eingerichtet.**", ephemeral=True)
                 try:
                     ch = await interaction.guild.fetch_channel(int(result["channelID"]))
                 except:
-                    return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Auf diesem Server ist keine Willkommensnachricht eingerichtet.**", ephemeral=True)
+                    return await interaction.followup.send("**<:v_9:1264264656831119462> Auf diesem Server ist keine Willkommensnachricht eingerichtet.**", ephemeral=True)
 
                 if "B9xV123" not in str(result[1]):
                     finalmsg = result[1].replace("%member", str(member)).replace("%name", str(member.name)).replace("%mention", str(member.mention)).replace("%guild", str(member.guild)).replace("%usercount", str(member.guild.member_count))
                     await ch.send(finalmsg + f"\n\nTest-Willkommensnachricht angefordert von {interaction.user}")
-                    return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Die Test-Willkommensnachricht wurde an den Kanal {ch.mention} gesendet.**")
+                    return await interaction.followup.send(f"**<:v_158:1264268251916009553> Die Test-Willkommensnachricht wurde an den Kanal {ch.mention} gesendet.**")
 
                 else:
                     finalmsg = result[1].replace("B9xV123", "").replace("%member", str(member)).replace("%name", str(member.name)).replace("%mention", str(member.mention)).replace("%guild", str(member.guild)).replace("%usercount", str(member.guild.member_count))
@@ -166,7 +166,7 @@ class message(commands.Cog):
                     file = discord.File(fp=background.image_bytes, filename="willkommen.png")
 
                     await ch.send(finalmsg + f"\nTestjoin angefordert von {interaction.user}", file=file)
-                    await interaction.followup.send(f"**<:v_haken:1119579684057907251> Die Test-Willkommensnachricht wurde an den Kanal {ch.mention} gesendet.**")
+                    await interaction.followup.send(f"**<:v_158:1264268251916009553> Die Test-Willkommensnachricht wurde an den Kanal {ch.mention} gesendet.**")
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -180,12 +180,12 @@ class message(commands.Cog):
                 if argument == "Ausschalten":
                     result = await db['welcome'].find_one({"guildID": interaction.guild.id})
                     if result == None:
-                        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Auf diesem Server ist keine Willkommensnachricht eingerichtet.**", ephemeral=True)
+                        return await interaction.followup.send("**<:v_9:1264264656831119462> Auf diesem Server ist keine Willkommensnachricht eingerichtet.**", ephemeral=True)
                     db['welcome'].delete_one({"guildID": interaction.guild.id})
-                    return await interaction.followup.send("**<:v_haken:1119579684057907251> Die Willkommensnachricht wurde ausgeschaltet.**")
+                    return await interaction.followup.send("**<:v_158:1264268251916009553> Die Willkommensnachricht wurde ausgeschaltet.**")
                 if argument == "Einrichten (Kanal muss mit angegeben werden)":
                     if kanal == None:
-                        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Beim Einrichten ist auch eine Kanal-Angabe erforderlich.**", ephemeral=True)
+                        return await interaction.followup.send("**<:v_9:1264264656831119462> Beim Einrichten ist auch eine Kanal-Angabe erforderlich.**", ephemeral=True)
 
                     result = await db['welcome'].find_one({"guildID": interaction.guild.id})
 
@@ -201,7 +201,7 @@ class message(commands.Cog):
                     try:
                         ch = await interaction.guild.fetch_channel(int(wel["channelID"]))
                     except:
-                        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Kanal der Willkommensnachricht existiert nicht mehr. Bitte deaktiviere die Willkommensnachricht und richte sie erneut ein.**", ephemeral=True)
+                        return await interaction.followup.send("**<:v_9:1264264656831119462> Der Kanal der Willkommensnachricht existiert nicht mehr. Bitte deaktiviere die Willkommensnachricht und richte sie erneut ein.**", ephemeral=True)
 
                     embed = discord.Embed(title="Willkommensnachricht", description=f"Die aktuelle Willkommensnachricht:", color=await getcolour(self, interaction.user))
                     
@@ -241,7 +241,7 @@ class message(commands.Cog):
         result = getMongoDataBase()['leavemsg'].find_one({"guildID": interaction.guild.id})
         
         if result == None:
-            return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Auf diesem Server ist keine Verlassensnachricht eingerichtet. Deaktiviere diese zuerst!**", ephemeral=True)
+            return await interaction.followup.send("**<:v_9:1264264656831119462> Auf diesem Server ist keine Verlassensnachricht eingerichtet. Deaktiviere diese zuerst!**", ephemeral=True)
         try:
             ch = await interaction.guild.fetch_channel(int(result["channelID"]))
         except:
@@ -252,7 +252,7 @@ class message(commands.Cog):
             embed.set_footer(text=f"Test-Verlassensnachricht angefordert von {interaction.user}")
             
             await ch.send(embed=embed)
-            await interaction.followup.send(f"**<:v_haken:1119579684057907251> Die Test-Verlassensnachricht wurde an den Kanal {ch.mention} gesendet.**")
+            await interaction.followup.send(f"**<:v_158:1264268251916009553> Die Test-Verlassensnachricht wurde an den Kanal {ch.mention} gesendet.**")
         except:
             pass
 
@@ -269,12 +269,12 @@ class message(commands.Cog):
                     result = await db['leavemsg'].find_one({"guildID": interaction.guild.id})
                     
                     if result == None:
-                        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Auf diesem Server ist keine Verlassensnachricht eingerichtet.**", ephemeral=True)
+                        return await interaction.followup.send("**<:v_9:1264264656831119462> Auf diesem Server ist keine Verlassensnachricht eingerichtet.**", ephemeral=True)
                     await db['leavemsg'].delete_one({"guildID": interaction.guild.id})
-                    return await interaction.followup.send("**<:v_haken:1119579684057907251> Die Verlassensnachricht wurde ausgeschaltet.**")
+                    return await interaction.followup.send("**<:v_158:1264268251916009553> Die Verlassensnachricht wurde ausgeschaltet.**")
                 if argument == "Einrichten (Kanal muss mit angegeben werden)":
                     if kanal == None:
-                        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Beim Einrichten ist auch eine Kanal-Angabe erforderlich.**", ephemeral=True)
+                        return await interaction.followup.send("**<:v_9:1264264656831119462> Beim Einrichten ist auch eine Kanal-Angabe erforderlich.**", ephemeral=True)
 
                     result = await db['leavemsg'].find_one({"guildID": interaction.guild.id})
                     alte_nachricht = ""
@@ -288,7 +288,7 @@ class message(commands.Cog):
                     try:
                         ch = await interaction.guild.fetch_channel(int(wel["channelID"]))
                     except:
-                        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Kanal der Verlassensnachricht existiert nicht mehr. Bitte deaktiviere die Verlassensnachricht und richte sie erneut ein.**", ephemeral=True)
+                        return await interaction.followup.send("**<:v_9:1264264656831119462> Der Kanal der Verlassensnachricht existiert nicht mehr. Bitte deaktiviere die Verlassensnachricht und richte sie erneut ein.**", ephemeral=True)
 
                     embed = discord.Embed(title="Verlassensnachricht", description=f"Die aktuelle Verlassensnachricht:", color=await getcolour(self, interaction.user))
                     embed.add_field(name="Kanal", value=ch.mention, inline=False)
