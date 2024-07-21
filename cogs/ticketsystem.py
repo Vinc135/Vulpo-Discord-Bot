@@ -60,7 +60,7 @@ class PanelbuttonView(discord.ui.View):
         view = ClosebuttonView(self.bot)
         panelnachricht = await new_channel.send(f"{member.mention} | {role.mention}", embed=embed, view=view)
         await panelnachricht.pin()
-        await interaction.followup.send(f"<:v_haken:1119579684057907251> Ich habe ein Ticket für dich erstellt\nDu findest es dort: {new_channel.mention}", ephemeral=True)
+        await interaction.followup.send(f"<:v_158:1264268251916009553> Ich habe ein Ticket für dich erstellt\nDu findest es dort: {new_channel.mention}", ephemeral=True)
         
         await db['tickets'].insert_one({"guildID": interaction.guild_id, "channelID": new_channel.id, "userID": interaction.user.id, "panelID": interaction.message.id, "msgID": panelnachricht.id})
         
@@ -81,7 +81,7 @@ class ClosebuttonView(discord.ui.View):
         super().__init__(timeout=None)
         self.bot = bot
 
-    @discord.ui.button(label="Ticket schließen", emoji="<:v_kreuz:1119580775411621908>", custom_id="Button-CloseTicket", style=discord.ButtonStyle.red)
+    @discord.ui.button(label="Ticket schließen", emoji="<:v_9:1264264656831119462>", custom_id="Button-CloseTicket", style=discord.ButtonStyle.red)
     async def button_closeticket(self, interaction: discord.Interaction, button):
         await interaction.response.defer()
         
@@ -95,7 +95,7 @@ class ClosebuttonView(discord.ui.View):
         try:
             role = interaction.guild.get_role(int(result['role']))
             if role not in interaction.user.roles:
-                return await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
+                return await interaction.followup.send(f"**<:v_9:1264264656831119462> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
         except:
             pass
         
@@ -155,7 +155,7 @@ class ClosebuttonView(discord.ui.View):
         except:
             pass
 
-    @discord.ui.button(label="Ticket claimen", emoji="<:v_support:1119586154610692096>", custom_id="Button-ClaimTicket", style=discord.ButtonStyle.grey)
+    @discord.ui.button(label="Ticket claimen", emoji="<:v_25:1264264906505715752>", custom_id="Button-ClaimTicket", style=discord.ButtonStyle.grey)
     async def button_claimticket(self, interaction: discord.Interaction, button):
         await interaction.response.defer()
         
@@ -173,7 +173,7 @@ class ClosebuttonView(discord.ui.View):
         
         role = interaction.guild.get_role(int(r['role']))
         if role not in interaction.user.roles:
-            return await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
+            return await interaction.followup.send(f"**<:v_9:1264264656831119462> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
         
         channel = interaction.channel
         member = await interaction.guild.fetch_member(int(result['userID']))
@@ -231,7 +231,7 @@ class ClosebuttonView(discord.ui.View):
                     
                 await ticketlog.send(embed=embed)
 
-    @discord.ui.button(label="Userinfo", emoji="<:v_karte:1119580106822795324>", custom_id="Button-UserInfo", style=discord.ButtonStyle.grey)
+    @discord.ui.button(label="Userinfo", emoji="<:v_56:1264265471339925575>", custom_id="Button-UserInfo", style=discord.ButtonStyle.grey)
     async def button_userinfo(self, interaction: discord.Interaction, button):
         await interaction.response.defer()
         
@@ -281,7 +281,7 @@ class ClosebuttonView(discord.ui.View):
                     if flag[0] == "verified_bot_developer":
                         flags += "<:v_verifiedbotdeveloper:1037070049539788851>"
                     if flag[0] == "discord_certified_moderator":
-                        flags += "<:v_mod:1119581819122241621>"
+                        flags += "<:v_168:1264268507193806900>"
             if flags != "":
                 embed.add_field(name="🎖 Abzeichen", value=flags, inline=False)
 
@@ -304,7 +304,7 @@ class ClosebuttonView(discord.ui.View):
         embed.set_author(name=f"Userinfo {member}", icon_url=member.avatar)
         await interaction.followup.send(embed=embed, ephemeral=True)
 
-    @discord.ui.button(label="Einstellungen", emoji="<:v_einstellungen:1119578559086874636>", custom_id="Button-einstellungen", style=discord.ButtonStyle.blurple)
+    @discord.ui.button(label="Einstellungen", emoji="<:v_82:1264266106307215370>", custom_id="Button-einstellungen", style=discord.ButtonStyle.blurple)
     async def button_einstellungen(self, interaction: discord.Interaction, button):
         await interaction.response.defer()
         
@@ -323,21 +323,21 @@ class ClosebuttonView(discord.ui.View):
             
             role = await interaction.guild.fetch_role(int(r['role']))
             if role not in interaction.user.roles:
-                return await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
+                return await interaction.followup.send(f"**<:v_9:1264264656831119462> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
             
         except:
             pass
         
         view = discord.ui.View(timeout=None)
         view.add_item(menu_member(self.bot))
-        await interaction.followup.send(f"<:v_einstellungen:1119578559086874636> **Du kannst hier Nutzer auswählen, die vom Ticket entfernt werden sollen und welche hinzugefügt werden sollen.**", ephemeral=True, view=view)
+        await interaction.followup.send(f"<:v_82:1264266106307215370> **Du kannst hier Nutzer auswählen, die vom Ticket entfernt werden sollen und welche hinzugefügt werden sollen.**", ephemeral=True, view=view)
 
 class DeletebuttonView(discord.ui.View):
     def __init__(self, bot):
         super().__init__(timeout=None)
         self.bot = bot
 
-    @discord.ui.button(label="Ticket löschen", emoji="<:v_kreuz:1119580775411621908>", custom_id="Button-DeleteTicket", style=discord.ButtonStyle.red)
+    @discord.ui.button(label="Ticket löschen", emoji="<:v_9:1264264656831119462>", custom_id="Button-DeleteTicket", style=discord.ButtonStyle.red)
     async def button_deleteticket(self, interaction: discord.Interaction, button):
         await interaction.response.defer()
         await interaction.channel.send(f"{interaction.user.mention} hat das Ticket gelöscht.")
@@ -393,7 +393,7 @@ class DeletebuttonView(discord.ui.View):
         await interaction.channel.delete()
                 
 
-    @discord.ui.button(label="Ticket erneut öffnen", emoji="<:v_sicherheit:1119586595473989784>", custom_id="Button-ReopenTicket", style=discord.ButtonStyle.green)
+    @discord.ui.button(label="Ticket erneut öffnen", emoji="<:v_86:1264266242345402388>", custom_id="Button-ReopenTicket", style=discord.ButtonStyle.green)
     async def button_reopenticket(self, interaction: discord.Interaction, button):
         await interaction.response.defer()
         
@@ -407,7 +407,7 @@ class DeletebuttonView(discord.ui.View):
             r = await db["panels"].find_one({"guildID": interaction.guild_id, "categoryID": interaction.channel.category_id, "msgID": result["panelID"]})
             role = await interaction.guild.get_role(int(r[0]))
             if role not in interaction.user.roles:
-                return await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
+                return await interaction.followup.send(f"**<:v_9:1264264656831119462> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
         except:
             pass
         
@@ -466,7 +466,7 @@ class menu_member(discord.ui.UserSelect):
                     read_messages=True,
                     send_messages=True,
                 )
-                endtext += f"\n<:v_haken:1119579684057907251> **{member.mention} wurde von {interaction.user.mention} zum Ticket hinzugefügt.**"
+                endtext += f"\n<:v_158:1264268251916009553> **{member.mention} wurde von {interaction.user.mention} zum Ticket hinzugefügt.**"
             
             if member in interaction.channel.members:
                 try:
@@ -476,7 +476,7 @@ class menu_member(discord.ui.UserSelect):
                         read_messages=False,
                         send_messages=False,
                     )
-                endtext += f"\n<:v_kreuz:1119580775411621908> **{member.mention} wurde von {interaction.user.mention} vom Ticket entfernt.**"
+                endtext += f"\n<:v_9:1264264656831119462> **{member.mention} wurde von {interaction.user.mention} vom Ticket entfernt.**"
         
         await interaction.channel.edit(overwrites=overwrites)
         await interaction.followup.send(endtext)

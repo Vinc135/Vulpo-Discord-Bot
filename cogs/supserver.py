@@ -34,7 +34,7 @@ class Supserver(commands.Cog):
     async def on_member_join(self, member):
         if member.guild.id == 925729625580113951:
             channel = member.guild.get_channel(926224205639467108)
-            message = await channel.send(f"<:v_info:1119579853092552715> Hallo {member.mention}, wähle hier deine Rollen aus!")
+            message = await channel.send(f"<:v_12:1264264683427336259> Hallo {member.mention}, wähle hier deine Rollen aus!")
             await asyncio.sleep(60)
             await message.delete()
             
@@ -54,7 +54,7 @@ class Supserver(commands.Cog):
     # async def update(self, interaction: discord.Interaction, inhalt: str, status: typing.Literal["Neu","Bearbeitet","Entfernt"]):
     #     """Verkünde ein Update von Vulpo + Wochenrückblick."""
     #     if interaction.user.id != 824378909985341451:
-    #         return await interaction.followup.send("<:v_kreuz:1119580775411621908> Diesen Befehl kann nur Vinc#6791 ausführen.", ephemeral=True)
+    #         return await interaction.followup.send("<:v_9:1264264656831119462> Diesen Befehl kann nur Vinc#6791 ausführen.", ephemeral=True)
     #     async with self.bot.pool.acquire() as conn:
     #         async with conn.cursor() as cursor:
     #             await cursor.execute("SELECT msgID FROM updates")
@@ -71,7 +71,7 @@ class Supserver(commands.Cog):
     #             if status == "Entfernt":
     #                 embed.description += f"\n🔴 - {inhalt}"
     #             await msg.edit(content="", embed=embed)
-    #             await interaction.followup.send("**<:v_haken:1119579684057907251> Erfolreich hinzugefügt!**")
+    #             await interaction.followup.send("**<:v_158:1264268251916009553> Erfolreich hinzugefügt!**")
                 
     # @tasks.loop(minutes=1)
     # async def update_message(self):
@@ -95,7 +95,7 @@ class Supserver(commands.Cog):
     #                     current_date = datetime.datetime.today()
     #                     next_sunday = current_date + datetime.timedelta(days=(6 - current_date.weekday()))
 
-    #                     embed = discord.Embed(colour=discord.Colour.orange(), title=f"<:v_smiley:1119583113153089626> WOCHENRÜCKBLICK [{current_date.day}.{current_date.month}. - {next_sunday.day}.{next_sunday.month}.]", description="🟢 = Hinzugefügt **|** 🟠 = Geändert **|** 🔴 = Entfernt\n\n> <:v_pfeil_rechts:1119582171930300438> Diese Nachricht wird bei jedem Update bearbeitet. Am Ende der Woche wird gepingt.")
+    #                     embed = discord.Embed(colour=discord.Colour.orange(), title=f"<:v_181:1264268817790664756> WOCHENRÜCKBLICK [{current_date.day}.{current_date.month}. - {next_sunday.day}.{next_sunday.month}.]", description="🟢 = Hinzugefügt **|** 🟠 = Geändert **|** 🔴 = Entfernt\n\n><:v_24:1264264867511144479> Diese Nachricht wird bei jedem Update bearbeitet. Am Ende der Woche wird gepingt.")
     #                     vulpo = self.bot.get_user(925799559576322078)
     #                     embed.set_footer(text="Viel Spaß mit dem Update!", icon_url=vulpo.avatar)
     #                     msg = await channel.send(embed=embed)

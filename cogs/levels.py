@@ -140,25 +140,25 @@ class levelsystem(commands.Cog):
         #if premium_status == False:
 
         if await checkstatus(self, interaction.guild) == False:
-            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
+            await interaction.followup.send("**<:v_9:1264264656831119462> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
             return
         
         if len(a) >= 5:
-            return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Levelrollen erstellen, da du das Limit erreicht hast**")
+            return await interaction.followup.send("**<:v_9:1264264656831119462> Du kannst keine weiteren Levelrollen erstellen, da du das Limit erreicht hast**")
         
         if not int(level) > 0 or not int(level) < 101:
-            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Die Stufe muss eine Zahl zwischen 1 und 100 sein.**", ephemeral=True)
+            await interaction.followup.send("**<:v_9:1264264656831119462> Die Stufe muss eine Zahl zwischen 1 und 100 sein.**", ephemeral=True)
             return
         
         r = await db['levelroles'].find_one({"guildID": str(interaction.guild.id), "level": level})
         
         if r is not None:
-            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Für dieses Level wird bereits eine Rolle vergeben. Bitte wähle ein anderes Level.**", ephemeral=True)
+            await interaction.followup.send("**<:v_9:1264264656831119462> Für dieses Level wird bereits eine Rolle vergeben. Bitte wähle ein anderes Level.**", ephemeral=True)
             return
         
         await db["levelroles"].insert_one({"guildID": str(interaction.guild.id), "roleID": str(role.id), "level": level})
         
-        await interaction.followup.send(f"**<:v_haken:1119579684057907251> Die Rolle {role} wird nun beim Erreichen von Level {level} vergeben.**")
+        await interaction.followup.send(f"**<:v_158:1264268251916009553> Die Rolle {role} wird nun beim Erreichen von Level {level} vergeben.**")
 
     @role.command()
     @app_commands.checks.has_permissions(manage_roles=True)
@@ -169,19 +169,19 @@ class levelsystem(commands.Cog):
         await interaction.response.defer()
         
         if await checkstatus(self, interaction.guild) == False:
-            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
+            await interaction.followup.send("**<:v_9:1264264656831119462> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
             return
         
         db = getMongoDataBase()
         
         r = await db['levelroles'].find_one({"guildID": str(interaction.guild.id), "roleID": str(role.id), "level": level})
         if r is None:
-            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Diese Levelrolle existiert nicht.**", ephemeral=True)
+            await interaction.followup.send("**<:v_9:1264264656831119462> Diese Levelrolle existiert nicht.**", ephemeral=True)
             return
         
         await db['levelroles'].delete_one({"guildID": str(interaction.guild.id), "roleID": str(role.id), "level": level})
         
-        await interaction.followup.send(f"**<:v_haken:1119579684057907251> Die Rolle {role} wird nun nicht mehr beim Erreichen von Level {level} vergeben.**")
+        await interaction.followup.send(f"**<:v_158:1264268251916009553> Die Rolle {role} wird nun nicht mehr beim Erreichen von Level {level} vergeben.**")
     
     @role.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -191,7 +191,7 @@ class levelsystem(commands.Cog):
         await interaction.response.defer()
         
         if await checkstatus(self, interaction.guild) == False:
-            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
+            await interaction.followup.send("**<:v_9:1264264656831119462> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
             return
         
         db = getMongoDataBase()
@@ -199,9 +199,9 @@ class levelsystem(commands.Cog):
         try:
             r = await db['levelroles'].find({"guildID": str(interaction.guild.id)}).to_list(length=None)
             if r is None:
-                return await interaction.followup.send("<:v_kreuz:1119580775411621908> Ich habe auf diesem Server keine Levelrolle gefunden.", ephemeral=True)
+                return await interaction.followup.send("<:v_9:1264264656831119462> Ich habe auf diesem Server keine Levelrolle gefunden.", ephemeral=True)
         except:
-            return await interaction.followup.send("<:v_kreuz:1119580775411621908> Ich habe auf diesem Server keine Levelrolle gefunden.", ephemeral=True)
+            return await interaction.followup.send("<:v_9:1264264656831119462> Ich habe auf diesem Server keine Levelrolle gefunden.", ephemeral=True)
 
 
         result = await db['levelroles'].find({"guildID": str(interaction.guild.id)}).to_list(length=None)
@@ -225,7 +225,7 @@ class levelsystem(commands.Cog):
         if a >= 1:
             await interaction.followup.send(embed=embed)
         if a < 1:
-            return await interaction.followup.send("<:v_kreuz:1119580775411621908> Ich habe auf diesem Server keine Levelrolle gefunden.", ephemeral=True)
+            return await interaction.followup.send("<:v_9:1264264656831119462> Ich habe auf diesem Server keine Levelrolle gefunden.", ephemeral=True)
     
     @levelsystem.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -238,18 +238,18 @@ class levelsystem(commands.Cog):
         db = getMongoDataBase()
         
         if await checkstatus(self, interaction.guild) == False:
-            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
+            await interaction.followup.send("**<:v_9:1264264656831119462> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
             return
         if nachricht:
             if len(nachricht) > 1000:
-                await interaction.followup.send("**<:v_kreuz:1119580775411621908> Deine Nachricht darf nicht größer als 1000 Charaktere sein.**", ephemeral=True)
+                await interaction.followup.send("**<:v_9:1264264656831119462> Deine Nachricht darf nicht größer als 1000 Charaktere sein.**", ephemeral=True)
                 return
         if modus == "Deaktivieren":
             await db['levelup'].delete_one({"guildID": str(interaction.guild.id)})
             
-            return await interaction.followup.send("**<:v_haken:1119579684057907251> Die Levelupnachricht wurde erfolgreich zurückgesetzt.**")
+            return await interaction.followup.send("**<:v_158:1264268251916009553> Die Levelupnachricht wurde erfolgreich zurückgesetzt.**")
         if nachricht == None:
-            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du musst auch eine Nachricht angeben.**", ephemeral=True)
+            await interaction.followup.send("**<:v_9:1264264656831119462> Du musst auch eine Nachricht angeben.**", ephemeral=True)
             return
         
         message = await db["levelup"].insert_one({"guildID": str(interaction.guild.id), "message": nachricht})
@@ -259,7 +259,7 @@ class levelsystem(commands.Cog):
         
         await db["levelup"].update_one({"guildID": str(interaction.guild.id)}, {"$set": {"message": nachricht}})
         
-        await interaction.followup.send("**<:v_haken:1119579684057907251> Die Levelupnachricht wurde erfolgreich geändert.**")
+        await interaction.followup.send("**<:v_158:1264268251916009553> Die Levelupnachricht wurde erfolgreich geändert.**")
 
     @levelsystem.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -270,7 +270,7 @@ class levelsystem(commands.Cog):
         await interaction.response.defer()
         
         if await checkstatus(self, interaction.guild) == False:
-            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
+            await interaction.followup.send("**<:v_9:1264264656831119462> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
             return
         
         db = getMongoDataBase()
@@ -280,11 +280,11 @@ class levelsystem(commands.Cog):
 
         if modus == "Deaktivieren":
             if channel == None:
-                await interaction.followup.send("**<:v_kreuz:1119580775411621908> Hier ist kein Levelupkanal eingerichtet.", ephemeral=True)
+                await interaction.followup.send("**<:v_9:1264264656831119462> Hier ist kein Levelupkanal eingerichtet.", ephemeral=True)
                 return
             await db['levelup'].delete_one({"guildID": str(interaction.guild.id)})
             
-            return await interaction.followup.send("**<:v_haken:1119579684057907251> Der Levelupkanal wurde erfolgreich zurückgesetzt.**")
+            return await interaction.followup.send("**<:v_158:1264268251916009553> Der Levelupkanal wurde erfolgreich zurückgesetzt.**")
 
         if modus == "Kanal des Levelups":
             if channel == None:
@@ -292,7 +292,7 @@ class levelsystem(commands.Cog):
                 
             await db["levelup"].update_one({"guildID": str(interaction.guild.id)}, {"$set": {"channelID": "Normal"}})
                 
-            return await interaction.followup.send("**<:v_haken:1119579684057907251> Der Levelupkanal wurde erfolgreich geändert.**")
+            return await interaction.followup.send("**<:v_158:1264268251916009553> Der Levelupkanal wurde erfolgreich geändert.**")
                  
         if modus == "Private Nachricht":
             if channel == None:
@@ -300,11 +300,11 @@ class levelsystem(commands.Cog):
                 
             await db["levelup"].update_one({"guildID": str(interaction.guild.id)}, {"$set": {"channelID": "Privat"}})
                 
-            return await interaction.followup.send("**<:v_haken:1119579684057907251> Der Levelupkanal wurde erfolgreich geändert.**")
+            return await interaction.followup.send("**<:v_158:1264268251916009553> Der Levelupkanal wurde erfolgreich geändert.**")
 
         if modus == "Spezieller Kanal (Kanalangabe benötigt)":
             if kanal == None:
-                await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du musst auch einen Kanal angeben.**", ephemeral=True)
+                await interaction.followup.send("**<:v_9:1264264656831119462> Du musst auch einen Kanal angeben.**", ephemeral=True)
                 return
             if channel == None:
                 await db["levelup"].insert_one({"guildID": str(interaction.guild.id), "channelID": kanal.id})
@@ -312,7 +312,7 @@ class levelsystem(commands.Cog):
                 
             await db["levelup"].update_one({"guildID": str(interaction.guild.id)}, {"$set": {"channelID": kanal.id}})
             
-            return await interaction.followup.send("**<:v_haken:1119579684057907251> Der Levelupkanal wurde erfolgreich geändert.**")
+            return await interaction.followup.send("**<:v_158:1264268251916009553> Der Levelupkanal wurde erfolgreich geändert.**")
 
     @block.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -323,7 +323,7 @@ class levelsystem(commands.Cog):
         await interaction.response.defer()
         
         if await checkstatus(self, interaction.guild) == False:
-            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
+            await interaction.followup.send("**<:v_9:1264264656831119462> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
             return
         
         db = getMongoDataBase()
@@ -333,19 +333,19 @@ class levelsystem(commands.Cog):
 
         if modus == "Der Blacklist hinzufügen":
             if channel:
-                await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Kanal ist bereits auf der Blacklist.**", ephemeral=True)
+                await interaction.followup.send("**<:v_9:1264264656831119462> Der Kanal ist bereits auf der Blacklist.**", ephemeral=True)
                 return
             await db["lb_channel"].insert_one({"guildID": str(interaction.guild.id), "channelID": kanal.id})
             
-            await interaction.followup.send("**<:v_haken:1119579684057907251> Der Kanal ist nun auf der Blacklist.**")
+            await interaction.followup.send("**<:v_158:1264268251916009553> Der Kanal ist nun auf der Blacklist.**")
 
         if modus == "Von der Blacklist entfernen":
             if channel == None:
-                await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Kanal ist nicht auf der Blacklist.**", ephemeral=True)
+                await interaction.followup.send("**<:v_9:1264264656831119462> Der Kanal ist nicht auf der Blacklist.**", ephemeral=True)
                 return
             await db['lb_channel'].delete_one({"guildID": str(interaction.guild.id), "channelID": kanal.id})
             
-            await interaction.followup.send("**<:v_haken:1119579684057907251> Der Kanal ist nun nicht mehr auf der Blacklist.**")
+            await interaction.followup.send("**<:v_158:1264268251916009553> Der Kanal ist nun nicht mehr auf der Blacklist.**")
 
     @block.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -358,24 +358,24 @@ class levelsystem(commands.Cog):
         db = getMongoDataBase()
         
         if await checkstatus(self, interaction.guild) == False:
-            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
+            await interaction.followup.send("**<:v_9:1264264656831119462> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
             return
         
         r = await db['lb_rollen'].find_one({"guildID": str(interaction.guild.id), "roleID": rolle.id})
 
         if modus == "Der Blacklist hinzufügen":
             if r:
-                await interaction.followup.send("**<:v_kreuz:1119580775411621908> Die Rolle ist bereits auf der Blacklist.**", ephemeral=True)
+                await interaction.followup.send("**<:v_9:1264264656831119462> Die Rolle ist bereits auf der Blacklist.**", ephemeral=True)
                 return
             await db["lb_rollen"].insert_one({"guildID": str(interaction.guild.id), "roleID": rolle.id})
-            await interaction.followup.send("**<:v_haken:1119579684057907251> Die Rolle ist nun auf der Blacklist.**")
+            await interaction.followup.send("**<:v_158:1264268251916009553> Die Rolle ist nun auf der Blacklist.**")
 
         if modus == "Von der Blacklist entfernen":
             if r == None:
-                await interaction.followup.send("**<:v_kreuz:1119580775411621908> Die Rolle ist nicht auf der Blacklist.**", ephemeral=True)
+                await interaction.followup.send("**<:v_9:1264264656831119462> Die Rolle ist nicht auf der Blacklist.**", ephemeral=True)
                 return
             await db['lb_rollen'].delete_one({"guildID": str(interaction.guild.id), "roleID": rolle.id})
-            await interaction.followup.send("**<:v_haken:1119579684057907251> Die Rolle ist nun nicht mehr auf der Blacklist.**")
+            await interaction.followup.send("**<:v_158:1264268251916009553> Die Rolle ist nun nicht mehr auf der Blacklist.**")
     
     @app_commands.command()
     @app_commands.guild_only()
@@ -386,7 +386,7 @@ class levelsystem(commands.Cog):
                 await interaction.response.defer()
                 
                 if await checkstatus(self, interaction.guild) == False:
-                    return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
+                    return await interaction.followup.send("**<:v_9:1264264656831119462> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
                 
                 if member == None:
                     member = interaction.user
@@ -396,7 +396,7 @@ class levelsystem(commands.Cog):
                 result = await db['levelstatus'].find_one({"guildID": str(interaction.guild.id), "userID": member.id})
 
                 if result == None or result == False:
-                    return await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> {member} ist noch nicht eingestuft. Er/Sie muss erst noch ein paar Nachrichten senden.**", ephemeral=True)
+                    return await interaction.followup.send(f"**<:v_9:1264264656831119462> {member} ist noch nicht eingestuft. Er/Sie muss erst noch ein paar Nachrichten senden.**", ephemeral=True)
                 try:
                     xp_start = result["xp"]
                     lvl_start = result["level"]
@@ -404,7 +404,7 @@ class levelsystem(commands.Cog):
                     multiplication = 100 / xp_end
                     prozent = round(xp_start) * multiplication
                 except:
-                    return await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> {member} ist noch nicht eingestuft. Er/Sie muss erst noch ein paar Nachrichten senden.**", ephemeral=True)
+                    return await interaction.followup.send(f"**<:v_9:1264264656831119462> {member} ist noch nicht eingestuft. Er/Sie muss erst noch ein paar Nachrichten senden.**", ephemeral=True)
                 
                 result = await db['levelsystem'].find({"guildID": str(interaction.guild.id)}).to_list(length=None)
                       
@@ -550,7 +550,7 @@ class levelsystem(commands.Cog):
                     levelstatus = await checkstatus(self, interaction.guild)
                     
                     if levelstatus:
-                        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Das Levelsystem ist hier bereits aktiviert.**", ephemeral=True)
+                        return await interaction.followup.send("**<:v_9:1264264656831119462> Das Levelsystem ist hier bereits aktiviert.**", ephemeral=True)
                     
                     db["levelstatus"].update_one(
                         {"guildID": interaction.guild.id},
@@ -558,17 +558,17 @@ class levelsystem(commands.Cog):
                         upsert=True
                     )
                     
-                    return await interaction.followup.send("**<:v_haken:1119579684057907251> Das Levelsystem ist jetzt auf diesem Server aktiviert.**")
+                    return await interaction.followup.send("**<:v_158:1264268251916009553> Das Levelsystem ist jetzt auf diesem Server aktiviert.**")
                 if modus == "Aus":
                     
                     levelstatus = await checkstatus(self, interaction.guild)
                     
                     if levelstatus == False:
-                        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Das Levelsystem ist hier bereits deaktiviert.**", ephemeral=True)
+                        return await interaction.followup.send("**<:v_9:1264264656831119462> Das Levelsystem ist hier bereits deaktiviert.**", ephemeral=True)
                     
                     db["levelstatus"].update_one({"guildID": interaction.guild.id}, {"$set": {"status": False}})
                     
-                    await interaction.followup.send("**<:v_haken:1119579684057907251> Das Levelsystem ist jetzt auf diesem Server deaktiviert.**")
+                    await interaction.followup.send("**<:v_158:1264268251916009553> Das Levelsystem ist jetzt auf diesem Server deaktiviert.**")
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -580,7 +580,7 @@ class levelsystem(commands.Cog):
         await interaction.response.defer()
         
         if await checkstatus(self, interaction.guild) == False:
-            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
+            await interaction.followup.send("**<:v_9:1264264656831119462> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
             return
         
         db = getMongoDataBase()
@@ -588,12 +588,12 @@ class levelsystem(commands.Cog):
         result = await db['levelsystem'].find_one({"guildID": str(interaction.guild.id), "userID": member.id})
         
         if result is None:
-            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Nutzer hat bisher noch keinen Rang. Er muss erst ein paar Nachrichten schreiben.**", ephemeral=True)
+            await interaction.followup.send("**<:v_9:1264264656831119462> Der Nutzer hat bisher noch keinen Rang. Er muss erst ein paar Nachrichten schreiben.**", ephemeral=True)
             return
         
         await db['levelsystem'].update_one({"guildID": str(interaction.guild.id), "userID": member.id}, {"$set": {"level": level}})
         
-        await interaction.followup.send(f"**<:v_haken:1119579684057907251> Der Benutzer {member.mention} ist nun Level {level}.**")
+        await interaction.followup.send(f"**<:v_158:1264268251916009553> Der Benutzer {member.mention} ist nun Level {level}.**")
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -604,10 +604,10 @@ class levelsystem(commands.Cog):
         
         premium_status = await haspremium_forserver(self, interaction.guild)
         if premium_status == False:
-            return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keinen XP Boost verwalten, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+            return await interaction.followup.send("**<:v_9:1264264656831119462> Du kannst keinen XP Boost verwalten, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
         if await checkstatus(self, interaction.guild) == False:
-            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
+            await interaction.followup.send("**<:v_9:1264264656831119462> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
             return
         
         db = getMongoDataBase()
@@ -617,21 +617,21 @@ class levelsystem(commands.Cog):
         if result == None:
             if status == "Anschalten (2x)":
                 await db['xpboost'].insert_one({"guildID": str(interaction.guild.id), "status": True})
-                return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Der XP Boost wurde auf diesem Server aktiviert.**")
+                return await interaction.followup.send(f"**<:v_158:1264268251916009553> Der XP Boost wurde auf diesem Server aktiviert.**")
             if status == "Ausschalten (1x)":
-                await interaction.followup.send("**<:v_kreuz:1119580775411621908> Hier ist kein XP Boost aktiviert.**", ephemeral=True)
+                await interaction.followup.send("**<:v_9:1264264656831119462> Hier ist kein XP Boost aktiviert.**", ephemeral=True)
                 
         if result != None:
             if status == "Anschalten (2x)":
                 if result["staus"]:
-                    return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Hier ist der XP Boost bereits aktiviert.**", ephemeral=True)
+                    return await interaction.followup.send("**<:v_9:1264264656831119462> Hier ist der XP Boost bereits aktiviert.**", ephemeral=True)
                 await db['xpboost'].update_one({"guildID": str(interaction.guild.id)}, {"$set": {"status": True}})
-                return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Der XP Boost wurde auf diesem Server aktiviert.**")
+                return await interaction.followup.send(f"**<:v_158:1264268251916009553> Der XP Boost wurde auf diesem Server aktiviert.**")
             if status == "Ausschalten (1x)":
                 if result["staus"] == False:
-                    return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Hier ist der XP Boost bereits deaktiviert.**", ephemeral=True)
+                    return await interaction.followup.send("**<:v_9:1264264656831119462> Hier ist der XP Boost bereits deaktiviert.**", ephemeral=True)
                 await db['xpboost'].update_one({"guildID": str(interaction.guild.id)}, {"$set": {"status": False}})
-                return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Der XP Boost wurde auf diesem Server deaktiviert.**")
+                return await interaction.followup.send(f"**<:v_158:1264268251916009553> Der XP Boost wurde auf diesem Server deaktiviert.**")
                 
 async def setup(bot):
     await bot.add_cog(levelsystem(bot))

@@ -93,22 +93,22 @@ class Guessthenumber(commands.Cog):
                 
                 m2 = await kanal.send(embed=embed)
                 db["gtncurrent"].insert_one({"guildID": interaction.guild.id, "zahl": b, "msgID": m2.id})
-                return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Guess the number wurde gestartet in {kanal.mention}.**", ephemeral=True)
+                return await interaction.followup.send(f"**<:v_158:1264268251916009553> Guess the number wurde gestartet in {kanal.mention}.**", ephemeral=True)
             if result is not None:
                 db["gtn"].update_one({"guildID": interaction.guild.id}, {"$set": {"channelID": kanal.id}})
                 embed = discord.Embed(color=await getcolour(self, interaction.user), title="Guess the number", description=f"Ich habe mir eine Zahl zwischen **1** und **{a}** ausgedacht. Kannst du sie erraten?")
                 
                 m2 = await kanal.send(embed=embed)
                 db["gtncurrent"].update_one({"guildID": interaction.guild.id}, {"$set": {"zahl": b, "msgID": m2.id}})
-                return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Guess the number wurde neu gestartet in {kanal.mention}.**", ephemeral=True)
+                return await interaction.followup.send(f"**<:v_158:1264268251916009553> Guess the number wurde neu gestartet in {kanal.mention}.**", ephemeral=True)
                     
         if modus == "Ausschalten":
             await db["gtn"].find_one({"guildID": interaction.guild.id})
             if result is None:
-                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Guess the number ist nicht in diesem Server aktiviert.**", ephemeral=True)
+                return await interaction.followup.send("**<:v_9:1264264656831119462> Guess the number ist nicht in diesem Server aktiviert.**", ephemeral=True)
             
             await db["gtn"].delete_one({"guildID": interaction.guild.id})
-            return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Guess the number wurde in diesem Server ausgeschalten.**", ephemeral=True)
+            return await interaction.followup.send(f"**<:v_158:1264268251916009553> Guess the number wurde in diesem Server ausgeschalten.**", ephemeral=True)
 
 async def setup(bot):
     await bot.add_cog(Guessthenumber(bot))

@@ -67,7 +67,7 @@ class reportmsg(discord.ui.View):
                 await user.ban(reason="Automod wurde ausgelöst")
                 await interaction.channel.send(f"🚨 **Der Benutzer {user.mention} wurde gebannt.** 🚨\nGrund: Automod wurde ausgelöst ({warnID} Verwarnungen).")
 
-        await interaction.followup.send("**<:v_haken:1119579684057907251> Nutzer wurde verwarnt.**", ephemeral=True)
+        await interaction.followup.send("**<:v_158:1264268251916009553> Nutzer wurde verwarnt.**", ephemeral=True)
 
 class MyTree(CommandTree):
     async def interaction_check(self, interaction: discord.Interaction):
@@ -75,10 +75,10 @@ class MyTree(CommandTree):
             user = interaction.user
             result = await getMongoDataBase()["banned"].find_one({"userID": user.id})
             if result is not None:
-                    embed = discord.Embed(title="<:v_mod:1119581819122241621> Du bist gebannt", description=f"""
-    > <:v_info:1119579853092552715> Mit einem Bann hast du keinen Zugang mehr zu Vulpo's Befehlen. Außerdem hast du keinen Zutritt zum Supportserver "Vulpo's Wald".
-     <:v_pfeil_rechts:1119582171930300438> Grund: {result["reason"]}
-    <:v_play:1037065922134945853> Falls du denkst, dass du dich geändert hast, oder du zu unrecht bestraft wurdest, kannst du einen [Entbannungsantrag](https://forms.gle/NH1Jb1gVNEPuTLA58) stellen.
+                    embed = discord.Embed(title="<:v_168:1264268507193806900> Du bist gebannt", description=f"""
+    > <:v_12:1264264683427336259> Mit einem Bann hast du keinen Zugang mehr zu Vulpo's Befehlen. Außerdem hast du keinen Zutritt zum Supportserver "Vulpo's Wald".
+    <:v_24:1264264867511144479> Grund: {result["reason"]}
+    <:v_17:1264264737810550814> Falls du denkst, dass du dich geändert hast, oder du zu unrecht bestraft wurdest, kannst du einen [Entbannungsantrag](https://forms.gle/NH1Jb1gVNEPuTLA58) stellen.
     """, colour=0xac0000)
                     await interaction.followup.send(embed=embed, ephemeral=True)
                     return False
@@ -122,13 +122,13 @@ class Vulpo(commands.AutoShardedBot):
         t1 = math.floor(guild.created_at.timestamp())
         t2 = datetime.datetime.fromtimestamp(int(t1))
         msg = f"""
-        <:v_info:1119579853092552715> **Informationen**
-        <:v_cookie:1119578273580593232> {guild.name} ({guild.id})
-        <:v_krone:1119580951794696224> {guild.owner} ({guild.owner.id})
-        <:v_user:1119585450923929672> {guild.member_count}
-        <:v_zeit:1119585888054296676> {discord_timestamp(t2, 'R')}
+        <:v_12:1264264683427336259> **Informationen**
+        🍪 {guild.name} ({guild.id})
+        <:v_78:1264266024283406336> {guild.owner} ({guild.owner.id})
+        <:v_56:1264265471339925575> {guild.member_count}
+        <:v_65:1264265724386480148> {discord_timestamp(t2, 'R')}
        	
-        <:v_info:1119579853092552715> **Vulpo ist jetzt auf {len(bot.guilds)} Servern drauf! Yay 🎉**
+        <:v_12:1264264683427336259> **Vulpo ist jetzt auf {len(bot.guilds)} Servern drauf! Yay 🎉**
         """
         embed = discord.Embed(colour=discord.Colour.green(), title=f"Vulpo wurde auf {guild.name} eingeladen!", description=msg)
         embed.set_thumbnail(url=guild.icon if guild.icon else "https://cdn.discordapp.com/attachments/971092445435682907/973630982425047050/server_join.png")
@@ -143,13 +143,13 @@ class Vulpo(commands.AutoShardedBot):
             t2 = datetime.datetime.fromtimestamp(int(t1))
         	
             msg = f"""
-            <:v_info:1119579853092552715> **Informationen**
-            <:v_cookie:1119578273580593232> {guild.name} ({guild.id})
-            <:v_krone:1119580951794696224> {guild.owner} ({guild.owner.id})
-            <:v_user:1119585450923929672> {guild.member_count}
-            <:v_zeit:1119585888054296676> {discord_timestamp(t2, 'R')}
+            <:v_12:1264264683427336259> **Informationen**
+            🍪 {guild.name} ({guild.id})
+            <:v_78:1264266024283406336> {guild.owner} ({guild.owner.id})
+            <:v_56:1264265471339925575> {guild.member_count}
+            <:v_65:1264265724386480148> {discord_timestamp(t2, 'R')}
 
-            <:v_info:1119579853092552715> **Vulpo ist jetzt auf {len(bot.guilds)} Servern drauf!**
+            <:v_12:1264264683427336259> **Vulpo ist jetzt auf {len(bot.guilds)} Servern drauf!**
             """
             
             embed = discord.Embed(colour=discord.Colour.red(), title=f"Vulpo wurde aus {guild.name} rausgeschmissen!", description=msg)
@@ -191,9 +191,9 @@ class Vulpo(commands.AutoShardedBot):
             if member:
                 embed.set_footer(text="Durch einen Vote erhältst du 300 Cookies und die Voter Rolle", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508227117289472/herz.png")
                 if rolle in member.roles:
-                    embed.description += f"\n<:v_zeit:1119585888054296676> Du wirst in 12 Stunden erinnert, wieder zu voten."
+                    embed.description += f"\n<:v_65:1264265724386480148> Du wirst in 12 Stunden erinnert, wieder zu voten."
                 else:
-                    embed.description += f"\n<:v_zeit:1119585888054296676> Deine Vote Erinnerungen sind aus. Du kannst sie in <#926224205639467108> aktivieren."
+                    embed.description += f"\n<:v_65:1264265724386480148> Deine Vote Erinnerungen sind aus. Du kannst sie in <#926224205639467108> aktivieren."
             if member == None:
                 embed.set_footer(text="Durch einen Vote erhältst du 300 Cookies", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508227117289472/herz.png")
             await channel.send(embed=embed, view=voteView())
@@ -258,9 +258,9 @@ class Vulpo(commands.AutoShardedBot):
             if member:
                 embed.set_footer(text="Durch einen Vote erhältst du 300 Cookies und die Voter Rolle", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508227117289472/herz.png")
                 if rolle in member.roles:
-                    embed.description += f"\n<:v_zeit:1119585888054296676> Du wirst in 12 Stunden erinnert, wieder zu voten."
+                    embed.description += f"\n<:v_65:1264265724386480148> Du wirst in 12 Stunden erinnert, wieder zu voten."
                 else:
-                    embed.description += f"\n<:v_zeit:1119585888054296676> Deine Vote Erinnerungen sind aus. Du kannst sie in <#926224205639467108> aktivieren."
+                    embed.description += f"\n<:v_65:1264265724386480148> Deine Vote Erinnerungen sind aus. Du kannst sie in <#926224205639467108> aktivieren."
             if member == None:
                 embed.set_footer(text="Durch einen Vote erhältst du 300 Cookies", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508227117289472/herz.png")
             await channel.send(embed=embed, view=voteView())
@@ -382,15 +382,15 @@ async def on_app_command_error(interaction: discord.Interaction, error: AppComma
     await interaction.response.defer()
     
     if isinstance(error, app_commands.MissingPermissions):
-        await send_error("Fehlende Berechtigungen", "<:v_kreuz:1119580775411621908> Du hast nicht die Rechte, diesen Command auszuführen.", interaction)
+        await send_error("Fehlende Berechtigungen", "<:v_9:1264264656831119462> Du hast nicht die Rechte, diesen Command auszuführen.", interaction)
         return
     if isinstance(error,app_commands.CommandInvokeError):
         pass
     if isinstance(error,app_commands.MissingAnyRole):
-        await send_error("Fehlende Berechtigungen", "<:v_kreuz:1119580775411621908> Du brauchst eine bestimmte Rolle um dies zu tun.", interaction)
+        await send_error("Fehlende Berechtigungen", "<:v_9:1264264656831119462> Du brauchst eine bestimmte Rolle um dies zu tun.", interaction)
         return
     if isinstance(error,app_commands.MissingRole):
-        await send_error("Fehlende Berechtigungen", "<:v_kreuz:1119580775411621908> Du brauchst eine bestimmte Rolle um dies zu tun.", interaction)
+        await send_error("Fehlende Berechtigungen", "<:v_9:1264264656831119462> Du brauchst eine bestimmte Rolle um dies zu tun.", interaction)
         return
     if isinstance(error, app_commands.CommandOnCooldown):
 
@@ -409,44 +409,44 @@ async def on_app_command_error(interaction: discord.Interaction, error: AppComma
         minutes = seconds // seconds_in_minute
         seconds = seconds - (minutes * seconds_in_minute)
         if math.ceil(error.retry_after) <= 60:  # seconds
-            await send_error("Auf Cooldown", f"<:v_kreuz:1119580775411621908> Dieser Command ist auf Cooldown. Bitte versuche es in **{math.ceil(seconds)}** Sekunden erneut.", interaction)
+            await send_error("Auf Cooldown", f"<:v_9:1264264656831119462> Dieser Command ist auf Cooldown. Bitte versuche es in **{math.ceil(seconds)}** Sekunden erneut.", interaction)
             return
         if math.ceil(error.retry_after) <= 3600:  # minutes
-            await send_error("Auf Cooldown", f"<:v_kreuz:1119580775411621908> Dieser Command ist auf Cooldown. Bitte versuche es in **{math.ceil(minutes)}** Minuten und **{math.ceil(seconds)}** Sekunden erneut.", interaction)
+            await send_error("Auf Cooldown", f"<:v_9:1264264656831119462> Dieser Command ist auf Cooldown. Bitte versuche es in **{math.ceil(minutes)}** Minuten und **{math.ceil(seconds)}** Sekunden erneut.", interaction)
             return
         if math.ceil(error.retry_after) <= 86400:  # hours
-            await send_error("Auf Cooldown", f"<:v_kreuz:1119580775411621908> Dieser Command ist auf Cooldown. Bitte versuche es in **{math.ceil(hours)}** Stunden, **{math.ceil(minutes)}** Minuten und **{math.ceil(seconds)}** Sekunden erneut.", interaction)
+            await send_error("Auf Cooldown", f"<:v_9:1264264656831119462> Dieser Command ist auf Cooldown. Bitte versuche es in **{math.ceil(hours)}** Stunden, **{math.ceil(minutes)}** Minuten und **{math.ceil(seconds)}** Sekunden erneut.", interaction)
             return
         if math.ceil(error.retry_after) >= 86400:  # days
-            await send_error("Auf Cooldown", f"<:v_kreuz:1119580775411621908> Dieser Command ist auf Cooldown. Bitte versuche es in **{math.ceil(days)}** Tagen, **{math.ceil(hours)}** Stunden, **{math.ceil(minutes)}** Minuten und **{math.ceil(seconds)}** Sekunden erneut.", interaction)
+            await send_error("Auf Cooldown", f"<:v_9:1264264656831119462> Dieser Command ist auf Cooldown. Bitte versuche es in **{math.ceil(days)}** Tagen, **{math.ceil(hours)}** Stunden, **{math.ceil(minutes)}** Minuten und **{math.ceil(seconds)}** Sekunden erneut.", interaction)
             return
     if isinstance(error,app_commands.BotMissingPermissions):
-        await send_error("Fehlende Berechtigungen", "<:v_kreuz:1119580775411621908> Ich habe keine Berechtigungen um das zu tun.", interaction)
+        await send_error("Fehlende Berechtigungen", "<:v_9:1264264656831119462> Ich habe keine Berechtigungen um das zu tun.", interaction)
         return
     if isinstance(error,app_commands.CommandNotFound):
         return
     if isinstance(error,app_commands.NoPrivateMessage):
-        await send_error("Kein Zugang", "<:v_kreuz:1119580775411621908> Dieser Command funktioniert nur in Servern.", interaction)
+        await send_error("Kein Zugang", "<:v_9:1264264656831119462> Dieser Command funktioniert nur in Servern.", interaction)
         return
     if isinstance(error,app_commands.TransformerError):
-        await send_error("Nicht gefunden", "<:v_kreuz:1119580775411621908> Die ausgewählte Person o.Ä. konnte nicht gefunden werden.", interaction)
+        await send_error("Nicht gefunden", "<:v_9:1264264656831119462> Die ausgewählte Person o.Ä. konnte nicht gefunden werden.", interaction)
         return
     else:
-        await send_error("Unbekannt", "<:v_kreuz:1119580775411621908> Ein unbekannter Fehler ist aufgetreten.\nBitte öffne ein Ticket im [Supportserver](https://discord.gg/49jD3VXksp)", interaction)
+        await send_error("Unbekannt", "<:v_9:1264264656831119462> Ein unbekannter Fehler ist aufgetreten.\nBitte öffne ein Ticket im [Supportserver](https://discord.gg/49jD3VXksp)", interaction)
         guilds = await bot.fetch_guild(925729625580113951)
         channels = await guilds.fetch_channel(925732898634600458)
 
         traceback_string = traceback.format_exception(type(error), error, error.__traceback__)
 
         embed = discord.Embed(colour=discord.Colour.red(), title="Error (Application Command)", description=f"""
-<:v_info:1119579853092552715> **Informationen**
-<:v_user:1119585450923929672> {interaction.user.mention}
-<:v_mod:1119581819122241621> `{interaction.guild.name}` | {interaction.guild.id} ({interaction.guild.member_count})
-<:v_auge:1119578772207849472> {interaction.channel.mention}
-<:v_zeit:1119585888054296676> <t:{int(time.time())}:R>
-<:v_haken:1119579684057907251> `/{interaction.command.name}`""")
-        embed.add_field(name="<:v_pfeil_rechts:1119582171930300438> Error", value=f"```py\n" + limit_characters(''.join(traceback_string[-1]), 1010) + "```", inline=False)
-        embed.add_field(name="<:v_pfeil_rechts:1119582171930300438> Traceback", value=f"```py\n" + limit_characters(''.join(traceback_string), 1010) + "```", inline=False)
+<:v_12:1264264683427336259> **Informationen**
+<:v_56:1264265471339925575> {interaction.user.mention}
+<:v_168:1264268507193806900> `{interaction.guild.name}` | {interaction.guild.id} ({interaction.guild.member_count})
+<:v_104:1264266670810071202> {interaction.channel.mention}
+<:v_65:1264265724386480148> <t:{int(time.time())}:R>
+<:v_158:1264268251916009553> `/{interaction.command.name}`""")
+        embed.add_field(name="<:v_24:1264264867511144479> Error", value=f"```py\n" + limit_characters(''.join(traceback_string[-1]), 1010) + "```", inline=False)
+        embed.add_field(name="<:v_24:1264264867511144479> Traceback", value=f"```py\n" + limit_characters(''.join(traceback_string), 1010) + "```", inline=False)
         embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/811730903822368833/823531509461942294/2000px-Dialog-error-round.svg.png")
         await channels.send(embed=embed)
         return
@@ -461,7 +461,7 @@ async def sync(ctx, serverid=None):
             globalembed = discord.Embed(color=discord.Color.orange(), title="Synchronisierung", description=f"Die Synchronisierung von `{len(s)} Commands` wurde eingeleitet.\nEs wird ungefähr eine Stunde dauern, damit sie global angezeigt werden.")
             await ctx.send(embed=globalembed)
         except Exception as e:
-            await ctx.send(f"**<:v_kreuz:1119580775411621908> Synchronisierung fehlgeschlagen**\n```\n{e}```")
+            await ctx.send(f"**<:v_9:1264264656831119462> Synchronisierung fehlgeschlagen**\n```\n{e}```")
     if serverid is not None:
         guild = await bot.fetch_guild(int(serverid))
         if guild:
@@ -470,19 +470,19 @@ async def sync(ctx, serverid=None):
                 localembed = discord.Embed(color=discord.Color.orange(), title="Synchronisierung", description=f"Die Synchronisierung von `{len(s)} Commands` ist fertig.\nEs wird nur maximal eine Minute dauern, weil sie nur auf dem Server {guild.name} synchronisiert wurden.")
                 await ctx.send(embed=localembed)
             except Exception as e:
-                await ctx.send(f"**<:v_kreuz:1119580775411621908> Synchronisierung fehlgeschlagen**\n```\n{e}```")
+                await ctx.send(f"**<:v_9:1264264656831119462> Synchronisierung fehlgeschlagen**\n```\n{e}```")
         if guild is None:
-            await ctx.send(f"<:v_kreuz:1119580775411621908> Der Server mit der ID `{serverid}` wurde nicht gefunden.")
+            await ctx.send(f"<:v_9:1264264656831119462> Der Server mit der ID `{serverid}` wurde nicht gefunden.")
 
 @bot.tree.context_menu(name="Nachricht melden")
 async def nachricht_melden(interaction: discord.Interaction, message: discord.Message):
     result = getMongoDataBase()["reportlog"].find_one({"guildID": interaction.guild.id})
     if result == None:
-        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Diese Funktion ist hier nicht aktiviert.**", ephemeral=True)
+        return await interaction.followup.send("**<:v_9:1264264656831119462> Diese Funktion ist hier nicht aktiviert.**", ephemeral=True)
     try:
         channel = await interaction.guild.fetch_channel(int(result["channelID"]))
         if channel == None:
-            return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Kanal des Reportlogs existiert nicht mehr. Bitte melde dies dem lokalen Serverteam.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_9:1264264656831119462> Der Kanal des Reportlogs existiert nicht mehr. Bitte melde dies dem lokalen Serverteam.**", ephemeral=True)
         else:
             embed = discord.Embed(title="Nachricht Meldung", description=f"""
 Der User {interaction.user.mention} hat eine Nachricht von {message.author.mention} gemeldet.
@@ -495,7 +495,7 @@ Der User {interaction.user.mention} hat eine Nachricht von {message.author.menti
             await channel.send(embed=embed, view=reportmsg(message, bot))
             await interaction.followup.send(f"`Du hast eine Nachricht von` {message.author.mention} `gemeldet.`", ephemeral=True)
     except:
-        return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Kanal des Reportlogs existiert nicht mehr. Bitte melde dies dem lokalen Serverteam.**", ephemeral=True)
+        return await interaction.followup.send("**<:v_9:1264264656831119462> Der Kanal des Reportlogs existiert nicht mehr. Bitte melde dies dem lokalen Serverteam.**", ephemeral=True)
 
 
 bot.run("OTM4NTAxODA3NzA4MTkyODQ5.GNd5eH.puo8MwQQ1W6owkdu2y8XafqfHw6qz1oKtU_JrU", reconnect=True)

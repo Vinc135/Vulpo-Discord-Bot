@@ -27,30 +27,30 @@ class Automod(commands.Cog):
         
         premium_status = await haspremium_forserver(self, interaction.guild)
         if not premium_status and len(existing_actions) >= 3:
-            return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Aktionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+            return await interaction.followup.send("**<:v_9:1264264656831119462> Du kannst keine weiteren Aktionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
         
         existing_action = await db['automod'].find_one({"guildID": guild_id, "warnanzahl": warnanzahl})
         if existing_action is not None:
-            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst für eine Warnanzahl nur eine Aktion hinzufügen. Bitte wähle eine andere Warnanzahl oder entferne diese Aktion mit `/automod removeaction <warnanzahl>`.**", ephemeral=True)
+            await interaction.followup.send("**<:v_9:1264264656831119462> Du kannst für eine Warnanzahl nur eine Aktion hinzufügen. Bitte wähle eine andere Warnanzahl oder entferne diese Aktion mit `/automod removeaction <warnanzahl>`.**", ephemeral=True)
             return
 
         if aktion == "Timeout (Bitte Zeit angeben)":
             if time == None or time == "":
-                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Bitte gib eine Zeit an, wie lange der Timeout dauern soll.**", ephemeral=True)
+                return await interaction.followup.send("**<:v_9:1264264656831119462> Bitte gib eine Zeit an, wie lange der Timeout dauern soll.**", ephemeral=True)
                 
             seconds = convert(time)
             
             if seconds == None or seconds == 0:
-                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Bitte gib eine gültige Zeit an.**", ephemeral=True)
+                return await interaction.followup.send("**<:v_9:1264264656831119462> Bitte gib eine gültige Zeit an.**", ephemeral=True)
             
             await db['automod'].insert_one({"guildID": guild_id, "warnanzahl": warnanzahl, "aktion": f"Timeout ({time})", "time": seconds})
             
-            return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Eintrag erstellt. Jeder User mit einer Anzahl an Verwarnungen von {warnanzahl} wird erhält bei der nächsten Verwarnung einen Timeout von {time}.**")
+            return await interaction.followup.send(f"**<:v_158:1264268251916009553> Eintrag erstellt. Jeder User mit einer Anzahl an Verwarnungen von {warnanzahl} wird erhält bei der nächsten Verwarnung einen Timeout von {time}.**")
             
 
         await db['automod'].insert_one({"guildID": guild_id, "warnanzahl": warnanzahl, "aktion": aktion})
         
-        await interaction.followup.send(f"**<:v_haken:1119579684057907251> Eintrag erstellt. Jeder User mit einer Anzahl an Verwarnungen von {warnanzahl} wird erhält bei der nächsten Verwarnung einen {aktion}.**")
+        await interaction.followup.send(f"**<:v_158:1264268251916009553> Eintrag erstellt. Jeder User mit einer Anzahl an Verwarnungen von {warnanzahl} wird erhält bei der nächsten Verwarnung einen {aktion}.**")
 
     @automod.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -66,12 +66,12 @@ class Automod(commands.Cog):
         
         existing_action = await db['automod'].find_one({"guildID": guild_id, "warnanzahl": warnanzahl})
         if existing_action is None:
-            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Dieser Eintrag existiert nicht. Bitte wähle eine andere Warnanzahl oder füge eine Aktion mit `/automod addaction <warnanzahl> <aktion>` hinzu**", ephemeral=True)
+            await interaction.followup.send("**<:v_9:1264264656831119462> Dieser Eintrag existiert nicht. Bitte wähle eine andere Warnanzahl oder füge eine Aktion mit `/automod addaction <warnanzahl> <aktion>` hinzu**", ephemeral=True)
             return
 
         await db['automod'].delete_one({"guildID": guild_id, "warnanzahl": warnanzahl})
         
-        await interaction.followup.send(f"**<:v_haken:1119579684057907251> Eintrag gelöscht.**")
+        await interaction.followup.send(f"**<:v_158:1264268251916009553> Eintrag gelöscht.**")
 
     @automod.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -87,7 +87,7 @@ class Automod(commands.Cog):
         result = await db['automod'].find({"guildID": guild_id}).to_list(length=None)
         
         if not result:
-            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Hier wurden keine Aktionen gefunden. Füge eine Aktion mit `/automod addaction <warnanzahl> <aktion>` hinzu**", ephemeral=True)
+            await interaction.followup.send("**<:v_9:1264264656831119462> Hier wurden keine Aktionen gefunden. Füge eine Aktion mit `/automod addaction <warnanzahl> <aktion>` hinzu**", ephemeral=True)
             return
         
         embed = discord.Embed(title="Alle Aktionen vom Automod", description="Hier nähere Infos:", color=await getcolour(self, interaction.user))
@@ -139,7 +139,7 @@ class Automod(commands.Cog):
         
         result = await db['warns'].find_one({"guildID": interaction.guild.id, "userID": user.id, "warnID": warnid})
         if result is None:
-            await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> Die Verwarnung mit der ID {warnid} von {user} wurde nicht gefunden.**")
+            await interaction.followup.send(f"**<:v_9:1264264656831119462> Die Verwarnung mit der ID {warnid} von {user} wurde nicht gefunden.**")
             return
         await db['warns'].delete_one({"guildID": interaction.guild.id, "userID": user.id, "warnID": warnid})
         
@@ -175,7 +175,7 @@ class Automod(commands.Cog):
         if a != 0:
             await interaction.followup.send(embed=warnembed)
         if a == 0:
-            await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> Der User {user} hat keine Verwarnungen hier.**", ephemeral=True) 
+            await interaction.followup.send(f"**<:v_9:1264264656831119462> Der User {user} hat keine Verwarnungen hier.**", ephemeral=True) 
     
     blacklist = app_commands.Group(name='blacklist', description='Nehme Einstellungen am Blacklist-System vor.', guild_only=True)
 
@@ -213,7 +213,7 @@ class Automod(commands.Cog):
         result = await db['blacklist'].find_one({"guildID": interaction.guild.id, "word": wort})
         
         if result != None:
-            await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> Das Wort `{wort}` existiert bereits in der Blacklist.**", ephemeral=True)
+            await interaction.followup.send(f"**<:v_9:1264264656831119462> Das Wort `{wort}` existiert bereits in der Blacklist.**", ephemeral=True)
             return
         
         existing_words = await db['blacklist'].find({"guildID": interaction.guild.id}).to_list(length=None)
@@ -221,10 +221,10 @@ class Automod(commands.Cog):
         premium = await haspremium_forserver(self, interaction.guild)
         
         if not premium and len(existing_words) >= 15:
-            return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Wörter hinzufügen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**", ephemeral=True)
+            return await interaction.followup.send("**<:v_9:1264264656831119462> Du kannst keine weiteren Wörter hinzufügen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**", ephemeral=True)
 
         await db['blacklist'].insert_one({"guildID": interaction.guild.id, "word": wort})
-        await interaction.followup.send(f"**<:v_haken:1119579684057907251> Das Wort `{wort}` ist nun auf der Blacklist.**")
+        await interaction.followup.send(f"**<:v_158:1264268251916009553> Das Wort `{wort}` ist nun auf der Blacklist.**")
 
     @blacklist.command()
     @app_commands.checks.has_permissions(manage_messages=True)
@@ -238,10 +238,10 @@ class Automod(commands.Cog):
         
         result = await db['blacklist'].find_one({"guildID": interaction.guild.id, "word": wort})
         if result is None or result == "()":
-            await interaction.followup.send(f"**<:v_kreuz:1119580775411621908> Das Wort `{wort}` existiert nicht in der Blacklist.**", ephemeral=True)
+            await interaction.followup.send(f"**<:v_9:1264264656831119462> Das Wort `{wort}` existiert nicht in der Blacklist.**", ephemeral=True)
             return
         await db['blacklist'].delete_one({"guildID": interaction.guild.id, "word": wort})
-        await interaction.followup.send(f"**<:v_haken:1119579684057907251> Das Wort `{wort}` ist nun nicht mehr auf der Blacklist.**")
+        await interaction.followup.send(f"**<:v_158:1264268251916009553> Das Wort `{wort}` ist nun nicht mehr auf der Blacklist.**")
 
     @automod.command()
     @app_commands.checks.has_permissions(manage_messages=True)
@@ -258,13 +258,13 @@ class Automod(commands.Cog):
 
             if result != None:
                 await db['caps'].update_one({"guildID": interaction.guild.id}, {"$set": {"prozent": prozent}})
-                return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Jede Nachricht die mindestens {prozent} Caps beihnaltet, wird ab sofort gelöscht und der User verwarnt.**")
+                return await interaction.followup.send(f"**<:v_158:1264268251916009553> Jede Nachricht die mindestens {prozent} Caps beihnaltet, wird ab sofort gelöscht und der User verwarnt.**")
             if result == None:
                 await db['caps'].insert_one({"guildID": interaction.guild.id, "prozent": prozent})
-                return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Jede Nachricht die mindestens {prozent} Caps beihnaltet, wird ab sofort gelöscht und der User verwarnt.**")
+                return await interaction.followup.send(f"**<:v_158:1264268251916009553> Jede Nachricht die mindestens {prozent} Caps beihnaltet, wird ab sofort gelöscht und der User verwarnt.**")
         if modus == "Ausschalten":
             await db['caps'].delete_one({"guildID": interaction.guild.id})
-            return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Der Caps Filter wurde deaktiviert.**")
+            return await interaction.followup.send(f"**<:v_158:1264268251916009553> Der Caps Filter wurde deaktiviert.**")
     
     @automod.command()
     @app_commands.checks.has_permissions(manage_messages=True)
@@ -280,13 +280,13 @@ class Automod(commands.Cog):
             result = await db['spam'].find_one({"guildID": interaction.guild.id})
             if result != None:
                 await db['spam'].update_one({"guildID": interaction.guild.id}, {"$set": {"status": True}})
-                return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Jeder User, der mindestens 5 Nachrichten in 2,5 Sekunden sendet, wird verwarnt. Außerdem werden die Nachrichten gelöscht.**")
+                return await interaction.followup.send(f"**<:v_158:1264268251916009553> Jeder User, der mindestens 5 Nachrichten in 2,5 Sekunden sendet, wird verwarnt. Außerdem werden die Nachrichten gelöscht.**")
             if result == None:
                 await db['spam'].insert_one({"guildID": interaction.guild.id, "status": True})
-                return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Jeder User, der mindestens 5 Nachrichten in 2,5 Sekunden sendet, wird verwarnt. Außerdem werden die Nachrichten gelöscht.**")
+                return await interaction.followup.send(f"**<:v_158:1264268251916009553> Jeder User, der mindestens 5 Nachrichten in 2,5 Sekunden sendet, wird verwarnt. Außerdem werden die Nachrichten gelöscht.**")
         if modus == "Ausschalten":
             await db['spam'].delete_one({"guildID": interaction.guild.id})
-            return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Der Spam Filter wurde deaktiviert.**")
+            return await interaction.followup.send(f"**<:v_158:1264268251916009553> Der Spam Filter wurde deaktiviert.**")
             
     @commands.Cog.listener()
     async def on_message(self, msg):

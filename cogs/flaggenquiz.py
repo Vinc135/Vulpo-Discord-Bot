@@ -19,7 +19,7 @@ class buttons(discord.ui.View):
         acc = await open_acc(interaction.user)
         rucksack = int(acc["rucksack"])
         if 20 > int(rucksack):
-            return await interaction.followup.send(f"<:v_kreuz:1119580775411621908> Du hast nicht **20 Coins** in deinem Rucksack. Es fehlen dir **{20 - rucksack} Coins**. Entweder überweise dir die Cookies von deiner Bank in dein Rucksack oder gehe zuerst arbeiten oder betteln. Alle Commands siehst du mit `/help`.", ephemeral=True)
+            return await interaction.followup.send(f"<:v_9:1264264656831119462> Du hast nicht **20 Coins** in deinem Rucksack. Es fehlen dir **{20 - rucksack} Coins**. Entweder überweise dir die Cookies von deiner Bank in dein Rucksack oder gehe zuerst arbeiten oder betteln. Alle Commands siehst du mit `/help`.", ephemeral=True)
 
         await update_account(interaction.user, "rucksack", 0, 20)
         
@@ -119,7 +119,7 @@ async def answer_correct(self, msg):
 
 async def answer_incorrect(self, msg):
     try:
-        await msg.add_reaction("<:v_kreuz:1119580775411621908>")
+        await msg.add_reaction("<:v_9:1264264656831119462>")
     except: 
         pass
 
@@ -199,15 +199,15 @@ class flaggenquiz(commands.Cog):
             m = await kanal.send(embed=embed, file=file, view=buttons(self.bot))
             
             await fqcurrent.insert_one({"guildID": interaction.guild.id, "lösung": flag["lösung"], "msgID": m.id})
-            return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Das Flaggenquiz wurde {'neu ' if flag else ''} gestartet in {kanal.mention}.**", ephemeral=True)
+            return await interaction.followup.send(f"**<:v_158:1264268251916009553> Das Flaggenquiz wurde {'neu ' if flag else ''} gestartet in {kanal.mention}.**", ephemeral=True)
         
         if modus == "Ausschalten":
             flag = await fq.find_one({"guildID": server.id})
             if not flag:
-                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Das Flaggenquiz ist in diesem Server nicht aktiviert.**", ephemeral=True)
+                return await interaction.followup.send("**<:v_9:1264264656831119462> Das Flaggenquiz ist in diesem Server nicht aktiviert.**", ephemeral=True)
             
             await fq.delete_one({"guildID": server.id})
-            return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Das Flaggenquiz wurde in diesem Server ausgeschaltet.**", ephemeral=True)
+            return await interaction.followup.send(f"**<:v_158:1264268251916009553> Das Flaggenquiz wurde in diesem Server ausgeschaltet.**", ephemeral=True)
 
 async def setup(bot):
     await bot.add_cog(flaggenquiz(bot))

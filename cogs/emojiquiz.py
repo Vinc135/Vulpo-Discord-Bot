@@ -20,7 +20,7 @@ class buttons(discord.ui.View):
         acc = await open_acc(self, interaction.user)
         rucksack = int(acc["rucksack"])
         if 20 > int(rucksack):
-            return await interaction.followup.send(f"<:v_kreuz:1119580775411621908> Du hast nicht **20 🍪** in deinem Rucksack. Es fehlen dir **{20 - rucksack} 🍪**. Entweder überweise dir die Cookies von deiner Bank in dein Rucksack oder gehe zuerst arbeiten oder betteln. Alle Commands siehst du mit `/help`.", ephemeral=True)
+            return await interaction.followup.send(f"<:v_9:1264264656831119462> Du hast nicht **20 🍪** in deinem Rucksack. Es fehlen dir **{20 - rucksack} 🍪**. Entweder überweise dir die Cookies von deiner Bank in dein Rucksack oder gehe zuerst arbeiten oder betteln. Alle Commands siehst du mit `/help`.", ephemeral=True)
 
         await update_account(self, interaction.user, "rucksack", 0, 20)
         
@@ -104,7 +104,7 @@ async def answer_correct(self, msg):
 
 async def answer_incorrect(self, msg):
     try:
-        await msg.add_reaction("<:v_kreuz:1119580775411621908>")
+        await msg.add_reaction("<:v_9:1264264656831119462>")
     except: 
         pass
             
@@ -193,9 +193,9 @@ class Emojiquiz(commands.Cog):
         if modus == "Ausschalten":
             result = await db["eq"].find_one({"guildID": interaction.guild.id})
             if result is None:
-                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Das Emojiquiz ist nicht in diesem Server aktiviert.**", ephemeral=True)
+                return await interaction.followup.send("**<:v_9:1264264656831119462> Das Emojiquiz ist nicht in diesem Server aktiviert.**", ephemeral=True)
             await db["eq"].delete_one({"guildID": interaction.guild.id})
-            return await interaction.followup.send(f"**<:v_haken:1119579684057907251> Das Emojiquiz wurde in diesem Server ausgeschaltet.**", ephemeral=True)
+            return await interaction.followup.send(f"**<:v_158:1264268251916009553> Das Emojiquiz wurde in diesem Server ausgeschaltet.**", ephemeral=True)
 
 async def setup(bot):
     await bot.add_cog(Emojiquiz(bot))

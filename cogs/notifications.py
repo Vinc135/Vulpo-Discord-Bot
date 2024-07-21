@@ -84,7 +84,7 @@ async def check_tickets(self):
 #            embed = discord.Embed(title="Aktuelle Tickets", description="Hier siehst du alle Tickets und deren Status. Du kannst dich daran orientieren, wo Support gefragt ist.", color=discord.Color.orange())
 #            for result in results:
 #                autorname, autorID, ticketID, titel, status, letztes_update = result
-#                embed.add_field(name=f"#{ticketID} - {titel}", value=f"<:v_user:1119585450923929672> {autorname}\n<:v_mod:1119581819122241621> {status}\n<:v_zeit:1119585888054296676> Letztes Update: {letztes_update}")
+#                embed.add_field(name=f"#{ticketID} - {titel}", value=f"<:v_56:1264265471339925575> {autorname}\n<:v_168:1264268507193806900> {status}\n<:v_65:1264265724386480148> Letztes Update: {letztes_update}")
 #            embed.set_footer(text="https://vulpo-bot.de/ticketsystem")
 #            if emb == None or embed != emb:
 #                await message.edit(content="", embed=embed)

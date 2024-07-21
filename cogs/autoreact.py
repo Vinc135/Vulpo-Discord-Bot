@@ -13,11 +13,10 @@ class Autoreact(commands.Cog):
         if msg.guild == None:
             return
         
-        
         result = getMongoDataBase()["autoreact"].find_one({"guildID": str(msg.guild.id), "channelID": str(msg.channel.id)})
-        
         if result == None or result == "()":
             return
+        
         for e in result:
             try:
                 emoji = discord.PartialEmoji.from_str(e[0])
@@ -38,12 +37,11 @@ class Autoreact(commands.Cog):
         
         await interaction.response.defer()
         db = getMongoDataBase()
-        
         try:
             await interaction.response.defer()
             emoj = discord.PartialEmoji.from_str(emoji)
             if emoj is None:
-                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+                return await interaction.followup.send("**<:v_9:1264264656831119462> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)
             
             
             existing = await db["autoreact"].find({"guildID": str(interaction.guild.id), "channelID": str(kanal.id)}).to_list(length=None)
@@ -51,12 +49,12 @@ class Autoreact(commands.Cog):
             premium = await haspremium_forserver(self, interaction.guild)
             
             if not premium and len(existing) >= 2:
-                return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Reaktionen für diesen Kanal erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+                return await interaction.followup.send("**<:v_9:1264264656831119462> Du kannst keine weiteren Reaktionen für diesen Kanal erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
             await db["autoreact"].insert_one({"guildID": str(interaction.guild.id), "channelID": str(kanal.id), "emoji": str(emoji)})
-            await interaction.followup.send(f"**<:v_haken:1119579684057907251> Eintrag erstellt. Jede Nachricht aus dem Kanal {kanal.mention} erhält das Emoji {emoj}.**")
+            await interaction.followup.send(f"**<:v_158:1264268251916009553> Eintrag erstellt. Jede Nachricht aus dem Kanal {kanal.mention} erhält das Emoji {emoj}.**")
         except:
-            return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+            return await interaction.followup.send("**<:v_9:1264264656831119462> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)
 
     @autoreact.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -70,35 +68,38 @@ class Autoreact(commands.Cog):
         
         result = db["autoreact"].find_one({"guildID": str(interaction.guild.id), "channelID": str(kanal.id)})
         if result == None or result == "()":
-            await interaction.followup.send("**<:v_kreuz:1119580775411621908> In dem Kanal ist keine Autoreaktion eingestellt.**", ephemeral=True)
+            await interaction.followup.send("**<:v_9:1264264656831119462> In dem Kanal ist keine Autoreaktion eingestellt.**", ephemeral=True)
             return
         await db["autoreact"].delete_one({"guildID": str(interaction.guild.id), "channelID": str(kanal.id)})
-        await interaction.followup.send(f"**<:v_haken:1119579684057907251> Einträge gelöscht.**")
+        await interaction.followup.send(f"**<:v_158:1264268251916009553> Einträge gelöscht.**")
 
     @autoreact.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(manage_channels=True)
     async def liste(self, interaction: discord.Interaction):
         """Erhalte eine Liste von den Autofilename und deren Kanäle."""
-        
         await interaction.response.defer()
-        
+
         result = getMongoDataBase()["autoreact"].find({"guildID": str(interaction.guild.id)})
-        if result == ():
-            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Hier gibt es keine autofilename. Füge eine mit `/autoreact add <kanal> <emoji>` hinzu**", ephemeral=True)
-            return
+
         embed = discord.Embed(title="Alle automatische filename in Kanälen", description="Hier nähere Infos:", color=await getcolour(self, interaction.user))
-        
-        for i in result:
-            k = interaction.guild.get_channel(int(i[1]))
+
+        async for i in result:
+            k = interaction.guild.get_channel(int(i["channel_id"]))  # assuming the channel ID is stored under "channel_id"
             if k is not None:
                 channel = k
-            if k is None:
+            else:
                 k = "Kanal veraltet"
-            emoj = discord.PartialEmoji.from_str(i[0])
+                channel = k
+            emoj = discord.PartialEmoji.from_str(i["emoji"])  # assuming the emoji is stored under "emoji"
             if emoj is None:
                 emoj = "Emoji veraltet"
-            embed.add_field(name=channel.mention, value=emoj)
+            embed.add_field(name=channel.mention if isinstance(channel, discord.TextChannel) else k, value=str(emoj))
+        
+        if not embed.fields:
+            await interaction.followup.send("**<:v_9:1264264656831119462> Hier gibt es keine autofilename. Füge eine mit `/autoreact add <kanal> <emoji>` hinzu**", ephemeral=True)
+            return
+
         await interaction.followup.send(embed=embed)
 
 async def setup(bot):

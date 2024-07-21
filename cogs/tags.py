@@ -23,16 +23,16 @@ class Tags(commands.Cog):
         a = await db['tags'].find({"guildID": interaction.guild.id}).to_list()
         
         if len(a) >= 3:
-            return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Du kannst keine weiteren Befehle erstellen, da du das Limit erreicht hast**")
+            return await interaction.followup.send("**<:v_9:1264264656831119462> Du kannst keine weiteren Befehle erstellen, da du das Limit erreicht hast**")
 
         result = db['tags'].find_one({"guildID": interaction.guild.id, "name": name})
         
         if result != None:
-            return await interaction.followup.send("**<:v_kreuz:1119580775411621908> Dieser Tag existiert bereits. Wähle bitte einen anderen Namen.**")
+            return await interaction.followup.send("**<:v_9:1264264656831119462> Dieser Tag existiert bereits. Wähle bitte einen anderen Namen.**")
         
         db['tags'].insert_one({"guildID": interaction.guild.id, "name": name, "output": output})
         
-        await interaction.followup.send(f"**<:v_haken:1119579684057907251> Tag erstellt. Wenn jemand `v!{name}` schreibt, kommt dieser Text:**\n*{output}*.")
+        await interaction.followup.send(f"**<:v_158:1264268251916009553> Tag erstellt. Wenn jemand `v!{name}` schreibt, kommt dieser Text:**\n*{output}*.")
 
     @tag.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -47,12 +47,12 @@ class Tags(commands.Cog):
         result = db['tags'].find_one({"guildID": interaction.guild.id, "name": name})
         
         if result == None:
-            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Dieser Tag existiert nicht. Füge einen Tag mit `/tag add <name> <output>` hinzu.", ephemeral=True)
+            await interaction.followup.send("**<:v_9:1264264656831119462> Dieser Tag existiert nicht. Füge einen Tag mit `/tag add <name> <output>` hinzu.", ephemeral=True)
             return
         
         db['tags'].delete_one({"guildID": interaction.guild.id, "name": name})
         
-        await interaction.followup.send(f"**<:v_haken:1119579684057907251> Tag gelöscht.**")
+        await interaction.followup.send(f"**<:v_158:1264268251916009553> Tag gelöscht.**")
 
     @tag.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -67,7 +67,7 @@ class Tags(commands.Cog):
         result = db['tags'].find({"guildID": interaction.guild.id})
         
         if result == None:
-            await interaction.followup.send("**<:v_kreuz:1119580775411621908> Hier wurden keine Tags gefunden. Füge einen Tag mit `/tag add <name> <output>` hinzu**", ephemeral=True)
+            await interaction.followup.send("**<:v_9:1264264656831119462> Hier wurden keine Tags gefunden. Füge einen Tag mit `/tag add <name> <output>` hinzu**", ephemeral=True)
             return
         
         embed = discord.Embed(title="Alle Tags des Servers", description="Hier nähere Infos:", color=await getcolour(self, interaction.user))

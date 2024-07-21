@@ -180,7 +180,7 @@ class answer(discord.ui.View):
         self.bot = bot
         self.index = index
 
-    @discord.ui.button(label='Antwort abgeben', style=discord.ButtonStyle.grey, custom_id="efdfiwrzfouzgw4izf", emoji="<:v_chat:1119577968457568327>")
+    @discord.ui.button(label='Antwort abgeben', style=discord.ButtonStyle.grey, custom_id="efdfiwrzfouzgw4izf", emoji="<:v_31:1264264994774585445>")
     async def antwort_prüfen(self, interaction: discord.Interaction, button: discord.ui.Button):
         async with self.bot.pool.acquire() as conn:
             async with conn.cursor() as cursor:
@@ -220,7 +220,7 @@ class winterevent(commands.Cog):
                     
         for index, aufgabe_info in aufgaben.items():
             if index == aktueller_tag:
-                embed = discord.Embed(title=f"<:v_smiley:1119583113153089626> Heutiges Türchen: {aktueller_tag}", description=f"__Löse folgende Aufgabe und erhalte Punkte:__\n{aufgabe_info['Aufgabe']}", colour=await getcolour(self, interaction.user))
+                embed = discord.Embed(title=f"<:v_181:1264268817790664756> Heutiges Türchen: {aktueller_tag}", description=f"__Löse folgende Aufgabe und erhalte Punkte:__\n{aufgabe_info['Aufgabe']}", colour=await getcolour(self, interaction.user))
                 await interaction.response.send_message(embed=embed, view=answer(self.bot, index), ephemeral=True)
         
 
