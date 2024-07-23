@@ -216,9 +216,6 @@ class giveaway(commands.Cog):
             else:
                 await db["gw_nachrichten"].update_one({"guildID": str(msg.guild.id), "userID": str(msg.author.id), "gwID": str(gewinnspiel["msgID"])}, {"$inc": {"anzahl": 1}})
             
-            updated_result = await db["gw_nachrichten"].find_one({"guildID": str(msg.guild.id), "userID": str(msg.author.id), "gwID": str(gewinnspiel["msgID"])})
-            print(f"Aktualisierte Anzahl für Benutzer {msg.author.id} in Gewinnspiel {gewinnspiel['msgID']}: {updated_result['anzahl']}")
-
     @commands.Cog.listener()
     async def on_ready(self):
         self.bot.add_view(view=Gewinnspiel_Teilnehmen(self.bot))
