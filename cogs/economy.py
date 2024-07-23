@@ -20,7 +20,7 @@ class joblist(discord.ui.View):
     async def zurück(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.defer()
         if(self.author != interaction.user):
-            embed = discord.Embed(color=await getcolour(self, interaction.user), title="<:v_9:1264264656831119462> Das ist nicht dein Button")
+            embed = discord.Embed(color=await getcolour(self, interaction.user), title="<:v_x:1264270921452224562> Das ist nicht dein Button")
             
             await interaction.followup.send(embed=embed, ephemeral=True)
             return
@@ -35,10 +35,8 @@ class joblist(discord.ui.View):
     
     @discord.ui.button(label='Weiter', style=discord.ButtonStyle.green, custom_id="fewgwrgwrtgtg", emoji="➡️")
     async def vor(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await interaction.response.defer()
         if(self.author != interaction.user):
-            embed = discord.Embed(color=await getcolour(self, interaction.user), title="<:v_9:1264264656831119462> Das ist nicht dein Button")
-            
+            embed = discord.Embed(color=await getcolour(self, interaction.user), title="<:v_x:1264270921452224562> Das ist nicht dein Button")
             await interaction.followup.send(embed=embed, ephemeral=True)
             return
         
@@ -46,6 +44,7 @@ class joblist(discord.ui.View):
         new_page = page + 1
         if new_page > 11:
             new_page = 1
+
         embed = discord.Embed(title=':dividers: Jobliste', description=f"Hier siehst du alle verfügbaren Jobs.\nDu kannst dich für einen Job bewerben mit `/job apply <job>`\n\n" + await job_list(self.s, interaction, new_page),
                             colour=await getcolour(self, interaction.user)).set_footer(text=f'Seite {new_page} von 11')
         await interaction.response.edit_message(embed=embed, content="")
@@ -59,12 +58,11 @@ class ShopItemEntfernenBestaetigung(discord.ui.View):
             self.titel = titel
             self.author = author
 
-        @discord.ui.button(label='Ja', style=discord.ButtonStyle.green, custom_id="ShopItemEntfernenJa", emoji="<:v_158:1264268251916009553>")
+        @discord.ui.button(label='Ja', style=discord.ButtonStyle.green, custom_id="ShopItemEntfernenJa", emoji="<:v_checkmark:1264271011818242159>")
         async def ja(self, interaction: discord.Interaction, button: discord.ui.Button):
             await interaction.response.defer()
             if(self.author != interaction.user):
-                embed = discord.Embed(color=await getcolour(self, interaction.user), title="<:v_9:1264264656831119462> Das ist nicht dein Button")
-                
+                embed = discord.Embed(color=await getcolour(self, interaction.user), title="<:v_x:1264270921452224562> Das ist nicht dein Button")
                 await interaction.followup.send(embed=embed, ephemeral=True)
                 return
             
@@ -73,18 +71,15 @@ class ShopItemEntfernenBestaetigung(discord.ui.View):
                 item.disabled = True
 
             await interaction.edit_original_response(view=view)
-                
             await removeshopitem(self, interaction.guild, self.titel)
             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item gelöscht", description=f"Das Item {self.titel} wurde aus dem Shop dieses Servers gelöscht.")
-            
             await interaction.followup.send(embed=embed)
         
-        @discord.ui.button(label='nein', style=discord.ButtonStyle.red, custom_id="ShopItemEntfernenNein", emoji="<:v_9:1264264656831119462>")
+        @discord.ui.button(label='nein', style=discord.ButtonStyle.red, custom_id="ShopItemEntfernenNein", emoji="<:v_x:1264270921452224562>")
         async def nein(self, interaction: discord.Interaction, button: discord.ui.Button):
             await interaction.response.defer()
             if(self.author != interaction.user):
-                embed = discord.Embed(color=await getcolour(self, interaction.user), title="<:v_9:1264264656831119462> Das ist nicht dein Button")
-                
+                embed = discord.Embed(color=await getcolour(self, interaction.user), title="<:v_x:1264270921452224562> Das ist nicht dein Button")
                 await interaction.followup.send(embed=embed, ephemeral=True)
                 return
             
@@ -97,59 +92,68 @@ class ShopItemEntfernenBestaetigung(discord.ui.View):
             await interaction.followup.send(embed=embed)
 
 ##########
-jobs = [{"name": "Küchenhilfe", "req": 0, "amt": [20, 30]},
-        {"name": "Kassierer", "req": 5, "amt": [30, 40]},
-        {"name": "Dönermann", "req": 10, "amt": [40, 50]},
-        {"name": "Elektroniker", "req": 15, "amt": [50, 60]},
-        {"name": "Pfleger", "req": 20, "amt": [60, 70]},
-        {"name": "Bäcker", "req": 25,  "amt": [70, 80]},
-        {"name": "Bauarbeiter", "req": 30, "amt": [80, 90]},
-        {"name": "Gärtner", "req": 35, "amt": [90, 100]},
-        {"name": "Lehrer", "req": 40, "amt": [100, 120]},
-        {"name": "Koch", "req": 45, "amt": [120, 140]},
-        {"name": "Sanitäter", "req": 50, "amt": [140, 160]},
-        {"name": "TV-Moderator", "req": 60, "amt": [160, 180]},
-        {"name": "Schauspieler", "req": 70, "amt": [180, 200]},
-        {"name": "Engineur", "req": 80, "amt": [200, 220]},
-        {"name": "Streamer", "req": 90, "amt": [220, 240]},
-        {"name": "Atlet", "req": 100, "amt": [240, 260]},
-        {"name": "Polizist", "req": 120, "amt": [260, 280]},
-        {"name": "Programmierer", "req": 140, "amt": [280, 300]},
-        {"name": "Chirurg", "req": 160, "amt": [300, 320]},
-        {"name": "Arzthelfer", "req": 180, "amt": [320, 340]},
-        {"name": "Chefarzt", "req": 200, "amt": [340, 360]},
-        {"name": "Anwalt", "req": 220, "amt": [360, 380]},
-        {"name": "CEO", "req": 240, "amt": [380, 400]},
-        {"name": "Richter", "req": 260, "amt": [400, 420]},
-        {"name": "Marketing Manager", "req": 280, "amt": [420, 440]},
-        {"name": "Analyst", "req": 300, "amt": [440, 460]},
-        {"name": "Wirtschaftsingenieur", "req": 320, "amt": [460, 480]},
-        {"name": "Mediaplaner", "req": 340, "amt": [480, 500]},
-        {"name": "Pressesprecher", "req": 360, "amt": [500, 520]},
-        {"name": "Qualitätsmanager", "req": 380, "amt": [520, 540]},
-        {"name": "Informatiker", "req": 400, "amt": [540, 560]},
-        {"name": "Fachinformatiker", "req": 420, "amt": [560, 580]},
-        {"name": "Referent", "req": 440, "amt": [580, 600]},
-        {"name": "Consultant", "req": 460, "amt": [600, 620]},
-        {"name": "Bauleiter", "req": 480, "amt": [620, 640]},
-        {"name": "Tiefbau-Ingenieur", "req": 500, "amt": [640, 660]},
-        {"name": "Mediaplaner", "req": 550, "amt": [660, 680]},
-        {"name": "App Developer", "req": 600, "amt": [680, 700]},
-        {"name": "Volljurist", "req": 650, "amt": [700, 720]},
-        {"name": "Harvard Professor", "req": 700, "amt": [720, 740]},
-        {"name": "Pilot", "req": 750, "amt": [740, 760]},
-        {"name": "Corporate Finance Manager", "req": 800, "amt": [760, 780]},
-        {"name": "Trader", "req": 850, "amt": [780, 800]},
-        {"name": "Marktkettenführer", "req": 900, "amt": [800, 820]},
-        {"name": "Lufthansa Chef", "req": 950, "amt": [820, 840]},
-        {"name": "Wirtschaftsprüfer", "req": 1000, "amt": [840, 860]},
-        {"name": "Fußballer", "req": 1050, "amt": [860, 880]},
-        {"name": "Fußball Trainer", "req": 1100, "amt": [880, 900]},
-        {"name": "Nasa", "req": 1150, "amt": [900, 920]},
-        {"name": "Präsident", "req": 1200, "amt": [920, 940]},
-        {"name": "Chef Anwaltskanzlei", "req": 1250, "amt": [940, 960]},
-        {"name": "Medical Advisor", "req": 1300, "amt": [960, 980]},
-        {"name": "Astronaut", "req": 1350, "amt": [980, 1000]}]
+jobs = [
+    {"name": "Küchenhilfe", "req": 0, "amt": [20, 30]},
+    {"name": "Kassierer", "req": 5, "amt": [30, 40]},
+    {"name": "Dönermann", "req": 10, "amt": [40, 50]},
+    {"name": "Elektroniker", "req": 15, "amt": [50, 60]},
+    {"name": "Pfleger", "req": 20, "amt": [60, 70]},
+    {"name": "Bäcker", "req": 25, "amt": [70, 80]},
+    {"name": "Bauarbeiter", "req": 30, "amt": [80, 90]},
+    {"name": "Gärtner", "req": 35, "amt": [90, 100]},
+    {"name": "Lehrer", "req": 40, "amt": [100, 120]},
+    {"name": "Koch", "req": 45, "amt": [120, 140]},
+    {"name": "Sanitäter", "req": 50, "amt": [140, 160]},
+    {"name": "TV-Moderator", "req": 60, "amt": [160, 180]},
+    {"name": "Schauspieler", "req": 70, "amt": [180, 200]},
+    {"name": "Ingenieur", "req": 80, "amt": [200, 220]},
+    {"name": "Streamer", "req": 90, "amt": [220, 240]},
+    {"name": "Athlet", "req": 100, "amt": [240, 260]},
+    {"name": "Polizist", "req": 120, "amt": [260, 280]},
+    {"name": "Programmierer", "req": 140, "amt": [280, 300]},
+    {"name": "Chirurg", "req": 160, "amt": [300, 320]},
+    {"name": "Arzthelfer", "req": 180, "amt": [320, 340]},
+    {"name": "Chefarzt", "req": 200, "amt": [340, 360]},
+    {"name": "Anwalt", "req": 220, "amt": [360, 380]},
+    {"name": "CEO", "req": 240, "amt": [380, 400]},
+    {"name": "Richter", "req": 260, "amt": [400, 420]},
+    {"name": "Marketing Manager", "req": 280, "amt": [420, 440]},
+    {"name": "Analyst", "req": 300, "amt": [440, 460]},
+    {"name": "Wirtschaftsingenieur", "req": 320, "amt": [460, 480]},
+    {"name": "Mediaplaner", "req": 340, "amt": [480, 500]},
+    {"name": "Pressesprecher", "req": 360, "amt": [500, 520]},
+    {"name": "Qualitätsmanager", "req": 380, "amt": [520, 540]},
+    {"name": "Informatiker", "req": 400, "amt": [540, 560]},
+    {"name": "Fachinformatiker", "req": 420, "amt": [560, 580]},
+    {"name": "Referent", "req": 440, "amt": [580, 600]},
+    {"name": "Consultant", "req": 460, "amt": [600, 620]},
+    {"name": "Bauleiter", "req": 480, "amt": [620, 640]},
+    {"name": "Tiefbau-Ingenieur", "req": 500, "amt": [640, 660]},
+    {"name": "App-Entwickler", "req": 600, "amt": [680, 700]},
+    {"name": "Volljurist", "req": 650, "amt": [700, 720]},
+    {"name": "Harvard-Professor", "req": 700, "amt": [720, 740]},
+    {"name": "Pilot", "req": 750, "amt": [740, 760]},
+    {"name": "Corporate-Finance-Manager", "req": 800, "amt": [760, 780]},
+    {"name": "Trader", "req": 850, "amt": [780, 800]},
+    {"name": "Marktkettenführer", "req": 900, "amt": [800, 820]},
+    {"name": "Lufthansa-Chef", "req": 950, "amt": [820, 840]},
+    {"name": "Wirtschaftsprüfer", "req": 1000, "amt": [840, 860]},
+    {"name": "Fußballer", "req": 1050, "amt": [860, 880]},
+    {"name": "Fußballtrainer", "req": 1100, "amt": [880, 900]},
+    {"name": "NASA-Ingenieur", "req": 1150, "amt": [900, 920]},
+    {"name": "Präsident", "req": 1200, "amt": [920, 940]},
+    {"name": "Chef einer Anwaltskanzlei", "req": 1250, "amt": [940, 960]},
+    {"name": "Medizinischer Berater", "req": 1300, "amt": [960, 980]},
+    {"name": "Astronaut", "req": 1350, "amt": [980, 1000]},
+    {"name": "Technologie-Philanthrop", "req": 1400, "amt": [1000, 1100]},
+    {"name": "Multinationaler Konzernchef", "req": 1450, "amt": [1100, 1200]},
+    {"name": "Globale Innovationslegende", "req": 1500, "amt": [1200, 1300]},
+    {"name": "Technologie-Tycoon", "req": 2000, "amt": [1300, 1400]},
+    {"name": "Multinationaler Innovationsleiter", "req": 2500, "amt": [1400, 1500]},
+    {"name": "Globaler Strategiechef", "req": 3000, "amt": [1500, 1750]},
+    {"name": "Finanzmogul", "req": 4000, "amt": [1750, 2000]},
+    {"name": "Chief Visionary Officer", "req": 5000, "amt": [2000, 3000]}
+]
 
 ##########
 
@@ -350,9 +354,9 @@ async def has_job_req(self, interaction, job):
 
 async def open_acc(self, user):
     db = getMongoDataBase()
-    result = await db["economy"].find_one({"userID": user.id})
+    result = await db["economy"].find_one({"userID": str(user.id)})
     if result is None:
-        await db["economy"].insert_one({"userID": user.id, "rucksack": 0, "bank": 0, "job": "Kein Job", "stunden": 0})
+        await db["economy"].insert_one({"userID": str(user.id), "rucksack": 0, "bank": 0, "job": "Kein Job", "stunden": 0})
         
         liste = {"rucksack": 0, "bank": 0, "job": "Kein Job", "stunden": 0}
         return liste
@@ -367,12 +371,12 @@ async def update_account(self, user, mode, sum, dif):
     if mode == "rucksack":
         bal = acc["rucksack"]
         new = int(bal) + int(sum) - int(dif)
-        await db["economy"].update_one({"userID": user.id}, {"$set": {"rucksack": new}})
+        await db["economy"].update_one({"userID": str(user.id)}, {"$set": {"rucksack": new}})
         
     if mode == "bank":
         bal = acc["bank"]
         new = int(bal) + int(sum) - int(dif)
-        await db["economy"].update_one({"userID": user.id}, {"$set": {"bank": new}})        
+        await db["economy"].update_one({"userID": str(user.id)}, {"$set": {"bank": new}})        
 
 async def get_job(self, user):
     acc = await open_acc(self, user)
@@ -382,7 +386,7 @@ async def get_job(self, user):
 async def set_job(self, user, job):
     await open_acc(self, user)
     
-    getMongoDataBase()["economy"].update_one({"userID": user.id}, {"$set": {"job": job}})
+    getMongoDataBase()["economy"].update_one({"userID": str(user.id)}, {"$set": {"job": job}})
         
 
 async def work(self, user):
@@ -391,7 +395,7 @@ async def work(self, user):
     db = getMongoDataBase()
     
     
-    await db["economy"].update_one({"userID": user.id}, {"$inc": {"stunden": 1}})
+    await db["economy"].update_one({"userID": str(user.id)}, {"$inc": {"stunden": 1}})
 
 #SHOP
 async def addshopitem(self, guild, titel, beschreibung, preis, rolle):
@@ -399,34 +403,34 @@ async def addshopitem(self, guild, titel, beschreibung, preis, rolle):
     db = getMongoDataBase()
     
     if rolle:
-        return await db["economy_shop"].insert_one({"guildID": guild.id, "titel": titel, "beschreibung": beschreibung, "preis": preis, "roleID": rolle.id})
-    await db["economy_shop"].insert_one({"guildID": guild.id, "titel": titel, "beschreibung": beschreibung, "preis": preis})
+        return await db["economy_shop"].insert_one({"guildID": str(guild.id), "titel": titel, "beschreibung": beschreibung, "preis": preis, "roleID": rolle.id})
+    await db["economy_shop"].insert_one({"guildID": str(guild.id), "titel": titel, "beschreibung": beschreibung, "preis": preis})
 
 async def getshopitem(self, guild, titel):
     
-    result = getMongoDataBase()["economy_shop"].find_one({"guildID": guild.id, "titel": titel})
+    result = await getMongoDataBase()["economy_shop"].find_one({"guildID": str(guild.id), "titel": titel})
     
     if result is None:
         return False
     if result is not None:
-        return True
+        return result
 
 async def removeshopitem(self, guild, titel):
     db = getMongoDataBase()
     
-    preis = await db["economy_shop"].find_one({"guildID": guild.id, "titel": titel})
+    preis = await db["economy_shop"].find_one({"guildID": str(guild.id), "titel": titel})
     
-    result = await db["economy_items"].find({"guildID": guild.id, "titel": titel})
+    result = await db["economy_items"].find({"guildID": str(guild.id), "titel": titel}).to_list(length=None)
     
     for value in result:
-        user = await guild.fetch_member(value[0])
+        user = await guild.fetch_member(value["userID"])
         await sellitem(self, user, titel)
-        await update_account(self, user, "rucksack", preis[0], 0)
+        await update_account(self, user, "rucksack", preis['preis'], 0)
     
-    await db["economy_shop"].delete_one({"guildID": guild.id, "titel": titel})
+    await db["economy_shop"].delete_one({"guildID": str(guild.id), "titel": titel})
 
 async def listshopitems(self, guild):
-    result = getMongoDataBase()["economy_shop"].find({"guildID": guild.id})
+    result = await getMongoDataBase()["economy_shop"].find({"guildID": str(guild.id)}).to_list(length=None)
     if result == ():
         return False
     else:
@@ -437,35 +441,36 @@ async def buyitem(self, user, guild, titel):
     
     db = getMongoDataBase()
     
-    item = await db["economy_shop"].find_one({"guildID": guild.id, "titel": titel})
+    item = await db["economy_shop"].find_one({"guildID": str(guild.id), "titel": titel})
     
     if item is None:
         return False
-    if item is not None:
-        if item[3] == None:
-            await db["economy_items"].insert_one({"userID": user.id, "titel": titel, "beschreibung": item[1], "preis": item[2], "guildID": guild.id})
-        else:
-            rolle = guild.get_role(int(item[3]))
-            await user.add_roles(rolle)
-            await db["economy_items"].insert_one({"userID": user.id, "titel": titel, "beschreibung": item[1], "preis": item[2], "guildID": guild.id, "roleID": item[3]})
+    
+    if 'roleID' not in item or item['roleID'] == None or item['roleID'] == "":
+        return await db["economy_items"].insert_one({"userID": str(user.id), "titel": titel, "beschreibung": item['beschreibung'], "preis": item['preis'], "guildID": str(guild.id)})
+
+    rolle = guild.get_role(int(item['roleID']))
+    await user.add_roles(rolle)
+    await db["economy_items"].insert_one({"userID": str(user.id), "titel": titel, "beschreibung": item['beschreibung'], "preis": item['preis'], "guildID": str(guild.id), "roleID": item['roleID']})
 
 async def sellitem(self, user, titel):
     
     db = getMongoDataBase()
     
-    item = await db["economy_items"].find_one({"guildID": user.guild.id, "titel": titel})
+    item = await db["economy_items"].find_one({"guildID": str(user.guild.id), "titel": titel})
+    
     if item is None:
         return False
-    if item is not None:
-        if item[3] == None:
-            await db["economy_items"].delete_one({"userID": user.id, "titel": titel, "guildID": user.guild.id})
-        else:
-            rolle = user.guild.get_role(int(item[3]))
-            await user.remove_roles(rolle)
-            await db["economy_items"].delete_one({"userID": user.id, "titel": titel, "guildID": user.guild.id})
+    
+    if 'roleID' not in item or item['roleID'] == None or item['roleID'] == "":
+        return await db["economy_items"].delete_one({"userID": str(user.id), "titel": titel, "guildID": str(user.guild.id)})
+    
+    rolle = user.guild.get_role(int(item['roleID']))
+    await user.remove_roles(rolle)
+    await db["economy_items"].delete_one({"userID": str(user.id), "titel": titel, "guildID": str(user.guild.id)})
 
 async def checkbalance(self, user, preis):
-    result = getMongoDataBase()["economy"].find_one({"userID": user.id})
+    result = await getMongoDataBase()["economy"].find_one({"userID": str(user.id)})
 
     rucksack = int(result["rucksack"])
     if int(rucksack) >= int(preis):
@@ -474,18 +479,16 @@ async def checkbalance(self, user, preis):
         return False
 
 async def getuseritems(self, user):
-    result = getMongoDataBase()["economy_items"].find({"userID": user.id, "guildID": user.guild.id}).to_list(length=None)
-    if result == ():
+    result = await getMongoDataBase()["economy_items"].find({"userID": str(user.id), "guildID": str(user.guild.id)}).to_list(length=None)
+    if result == []:
         return False
     else:        
         return result 
 
 async def userhasItem(self, user, titel):
-    result = getMongoDataBase()["economy_items"].find({"userID": user.id, "guildID": user.guild.id, "titel": titel}).to_list(length=None)
-    if result == ():
-        return False
-    else:        
-        return True
+    result = await getMongoDataBase()["economy_items"].find_one({"userID": str(user.id), "guildID": str(user.guild.id), "titel": titel})
+    
+    return result is not None
 
 class economy(commands.Cog):
     def __init__(self, bot):
@@ -497,38 +500,40 @@ class economy(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def anzeigen(self, interaction: discord.Interaction, user: discord.User=None):
         """Verwalte deine Cookies."""
+        
         await interaction.response.defer()
         member = user or interaction.user  
         
         acc = await open_acc(self, member)
-        em = discord.Embed(
+        embed = discord.Embed(
             title=f"{member.name}'s supertolles Konto", 
             color=await getcolour(self, member), 
             description="> Dein Rucksack hat viel Platz. Dort findest du deine Items und deine Cookies."
         )
-        em.add_field(name="Rucksack", value=f"{acc['rucksack']} 🍪")
-        em.add_field(name="Bank", value=f"{acc['bank']} 🍪")
-        em.add_field(name='Beruf', value=f"{acc['job']}, :stopwatch: {acc['stunden']} Stunden")
+        embed.add_field(name="Rucksack", value=f"{acc['rucksack']} 🍪")
+        embed.add_field(name="Bank", value=f"{acc['bank']} 🍪")
+        embed.add_field(name='Beruf', value=f"{acc['job']}, :stopwatch: {acc['stunden']} Stunden")
         
         items = await getuseritems(self, member)
+        
         if items:
             string = ""
             wert = 0
             for item in items:
-                wert += int(item[3])
+                wert += int(item["preis"])
                 if string == "":
-                    string += f"{item[1]}({item[3]}🍪)"
+                    string += f"{item['titel']} ({item['preis']}🍪)"
                 else:
-                    string += f", {item[1]}({item[3]}🍪)"
+                    string += f", {item['titel']} ({item['preis']}🍪)"
             string += f"\n\n**Items Wert: {wert}.** Mit Glück bekommst du mehr Cookies beim Verkauf als du ausgegeben hast."
-            em.add_field(name="Items", value=string)
+            embed.add_field(name="Items", value=string)
         
-        em.set_thumbnail(url=member.avatar.url)
-        em.set_footer(
+        embed.set_thumbnail(url=member.avatar.url)
+        embed.set_footer(
             text="Interesse an einem täglich steigenden Cookie Bonus? Befehl: /daily", 
             icon_url="https://cdn.discordapp.com/filename/814202875387183145.png"
         )
-        await interaction.followup.send(embed=em)
+        await interaction.followup.send(embed=embed)
 
     @cookies.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -539,16 +544,16 @@ class economy(commands.Cog):
         rucksack = int(acc["rucksack"])
         bank = int(acc["bank"])
         if betrag > int(bank):
-            await interaction.followup.send(f"<:v_9:1264264656831119462> Du hast nicht **{betrag} 🍪** auf deiner Bank. Es fehlen dir **{betrag - bank} 🍪**.", ephemeral=True)
+            await interaction.followup.send(f"<:v_x:1264270921452224562> Du hast nicht **{betrag} 🍪** auf deiner Bank. Es fehlen dir **{betrag - bank} 🍪**.", ephemeral=True)
             return
         if betrag < 0:
-            await interaction.followup.send(f"<:v_9:1264264656831119462> Der Betrag muss eine positive Zahl sein.", ephemeral=True)
+            await interaction.followup.send(f"<:v_x:1264270921452224562> Der Betrag muss eine positive Zahl sein.", ephemeral=True)
             return
 
         await update_account(self, interaction.user, "bank", 0, betrag)
         await update_account(self, interaction.user, "rucksack", betrag, 0)
 
-        await interaction.followup.send(f"<:v_158:1264268251916009553> Ich habe **{betrag} 🍪** von deiner Bank abgehoben. Du hast nun **{rucksack + betrag} 🍪** in deinem Rucksack und **{bank - betrag} 🍪** auf deiner Bank.")
+        await interaction.followup.send(f"<:v_checkmark:1264271011818242159> Ich habe **{betrag} 🍪** von deiner Bank abgehoben. Du hast nun **{rucksack + betrag} 🍪** in deinem Rucksack und **{bank - betrag} 🍪** auf deiner Bank.")
     
     @cookies.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -559,16 +564,16 @@ class economy(commands.Cog):
         rucksack = int(acc["rucksack"])
         bank = int(acc["bank"])
         if betrag > int(rucksack):
-            await interaction.followup.send(f"<:v_9:1264264656831119462> Du hast nicht **{betrag} 🍪** auf deiner Bank. Es fehlen dir **{betrag - rucksack} 🍪**.", ephemeral=True)
+            await interaction.followup.send(f"<:v_x:1264270921452224562> Du hast nicht **{betrag} 🍪** auf deiner Bank. Es fehlen dir **{betrag - rucksack} 🍪**.", ephemeral=True)
             return
         if betrag < 0:
-            await interaction.followup.send(f"<:v_9:1264264656831119462> Der Betrag muss eine positive Zahl sein.", ephemeral=True)
+            await interaction.followup.send(f"<:v_x:1264270921452224562> Der Betrag muss eine positive Zahl sein.", ephemeral=True)
             return
 
         await update_account(self, interaction.user, "rucksack", 0, betrag)
         await update_account(self, interaction.user, "bank", betrag, 0)
 
-        await interaction.followup.send(f"<:v_158:1264268251916009553> Ich habe **{betrag} 🍪** auf deine Bank überwiesen. Du hast nun **{rucksack - betrag} 🍪** in deinem Rucksack und **{bank + betrag} 🍪** auf deiner Bank.")
+        await interaction.followup.send(f"<:v_checkmark:1264271011818242159> Ich habe **{betrag} 🍪** auf deine Bank überwiesen. Du hast nun **{rucksack - betrag} 🍪** in deinem Rucksack und **{bank + betrag} 🍪** auf deiner Bank.")
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -626,7 +631,7 @@ class economy(commands.Cog):
         await interaction.response.defer()
         db = getMongoDataBase()
         
-        result = await db["economy_streak"].find_one({"userID": interaction.user.id})
+        result = await db["economy_streak"].find_one({"userID": str(interaction.user.id)})
         now = datetime.now()
         if result is not None:
             streak = result["streak"]
@@ -634,8 +639,8 @@ class economy(commands.Cog):
             last_claim = datetime.fromtimestamp(float(last_claim_stamp))
             delta = now - last_claim
             if delta > timedelta(hours=48):
-                await db["economy_streak"].update_one({"userID": interaction.user.id}, {"$set": {"streak": 1}})
-                await db["economy_streak"].update_one({"userID": interaction.user.id}, {"$set": {"timestamp": str(now.timestamp())}})
+                await db["economy_streak"].update_one({"userID": str(interaction.user.id)}, {"$set": {"streak": 1}})
+                await db["economy_streak"].update_one({"userID": str(interaction.user.id)}, {"$set": {"timestamp": str(now.timestamp())}})
                 earnings = 50
                 await update_account(self, interaction.user, "rucksack", earnings, 0)
                 embed = discord.Embed(title="Täglicher Bonus", description=f"Du hast deinen täglichen Bonus eingefordert und dafür **{earnings} 🍪** bekommen. Leider warst du zu spät und dein Daily Streak von **{streak}🔥** wurde auf **1** zurückgesetzt.", color=await getcolour(self, interaction.user))
@@ -643,8 +648,8 @@ class economy(commands.Cog):
                 await interaction.followup.send(embed=embed)
                 return
             else:
-                await db["economy_streak"].update_one({"userID": interaction.user.id}, {"$set": {"streak": int(streak) + 1}})
-                await db["economy_streak"].update_one({"userID": interaction.user.id}, {"$set": {"timestamp": str(now.timestamp())}})
+                await db["economy_streak"].update_one({"userID": str(interaction.user.id)}, {"$set": {"streak": int(streak) + 1}})
+                await db["economy_streak"].update_one({"userID": str(interaction.user.id)}, {"$set": {"timestamp": str(now.timestamp())}})
                 earnings = 50 + ((streak + 1) * 5)
                 await update_account(self, interaction.user, "rucksack", earnings, 0)
                 embed = discord.Embed(title="Täglicher Bonus", description=f"Du hast deinen täglichen Bonus eingefordert und dafür **{earnings} 🍪** bekommen. Du kamst rechtzeitig und hast deinen Streak erhöht.", color=await getcolour(self, interaction.user))
@@ -652,7 +657,7 @@ class economy(commands.Cog):
                 await interaction.followup.send(embed=embed)
                 return
         if result is None:
-            await db["economy_streak"].insert_one({"streak": 1, "timestamp": str(now.timestamp()), "userID": interaction.user.id})
+            await db["economy_streak"].insert_one({"streak": 1, "timestamp": str(now.timestamp()), "userID": str(interaction.user.id)})
             earnings = 50
             await update_account(self, interaction.user, "rucksack", earnings, 0)
             embed = discord.Embed(title="Täglicher Bonus", description=f"Du hast deinen täglichen Bonus eingefordert und dafür **{earnings} 🍪** bekommen. Oh, du bist neu 🔎! Wenn du innerhalb von 48 Stunden diesen Befehl erneut ausführst, bekommst du immer mehr Cookies.", color=await getcolour(self, interaction.user))
@@ -680,7 +685,7 @@ class economy(commands.Cog):
                         embed.set_footer(text=f"Deine Arbeitsstunden: {acc['stunden']}", icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
                         await interaction.followup.send(embed=embed)
             else:
-                await interaction.followup.send(f"<:v_9:1264264656831119462> Du musst dich zuerst für einen Job bewerben!\nAlle Jobs siehst du mit dem Befehl `/job list`\nNutze `/job apply <job>` um dich für einen Job zu bewerben.", ephemeral=True)
+                await interaction.followup.send(f"<:v_x:1264270921452224562> Du musst dich zuerst für einen Job bewerben!\nAlle Jobs siehst du mit dem Befehl `/job list`\nNutze `/job apply <job>` um dich für einen Job zu bewerben.", ephemeral=True)
         except Exception as e:
             print("work: " + e.with_traceback())
         
@@ -691,20 +696,20 @@ class economy(commands.Cog):
         """Sende Cookies zu einem anderen User."""
         await interaction.response.defer()
         if user == interaction.user:
-            await interaction.followup.send("<:v_9:1264264656831119462> Du kannst dir keine Cookies selber senden.", ephemeral=True)
+            await interaction.followup.send("<:v_x:1264270921452224562> Du kannst dir keine Cookies selber senden.", ephemeral=True)
             return
         acc = await open_acc(self, interaction.user)
         rucksack = int(acc["rucksack"])
         if betrag > int(rucksack):
-            await interaction.followup.send(f"<:v_9:1264264656831119462> Du hast nicht so viele Cookies in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
+            await interaction.followup.send(f"<:v_x:1264270921452224562> Du hast nicht so viele Cookies in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
             return
         if betrag < 0:
-            await interaction.followup.send(f"<:v_9:1264264656831119462> Der Betrag muss eine positive Zahl sein. Beispiel: `/send @Vinc {betrag*-1}`", ephemeral=True)
+            await interaction.followup.send(f"<:v_x:1264270921452224562> Der Betrag muss eine positive Zahl sein. Beispiel: `/send @Vinc {betrag*-1}`", ephemeral=True)
             return
 
         await update_account(self, interaction.user, "rucksack", 0, betrag)
         await update_account(self, user, "rucksack", betrag, 0)
-        await interaction.followup.send(f"<:v_158:1264268251916009553> {user.mention} hat **{betrag} 🍪** von dir erhalten. Du hast nun **{rucksack - betrag} 🍪** in deinem Rucksack.")
+        await interaction.followup.send(f"<:v_checkmark:1264271011818242159> {user.mention} hat **{betrag} 🍪** von dir erhalten. Du hast nun **{rucksack - betrag} 🍪** in deinem Rucksack.")
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -713,13 +718,15 @@ class economy(commands.Cog):
         """Raube einen User aus."""
         await interaction.response.defer()
         if user == interaction.user:
-            await interaction.followup.send("<:v_9:1264264656831119462> Du kannst dir keine Cookies selber senden.", ephemeral=True)
+            await interaction.followup.send("<:v_x:1264270921452224562> Du kannst dir selber keine Cookies klauen.", ephemeral=True)
             return
+        
         acc = await open_acc(self, user)
         rucksack = int(acc["rucksack"])
         if rucksack < 50:
-            await interaction.followup.send(f"<:v_9:1264264656831119462> {user} hat nicht viele Cookies. Versuche jemand anderen auszurauben.", ephemeral=True)
+            await interaction.followup.send(f"<:v_x:1264270921452224562> {user} hat nicht viele Cookies. Versuche jemand anderen auszurauben.", ephemeral=True)
             return
+        
         if rucksack > 50:
             x = random.randint(1, 100)
             if x < 25:
@@ -749,14 +756,17 @@ class economy(commands.Cog):
     async def slot(self, interaction: discord.Interaction, betrag: int):
         """Teste dein Glück."""
         # überprüfen ob er geld hat
+        
+        await interaction.response.defer()
+        
         acc = await open_acc(self, interaction.user)
         rucksack = int(acc["rucksack"])
 
         if betrag < 0:
-            await interaction.followup.send(f"<:v_9:1264264656831119462> Der Betrag muss eine positive Zahl sein. Beispiel: `/slot {betrag*-1}`", ephemeral=True)
+            await interaction.followup.send(f"<:v_x:1264270921452224562> Der Betrag muss eine positive Zahl sein. Beispiel: `/slot {betrag*-1}`", ephemeral=True)
             return
         if betrag > rucksack:
-            await interaction.followup.send(f"<:v_9:1264264656831119462> Du hast nicht so viele Cookies in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
+            await interaction.followup.send(f"<:v_x:1264270921452224562> Du hast nicht so viele Cookies in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
             return
         # results
         choices = ["🍇", "🍋", "🍒", "🍓", "🍊"]
@@ -842,15 +852,15 @@ class economy(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def rps(self, interaction: discord.Interaction, betrag: int):
         """Game, Schere Stein Papier. Deine Reaktion ist deine Entscheidung."""
-        return await interaction.followup.send("**<:v_9:1264264656831119462> Der Befehl ist zurzeit nicht verfügbar.**", ephemeral=True)
+        return await interaction.followup.send("**<:v_x:1264270921452224562> Der Befehl ist zurzeit nicht verfügbar.**", ephemeral=True)
         # überprüfen ob er geld hat
         acc = await open_acc(self, interaction.user)
         rucksack = int(acc[0])
         if betrag < 0:
-            await interaction.followup.send(f"<:v_9:1264264656831119462> Der Betrag muss eine positive Zahl sein.", ephemeral=True)
+            await interaction.followup.send(f"<:v_x:1264270921452224562> Der Betrag muss eine positive Zahl sein.", ephemeral=True)
             return
         if betrag > rucksack:
-            await interaction.followup.send(f"<:v_9:1264264656831119462> Du hast nicht so viel Geld in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
+            await interaction.followup.send(f"<:v_x:1264270921452224562> Du hast nicht so viel Geld in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
             return
         embed = discord.Embed(
             color=await getcolour(self, interaction.user),
@@ -957,15 +967,14 @@ class economy(commands.Cog):
         await interaction.response.defer()
         
         item = await getshopitem(self, interaction.guild, titel)
-        if item is True:
-            embed = discord.Embed(color=await getcolour(self, interaction.user), title=f"Willst du das Item {titel} wirklich entfernen?", description=f"<:v_12:1264264683427336259> Dadurch wird das Item allen Nutzern entfernt und möglicherweise auch die zugewiesene Rolle")
-            
-            await interaction.followup.send(embed=embed, view=ShopItemEntfernenBestaetigung(interaction, self.bot, self, titel, interaction.user))
-            
         if item is False:
             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item nicht vorhanden", description=f"Das Item {titel} gibt es nicht im Shop dieses Servers. Bitte gib den korrekten Namen für das Item an.")
             
-            await interaction.followup.send(embed=embed, ephemeral=True)
+            return await interaction.followup.send(embed=embed, ephemeral=True)
+        
+        embed = discord.Embed(color=await getcolour(self, interaction.user), title=f"Willst du das Item {titel} wirklich entfernen?", description=f"<:v_12:1264264683427336259> Dadurch wird das Item allen Nutzern entfernt und möglicherweise auch die zugewiesene Rolle")
+        
+        await interaction.followup.send(embed=embed, view=ShopItemEntfernenBestaetigung(interaction, self.bot, self, titel, interaction.user))    
 
     @shop.command()
     async def anzeigen(self, interaction: discord.Interaction):
@@ -974,30 +983,32 @@ class economy(commands.Cog):
         await interaction.response.defer()
         
         items = await listshopitems(self, interaction.guild)
+        
         if items == False:
             embed = discord.Embed(color=await getcolour(self, interaction.user), title="Keine Items vorhanden", description=f"Es gibt keine Items in dem Shop dieses Servers.\nFüge Items hinzu mit dem Command `/shop item hinzufügen`")
             
             await interaction.followup.send(embed=embed, ephemeral=True)
             return
-        else:
-            a = 0
-            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Alle Items dieses Servers", description=f"Dieser Server hat ein paar Items im Shop.")
+        
+        if items is None or len(items) == 0:
+            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Keine Items vorhanden", description=f"Es gibt keine Items in dem Shop dieses Servers.\nFüge Items hinzu mit dem Command `/shop item hinzufügen`")
             
-            for item in items:
-                a += 1
-                #guildID, titel, beschreibung, preis, roleID
-                if item[4]:
-                    rolle = interaction.guild.get_role(int(item[4]))
-                    embed.add_field(name=item[1], value=f"{item[2]}\n**Preis:** {item[3]}\n**Rolle:** {rolle.mention}")
-                else:
-                    embed.add_field(name=item[1], value=f"{item[2]}\n**Preis:** {item[3]}")
-
-            if a == 0:
-                embed = discord.Embed(color=await getcolour(self, interaction.user), title="Keine Items vorhanden", description=f"Es gibt keine Items in dem Shop dieses Servers.\nFüge Items hinzu mit dem Command `/shop item hinzufügen`")
-                
-                await interaction.followup.send(embed=embed, ephemeral=True)
-                return
-            await interaction.followup.send(embed=embed)
+            await interaction.followup.send(embed=embed, ephemeral=True)
+            return
+        
+        embed = discord.Embed(color=await getcolour(self, interaction.user), title="Alle Items dieses Servers", description=f"Dieser Server hat ein paar Items im Shop.")
+        
+        for item in items:
+            #guildID, titel, beschreibung, preis, roleID
+            
+            if 'roleID' in item and item['roleID'] is not None and item['roleID'] != "":
+                rolle = interaction.guild.get_role(int(item["roleID"]))
+                embed.add_field(name=item["titel"], value=f"{item['beschreibung']}\n**Preis:** {item['preis']}\n**Rolle:** {rolle.mention}")
+                continue
+            
+            embed.add_field(name=item["titel"], value=f"{item['beschreibung']}\n**Preis:** {item['preis']}")
+            
+        await interaction.followup.send(embed=embed)
 
     @item.command()
     async def kaufen(self, interaction: discord.Interaction, item: str):
@@ -1007,38 +1018,47 @@ class economy(commands.Cog):
         
         alreadyhasItem = await userhasItem(self, interaction.user, item)
         if(alreadyhasItem):
-                embed = discord.Embed(color=await getcolour(self, interaction.user), title="Fehler", description=f"<:v_9:1264264656831119462> Du kannst dieses Item nur einmal kaufen")
+                embed = discord.Embed(color=await getcolour(self, interaction.user), title="Fehler", description=f"<:v_x:1264270921452224562> Du kannst dieses Item nur einmal kaufen")
                 
                 await interaction.followup.send(embed=embed)
                 return
         
-        i = await getshopitem(self, interaction.guild, item)
-        if i == False:
-            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item nicht vorhanden", description=f"Das Item {item} gibt es nicht im Shop dieses Servers. Bitte gib den korrekten Namen für das Item an.")
+        itemDocument = await getshopitem(self, interaction.guild, item)
+        
+        if itemDocument == False:
+            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item nicht vorhanden", description=f"Das Item **{item}** gibt es nicht im Shop dieses Servers. Bitte gib den korrekten Namen für das Item an.")
             
             await interaction.followup.send(embed=embed)
             return
-        if i == True:
-            result = getMongoDataBase()["economy_shop"].find_one({"guildID": interaction.guild.id, "titel": item})
-            if result is None:
-                embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item nicht vorhanden", description=f"Das Item {item} gibt es nicht im Shop dieses Servers. Bitte gib den korrekten Namen für das Item an.")
-                
-                await interaction.followup.send(embed=embed, ephemeral=True)
-                return
-            else:
-                canbuy = await checkbalance(self, interaction.user, result["preis"])
-                if canbuy == True:
-                    await buyitem(self, interaction.user, interaction.guild, item)
-                    await update_account(self, interaction.user, "rucksack", 0, result["preis"])
-                    embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item gekauft", description=f"Das Item {item} wurde von dir gekauft. Ich habe es für dich in deinen Rucksack getan!")
+        
+        itemTitle = itemDocument['titel']
+        
+        result = await getMongoDataBase()["economy_shop"].find_one({"guildID": str(interaction.guild.id), "titel": itemTitle})
+        if result is None:
+            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item nicht vorhanden", description=f"Das Item **{item}** gibt es nicht im Shop dieses Servers. Bitte gib den korrekten Namen für das Item an.")
+            
+            await interaction.followup.send(embed=embed, ephemeral=True)
+            return
+
+
+        canbuy = await checkbalance(self, interaction.user, result["preis"])
+        
+        if canbuy == False:
+            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item nicht gekauft", description=f"Das Item **{itemTitle}** wurde von dir nicht gekauft. **Du hast zu wenig Geld in deinem Rucksack!**")
+        
+            await interaction.followup.send(embed=embed, ephemeral=True)
+            return
+        
+        buyed = await buyitem(self, interaction.user, interaction.guild, itemTitle)
+        
+        if buyed == False:
+            return await interaction.followup.send(embed=discord.Embed(color=await getcolour(self, interaction.user), title="Fehler", description=f"Das Item **{itemTitle}** konnte nicht gekauft werden. Bitte versuche es später erneut."), ephemeral=True)
                     
-                    await interaction.followup.send(embed=embed)
-                    return
-                if canbuy == False:
-                    embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item nicht gekauft", description=f"Das Item {item} wurde von dir nicht gekauft. Du hast zu wenig Geld in deinem Rucksack!")
-                    
-                    await interaction.followup.send(embed=embed, ephemeral=True)
-                    return
+        await update_account(self, interaction.user, "rucksack", 0, result["preis"])
+        embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item gekauft", description=f"Das Item **{itemTitle}** wurde von dir gekauft. Ich habe es für dich in deinen Rucksack getan!")
+        
+        await interaction.followup.send(embed=embed)
+        return
 
     @item.command()
     async def meine(self, interaction: discord.Interaction):
@@ -1056,7 +1076,7 @@ class economy(commands.Cog):
             
             for item in items:
                 a += 1
-                embed.add_field(name=item[1], value=f"{item[2]}\n**Hat gekostet:** {item[3]}")
+                embed.add_field(name=item['titel'], value=f"{item['beschreibung']}\n**Hat gekostet:** {item['preis']}")
             if a == 0:
                 embed = discord.Embed(color=await getcolour(self, interaction.user), title="Keine Items vorhanden", description=f"Es gibt keine Items in deinem Rucksack.\nKaufe Items mit dem Command `/shop item meine`")
                 
@@ -1070,19 +1090,19 @@ class economy(commands.Cog):
         await interaction.response.defer()
         items = await getuseritems(self, interaction.user)
         if items == False:
-            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Keine Items vorhanden", description=f"Es gibt keine Items in deinem Rucksack.\nKaufe Items mit dem Command `/shop item kaufen`")
+            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item nicht vorhanden", description=f"Es gibt kein Item mit diesem Namen in deinem Rucksack.\nKaufe Items mit dem Command `/shop item kaufen`")
             
             await interaction.followup.send(embed=embed, ephemeral=True)
             return
-        else:
-            preis = getMongoDataBase()["economy_shop"].find_one({"guildID": interaction.guild.id, "titel": item})
-            Prozente = random.uniform(0.65, 1.15)
-            verkaufspreis = round(Prozente * int(preis[0]))
-            await sellitem(self, interaction.user, item)
-            await update_account(self, interaction.user, "rucksack", verkaufspreis, 0)
-            embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item verkauft", description=f"Das Item {item} wurde für {verkaufspreis} 🍪 verkauft. Du hast es nun nicht mehr im Rucksack.")
-            
-            await interaction.followup.send(embed=embed)
+        
+        result = await getMongoDataBase()["economy_shop"].find_one({"guildID": str(interaction.guild.id), "titel": item})
+        Prozente = random.uniform(0.65, 1.15)
+        verkaufspreis = round(Prozente * int(result['preis']))
+        await sellitem(self, interaction.user, item)
+        await update_account(self, interaction.user, "rucksack", verkaufspreis, 0)
+        embed = discord.Embed(color=await getcolour(self, interaction.user), title="Item verkauft", description=f"Das Item **{item}** wurde für **{verkaufspreis} 🍪** verkauft. Du hast es nun nicht mehr im Rucksack.")
+        
+        await interaction.followup.send(embed=embed)
             
 async def setup(bot):
     await bot.add_cog(economy(bot))

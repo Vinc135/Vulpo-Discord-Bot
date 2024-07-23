@@ -9,14 +9,14 @@ from utils.MongoDB import getMongoDataBase
 from cogs.economy import open_acc, update_account
 
 async def check_channel(self, msg):
-    result = getMongoDataBase()["gtn"].find_one({"guildID": str(msg.guild.id)})
+    result = await getMongoDataBase()["gtn"].find_one({"guildID": str(msg.guild.id)})
     if result is None:
         return False
+
+    if int(result["channelID"]) == int(msg.channel.id):
+        return True
     else:
-        if int(result["channelID"]) == int(msg.channel.id):
-            return True
-        else:
-            return False
+        return False
 
 async def check_number(self, msg: discord.Message):
     db = getMongoDataBase()
@@ -26,13 +26,13 @@ async def check_number(self, msg: discord.Message):
     if result is None:
         return False
     try:
-        if int(result["number"]) == int(msg.content):
+        if int(result["zahl"]) == int(msg.content):
             await db["gtncurrent"].delete_one({"guildID": str(msg.guild.id)})
             return True
         else:
             return False
-    except:
-        pass
+    except ValueError as e:
+        return False
                 
 async def answer_correct(self, msg):
     await msg.channel.send(f"{msg.author.mention} hat die gesuchte Zahl erraten. (+10 🍪)")
@@ -45,10 +45,13 @@ async def answer_correct(self, msg):
     await asyncio.sleep(2)
     m2 = await msg.channel.send(embed=embed)
     
-    getMongoDataBase()["gtncurrent"].insert_one({"guildID": str(msg.guild.id), "zahl": b, "msgID": m2.id})
+    await getMongoDataBase()["gtncurrent"].insert_one({"guildID": str(msg.guild.id), "zahl": b, "msgID": str(m2.id)})
 
 async def answer_incorrect(self, msg):
-    pass
+    try:
+        await msg.add_reaction("<:v_x:1264270921452224562>")
+    except: 
+        pass
             
 class Guessthenumber(commands.Cog):
     def __init__(self, bot):
@@ -60,16 +63,19 @@ class Guessthenumber(commands.Cog):
             return
         if msg.author.bot:
             return
+        
         tf1 = await check_channel(self, msg)
+        
         if tf1 == False:
             return
+        
+        tf2 = await check_number(self, msg)
+        
+        if tf2 == True:
+            await answer_correct(self, msg)
         else:
-            tf2 = await check_number(self, msg)
-            if tf2 == True:
-                await answer_correct(self, msg)
-            else:
-                await answer_incorrect(self, msg)
-    
+            await answer_incorrect(self, msg)
+
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -84,31 +90,31 @@ class Guessthenumber(commands.Cog):
         
         db = getMongoDataBase()
         
+        result = await db["gtn"].find_one({"guildID": str(interaction.guild.id)})
+        
         if modus == "Anschalten":
-            
-            result = await db["gtn"].find_one({"guildID": interaction.guild.id})
             if result is None:
-                db["gtn"].insert_one({"guildID": interaction.guild.id, "channelID": kanal.id})
+                db["gtn"].insert_one({"guildID": str(interaction.guild.id), "channelID": str(kanal.id)})
                 embed = discord.Embed(color=await getcolour(self, interaction.user), title="Guess the number", description=f"Ich habe mir eine Zahl zwischen **1** und **{a}** ausgedacht. Kannst du sie erraten?")
                 
                 m2 = await kanal.send(embed=embed)
-                db["gtncurrent"].insert_one({"guildID": interaction.guild.id, "zahl": b, "msgID": m2.id})
-                return await interaction.followup.send(f"**<:v_158:1264268251916009553> Guess the number wurde gestartet in {kanal.mention}.**", ephemeral=True)
+                db["gtncurrent"].insert_one({"guildID": str(interaction.guild.id), "zahl": b, "msgID": str(m2.id)})
+                return await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> Guess the number wurde gestartet in {kanal.mention}.**", ephemeral=True)
             if result is not None:
-                db["gtn"].update_one({"guildID": interaction.guild.id}, {"$set": {"channelID": kanal.id}})
+                db["gtn"].update_one({"guildID": str(interaction.guild.id)}, {"$set": {"channelID": str(kanal.id)}})
                 embed = discord.Embed(color=await getcolour(self, interaction.user), title="Guess the number", description=f"Ich habe mir eine Zahl zwischen **1** und **{a}** ausgedacht. Kannst du sie erraten?")
                 
                 m2 = await kanal.send(embed=embed)
-                db["gtncurrent"].update_one({"guildID": interaction.guild.id}, {"$set": {"zahl": b, "msgID": m2.id}})
-                return await interaction.followup.send(f"**<:v_158:1264268251916009553> Guess the number wurde neu gestartet in {kanal.mention}.**", ephemeral=True)
+                db["gtncurrent"].update_one({"guildID": str(interaction.guild.id)}, {"$set": {"zahl": b, "msgID": str(m2.id)}})
+                return await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> Guess the number wurde neu gestartet in {kanal.mention}.**", ephemeral=True)
                     
         if modus == "Ausschalten":
-            await db["gtn"].find_one({"guildID": interaction.guild.id})
+            await db["gtn"].find_one({"guildID": str(interaction.guild.id)})
             if result is None:
-                return await interaction.followup.send("**<:v_9:1264264656831119462> Guess the number ist nicht in diesem Server aktiviert.**", ephemeral=True)
+                return await interaction.followup.send("**<:v_x:1264270921452224562> Guess the number ist nicht in diesem Server aktiviert.**", ephemeral=True)
             
-            await db["gtn"].delete_one({"guildID": interaction.guild.id})
-            return await interaction.followup.send(f"**<:v_158:1264268251916009553> Guess the number wurde in diesem Server ausgeschalten.**", ephemeral=True)
+            await db["gtn"].delete_one({"guildID": str(interaction.guild.id)})
+            return await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> Guess the number wurde in diesem Server ausgeschalten.**", ephemeral=True)
 
 async def setup(bot):
     await bot.add_cog(Guessthenumber(bot))

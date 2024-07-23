@@ -15,7 +15,7 @@ class Modal(discord.ui.Modal, title="Modal"):
 
     async def on_submit(self, interaction: discord.Interaction):
         db = getMongoDataBase()
-        result = await db['modals'].find_one({"id": self.id, "guildID": interaction.guild.id})
+        result = await db['modals'].find_one({"id": self.id, "guildID": str(interaction.guild.id)})
         if result:
             channel = interaction.guild.get_channel(int(result['channelID']))
             if channel:
@@ -25,9 +25,9 @@ class Modal(discord.ui.Modal, title="Modal"):
                 embed.set_thumbnail(url=interaction.user.avatar.url)
                 
                 await channel.send(embed=embed)
-                await interaction.response.send_message("**<:v_158:1264268251916009553> Dein Formular wurde gesendet.**", ephemeral=True)
+                await interaction.response.send_message("**<:v_checkmark:1264271011818242159> Dein Formular wurde gesendet.**", ephemeral=True)
             else:
-                await interaction.response.send_message("**<:v_9:1264264656831119462> Der festgelegte Kanal zum Senden der Formulare existiert nicht mehr. Bitte informiere einen Admin.**", ephemeral=True)
+                await interaction.response.send_message("**<:v_x:1264270921452224562> Der festgelegte Kanal zum Senden der Formulare existiert nicht mehr. Bitte informiere einen Admin.**", ephemeral=True)
 
 class CounterButton(discord.ui.Button):
     def __init__(self, dict=None, id=None, bot=None):
@@ -57,7 +57,7 @@ class fertig(discord.ui.Modal, title="Erstelle ein Embed"):
     async def on_submit(self, interaction: discord.Interaction):
         emb = interaction.message.embeds[0]
         if not emb.fields:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du musst zuerst ein paar Optionen festlegen.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du musst zuerst ein paar Optionen festlegen.**", ephemeral=True)
         
         embed = discord.Embed(title=self.children[0].value, description=self.children[1].value, color=await getcolour(self, interaction.user))
         if self.children[2].value:
@@ -72,11 +72,11 @@ class fertig(discord.ui.Modal, title="Erstelle ein Embed"):
 
         for field in emb.fields:
             dict[field.name] = field.value
-            await db["modals"].insert_one({"label": field.name, "beschreibung": field.value, "guildID": interaction.guild.id, "id": summe, "channelID": self.kanal})
+            await db["modals"].insert_one({"label": field.name, "beschreibung": field.value, "guildID": str(interaction.guild.id), "id": summe, "channelID": self.kanal})
         
         await interaction.message.delete()
         await interaction.channel.send(embed=embed, view=CounterButtonView(dict, summe, self.bot))
-        await interaction.response.send_message(f"**<:v_158:1264268251916009553> Setup erfolgreich beendet.**", ephemeral=True)
+        await interaction.response.send_message(f"**<:v_checkmark:1264271011818242159> Setup erfolgreich beendet.**", ephemeral=True)
 
 class frage_hinzufügen(discord.ui.Modal, title="Füge eine Frage hinzu"):
     def __init__(self, bot=None):
@@ -91,7 +91,7 @@ class frage_hinzufügen(discord.ui.Modal, title="Füge eine Frage hinzu"):
             embed.add_field(name=self.children[0].value, value=self.children[1].value)
             embed.color = await getcolour(self, interaction.user)
             await interaction.message.edit(content="", embed=embed)
-            await interaction.response.send_message("**<:v_158:1264268251916009553> Frage wurde hinzugefügt.**", ephemeral=True)
+            await interaction.response.send_message("**<:v_checkmark:1264271011818242159> Frage wurde hinzugefügt.**", ephemeral=True)
         except:
             await interaction.response.send_message("❌ Dein angegebener Text ist zu lang.")
                 
@@ -108,7 +108,7 @@ class setup_select(discord.ui.View):
             return
         await interaction.response.send_modal(frage_hinzufügen(self.bot))
 
-    @discord.ui.button(label="Fertig", style=discord.ButtonStyle.green, custom_id="egwrgwrgwrgwrt", emoji="<:v_158:1264268251916009553>")
+    @discord.ui.button(label="Fertig", style=discord.ButtonStyle.green, custom_id="egwrgwrgwrgwrt", emoji="<:v_checkmark:1264271011818242159>")
     async def zwei(self, interaction: discord.Interaction, button: discord.ui.Button):
         if self.user.id != interaction.user.id:
             return
@@ -118,7 +118,7 @@ class setup_select(discord.ui.View):
     async def drei(self, interaction: discord.Interaction, button: discord.ui.Button):
         if self.user.id != interaction.user.id:
             return
-        await interaction.response.edit_message(content="**<:v_9:1264264656831119462> Vorgang abbgebrochen**", view=None, embed=None)
+        await interaction.response.edit_message(content="**<:v_x:1264270921452224562> Vorgang abbgebrochen**", view=None, embed=None)
     
 class modal(commands.Cog):
     def __init__(self, bot):

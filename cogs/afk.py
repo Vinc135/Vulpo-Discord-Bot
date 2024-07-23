@@ -44,11 +44,11 @@ class afk(commands.Cog):
 Ich habe deinen AFK-Status entfernt. AFK gegangen {discord_timestamp(t2, 'R')}.""")
                 
                 if not result2:
-                    embed.description += f"\n💬 Während du AFK warst wurdest du hier nicht gepingt."
+                    embed.description += f"\n<:v_chat:1264270959121010728> Während du AFK warst wurdest du hier nicht gepingt."
                     await msg.reply(embed=embed)
                 else:
                     text = ""
-                    embed.description += f"\n💬 Während du AFK warst wurdest du hier **{len(result2)}** Mal gepingt. \n__Alle Erwähnungen:__"
+                    embed.description += f"\n<:v_chat:1264270959121010728> Während du AFK warst wurdest du hier **{len(result2)}** Mal gepingt. \n__Alle Erwähnungen:__"
                     for ping in result2:
                         author = msg.guild.get_member(int(ping['authorID']))
                         channel = msg.guild.get_channel(int(ping['channelID']))
@@ -99,12 +99,12 @@ AFK gegangen {discord_timestamp(t2, 'R')}.""")
         afk_collection = db['afk']
         afk_nachrichten_collection = db['afk_nachrichten']
         
-        result = await afk_collection.find_one({"guildID": str(interaction.guild.id), "userID": str(interaction.user.id)})
+        result = await afk_collection.find_one({"guildID": str(str(interaction.guild.id)), "userID": str(interaction.user.id)})
         if result is None:
             t1 = math.floor(datetime.datetime.now().timestamp())
             t2 = datetime.datetime.fromtimestamp(t1)
             await afk_collection.insert_one({
-                "guildID": str(interaction.guild.id), 
+                "guildID": str(str(interaction.guild.id)), 
                 "userID": str(interaction.user.id), 
                 "grund": grund, 
                 "time": t1
@@ -129,18 +129,18 @@ Wenn du wiederkommst, zeige ich dir alle Nachrichten, in denen du gepingt wurdes
                     await interaction.user.edit(nick="", reason="Member ist nicht mehr AFK")
             except:
                 pass
-            result2 = await afk_nachrichten_collection.find({"userID": str(interaction.user.id), "guildID": str(interaction.guild.id)}).to_list(length=None)
+            result2 = await afk_nachrichten_collection.find({"userID": str(interaction.user.id), "guildID": str(str(interaction.guild.id))}).to_list(length=None)
             
             embed = discord.Embed(title=f"<:v_afk:1119577204712542301> **{interaction.user.name}, willkommen zurück**", color=await getcolour(self, interaction.user), description=f"""
 Ich habe deinen AFK-Status entfernt. AFK gegangen {discord_timestamp(t2, 'R')}.""")
             
             if not result2:
-                embed.description += f"\n💬 Während du AFK warst wurdest du hier nicht gepingt."
+                embed.description += f"\n<:v_chat:1264270959121010728> Während du AFK warst wurdest du hier nicht gepingt."
                 await interaction.followup.send(embed=embed)
             else:
                 text = ""
                 a = 0
-                embed.description += f"\n💬 Während du AFK warst wurdest du hier **{len(result2)}** Mal gepingt. \n__Alle Erwähnungen:__"
+                embed.description += f"\n<:v_chat:1264270959121010728> Während du AFK warst wurdest du hier **{len(result2)}** Mal gepingt. \n__Alle Erwähnungen:__"
                 for ping in result2:
                     author = interaction.guild.get_member(int(ping['authorID']))
                     channel = interaction.guild.get_channel(int(ping['channelID']))
@@ -161,10 +161,10 @@ Ich habe deinen AFK-Status entfernt. AFK gegangen {discord_timestamp(t2, 'R')}."
                             text += f"[{author.name}]({msg2.jump_url})"
                         else:
                             text += f", [{author.name}]({msg2.jump_url})"
-                        embed.description += f"\n💬 Während du AFK warst wurdest du hier **{len(result2)}** Mal gepingt. \n__Alle Erwähnungen:__\n{text}"
+                        embed.description += f"\n<:v_chat:1264270959121010728> Während du AFK warst wurdest du hier **{len(result2)}** Mal gepingt. \n__Alle Erwähnungen:__\n{text}"
                 await interaction.followup.send(embed=embed)
-            await afk_nachrichten_collection.delete_many({"userID": str(interaction.user.id), "guildID": str(interaction.guild.id)})
-            await afk_collection.delete_one({"userID": str(interaction.user.id), "guildID": str(interaction.guild.id)})
+            await afk_nachrichten_collection.delete_many({"userID": str(interaction.user.id), "guildID": str(str(interaction.guild.id))})
+            await afk_collection.delete_one({"userID": str(interaction.user.id), "guildID": str(str(interaction.guild.id))})
 
 async def setup(bot):
     await bot.add_cog(afk(bot))

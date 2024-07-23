@@ -333,10 +333,10 @@ class Ttt(commands.Cog):
             if spieler2 == interaction.user:
                 return await interaction.followup.send("**❌ Du kannst nicht gegen dich selbst spielen.**", ephemeral=True)
             
-            playerone = await db["ttt"].find_one({"userID": interaction.user.id})
+            playerone = await db["ttt"].find_one({"userID": str(interaction.user.id)})
             
             if playerone == None:
-                await db["ttt"].insert_one({"userID": interaction.user.id, "wins": 0, "loses": 0, "ties": 0, "rating": 0})
+                await db["ttt"].insert_one({"userID": str(interaction.user.id), "wins": 0, "loses": 0, "ties": 0, "rating": 0})
                 
             playertwo = await db["ttt"].find_one({"userID": spieler2.id})
             
@@ -354,10 +354,10 @@ class Ttt(commands.Cog):
             if spieler2 == interaction.user:
                 return await interaction.followup.send("**❌ Du kannst nicht gegen dich selbst spielen.**", ephemeral=True)
             
-            playerone = await db["ttt"].find_one({"userID": interaction.user.id})
+            playerone = await db["ttt"].find_one({"userID": str(interaction.user.id)})
             
             if playerone == None:
-                await db["ttt"].insert_one({"userID": interaction.user.id, "wins": 0, "loses": 0, "ties": 0, "rating": 0})
+                await db["ttt"].insert_one({"userID": str(interaction.user.id), "wins": 0, "loses": 0, "ties": 0, "rating": 0})
                 
             playertwo = await db["ttt"].find_one({"userID": spieler2.id})
             
@@ -384,7 +384,7 @@ class Ttt(commands.Cog):
             
         db = getMongoDataBase()
         
-        result = await db["ttt"].find_one({"userID": member.id})
+        result = await db["ttt"].find_one({"userID": str(member.id)})
         
         if result == None:
             if member == interaction.user:
