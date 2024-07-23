@@ -22,13 +22,14 @@ async def function(self, interaction, farbe, t_1, t_3):
 
     db = getMongoDataBase()
 
-    result = await db['speedgame'].find_one({"userID": interaction.user.id})
+    result = await db['speedgame'].find_one({"userID": str(interaction.user.id)})
+    
     t_2 = time.perf_counter()
     t_4 = time.perf_counter()
     time_delta1 = round(((t_2 - t_1) - round(t_4 - t_3)) * 1000)
     time_delta2 = round((t_4 - t_3) * 1000)
     if result is None:
-        await db['speedgame'].insert_one({"userID": interaction.user.id, "zeit": time_delta1, "guildID": interaction.guild.id})    
+        await db['speedgame'].insert_one({"userID": str(interaction.user.id), "zeit": time_delta1, "guildID": str(interaction.guild.id)})    
         
         embed = discord.Embed(colour=await getcolour(self, interaction.user), title="⏱ Teste deine Schnelligkeit", description=f"""
                                     
@@ -41,9 +42,9 @@ async def function(self, interaction, farbe, t_1, t_3):
         return await interaction.message.edit(content="", embed=embed, view=None)
     
     else:
-        if int(result["zeit"]) < int(time_delta1):
-            await db['speedgame'].update_one({"userID": interaction.user.id}, {"$set": {"zeit": time_delta1}})
-            await db['speedgame'].update_one({"userID": interaction.user.id}, {"$set": {"guildID": interaction.guild.id}})
+        if int(result["zeit"]) > int(time_delta1):
+            await db['speedgame'].update_one({"userID": str(interaction.user.id)}, {"$set": {"zeit": time_delta1}})
+            await db['speedgame'].update_one({"userID": str(interaction.user.id)}, {"$set": {"guildID": str(interaction.guild.id)}})
             
             embed = discord.Embed(colour=await getcolour(self, interaction.user), title="⏱ Teste deine Schnelligkeit", description=f"""
                                         
@@ -136,6 +137,9 @@ class Speedgame(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id)) 
     async def start(self, interaction: discord.Interaction):
         """Teste deine Schnelligkeit und steige Ränge auf."""
+        
+        await interaction.response.defer()
+        
         farben = [":black_circle:", ":blue_circle:", ":brown_circle:", ":green_circle:", ":orange_circle:", ":purple_circle:", ":red_circle:", ":white_circle:", ":yellow_circle:", ":cookie:"]
         farbe = random.choice(farben)
         embed = discord.Embed(colour=await getcolour(self, interaction.user), title="⏱ Teste deine Schnelligkeit", description="")
@@ -150,15 +154,18 @@ class Speedgame(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id)) 
     async def profil(self, interaction: discord.Interaction, member: discord.Member=None):
         """Zeigt deine Bestzeit."""
+        
+        await interaction.response.defer()
+        
         if member == None:
             member = interaction.user
             
-        result = getMongoDataBase()["speedgame"].find_one({"userID": member.id})
+        result = await getMongoDataBase()["speedgame"].find_one({"userID": str(member.id)})
             
         if result == None:
             if member == interaction.user:
-                return await interaction.followup.send("**<:v_9:1264264656831119462> Du hast noch kein Match gespielt. Aufgrund dessen hast du auch keine Bestzeit. Du musst zuerst ein Match spielen.**", ephemeral=True)
-            return await interaction.followup.send(f"**<:v_9:1264264656831119462> {member.mention} hat noch kein Match gespielt. Aufgrund dessen hat er/sie auch keine Bestzeit. Er/Sie muss zuerst ein Match spielen.**", ephemeral=True)
+                return await interaction.followup.send("**<:v_x:1264270921452224562> Du hast noch kein Match gespielt. Aufgrund dessen hast du auch keine Bestzeit. Du musst zuerst ein Match spielen.**", ephemeral=True)
+            return await interaction.followup.send(f"**<:v_x:1264270921452224562> {member.mention} hat noch kein Match gespielt. Aufgrund dessen hat er/sie auch keine Bestzeit. Er/Sie muss zuerst ein Match spielen.**", ephemeral=True)
         else:
             embed = discord.Embed(color=await getcolour(self, interaction.user), title="⚡️ **| __Speedgame Stats__ |** 💨", description=f"""
 Aktuelle Stats von {member.mention}

@@ -20,37 +20,37 @@ class Automod(commands.Cog):
         """Füge eine Aktion für die automatische Moderation hinzu."""
         await interaction.response.defer()
         
-        guild_id = interaction.guild.id
+        guild_id = str(interaction.guild.id)
         db = getMongoDataBase()
         
         existing_actions = await db['automod'].find({"guildID": guild_id}).to_list(length=None)
         
         premium_status = await haspremium_forserver(self, interaction.guild)
         if not premium_status and len(existing_actions) >= 3:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du kannst keine weiteren Aktionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst keine weiteren Aktionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
         
         existing_action = await db['automod'].find_one({"guildID": guild_id, "warnanzahl": warnanzahl})
         if existing_action is not None:
-            await interaction.followup.send("**<:v_9:1264264656831119462> Du kannst für eine Warnanzahl nur eine Aktion hinzufügen. Bitte wähle eine andere Warnanzahl oder entferne diese Aktion mit `/automod removeaction <warnanzahl>`.**", ephemeral=True)
+            await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst für eine Warnanzahl nur eine Aktion hinzufügen. Bitte wähle eine andere Warnanzahl oder entferne diese Aktion mit `/automod removeaction <warnanzahl>`.**", ephemeral=True)
             return
 
         if aktion == "Timeout (Bitte Zeit angeben)":
             if time == None or time == "":
-                return await interaction.followup.send("**<:v_9:1264264656831119462> Bitte gib eine Zeit an, wie lange der Timeout dauern soll.**", ephemeral=True)
+                return await interaction.followup.send("**<:v_x:1264270921452224562> Bitte gib eine Zeit an, wie lange der Timeout dauern soll.**", ephemeral=True)
                 
             seconds = convert(time)
             
             if seconds == None or seconds == 0:
-                return await interaction.followup.send("**<:v_9:1264264656831119462> Bitte gib eine gültige Zeit an.**", ephemeral=True)
+                return await interaction.followup.send("**<:v_x:1264270921452224562> Bitte gib eine gültige Zeit an.**", ephemeral=True)
             
             await db['automod'].insert_one({"guildID": guild_id, "warnanzahl": warnanzahl, "aktion": f"Timeout ({time})", "time": seconds})
             
-            return await interaction.followup.send(f"**<:v_158:1264268251916009553> Eintrag erstellt. Jeder User mit einer Anzahl an Verwarnungen von {warnanzahl} wird erhält bei der nächsten Verwarnung einen Timeout von {time}.**")
+            return await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> Eintrag erstellt. Jeder User mit einer Anzahl an Verwarnungen von {warnanzahl} wird erhält bei der nächsten Verwarnung einen Timeout von {time}.**")
             
 
         await db['automod'].insert_one({"guildID": guild_id, "warnanzahl": warnanzahl, "aktion": aktion})
         
-        await interaction.followup.send(f"**<:v_158:1264268251916009553> Eintrag erstellt. Jeder User mit einer Anzahl an Verwarnungen von {warnanzahl} wird erhält bei der nächsten Verwarnung einen {aktion}.**")
+        await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> Eintrag erstellt. Jeder User mit einer Anzahl an Verwarnungen von {warnanzahl} wird erhält bei der nächsten Verwarnung einen {aktion}.**")
 
     @automod.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -62,16 +62,16 @@ class Automod(commands.Cog):
         
         db = getMongoDataBase()
         
-        guild_id = interaction.guild.id
+        guild_id = str(interaction.guild.id)
         
         existing_action = await db['automod'].find_one({"guildID": guild_id, "warnanzahl": warnanzahl})
         if existing_action is None:
-            await interaction.followup.send("**<:v_9:1264264656831119462> Dieser Eintrag existiert nicht. Bitte wähle eine andere Warnanzahl oder füge eine Aktion mit `/automod addaction <warnanzahl> <aktion>` hinzu**", ephemeral=True)
+            await interaction.followup.send("**<:v_x:1264270921452224562> Dieser Eintrag existiert nicht. Bitte wähle eine andere Warnanzahl oder füge eine Aktion mit `/automod addaction <warnanzahl> <aktion>` hinzu**", ephemeral=True)
             return
 
         await db['automod'].delete_one({"guildID": guild_id, "warnanzahl": warnanzahl})
         
-        await interaction.followup.send(f"**<:v_158:1264268251916009553> Eintrag gelöscht.**")
+        await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> Eintrag gelöscht.**")
 
     @automod.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -82,12 +82,12 @@ class Automod(commands.Cog):
         
         db = getMongoDataBase()
         
-        guild_id = interaction.guild.id
+        guild_id = str(interaction.guild.id)
         
         result = await db['automod'].find({"guildID": guild_id}).to_list(length=None)
         
         if not result:
-            await interaction.followup.send("**<:v_9:1264264656831119462> Hier wurden keine Aktionen gefunden. Füge eine Aktion mit `/automod addaction <warnanzahl> <aktion>` hinzu**", ephemeral=True)
+            await interaction.followup.send("**<:v_x:1264270921452224562> Hier wurden keine Aktionen gefunden. Füge eine Aktion mit `/automod addaction <warnanzahl> <aktion>` hinzu**", ephemeral=True)
             return
         
         embed = discord.Embed(title="Alle Aktionen vom Automod", description="Hier nähere Infos:", color=await getcolour(self, interaction.user))
@@ -137,11 +137,11 @@ class Automod(commands.Cog):
         
         db = getMongoDataBase()
         
-        result = await db['warns'].find_one({"guildID": interaction.guild.id, "userID": user.id, "warnID": warnid})
+        result = await db['warns'].find_one({"guildID": str(interaction.guild.id), "userID": str(user.id), "warnID": warnid})
         if result is None:
-            await interaction.followup.send(f"**<:v_9:1264264656831119462> Die Verwarnung mit der ID {warnid} von {user} wurde nicht gefunden.**")
+            await interaction.followup.send(f"**<:v_x:1264270921452224562> Die Verwarnung mit der ID {warnid} von {user} wurde nicht gefunden.**")
             return
-        await db['warns'].delete_one({"guildID": interaction.guild.id, "userID": user.id, "warnID": warnid})
+        await db['warns'].delete_one({"guildID": str(interaction.guild.id), "userID": str(user.id), "warnID": warnid})
         
         embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                 description=f"Die Verwarnung mit der ID {warnid} von {user} (**{user.id}**) wurde entfernt.")
@@ -161,21 +161,22 @@ class Automod(commands.Cog):
         
         await interaction.response.defer()
         
-        result = await getMongoDataBase()['warns'].find({"guildID": interaction.guild.id, "userID": user.id}).to_list(length=None)
+        result = await getMongoDataBase()['warns'].find({"guildID": str(interaction.guild.id), "userID": str(user.id)}).to_list(length=None)
         
         if result is None:
             await interaction.followup.send(f"Der User {user} hat keine Verwarnungen hier.")
             return
+        
         warnembed = discord.Embed(colour=await getcolour(self, interaction.user), description=f"Alle Verwarnungen von {user} (**{user.id}**).")
         warnembed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         a = 0
         for warn in result:
             a += 1
-            warnembed.add_field(name=f"Verwarnung {warn[1]}", value=f"{warn[0]}", inline=False)
+            warnembed.add_field(name=f"Verwarnung {warn['warnID']}", value=f"{warn['grund']}", inline=False)
         if a != 0:
             await interaction.followup.send(embed=warnembed)
         if a == 0:
-            await interaction.followup.send(f"**<:v_9:1264264656831119462> Der User {user} hat keine Verwarnungen hier.**", ephemeral=True) 
+            await interaction.followup.send(f"**<:v_x:1264270921452224562> Der User {user} hat keine Verwarnungen hier.**", ephemeral=True) 
     
     blacklist = app_commands.Group(name='blacklist', description='Nehme Einstellungen am Blacklist-System vor.', guild_only=True)
 
@@ -187,7 +188,7 @@ class Automod(commands.Cog):
         
         await interaction.response.defer()
         
-        result = getMongoDataBase()['blacklist'].find({"guildID": interaction.guild.id}).to_list(length=None)
+        result = await getMongoDataBase()['blacklist'].find({"guildID": str(interaction.guild.id)}).to_list(length=None)
         if result is None:
             await interaction.followup.send(f"Die Blacklist dieses Servers ist leer.\nWort der Blacklist hinzufügen: `/blacklist add <wort>\n`Wort von der Blacklist entfernen: `/blacklist remove <wort>`")
             return
@@ -210,21 +211,21 @@ class Automod(commands.Cog):
         
         db = getMongoDataBase()
         
-        result = await db['blacklist'].find_one({"guildID": interaction.guild.id, "word": wort})
+        result = await db['blacklist'].find_one({"guildID": str(interaction.guild.id), "word": wort})
         
         if result != None:
-            await interaction.followup.send(f"**<:v_9:1264264656831119462> Das Wort `{wort}` existiert bereits in der Blacklist.**", ephemeral=True)
+            await interaction.followup.send(f"**<:v_x:1264270921452224562> Das Wort `{wort}` existiert bereits in der Blacklist.**", ephemeral=True)
             return
         
-        existing_words = await db['blacklist'].find({"guildID": interaction.guild.id}).to_list(length=None)
+        existing_words = await db['blacklist'].find({"guildID": str(interaction.guild.id)}).to_list(length=None)
         
         premium = await haspremium_forserver(self, interaction.guild)
         
         if not premium and len(existing_words) >= 15:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du kannst keine weiteren Wörter hinzufügen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**", ephemeral=True)
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst keine weiteren Wörter hinzufügen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**", ephemeral=True)
 
-        await db['blacklist'].insert_one({"guildID": interaction.guild.id, "word": wort})
-        await interaction.followup.send(f"**<:v_158:1264268251916009553> Das Wort `{wort}` ist nun auf der Blacklist.**")
+        await db['blacklist'].insert_one({"guildID": str(interaction.guild.id), "word": wort})
+        await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> Das Wort `{wort}` ist nun auf der Blacklist.**")
 
     @blacklist.command()
     @app_commands.checks.has_permissions(manage_messages=True)
@@ -236,12 +237,12 @@ class Automod(commands.Cog):
         
         db = getMongoDataBase()
         
-        result = await db['blacklist'].find_one({"guildID": interaction.guild.id, "word": wort})
+        result = await db['blacklist'].find_one({"guildID": str(interaction.guild.id), "word": wort})
         if result is None or result == "()":
-            await interaction.followup.send(f"**<:v_9:1264264656831119462> Das Wort `{wort}` existiert nicht in der Blacklist.**", ephemeral=True)
+            await interaction.followup.send(f"**<:v_x:1264270921452224562> Das Wort `{wort}` existiert nicht in der Blacklist.**", ephemeral=True)
             return
-        await db['blacklist'].delete_one({"guildID": interaction.guild.id, "word": wort})
-        await interaction.followup.send(f"**<:v_158:1264268251916009553> Das Wort `{wort}` ist nun nicht mehr auf der Blacklist.**")
+        await db['blacklist'].delete_one({"guildID": str(interaction.guild.id), "word": wort})
+        await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> Das Wort `{wort}` ist nun nicht mehr auf der Blacklist.**")
 
     @automod.command()
     @app_commands.checks.has_permissions(manage_messages=True)
@@ -254,17 +255,17 @@ class Automod(commands.Cog):
         db = getMongoDataBase()
         
         if modus == "Anschalten (Prozent Angabe erforderlich)":
-            result = await db['caps'].find_one({"guildID": interaction.guild.id})
+            result = await db['caps'].find_one({"guildID": str(interaction.guild.id)})
 
             if result != None:
-                await db['caps'].update_one({"guildID": interaction.guild.id}, {"$set": {"prozent": prozent}})
-                return await interaction.followup.send(f"**<:v_158:1264268251916009553> Jede Nachricht die mindestens {prozent} Caps beihnaltet, wird ab sofort gelöscht und der User verwarnt.**")
+                await db['caps'].update_one({"guildID": str(interaction.guild.id)}, {"$set": {"prozent": prozent}})
+                return await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> Jede Nachricht die mindestens {prozent} Caps beihnaltet, wird ab sofort gelöscht und der User verwarnt.**")
             if result == None:
-                await db['caps'].insert_one({"guildID": interaction.guild.id, "prozent": prozent})
-                return await interaction.followup.send(f"**<:v_158:1264268251916009553> Jede Nachricht die mindestens {prozent} Caps beihnaltet, wird ab sofort gelöscht und der User verwarnt.**")
+                await db['caps'].insert_one({"guildID": str(interaction.guild.id), "prozent": prozent})
+                return await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> Jede Nachricht die mindestens {prozent} Caps beihnaltet, wird ab sofort gelöscht und der User verwarnt.**")
         if modus == "Ausschalten":
-            await db['caps'].delete_one({"guildID": interaction.guild.id})
-            return await interaction.followup.send(f"**<:v_158:1264268251916009553> Der Caps Filter wurde deaktiviert.**")
+            await db['caps'].delete_one({"guildID": str(interaction.guild.id)})
+            return await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> Der Caps Filter wurde deaktiviert.**")
     
     @automod.command()
     @app_commands.checks.has_permissions(manage_messages=True)
@@ -277,16 +278,16 @@ class Automod(commands.Cog):
         db = getMongoDataBase()
         
         if modus == "Anschalten (5 Nachrichten in 2,5 Sekunden gilt als Spam)":
-            result = await db['spam'].find_one({"guildID": interaction.guild.id})
+            result = await db['spam'].find_one({"guildID": str(interaction.guild.id)})
             if result != None:
-                await db['spam'].update_one({"guildID": interaction.guild.id}, {"$set": {"status": True}})
-                return await interaction.followup.send(f"**<:v_158:1264268251916009553> Jeder User, der mindestens 5 Nachrichten in 2,5 Sekunden sendet, wird verwarnt. Außerdem werden die Nachrichten gelöscht.**")
+                await db['spam'].update_one({"guildID": str(interaction.guild.id)}, {"$set": {"status": True}})
+                return await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> Jeder User, der mindestens 5 Nachrichten in 2,5 Sekunden sendet, wird verwarnt. Außerdem werden die Nachrichten gelöscht.**")
             if result == None:
-                await db['spam'].insert_one({"guildID": interaction.guild.id, "status": True})
-                return await interaction.followup.send(f"**<:v_158:1264268251916009553> Jeder User, der mindestens 5 Nachrichten in 2,5 Sekunden sendet, wird verwarnt. Außerdem werden die Nachrichten gelöscht.**")
+                await db['spam'].insert_one({"guildID": str(interaction.guild.id), "status": True})
+                return await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> Jeder User, der mindestens 5 Nachrichten in 2,5 Sekunden sendet, wird verwarnt. Außerdem werden die Nachrichten gelöscht.**")
         if modus == "Ausschalten":
-            await db['spam'].delete_one({"guildID": interaction.guild.id})
-            return await interaction.followup.send(f"**<:v_158:1264268251916009553> Der Spam Filter wurde deaktiviert.**")
+            await db['spam'].delete_one({"guildID": str(interaction.guild.id)})
+            return await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> Der Spam Filter wurde deaktiviert.**")
             
     @commands.Cog.listener()
     async def on_message(self, msg):

@@ -20,19 +20,19 @@ class Tags(commands.Cog):
         
         db = getMongoDataBase()
         
-        a = await db['tags'].find({"guildID": interaction.guild.id}).to_list()
+        a = await db['tags'].find({"guildID": str(interaction.guild.id)}).to_list(length=None)
         
         if len(a) >= 3:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du kannst keine weiteren Befehle erstellen, da du das Limit erreicht hast**")
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst keine weiteren Befehle erstellen, da du das Limit erreicht hast**")
 
-        result = db['tags'].find_one({"guildID": interaction.guild.id, "name": name})
+        result = db['tags'].find_one({"guildID": str(interaction.guild.id), "name": name})
         
         if result != None:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Dieser Tag existiert bereits. Wähle bitte einen anderen Namen.**")
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Dieser Tag existiert bereits. Wähle bitte einen anderen Namen.**")
         
-        db['tags'].insert_one({"guildID": interaction.guild.id, "name": name, "output": output})
+        db['tags'].insert_one({"guildID": str(interaction.guild.id), "name": name, "output": output})
         
-        await interaction.followup.send(f"**<:v_158:1264268251916009553> Tag erstellt. Wenn jemand `v!{name}` schreibt, kommt dieser Text:**\n*{output}*.")
+        await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> Tag erstellt. Wenn jemand `v!{name}` schreibt, kommt dieser Text:**\n*{output}*.")
 
     @tag.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -44,15 +44,15 @@ class Tags(commands.Cog):
         
         db = getMongoDataBase()
         
-        result = db['tags'].find_one({"guildID": interaction.guild.id, "name": name})
+        result = db['tags'].find_one({"guildID": str(interaction.guild.id), "name": name})
         
         if result == None:
-            await interaction.followup.send("**<:v_9:1264264656831119462> Dieser Tag existiert nicht. Füge einen Tag mit `/tag add <name> <output>` hinzu.", ephemeral=True)
+            await interaction.followup.send("**<:v_x:1264270921452224562> Dieser Tag existiert nicht. Füge einen Tag mit `/tag add <name> <output>` hinzu.", ephemeral=True)
             return
         
-        db['tags'].delete_one({"guildID": interaction.guild.id, "name": name})
+        db['tags'].delete_one({"guildID": str(interaction.guild.id), "name": name})
         
-        await interaction.followup.send(f"**<:v_158:1264268251916009553> Tag gelöscht.**")
+        await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> Tag gelöscht.**")
 
     @tag.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -64,10 +64,10 @@ class Tags(commands.Cog):
         
         db = getMongoDataBase()
         
-        result = db['tags'].find({"guildID": interaction.guild.id})
+        result = await db['tags'].find({"guildID": str(interaction.guild.id)}).to_list(length=None)
         
         if result == None:
-            await interaction.followup.send("**<:v_9:1264264656831119462> Hier wurden keine Tags gefunden. Füge einen Tag mit `/tag add <name> <output>` hinzu**", ephemeral=True)
+            await interaction.followup.send("**<:v_x:1264270921452224562> Hier wurden keine Tags gefunden. Füge einen Tag mit `/tag add <name> <output>` hinzu**", ephemeral=True)
             return
         
         embed = discord.Embed(title="Alle Tags des Servers", description="Hier nähere Infos:", color=await getcolour(self, interaction.user))
@@ -86,7 +86,7 @@ class Tags(commands.Cog):
         
         db = getMongoDataBase()
         
-        result = db['tags'].find({"guildID": msg.guild.id}).to_list()
+        result = await db['tags'].find({"guildID": str(msg.guild.id)}).to_list(length=None)
         
         if result is None or len(result) == 0:
             return
@@ -95,8 +95,8 @@ class Tags(commands.Cog):
             if message is None:
                 return
             
-            if f"v!{str(message[0]).lower()}" == msg.content.lower():
-                embed = discord.Embed(title=f"__{message[0].upper()}__", description=message[1], color=await getcolour(self, msg.author))
+            if f"v!{str(message['name']).lower()}" == msg.content.lower():
+                embed = discord.Embed(title=f"__{message['name'].upper()}__", description=message['output'], color=await getcolour(self, msg.author))
                 
                 embed.set_thumbnail(url=msg.guild.icon)
                 embed.set_author(name=msg.author, icon_url=msg.author.avatar)

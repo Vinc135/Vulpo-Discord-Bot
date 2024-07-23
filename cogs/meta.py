@@ -68,9 +68,9 @@ class EmbedMaker(discord.ui.Modal, title="Embed-Maker"):
             if self.image.value != None:
                 embed.set_image(url=self.image.value)
             await interaction.channel.send(embed=embed)
-            await interaction.followup.send("**<:v_158:1264268251916009553> Das Embed wurde erfolgreich erstellt und gesendet.**", ephemeral=True)
+            await interaction.followup.send("**<:v_checkmark:1264271011818242159> Das Embed wurde erfolgreich erstellt und gesendet.**", ephemeral=True)
         except:
-            await interaction.followup.send("**<:v_9:1264264656831119462> Etwas mit deinen Angaben stimmt nicht überein. Bitte versuche es erneut.**", ephemeral=True)
+            await interaction.followup.send("**<:v_x:1264270921452224562> Etwas mit deinen Angaben stimmt nicht überein. Bitte versuche es erneut.**", ephemeral=True)
 
 class meta(commands.Cog):
     def __init__(self, bot):
@@ -155,7 +155,7 @@ class meta(commands.Cog):
             if a == 9:
                 c += "nine"
             if a == 10:
-                return await interaction.followup.send("**<:v_9:1264264656831119462> Du kannst nur maximal neun Antwortmöglichkeiten geben.**", ephemeral=True)
+                return await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst nur maximal neun Antwortmöglichkeiten geben.**", ephemeral=True)
             desc += f":{c}: - {answer}\n"
         embed = discord.Embed(color=await getcolour(self, interaction.user), title=frage, description=desc)
         embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/925799559576322078/a2f839c85ee1dd3ef9a1b1fa511e332b.png?size=1024")
@@ -216,7 +216,7 @@ class meta(commands.Cog):
             await message.add_reaction("8️⃣")
             await message.add_reaction("9️⃣")
 
-        await interaction.followup.send("**<:v_158:1264268251916009553> Die Umfrage wurde geschickt.**", ephemeral=True)
+        await interaction.followup.send("**<:v_checkmark:1264271011818242159> Die Umfrage wurde geschickt.**", ephemeral=True)
 
     info = app_commands.Group(name='info', description='Bekomme Infos zu bestimmten Usern, Rollen und Kanälen.', guild_only=True)
 
@@ -261,7 +261,7 @@ class meta(commands.Cog):
             await interaction.followup.send(embed=embed)
             return
         else:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Eine Kanalangabe ist erforderlich.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Eine Kanalangabe ist erforderlich.**", ephemeral=True)
     
     @info.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -332,7 +332,7 @@ class meta(commands.Cog):
         t1 = math.floor(interaction.guild.created_at.timestamp())
         t2 = datetime.datetime.fromtimestamp(int(t1))
         embed = discord.Embed(colour=await getcolour(self, interaction.user), description=f"Der Server wurde {discord_timestamp(t2, 'R')} erstellt.")
-        embed.add_field(name="ID", value=interaction.guild.id, inline=True)
+        embed.add_field(name="ID", value=str(interaction.guild.id), inline=True)
         embed.add_field(name="Owner", value=interaction.guild.owner, inline=True)
         if interaction.guild.description:
             embed.add_field(name="Beschreibung", value=interaction.guild.description, inline=False)
@@ -533,9 +533,9 @@ class meta(commands.Cog):
         for item, valueBool in permissions:
             
             if valueBool == True:
-                value = '<:v_158:1264268251916009553>'
+                value = '<:v_checkmark:1264271011818242159>'
             else:
-                value = '<:v_9:1264264656831119462>'
+                value = '<:v_x:1264270921452224562>'
             if(permissionsCount < 23):
                 embed.add_field(name=item, value=value)
             elif(permissionsCount <= 23*2):
@@ -553,7 +553,7 @@ class meta(commands.Cog):
         try:
             emoj = discord.PartialEmoji.from_str(emoji)
             if emoj is None:
-                return await interaction.followup.send("**<:v_9:1264264656831119462> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch in und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+                return await interaction.followup.send("**<:v_x:1264270921452224562> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch in und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)
             embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                 description=f"Hier der Link: {emoj.url}")
             
@@ -561,7 +561,7 @@ class meta(commands.Cog):
             embed.set_image(url=f"{emoj.url}")
             await interaction.followup.send(embed=embed)
         except:
-            return await interaction.followup.send(content="**<:v_9:1264264656831119462> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch in und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+            return await interaction.followup.send(content="**<:v_x:1264270921452224562> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch in und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)
 
     @app_commands.command()
     @app_commands.guild_only()
@@ -573,13 +573,13 @@ class meta(commands.Cog):
         try:
             emoj = discord.PartialEmoji.from_str(emoji)
             if emoj is None:
-                return await interaction.followup.send("**<:v_9:1264264656831119462> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+                return await interaction.followup.send("**<:v_x:1264270921452224562> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)
             async with aiohttp.ClientSession() as session:
                 async with session.get(emoj.url) as response:
                     image_bytes = await response.read()
                     emo = await interaction.guild.create_custom_emoji(name=name, image=image_bytes, reason="stealemoji command")
         except:
-            return await interaction.followup.send(content="**<:v_9:1264264656831119462> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)
+            return await interaction.followup.send(content="**<:v_x:1264270921452224562> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch bin und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)
         embed = discord.Embed(colour=await getcolour(self, interaction.user),
                                 description=f"**Der Emoji {emo} wurde erstellt.**\nName: {name}")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
@@ -593,7 +593,7 @@ class meta(commands.Cog):
     async def random(self, interaction: discord.Interaction, erstezahl: int, zweitezahl: int):
         """Erhalte eine random Zahl von deinen ausgewählten Zahlen."""
         drittezahl = random.randint(erstezahl, zweitezahl)
-        await interaction.followup.send(f"**<:v_158:1264268251916009553> Deine zufällige Zahl zwischen `{erstezahl}` und `{zweitezahl}` ist `{drittezahl}`.**")
+        await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> Deine zufällige Zahl zwischen `{erstezahl}` und `{zweitezahl}` ist `{drittezahl}`.**")
         
     @app_commands.command()
     @app_commands.guild_only()
@@ -638,151 +638,168 @@ class meta(commands.Cog):
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 10, key=lambda i: (i.guild_id, i.user.id))
     async def bestenliste(self, interaction: discord.Interaction, system: typing.Literal["Economy", "Emojiquiz", "Flaggenquiz", "Levelsystem", "TicTacToe", "Speedgame", "Votes"]):
-                """Bekomme Bestenlisten verschiedenster Funktionen."""
+        """Bekomme Bestenlisten verschiedenster Funktionen."""
+        
+        await interaction.response.defer()
+        
+        db = getMongoDataBase()
+        
+        if system == "Economy":
+            leaderboard = await db["economy"].find().sort([("bank", -1)]).to_list(length=10)
+            embed = discord.Embed(title="Bestenliste (Economy)", color=await getcolour(self, interaction.user))
+            
+            for i, pos in enumerate(leaderboard, start=1):
+                bank = pos["bank"]
+                rucksack = pos["rucksack"]
+                userID = pos["userID"]
+                total = int(bank)
+                total += int(rucksack)
+                name = self.bot.get_user(int(userID))
+                if name is None:
+                    name = await self.bot.fetch_user(int(userID))
+                    if name is None:
+                        name = f"Nicht gefunden ({userID})"
+                embed.add_field(name=f"{i}. {name} {name.id}", value=f"Total: {total} 🍪", inline=False)
+                if i == 10:
+                    await interaction.followup.send(embed=embed)
+                    break
+            if i != 10:
+                await interaction.followup.send(embed=embed)
                 
-                await interaction.response.defer()
-                
-                db = getMongoDataBase()
-                
-                if system == "Economy":
-                    leaderboard = await db["economy"].find().sort([("bank", -1)]).limit(10)
-                    embed = discord.Embed(title="Bestenliste (Economy)", color=await getcolour(self, interaction.user))
-                    
-                    for i, pos in enumerate(leaderboard, start=1):
-                        bank, rucksack, userID = pos
-                        total = int(bank)
-                        total += int(rucksack)
-                        name = self.bot.get_user(int(userID))
-                        if name is None:
-                            name = await self.bot.fetch_user(int(userID))
-                            if name is None:
-                                name = f"Nicht gefunden ({userID})"
-                        embed.add_field(name=f"{i}. {name} {name.id}", value=f"Total: {total} 🍪", inline=False)
-                        if i == 10:
-                            await interaction.followup.send(embed=embed)
-                            break
-                    if i != 10:
-                        await interaction.followup.send(embed=embed)
-                        
-                if system == "Emojiquiz":
-                    leaderboard = await db["emojiquiz"].find().sort([("anzahl", -1)]).limit(10)
-                    
-                    embed = discord.Embed(title="Bestenliste (Emojiquiz)", color=await getcolour(self, interaction.user))
-                    
-                    for i, pos in enumerate(leaderboard, start=1):
-                        anzahl, userID = pos
-                        name = self.bot.get_user(int(userID))
-                        if name is None:
-                            name = await self.bot.fetch_user(int(userID))
-                            if name is None:
-                                name = f"Nicht gefunden ({userID})"
-                        embed.add_field(name=f"{i}. {name}", value=f"Gelöste Quizze: {anzahl}", inline=False)
-                        if i == 10:
-                            await interaction.followup.send(embed=embed)
-                            break
-                    if i != 10:
-                        await interaction.followup.send(embed=embed)
+        if system == "Emojiquiz":
+            leaderboard = await db["eq_leaderboard"].find().sort([("anzahl", -1)]).to_list(length=10)
+            
+            embed = discord.Embed(title="Bestenliste (Emojiquiz)", color=await getcolour(self, interaction.user))
+            
+            for i, pos in enumerate(leaderboard, start=1):
+                anzahl = pos["anzahl"]
+                userID = pos["userID"]
+                name = self.bot.get_user(int(userID))
+                if name is None:
+                    name = await self.bot.fetch_user(int(userID))
+                    if name is None:
+                        name = f"Nicht gefunden ({userID})"
+                embed.add_field(name=f"{i}. {name}", value=f"Gelöste Quizze: {anzahl}", inline=False)
+                if i == 10:
+                    await interaction.followup.send(embed=embed)
+                    return
 
-                if system == "Flaggenquiz":
-                    leaderboard = await db["flaggenquiz"].find().sort([("anzahl", -1)]).limit(10)
-                    
-                    embed = discord.Embed(title="Bestenliste (Flaggenquiz)", color=await getcolour(self, interaction.user))
-                    
-                    for i, pos in enumerate(leaderboard, start=1):
-                        anzahl, userID = pos
-                        name = self.bot.get_user(int(userID))
-                        if name is None:
-                            name = await self.bot.fetch_user(int(userID))
-                            if name is None:
-                                name = f"Nicht gefunden ({userID})"
-                        embed.add_field(name=f"{i}. {name}", value=f"Gelöste Quizze: {anzahl}", inline=False)
-                        if i == 10:
-                            await interaction.followup.send(embed=embed)
-                            break
-                    if i != 10:
-                        await interaction.followup.send(embed=embed)
-                    
-                if system == "Levelsystem":
-                    if not getLevelSystemEnabled(self, interaction.guild.id):
-                        await interaction.followup.send("**<:v_9:1264264656831119462> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
-                        return
-                    
-                    leaderboard = await db["levels"].find().sort([("user_level", -1), ("user_xp", -1)]).limit(10)
-                    embed = discord.Embed(title="Bestenliste (Levelsystem)", color=await getcolour(self, interaction.user))
-                    
-                    i = 0
-                    for eintrag in leaderboard:
-                        lvl = eintrag[0]
-                        xp = eintrag[1]
-                        member_id = eintrag[2]
-                        xp_end = 5 * (math.pow(int(lvl) , 2)) + (50 * int(lvl)) + 100
-                        name = self.bot.get_user(int(member_id))
-                        if name is None:
-                            continue
-                        i += 1
-                        embed.add_field(name=f"{i}. {name}", value=f"Level {lvl} Erfahrung: {xp}/{xp_end}", inline=False)
-                        if i == 10:
-                            await interaction.followup.send(embed=embed)
-                            break
-                    if i != 10:
-                        await interaction.followup.send(embed=embed)
+            await interaction.followup.send(embed=embed)
+
+        if system == "Flaggenquiz":
+            leaderboard = await db["fq_leaderboard"].find().sort([("anzahl", -1)]).to_list(length=10)
+            
+            embed = discord.Embed(title="Bestenliste (Flaggenquiz)", color=await getcolour(self, interaction.user))
+            
+            for i, pos in enumerate(leaderboard, start=1):
+                anzahl = pos["anzahl"]
+                userID = pos["userID"]
+                name = self.bot.get_user(int(userID))
+                if name is None:
+                    name = await self.bot.fetch_user(int(userID))
+                    if name is None:
+                        name = f"Nicht gefunden ({userID})"
+                embed.add_field(name=f"{i}. {name}", value=f"Gelöste Quizze: {anzahl}", inline=False)
+                if i == 10:
+                    await interaction.followup.send(embed=embed)
+                    return
+            
+            await interaction.followup.send(embed=embed)
+            
+        if system == "Levelsystem":
+            if not await getLevelSystemEnabled(self, interaction.guild):
+                await interaction.followup.send("**<:v_x:1264270921452224562> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
+                return
+            
+            leaderboard = await db["levelsystem"].find({"guild_id": str(interaction.guild.id)}).sort([("user_level", -1), ("user_xp", -1)]).to_list(length=10)
+            embed = discord.Embed(title="Bestenliste (Levelsystem)", color=await getcolour(self, interaction.user))
+            
+            i = 0
+            for eintrag in leaderboard:
+                lvl = eintrag['user_level']
+                xp = eintrag['user_xp']
+                member_id = eintrag['client_id']
+                xp_end = 5 * (math.pow(int(lvl) , 2)) + (50 * int(lvl)) + 100
+                name = await self.bot.fetch_user(int(member_id))
+                if name is None:
+                    continue
+                i += 1
+                embed.add_field(name=f"{i}. {name}", value=f"Level {lvl} Erfahrung: {xp}/{xp_end}", inline=False)
+                if i == 10:
+                    await interaction.followup.send(embed=embed)
+                    return
+            
+            await interaction.followup.send(embed=embed)
+        
+        if system == "TicTacToe":
+            leaderboard = await db["ttt"].find().sort([("rating", -1)]).to_list(length=10)
+            
+            embed = discord.Embed(title="Bestenliste (TicTacToe)", color=await getcolour(self, interaction.user))
+            
+            for i, pos in enumerate(leaderboard, start=1):
+                wins = pos["wins"]
+                loses = pos["loses"]
+                ties = pos["ties"]
+                userID = pos["userID"]
+
+                name = self.bot.get_user(int(userID))
+                if name is None:
+                    name = await self.bot.fetch_user(int(userID))
+                    if name is None:
+                        name = f"Nicht gefunden ({userID})"
+                rating = (wins * 3) + (loses * -1) + (ties * 2)
+                embed.add_field(name=f"{i}. {name}", value=f"Rating: {rating}", inline=False)    
+                if i == 10:
+                    await interaction.followup.send(embed=embed)
+                    return
+
+            await interaction.followup.send(embed=embed)
                 
-                if system == "TicTacToe":
-                    leaderboard = await db["ttt"].find().sort([("rating", -1)]).limit(10)
-                    
-                    embed = discord.Embed(title="Bestenliste (TicTacToe)", color=await getcolour(self, interaction.user))
-                    
-                    for i, pos in enumerate(leaderboard, start=1):
-                        wins, loses, ties, userID, rating = pos
-                        name = self.bot.get_user(int(userID))
-                        if name is None:
-                            name = await self.bot.fetch_user(int(userID))
-                            if name is None:
-                                name = f"Nicht gefunden ({userID})"
-                        rating = (wins * 3) + (loses * -1) + (ties * 2)
-                        embed.add_field(name=f"{i}. {name}", value=f"Rating: {rating}", inline=False)    
-                        if i == 10:
-                            await interaction.followup.send(embed=embed)
-                            break
-                    if i != 10:
-                        await interaction.followup.send(embed=embed)
-                        
-                if system == "Speedgame":
-                    leaderboard = await db["speedgame"].find().sort([("zeit", 1)]).limit(10)
-                    embed = discord.Embed(title="Bestenliste (Speedgame)", color=await getcolour(self, interaction.user))
-                    
-                    for i, pos in enumerate(leaderboard, start=1):
-                        zeit, userID, guildID = pos
-                        name = self.bot.get_user(int(userID))
-                        if name is None:
-                            name = await self.bot.fetch_user(int(userID))
-                            if name is None:
-                                name = f"Nicht gefunden ({userID})"
-                        guild = self.bot.get_guild(int(guildID))
-                        embed.add_field(name=f"{i}. {name}", value=f"{zeit}ms {'(' if guild is not None else ''}{guild.name if guild is not None else ''}{')' if guild is not None else ''}", inline=False)
-                        if i == 10:
-                            await interaction.followup.send(embed=embed)
-                            break
-                    if i != 10:
-                        await interaction.followup.send(embed=embed)
-                        
-                if system == "Votes":
-                    leaderboard = await db["topgg"].find().sort([("votes", -1)]).limit(10)
-                    embed = discord.Embed(title="Bestenliste (Votes)", description="💎 [VOTE](https://top.gg/bot/925799559576322078/vote) auch du für Vulpo um vielleicht bald in der Top 10 zu sein. 💎", color=await getcolour(self, interaction.user))
-                    
-                    for i, pos in enumerate(leaderboard, start=1):
-                        votes, userID = pos
-                        name = self.bot.get_user(int(userID))
-                        if name is None:
-                            name = await self.bot.fetch_user(int(userID))
-                            if name is None:
-                                name = f"Nicht gefunden ({userID})"
-                        embed.add_field(name=f"{i}. {name}", value=f"{votes} Votes", inline=False)
-                        if i == 10:
-                            await interaction.followup.send(embed=embed)
-                            break
-                    if i != 10:
-                        await interaction.followup.send(embed=embed)
+        if system == "Speedgame":
+            leaderboard = await db["speedgame"].find().sort([("zeit", 1)]).to_list(length=10)
+            embed = discord.Embed(title="Bestenliste (Speedgame)", color=await getcolour(self, interaction.user))
+            
+            for i, pos in enumerate(leaderboard, start=1):
+                zeit = pos["zeit"]
+                userID = pos["userID"]
+                guildID = pos["guildID"]
+                
+                name = self.bot.get_user(int(userID))
+                if name is None:
+                    name = await self.bot.fetch_user(int(userID))
+                    if name is None:
+                        name = f"Nicht gefunden ({userID})"
+                
+                try:
+                    guild = self.bot.get_guild(int(guildID))        
+                except discord.errors.NotFound:
+                    guild = f"Guild nicht gefunden ({guildID})"
+                
+                embed.add_field(name=f"{i}. {name}", value=f"{zeit}ms {'(' if guild is not None else ''}{guild.name if guild is not None else ''}{')' if guild is not None else ''}", inline=False)
+                if i == 10:
+                    await interaction.followup.send(embed=embed)
+                    return
+                
+            await interaction.followup.send(embed=embed)
+                
+        if system == "Votes":
+            leaderboard = await db["topgg"].find().sort([("votes", -1)]).to_list(length=10)
+            embed = discord.Embed(title="Bestenliste (Votes)", description="**💎 [VOTE](https://top.gg/bot/925799559576322078/vote) auch du für Vulpo um vielleicht bald in der Top 10 zu sein. 💎**", color=await getcolour(self, interaction.user))
+            
+            for i, pos in enumerate(leaderboard, start=1):
+                votes = pos["votes"]
+                userID = pos["userID"]
+                name = self.bot.get_user(int(userID))
+                if name is None:
+                    name = await self.bot.fetch_user(int(userID))
+                    if name is None:
+                        name = f"Nicht gefunden ({userID})"
+                embed.add_field(name=f"{i}. {name}", value=f"{votes} Votes", inline=False)
+                if i == 10:
+                    await interaction.followup.send(embed=embed)
+                    return
+
+            await interaction.followup.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_message(self, msg: discord.Message):

@@ -25,7 +25,7 @@ async def teilnahme_angenommen(self, interaction: discord.Interaction, result):
     
     db = getMongoDataBase()
     
-    teilnehmer_count = await db["gewinnspiel_teilnehmer"].count_documents({"guildID": interaction.guild.id, "channelID": interaction.channel.id, "msgID": interaction.message.id})
+    teilnehmer_count = await db["gewinnspiel_teilnehmer"].count_documents({"guildID": str(interaction.guild.id), "channelID": str(interaction.channel.id), "msgID": str(interaction.message.id)})
     
     member = await interaction.guild.fetch_member(int(result['hostID']))
     
@@ -44,15 +44,15 @@ async def teilnahme_angenommen(self, interaction: discord.Interaction, result):
         rolle = interaction.guild.get_role(int(result["rollenID"]))
         requirements += f"\n<:v_24:1264264867511144479> Du benötigst die **Rolle {rolle.mention}**."
     if result["nachrichten"]:
-        requirements += f"\n<:v_24:1264264867511144479> Du musst mindestens **{result[6]} neue Nachrichten** schreiben."
+        requirements += f"\n<:v_24:1264264867511144479> Du musst mindestens **{result['nachrichten']} neue Nachrichten** schreiben."
     if result["voicezeit"]:
-        requirements += f"\n<:v_24:1264264867511144479> Du musst mindestens **{result[12]} Minuten** in Sprachkanälen verbringen."
+        requirements += f"\n<:v_24:1264264867511144479> Du musst mindestens **{result['voicezeit']} Minuten** in Sprachkanälen verbringen."
     if result["custom_status"]:
-        requirements += f"\n<:v_24:1264264867511144479> Du musst **{result[11]}** im Status haben."
+        requirements += f"\n<:v_24:1264264867511144479> Du musst **{result['custom_status']}** im Status haben."
     if result["jointime"]:
-        requirements += f"\n<:v_24:1264264867511144479> Du musst mindestens seit dem **{result[13]}** auf diesem Server sein."
+        requirements += f"\n<:v_24:1264264867511144479> Du musst mindestens seit dem **{result['jointime']}** auf diesem Server sein."
     if result["level"]:
-        requirements += f"\n<:v_24:1264264867511144479> Du musst mindestens **Level {result[7]}** bei Vulpos Levelsystem sein."
+        requirements += f"\n<:v_24:1264264867511144479> Du musst mindestens **Level {result['level']}** bei Vulpos Levelsystem sein."
         
     if requirements != "":
         embed.description += requirements
@@ -85,109 +85,109 @@ class Gewinnspiel_Teilnehmen(discord.ui.View):
 
     @discord.ui.button(label='Teilnehmen', style=discord.ButtonStyle.green, custom_id="dqbckiwluheljvkhgciulehfgk")
     async def teilnehmen(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.defer()
+
+        member = await interaction.guild.fetch_member(interaction.user.id)
+        gründe = ""
         
-                await interaction.response.defer()
+        db = getMongoDataBase()
         
-                member = await interaction.guild.fetch_member(interaction.user.id)
-                gründe = ""
+        result  = await db['gewinnspiele'].find_one({"guildID": str(interaction.guild.id), "channelID": str(interaction.channel.id), "msgID": str(interaction.message.id)})
+        #guildID, channelID, msgID, hostID, endtime, preis, winners, status, nachrichten, rollenID, voicezeit, custom_status, jointime
+        
+        if result is None:
+            return
+        
+        result5 = await db['gewinnspiel_teilnehmer'].find_one({"guildID": str(interaction.guild.id), "channelID": str(interaction.channel.id), "msgID": str(interaction.message.id), "userID": str(interaction.user.id)})
+        
+        if result5 != None:
+            await db['gewinnspiel_teilnehmer'].delete_one({"guildID": str(interaction.guild.id), "channelID": str(interaction.channel.id), "msgID": str(interaction.message.id), "userID": str(interaction.user.id)})
+            return await teilnahme_abgelehnt(self, interaction, "`❌` Du warst bereits ein Teilnehmer, hast jedoch nochmal den Button gedrückt. Nun bist du kein Teilnehmer mehr.", result)
+
+        blacklist = await db['gewinnspiel_blacklist'].find({"guildID": str(interaction.guild.id)}).to_list(length=None)
+
+        for id in blacklist:
+            rolle = interaction.guild.get_role(int(id["id"]))
+            if rolle != None:
+                if rolle in member.roles:
+                    return await teilnahme_abgelehnt(self, interaction, "`❌` Du stehst auf der Gewinnspiel Blacklist und bist deshalb von jeglichen Gewinnspielen dieses Servers ausgeschlossen.", result)
+            if int(id[0]) == interaction.user.id:
+                return await teilnahme_abgelehnt(self, interaction, "`❌` Du stehst auf der Gewinnspiel Blacklist und bist deshalb von jeglichen Gewinnspielen dieses Servers ausgeschlossen.", result)
+                    
+        bypassrollen = await db['gewinnspiele_bypassrolle'].find({"guildID": str(interaction.guild.id)}).to_list(length=None)
+        
+        for bypassrolle in bypassrollen:
+            bpr = interaction.guild.get_role(int(bypassrolle["rollenID"]))
+            if bpr == None:
+                pass
+            if bpr in member.roles:
                 
-                db = getMongoDataBase()
+                result4 = await db['gewinnspiel_teilnehmer'].find_one({"guildID": str(interaction.guild.id), "channelID": str(interaction.channel.id), "msgID": str(interaction.message.id), "userID": str(interaction.user.id)})
                 
-                result  = await db['gewinnspiele'].find_one({"guildID": interaction.guild.id, "channelID": interaction.channel.id, "msgID": interaction.message.id})
-                #guildID, channelID, msgID, hostID, endtime, preis, winners, status, nachrichten, rollenID, voicezeit, custom_status, jointime
-                
-                if result is None:
-                    return
-                
-                
-                result5 = await db['gewinnspiel_teilnehmer'].find_one({"guildID": interaction.guild.id, "channelID": interaction.channel.id, "msgID": interaction.message.id, "userID": interaction.user.id})
-                
-                if result5 != None:
-                    await db['gewinnspiel_teilnehmer'].delete_one({"guildID": interaction.guild.id, "channelID": interaction.channel.id, "msgID": interaction.message.id, "userID": interaction.user.id})
+                if result4 != None:
+                    await db['gewinnspiel_teilnehmer'].delete_one({"guildID": str(interaction.guild.id), "channelID": str(interaction.channel.id), "msgID": str(interaction.message.id), "userID": str(interaction.user.id)})
                     return await teilnahme_abgelehnt(self, interaction, "`❌` Du warst bereits ein Teilnehmer, hast jedoch nochmal den Button gedrückt. Nun bist du kein Teilnehmer mehr.", result)
 
-                blacklist = await db['gewinnspiel_blacklist'].find({"guildID": interaction.guild.id}).to_list(length=None)
 
-                for id in blacklist:
-                    rolle = interaction.guild.get_role(int(id["rollenID"]))
-                    if rolle != None:
-                        if rolle in member.roles:
-                            return await teilnahme_abgelehnt(self, interaction, "`❌` Du stehst auf der Gewinnspiel Blacklist und bist deshalb von jeglichen Gewinnspielen dieses Servers ausgeschlossen.", result)
-                    if int(id[0]) == interaction.user.id:
-                        return await teilnahme_abgelehnt(self, interaction, "`❌` Du stehst auf der Gewinnspiel Blacklist und bist deshalb von jeglichen Gewinnspielen dieses Servers ausgeschlossen.", result)
-                          
-                bypassrollen = await db['gewinnspiele_bypassrolle'].find({"guildID": interaction.guild.id}).to_list(length=None)
+                await db['gewinnspiel_teilnehmer'].insert_one({"guildID": str(interaction.guild.id), "channelID": str(interaction.channel.id), "msgID": str(interaction.message.id), "userID": str(interaction.user.id)})
                 
-                for bypassrolle in bypassrollen:
-                    bpr = interaction.guild.get_role(int(bypassrolle["rollenID"]))
-                    if bpr == None:
-                        pass
-                    if bpr in member.roles:
-                        
-                        result4 = await db['gewinnspiel_teilnehmer'].find_one({"guildID": interaction.guild.id, "channelID": interaction.channel.id, "msgID": interaction.message.id, "userID": interaction.user.id})
-                        
-                        if result4 != None:
-                            await db['gewinnspiel_teilnehmer'].delete_one({"guildID": interaction.guild.id, "channelID": interaction.channel.id, "msgID": interaction.message.id, "userID": interaction.user.id})
-                            return await teilnahme_abgelehnt(self, interaction, "`❌` Du warst bereits ein Teilnehmer, hast jedoch nochmal den Button gedrückt. Nun bist du kein Teilnehmer mehr.", result)
+                return await teilnahme_angenommen(self, interaction, result)                        
 
 
-                        await db['gewinnspiel_teilnehmer'].insert_one({"guildID": interaction.guild.id, "channelID": interaction.channel.id, "msgID": interaction.message.id, "userID": interaction.user.id})
-                        
-                        return await teilnahme_angenommen(self, interaction, result)                        
-
-
-                if result["nachrichten"] != None:
-                    result2 = await db['gw_nachrichten'].find_one({"guildID": interaction.guild.id, "gwID": interaction.message.id, "userID": interaction.user.id})
-                    if result2 == None:
-                        gründe += f"\n`❌` Du hast bisher 0 Nachrichten geschrieben, benötigst jedoch {result['nachrichten']} Nachrichten um am Gewinnspiel teilzunehmen."
-                    else:
-                        nachrichten = result2["anzahl"]
-                        if nachrichten < int(result["nachrichten"]):
-                            gründe += f"\n`❌` Du hast bisher {nachrichten} Nachrichten geschrieben, benötigst jedoch {result['nachricht']} Nachrichten um am Gewinnspiel teilzunehmen."
-
+        if result["nachrichten"] is not None:
+            result2 = await db['gw_nachrichten'].find_one({"guildID": str(interaction.guild.id), "gwID": str(interaction.message.id), "userID": str(interaction.user.id)})
+            
+            print(result2)
+            
+            if result2 is None:
+                gründe += f"\n`❌` Du hast bisher 0 Nachrichten geschrieben, benötigst jedoch {result['nachrichten']} Nachrichten um am Gewinnspiel teilzunehmen."
+            else:
+                nachrichten = result2["anzahl"]
+                if nachrichten < int(result["nachrichten"]):
+                    gründe += f"\n`❌` Du hast bisher {nachrichten} Nachrichten geschrieben, benötigst jedoch {result['nachrichten']} Nachrichten um am Gewinnspiel teilzunehmen."
                 if result["rollenID"] != None:
                     rolle2 = interaction.guild.get_role(int(result["rollenID"]))
                     if rolle2 != None:
                         if rolle2 not in member.roles:
                             gründe += f"\n`❌` Du benötigst die Rolle {rolle2.name} um am Gewinnspiel teilzunehmen."
-                
-                if result["voicezeit"] != None:
-                    
-                    result2 = await db['gw_voice'].find_one({"guildID": interaction.guild.id, "gwID": interaction.message.id, "userID": interaction.user.id})
-                    if result2 == None:
-                        gründe += f"\n`❌` Du hast bisher 0 Minuten in einem Sprachkanal verbracht, benötigst jedoch {result['voicedata']} Minuten um am Gewinnspiel teilzunehmen."
-                    else:
-                        minuten = int(result2["zeit"])
-                        if minuten < int(result["voicezeit"]):
-                            gründe += f"\n`❌` Du hast bisher {minuten} Minuten in einem Sprachkanal verbracht, benötigst jedoch {result['voicezeit']} Minuten um am Gewinnspiel teilzunehmen."
-                
-                if result["custom_status"] != None:
-                    try:
-                        member = interaction.guild.get_member(interaction.user.id)
-                        if str(result[11]) not in str(member.activity.name):
-                            gründe += f"\n`❌` Du musst {result['custom_status']} im Status haben."
-                    except:
-                        gründe += f"\n`❌` Du musst {result['custom_status']} im Status haben."
-                if result["jointime"] != None:
-                    join_date = interaction.user.joined_at.replace(tzinfo=pytz.UTC)
-                    check_date = datetime.datetime.strptime(result["jointime"], '%d.%m.%Y').replace(tzinfo=pytz.UTC)
-                    if join_date > check_date:
-                        gründe += f"\n`❌` Du musst vor dem {result['jointime']} gejoint sein, bist aber am {join_date} gejoint."
-                if result["level"] != None:
-                    
-                    r = await db['levelsystem'].find_one({"client_id": interaction.user.id, "guild_id": interaction.guild.id})
-                    
-                    if r is None:
-                        gründe += f"\n`❌` Du bist hier Level 0, benötigst jedoch Level {result['level']} um am Gewinnspiel teilzunehmen."
-                    else:
-                        if int(r["level"]) < int(result["level"]):
-                            gründe += f"\n`❌` Du bist hier Level {r['level']}, benötigst jedoch Level {result['level']} um am Gewinnspiel teilzunehmen."
-                if gründe != "":
-                    return await teilnahme_abgelehnt(self, interaction, gründe, result)
-                
-                await db["gewinnspiel_teilnehmer"].insert_one({"guildID": interaction.guild.id, "channelID": interaction.channel.id, "msgID": interaction.message.id, "userID": interaction.user.id})
-                
-                await teilnahme_angenommen(self, interaction, result)
+        
+        if result["voicezeit"] != None and result["voicezeit"] != "":
+            result2 = await db['gw_voice'].find_one({"guildID": str(interaction.guild.id), "gwID": str(interaction.message.id), "userID": str(interaction.user.id)})
+            if result2 == None:
+                gründe += f"\n`❌` Du hast bisher 0 Minuten in einem Sprachkanal verbracht, benötigst jedoch {result['voicezeit']} Minuten um am Gewinnspiel teilzunehmen."
+            else:
+                minuten = int(result2["anzahl"])
+                if minuten < int(result["voicezeit"]):
+                    gründe += f"\n`❌` Du hast bisher {minuten} Minuten in einem Sprachkanal verbracht, benötigst jedoch {result['voicezeit']} Minuten um am Gewinnspiel teilzunehmen."
+        
+        if result["custom_status"] != None:
+            try:
+                member = interaction.guild.get_member(interaction.user.id)
+                if str(result["custom_status"]) not in str(member.activity.name):
+                    gründe += f"\n`❌` Du musst {result['custom_status']} im Status haben."
+            except:
+                gründe += f"\n`❌` Du musst {result['custom_status']} im Status haben."
+
+        if result["jointime"] != None:
+            join_date = interaction.user.joined_at.replace(tzinfo=pytz.UTC)
+            check_date = datetime.datetime.strptime(result["jointime"], '%d.%m.%Y').replace(tzinfo=pytz.UTC)
+            if join_date > check_date:
+                gründe += f"\n`❌` Du musst vor dem {result['jointime']} gejoint sein, bist aber am {join_date} gejoint."
+
+        if result["level"] != None:
+            r = await db['levelsystem'].find_one({"client_id": str(interaction.user.id), "guild_id": str(interaction.guild.id)})
+            
+            if r is None:
+                gründe += f"\n`❌` Du bist hier Level 0, benötigst jedoch Level {result['level']} um am Gewinnspiel teilzunehmen."
+            else:
+                if int(r["user_level"]) < int(result["level"]):
+                    gründe += f"\n`❌` Du bist hier Level {r['user_level']}, benötigst jedoch Level {result['level']} um am Gewinnspiel teilzunehmen."
+        if gründe != "":
+            return await teilnahme_abgelehnt(self, interaction, gründe, result)
+        
+        await db["gewinnspiel_teilnehmer"].insert_one({"guildID": str(interaction.guild.id), "channelID": str(interaction.channel.id), "msgID": str(interaction.message.id), "userID": str(interaction.user.id)})
+        
+        await teilnahme_angenommen(self, interaction, result)
 
     
 class giveaway(commands.Cog):
@@ -196,24 +196,29 @@ class giveaway(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, msg):
-        if msg.guild == None:
+        if msg.guild is None:
             return
         if msg.author.bot:
             return
-        if msg.guild != None:
-            db = getMongoDataBase()
+        
+        db = getMongoDataBase()
+        
+        result2 = await db["gewinnspiele"].find({"guildID": str(msg.guild.id), "status": "Aktiv"}).to_list(length=None)
+        
+        if len(result2) == 0:
+            return
+        
+        for gewinnspiel in result2:
+            result = await db["gw_nachrichten"].find_one({"guildID": str(msg.guild.id), "userID": str(msg.author.id), "gwID": str(gewinnspiel["msgID"])})
             
-            result2 = await db["gewinnspiele"].find_one({"guildID": msg.guild.id, "status": "Aktiv"}).to_list(length=None)
+            if result is None:
+                await db["gw_nachrichten"].insert_one({"guildID": str(msg.guild.id), "userID": str(msg.author.id), "gwID": str(gewinnspiel["msgID"]), "anzahl": 1})
+            else:
+                await db["gw_nachrichten"].update_one({"guildID": str(msg.guild.id), "userID": str(msg.author.id), "gwID": str(gewinnspiel["msgID"])}, {"$inc": {"anzahl": 1}})
             
-            if result2 == ():
-                return
-            for gewinnspiel in result2:
-                result = db["gw_nachrichten"].find_one({"guildID": msg.guild.id, "userID": msg.author.id, "gwID": gewinnspiel[0]})
-                if result == None:
-                    await db["gw_nachrichten"].insert_one({"guildID": msg.guild.id, "userID": msg.author.id, "gwID": gewinnspiel[0], "anzahl": 1})
-                else:
-                    await db["gw_nachrichten"].update_one({"guildID": msg.guild.id, "userID": msg.author.id, "gwID": gewinnspiel[0]}, {"$inc": {"anzahl": 1}})
-    
+            updated_result = await db["gw_nachrichten"].find_one({"guildID": str(msg.guild.id), "userID": str(msg.author.id), "gwID": str(gewinnspiel["msgID"])})
+            print(f"Aktualisierte Anzahl für Benutzer {msg.author.id} in Gewinnspiel {gewinnspiel['msgID']}: {updated_result['anzahl']}")
+
     @commands.Cog.listener()
     async def on_ready(self):
         self.bot.add_view(view=Gewinnspiel_Teilnehmen(self.bot))
@@ -229,11 +234,10 @@ class giveaway(commands.Cog):
         await interaction.response.defer()
         
         if joindatum:
-            join_date = interaction.user.joined_at.replace(tzinfo=pytz.UTC)
             try:
-                check_date = datetime.datetime.strptime(join_date, '%d.%m.%Y').replace(tzinfo=pytz.UTC)
-            except:
-                return await interaction.followup.send("**Bitte gib ein Datum an. Bsp: 12.6.2023**", ephemeral=True)
+                check_date = datetime.datetime.strptime(joindatum, '%d.%m.%Y').replace(tzinfo=pytz.UTC)
+            except Exception as e:
+                return await interaction.followup.send(f"**Bitte gib ein Datum an. Bsp: 12.6.2023** {e}", ephemeral=True)
 
         if voiceminuten:
             if voiceminuten > 300:
@@ -285,9 +289,9 @@ class giveaway(commands.Cog):
         db = getMongoDataBase()
 
         if rolle:
-            await db["gewinnspiele"].insert_one({"guildID": interaction.guild.id, "channelID": kanal.id, "msgID": m.id, "hostID": interaction.user.id, "endtime": t1, "preis": preis, "winners": gewinneranzahl, "status": "Aktiv", "nachrichten": nachrichtenanzahl, "rollenID": rolle.id, "voicezeit": voiceminuten, "custom_status": text_im_status, "jointime": joindatum, "level": level})
+            await db["gewinnspiele"].insert_one({"guildID": str(interaction.guild.id), "channelID": str(kanal.id), "msgID": str(m.id), "hostID": str(interaction.user.id), "endtime": t1, "preis": preis, "winners": gewinneranzahl, "status": "Aktiv", "nachrichten": nachrichtenanzahl, "rollenID": str(rolle.id), "voicezeit": voiceminuten, "custom_status": text_im_status, "jointime": joindatum, "level": level})
         else:
-            await db["gewinnspiele"].insert_one({"guildID": interaction.guild.id, "channelID": kanal.id, "msgID": m.id, "hostID": interaction.user.id, "endtime": t1, "preis": preis, "winners": gewinneranzahl, "status": "Aktiv", "nachrichten": nachrichtenanzahl, "rollenID": None, "voicezeit": voiceminuten, "custom_status": text_im_status, "jointime": joindatum, "level": level})
+            await db["gewinnspiele"].insert_one({"guildID": str(interaction.guild.id), "channelID": str(kanal.id), "msgID": str(m.id), "hostID": str(interaction.user.id), "endtime": t1, "preis": preis, "winners": gewinneranzahl, "status": "Aktiv", "nachrichten": nachrichtenanzahl, "rollenID": None, "voicezeit": voiceminuten, "custom_status": text_im_status, "jointime": joindatum, "level": level})
             
         await interaction.followup.send(f"**Das Gewinnspiel findet nun statt in {kanal.mention}.**", ephemeral=True)
 
@@ -304,124 +308,136 @@ class giveaway(commands.Cog):
         #guildID, channelID, msgID, hostID, endtime, preis, winners, status, nachrichten, rollenID, voicezeit, custom_status, jointime, level
         if aktion == "Teilnehmer einsehen (Nachrichten ID erforderlich)":
             if nachrichtenid is None:
-                return await interaction.followup.send("**<:v_9:1264264656831119462> Du musst eine Nachrichten ID mit angeben beim Befehl.**", ephemeral=True)
-            result = await db['gewinnspiele'].find_one({"guildID": interaction.guild.id, "msgID": nachrichtenid, "status": "Aktiv"})
+                return await interaction.followup.send("**<:v_x:1264270921452224562> Du musst eine Nachrichten ID mit angeben beim Befehl.**", ephemeral=True)
+            result = await db['gewinnspiele'].find_one({"guildID": str(interaction.guild.id), "msgID": nachrichtenid, "status": "Aktiv"})
             if result == None:
-                return await interaction.followup.send(f"**<:v_9:1264264656831119462> Es wurde kein aktives Gewinnspiel mit der ID {nachrichtenid} auf diesem Server gefunden. Beachte, dass es sich bei der ID um die ID der Nachricht von einem aktiven Gewinnspiel handelt**", ephemeral=True)
-            kanal = interaction.guild.get_channel(int(result[1]))
+                return await interaction.followup.send(f"**<:v_x:1264270921452224562> Es wurde kein aktives Gewinnspiel mit der ID {nachrichtenid} auf diesem Server gefunden. Beachte, dass es sich bei der ID um die ID der Nachricht von einem aktiven Gewinnspiel handelt**", ephemeral=True)
+            kanal = interaction.guild.get_channel(int(result["channelID"]))
             if kanal == None:
-                return await interaction.followup.send(f"**<:v_9:1264264656831119462> Es wurde kein aktives Gewinnspiel mit der ID {nachrichtenid} auf diesem Server gefunden. Beachte, dass es sich bei der ID um die ID der Nachricht von einem aktiven Gewinnspiel handelt**", ephemeral=True)
+                return await interaction.followup.send(f"**<:v_x:1264270921452224562> Es wurde kein aktives Gewinnspiel mit der ID {nachrichtenid} auf diesem Server gefunden. Beachte, dass es sich bei der ID um die ID der Nachricht von einem aktiven Gewinnspiel handelt**", ephemeral=True)
             nachricht = await kanal.fetch_message(int(nachrichtenid))
             if nachricht == None:
-                return await interaction.followup.send(f"**<:v_9:1264264656831119462> Es wurde kein aktives Gewinnspiel mit der ID {nachrichtenid} auf diesem Server gefunden. Beachte, dass es sich bei der ID um die ID der Nachricht von einem aktiven Gewinnspiel handelt**", ephemeral=True)
+                return await interaction.followup.send(f"**<:v_x:1264270921452224562> Es wurde kein aktives Gewinnspiel mit der ID {nachrichtenid} auf diesem Server gefunden. Beachte, dass es sich bei der ID um die ID der Nachricht von einem aktiven Gewinnspiel handelt**", ephemeral=True)
                     
-        
-        result2 = await db['gewinnspiel_teilnehmer'].find({"guildID": interaction.guild.id, "msgID": nachrichtenid}).to_list(length=None)         
-        if result2 is None:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Bei diesem Gewinnspiel gibt es bisher noch keine Teilnehmer.**", ephemeral=True)
+            result2 = await db['gewinnspiel_teilnehmer'].find({"guildID": str(interaction.guild.id), "msgID": nachrichtenid}).to_list(length=None)         
+            if result2 is None:
+                return await interaction.followup.send("**<:v_x:1264270921452224562> Bei diesem Gewinnspiel gibt es bisher noch keine Teilnehmer.**", ephemeral=True)
 
-        embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"Teilnehmer vom Gewinnspiel {nachrichtenid}", description="Alle Teilnehmer dieses aktiven Gewinnspiels findest du in dieser Liste. Hier kannst du als Beispiel Zweitaccounts von Gewinnspielen verbannen.")
-                    
-        embed.description += "\n\n__Alle Teilnehmer:__"
-        for teilnehmer in result2:
-            user = self.bot.get_user(int(teilnehmer[0]))
-            if user is not None:
-                embed.description += f"\n{user.name}"
-            else:
-                embed.description += f"\n**{teilnehmer[0]}** (Server verlassen?) ||Tipp: Von Gewinnspielen blockieren, damit er nicht mehr gewinnen kann.||"
-        await interaction.followup.send(embed=embed)
+            embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"Teilnehmer vom Gewinnspiel {nachrichtenid}", description="Alle Teilnehmer dieses aktiven Gewinnspiels findest du in dieser Liste. Hier kannst du als Beispiel Zweitaccounts von Gewinnspielen verbannen.")
+                        
+            embed.description += "\n\n__Alle Teilnehmer:__"
+            for teilnehmer in result2:
+                user = self.bot.get_user(int(teilnehmer['userID']))
+                if user is not None:
+                    embed.description += f"\n{user.name}"
+                else:
+                    embed.description += f"\n**{teilnehmer['userID']}** (Server verlassen?) ||Tipp: Von Gewinnspielen blockieren, damit er nicht mehr gewinnen kann.||"
+            return await interaction.followup.send(embed=embed)
 
         if aktion == "Gewinnspiel beenden (Nachrichten ID erforderlich)":
             if nachrichtenid is None:
-                return await interaction.followup.send("**<:v_9:1264264656831119462> Du musst eine Nachrichten ID mit angeben beim Befehl.**", ephemeral=True)
-            result = await db['gewinnspiele'].find_one({"guildID": interaction.guild.id, "msgID": nachrichtenid, "status": "Aktiv"})
+                return await interaction.followup.send("**<:v_x:1264270921452224562> Du musst eine Nachrichten ID mit angeben beim Befehl.**", ephemeral=True)
+            result = await db['gewinnspiele'].find_one({"guildID": str(interaction.guild.id), "msgID": nachrichtenid, "status": "Aktiv"})
             if result == None:
-                return await interaction.followup.send(f"**<:v_9:1264264656831119462> Es wurde kein aktives Gewinnspiel mit der ID {nachrichtenid} auf diesem Server gefunden. Beachte, dass es sich bei der ID um die ID der Nachricht von einem aktiven Gewinnspiel handelt**", ephemeral=True)
-            kanal = interaction.guild.get_channel(int(result[1]))
+                return await interaction.followup.send(f"**<:v_x:1264270921452224562> Es wurde kein aktives Gewinnspiel mit der ID {nachrichtenid} auf diesem Server gefunden. Beachte, dass es sich bei der ID um die ID der Nachricht von einem aktiven Gewinnspiel handelt**", ephemeral=True)
+            kanal = interaction.guild.get_channel(int(result["channelID"]))
             if kanal == None:
-                return await interaction.followup.send(f"**<:v_9:1264264656831119462> Es wurde kein aktives Gewinnspiel mit der ID {nachrichtenid} auf diesem Server gefunden. Beachte, dass es sich bei der ID um die ID der Nachricht von einem aktiven Gewinnspiel handelt**", ephemeral=True)
+                return await interaction.followup.send(f"**<:v_x:1264270921452224562> Es wurde kein aktives Gewinnspiel mit der ID {nachrichtenid} auf diesem Server gefunden. Beachte, dass es sich bei der ID um die ID der Nachricht von einem aktiven Gewinnspiel handelt**", ephemeral=True)
             nachricht = await kanal.fetch_message(int(nachrichtenid))
             if nachricht == None:
-                return await interaction.followup.send(f"**<:v_9:1264264656831119462> Es wurde kein aktives Gewinnspiel mit der ID {nachrichtenid} auf diesem Server gefunden. Beachte, dass es sich bei der ID um die ID der Nachricht von einem aktiven Gewinnspiel handelt**", ephemeral=True)
-            t1 = math.floor(datetime.datetime.now().timestamp() + 1)
-            t2 = datetime.datetime.fromtimestamp(int(t1))
-            await interaction.followup.send("**<:v_158:1264268251916009553> Gewinnspiel wird beendet.**")
-            await giveaway_end(t2, self.bot, nachricht.id, "Beenden")
+                return await interaction.followup.send(f"**<:v_x:1264270921452224562> Es wurde kein aktives Gewinnspiel mit der ID {nachrichtenid} auf diesem Server gefunden. Beachte, dass es sich bei der ID um die ID der Nachricht von einem aktiven Gewinnspiel handelt**", ephemeral=True)
+            
+            await interaction.followup.send("**<:v_checkmark:1264271011818242159> Gewinnspiel wird beendet.**")
+            return await giveaway_end(datetime.datetime.now(), self.bot, nachricht.id, "Beenden")
                 
         if aktion == "Gewinnspiel neu würfeln (Nachrichten ID erforderlich)":
             if nachrichtenid is None:
-                return await interaction.followup.send("**<:v_9:1264264656831119462> Du musst eine Nachrichten ID mit angeben beim Befehl.**", ephemeral=True)
-            result2 = await db['gewinnspiele'].find_one({"guildID": interaction.guild.id, "msgID": nachrichtenid, "status": "Inaktiv"})
+                return await interaction.followup.send("**<:v_x:1264270921452224562> Du musst eine Nachrichten ID mit angeben beim Befehl.**", ephemeral=True)
+            result2 = await db['gewinnspiele'].find_one({"guildID": str(interaction.guild.id), "msgID": nachrichtenid, "status": "Inaktiv"})
             if result2 == None:
-                return await interaction.followup.send(f"**<:v_9:1264264656831119462> Es wurde kein inaktives Gewinnspiel mit der ID {nachrichtenid} auf diesem Server gefunden. Beachte, dass es sich bei der ID um die ID der Nachricht von einem inaktiven Gewinnspiel handelt**", ephemeral=True)
-            kanal2 = interaction.guild.get_channel(int(result2[0]))
+                return await interaction.followup.send(f"**<:v_x:1264270921452224562> Es wurde kein inaktives Gewinnspiel mit der ID {nachrichtenid} auf diesem Server gefunden. Beachte, dass es sich bei der ID um die ID der Nachricht von einem inaktiven Gewinnspiel handelt**", ephemeral=True)
+            kanal2 = interaction.guild.get_channel(int(result2["channelID"]))
             if kanal2 == None:
-                return await interaction.followup.send(f"**<:v_9:1264264656831119462> Es wurde kein inaktives Gewinnspiel mit der ID {nachrichtenid} auf diesem Server gefunden. Beachte, dass es sich bei der ID um die ID der Nachricht von einem inaktiven Gewinnspiel handelt**", ephemeral=True)
+                return await interaction.followup.send(f"**<:v_x:1264270921452224562> Es wurde kein inaktives Gewinnspiel mit der ID {nachrichtenid} auf diesem Server gefunden. Beachte, dass es sich bei der ID um die ID der Nachricht von einem inaktiven Gewinnspiel handelt**", ephemeral=True)
             nachricht2 = await kanal2.fetch_message(int(nachrichtenid))
             if nachricht2 == None:
-                return await interaction.followup.send(f"**<:v_9:1264264656831119462> Es wurde kein inaktives Gewinnspiel mit der ID {nachrichtenid} auf diesem Server gefunden. Beachte, dass es sich bei der ID um die ID der Nachricht von einem inaktiven Gewinnspiel handelt**", ephemeral=True)
+                return await interaction.followup.send(f"**<:v_x:1264270921452224562> Es wurde kein inaktives Gewinnspiel mit der ID {nachrichtenid} auf diesem Server gefunden. Beachte, dass es sich bei der ID um die ID der Nachricht von einem inaktiven Gewinnspiel handelt**", ephemeral=True)
             t1 = math.floor(datetime.datetime.now().timestamp() + 1)
             t2 = datetime.datetime.fromtimestamp(int(t1))
-            await interaction.followup.send("**<:v_158:1264268251916009553> Gewinnspiel wird neu ausgelost.**")
-            await giveaway_end(t2, self.bot, nachricht2.id, "Reroll")
+            await interaction.followup.send("**<:v_checkmark:1264271011818242159> Gewinnspiel wird neu ausgelost.**")
+            return await giveaway_end(t2, self.bot, nachricht2.id, "Reroll")
             
         if aktion == "Gewinnspiele anzeigen":
-            result3 = await db['gewinnspiele'].find({"guildID": interaction.guild.id, "status": "Aktiv"}).to_list(length=None)
-            if result3 == ():
-                return await interaction.followup.send("**<:v_9:1264264656831119462> Es gibt keine aktiven Gewinnspiele auf diesem Server.**", ephemeral=True)
+            result3 = await db['gewinnspiele'].find({"guildID": str(interaction.guild.id), "status": "Aktiv"}).to_list(length=None)
+            if len(result3) == 0:
+                return await interaction.followup.send("**<:v_x:1264270921452224562> Es gibt keine aktiven Gewinnspiele auf diesem Server.**", ephemeral=True)
+            
             embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Gewinnspiele", description="Alle aktiven Gewinnspiele von diesem Server findest du in dieser Nachricht.")
             
             for gewinnspiel in result3:
-                kanal3 = interaction.guild.get_channel(int(gewinnspiel[1]))
+                kanal3 = interaction.guild.get_channel(int(gewinnspiel["channelID"]))
+                
                 if kanal3 == None:
                     continue
-                nachricht3 = await kanal3.fetch_message(int(gewinnspiel[0]))
+                
+                nachricht3 = await kanal3.fetch_message(int(gewinnspiel["msgID"]))
+                
                 if nachricht3 == None:
                     continue
-                t2 = datetime.datetime.fromtimestamp(int(gewinnspiel[3]))
-                embed.add_field(name=gewinnspiel[8], value=f"Das Gewinnspiel endet {discord_timestamp(t2, 'R')}.", inline=False)
-            await interaction.followup.send(embed=embed)
+                
+                t2 = datetime.datetime.fromtimestamp(int(gewinnspiel["endtime"]))
+                embed.add_field(name=f"{gewinnspiel['preis']} ({gewinnspiel['msgID']})", value=f"Das Gewinnspiel endet {discord_timestamp(t2, 'R')}.", inline=False)
+            return await interaction.followup.send(embed=embed)
 
     @gewinnspiel.command()
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def bypassrolle(self, interaction: discord.Interaction, aktion: typing.Literal["Hinzufügen (Rolle erforderlich)","Entfernen (Rolle erforderlich)","Alle anzeigen"], rolle: discord.Role=None):
-                """Bearbeite Rollen, die die Bedingungen umgehen."""
+        """Bearbeite Rollen, die die Bedingungen umgehen."""
+        
+        await interaction.response.defer()
+        
+        db = getMongoDataBase()
+        
+        #guildID, channelID, msgID, hostID, endtime, preis, winners, status, nachrichten, rollenID, voicezeit, custom_status, jointime, level
+        if aktion == "Hinzufügen (Rolle erforderlich)":
+            if rolle == None:
+                return await interaction.followup.send("**<:v_x:1264270921452224562> Du musst natürlich auch eine Rolle angeben im Command.**", ephemeral=True)
+            result = await db['gewinnspiele_bypassrolle'].find_one({"guildID": str(interaction.guild.id), "rollenID": rolle.id})
+            if result != None:
+                return await interaction.followup.send("**<:v_x:1264270921452224562> Diese Bypassrolle existiert bereits.**", ephemeral=True)
+            await db["gewinnspiele_bypassrolle"].insert_one({"guildID": str(interaction.guild.id), "rollenID": rolle.id})
+            return await interaction.followup.send("**<:v_checkmark:1264271011818242159> Die Rolle ist nun eine Bypassrolle.**")
+        if aktion == "Entfernen (Rolle erforderlich)":
+            if rolle == None:
+                return await interaction.followup.send("**<:v_x:1264270921452224562> Du musst natürlich auch eine Rolle angeben im Command.**", ephemeral=True)
+            result2 = await db['gewinnspiele_bypassrolle'].find_one({"guildID": str(interaction.guild.id), "rollenID": rolle.id})
+            if result2 == None:
+                return await interaction.followup.send("**<:v_x:1264270921452224562> Diese Bypassrolle existiert nicht.**", ephemeral=True)
+            await db['gewinnspiele_bypassrolle'].delete_one({"guildID": str(interaction.guild.id), "rollenID": rolle.id})
+            return await interaction.followup.send("**<:v_checkmark:1264271011818242159> Die Rolle ist nun keine Bypassrolle mehr.**")
+        if aktion == "Alle anzeigen":
+            result3 = await db['gewinnspiele_bypassrolle'].find({"guildID": str(interaction.guild.id)}).to_list(length=None)
+            if result3 == None:
+                return await interaction.followup.send("**<:v_x:1264270921452224562> Auf diesem Server gibt es keine Bypassrollen.**", ephemeral=True)
+            
+            bypasses = ""
+            
+            for rolle in result3:
+                rolle2 = interaction.guild.get_role(int(rolle["rollenID"]))
                 
-                await interaction.response.defer()
+                if rolle2 == None:
+                    continue
                 
-                db = getMongoDataBase()
-                
-                #guildID, channelID, msgID, hostID, endtime, preis, winners, status, nachrichten, rollenID, voicezeit, custom_status, jointime, level
-                if aktion == "Hinzufügen (Rolle erforderlich)":
-                    if rolle == None:
-                        return await interaction.followup.send("**<:v_9:1264264656831119462> Du musst natürlich auch eine Rolle angeben im Command.**", ephemeral=True)
-                    result = await db['gewinnspiele_bypassrolle'].find_one({"guildID": interaction.guild.id, "rollenID": rolle.id})
-                    if result != None:
-                        return await interaction.followup.send("**<:v_9:1264264656831119462> Diese Bypassrolle existiert bereits.**", ephemeral=True)
-                    await db["gewinnspiele_bypassrolle"].insert_one({"guildID": interaction.guild.id, "rollenID": rolle.id})
-                    return await interaction.followup.send("**<:v_158:1264268251916009553> Die Rolle ist nun eine Bypassrolle.**")
-                if aktion == "Entfernen (Rolle erforderlich)":
-                    if rolle == None:
-                        return await interaction.followup.send("**<:v_9:1264264656831119462> Du musst natürlich auch eine Rolle angeben im Command.**", ephemeral=True)
-                    result2 = await db['gewinnspiele_bypassrolle'].find_one({"guildID": interaction.guild.id, "rollenID": rolle.id})
-                    if result2 == None:
-                        return await interaction.followup.send("**<:v_9:1264264656831119462> Diese Bypassrolle existiert nicht.**", ephemeral=True)
-                    await db['gewinnspiele_bypassrolle'].delete_one({"guildID": interaction.guild.id, "rollenID": rolle.id})
-                    return await interaction.followup.send("**<:v_158:1264268251916009553> Die Rolle ist nun keine Bypassrolle mehr.**")
-                if aktion == "Alle anzeigen":
-                    result3 = await db['gewinnspiele_bypassrolle'].find({"guildID": interaction.guild.id}).to_list(length=None)
-                    if result3 == None:
-                        return await interaction.followup.send("**<:v_9:1264264656831119462> Auf diesem Server gibt es keine Bypassrollen.**", ephemeral=True)
-                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Gewinnspiele", description="Alle aktiven Gewinnspiele von diesem Server findest du in dieser Nachricht.")
-                    
-                    for rolle in result3:
-                        rolle2 = interaction.guild.get_role(int(rolle[0]))
-                        if rolle2 == None:
-                            pass
-                        embed.add_field(name=rolle2.mention, value="Die User mit dieser Rolle sind von Anforderungen von Gewinnspielen dieses Servers ausgeschlossen.", inline=False)
-                    await interaction.followup.send(embed=embed)
-                
+                bypasses += rolle2.mention + "\n"
+            
+            embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Gewinnspiele", description=f"""
+Die User mit diesen Rollen sind von Anforderungen von Gewinnspielen dieses Servers ausgeschlossen.
+
+{bypasses}
+""")
+            await interaction.followup.send(embed=embed)
+        
     @gewinnspiel.command()
     @app_commands.checks.has_permissions()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -430,34 +446,38 @@ class giveaway(commands.Cog):
         
         await interaction.response.defer()
         
+        rolle = interaction.guild.get_role(int(id))
+
+        member = None
+        
         try:
             member = await self.bot.fetch_user(int(id))
-            rolle = interaction.guild.get_role(int(id))
-            if member == None and rolle == None:
-                return await interaction.followup.send("**<:v_9:1264264656831119462> Die ID muss entweder eine Rollen ID oder eine Member ID sein.**", ephemeral=True)
         except:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Die ID muss entweder eine Rollen ID oder eine Member ID sein.**", ephemeral=True)
+            pass
+        
+        if member == None and rolle == None:
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Die ID muss entweder eine Rollen ID oder eine Member ID sein.**", ephemeral=True)
 
         db = getMongoDataBase()
 
         if member:
-            result = await db['gewinnspiel_blacklist'].find_one({"guildID": interaction.guild.id, "id": id})
+            result = await db['gewinnspiel_blacklist'].find_one({"guildID": str(interaction.guild.id), "id": id})
             if result == None:
-                await db['gewinnspiel_blacklist'].insert_one({"guildID": interaction.guild.id, "id": id})
-                await db['gewinnspiel_teilnehmer'].delete_many({"guildID": interaction.guild.id, "userID": id})
-                return await interaction.followup.send(f"**<:v_158:1264268251916009553> {member} ist nun auf der Blacklist**")
-            await db['gewinnspiel_blacklist'].delete_one({"guildID": interaction.guild.id, "id": id})
-            return await interaction.followup.send(f"**<:v_158:1264268251916009553> {member} ist nun nicht mehr auf der Blacklist**")
+                await db['gewinnspiel_blacklist'].insert_one({"guildID": str(interaction.guild.id), "id": id})
+                await db['gewinnspiel_teilnehmer'].delete_many({"guildID": str(interaction.guild.id), "userID": id})
+                return await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> {member} ist nun auf der Blacklist**")
+            await db['gewinnspiel_blacklist'].delete_one({"guildID": str(interaction.guild.id), "id": id})
+            return await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> {member} ist nun nicht mehr auf der Blacklist**")
         if rolle:
-            result = await db['gewinnspiel_blacklist'].find_one({"guildID": interaction.guild.id, "id": id})
+            result = await db['gewinnspiel_blacklist'].find_one({"guildID": str(interaction.guild.id), "id": id})
             if result == None:
-                await db['gewinnspiel_blacklist'].insert_one({"guildID": interaction.guild.id, "id": id})
+                await db['gewinnspiel_blacklist'].insert_one({"guildID": str(interaction.guild.id), "id": id})
                 for member in interaction.guild.members:
                     if rolle in member.roles:
-                        await db['gewinnspiel_teilnehmer'].delete_many({"guildID": interaction.guild.id, "userID": member.id})
-                return await interaction.followup.send(f"**<:v_158:1264268251916009553> {rolle.name} ist nun auf der Blacklist**")
-            await db['gewinnspiel_blacklist'].delete_one({"guildID": interaction.guild.id, "id": id})
-            return await interaction.followup.send(f"**<:v_158:1264268251916009553> {rolle.name} ist nun nicht mehr auf der Blacklist**")
+                        await db['gewinnspiel_teilnehmer'].delete_many({"guildID": str(interaction.guild.id), "userID": str(member.id)})
+                return await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> {rolle.name} ist nun auf der Blacklist**")
+            await db['gewinnspiel_blacklist'].delete_one({"guildID": str(interaction.guild.id), "id": id})
+            return await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> {rolle.name} ist nun nicht mehr auf der Blacklist**")
         
 async def setup(bot):
     await bot.add_cog(giveaway(bot))

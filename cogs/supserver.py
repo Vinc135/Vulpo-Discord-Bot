@@ -41,12 +41,12 @@ class Supserver(commands.Cog):
     @commands.Cog.listener()
     async def on_member_ban(self, guild, user):
         if guild.id == 925729625580113951:
-            getMongoDataBase()['banned'].insert_one({"userID": user.id, "reason": "Unbekannt"})
+            getMongoDataBase()['banned'].insert_one({"userID": str(user.id), "reason": "Unbekannt"})
             
     @commands.Cog.listener()
     async def on_member_unban(self, guild, user):
         if guild.id == 925729625580113951:
-            getMongoDataBase()['banned'].delete_one({"userID": user.id})
+            getMongoDataBase()['banned'].delete_one({"userID": str(user.id)})
         
 
     # @app_commands.command()
@@ -54,7 +54,7 @@ class Supserver(commands.Cog):
     # async def update(self, interaction: discord.Interaction, inhalt: str, status: typing.Literal["Neu","Bearbeitet","Entfernt"]):
     #     """Verkünde ein Update von Vulpo + Wochenrückblick."""
     #     if interaction.user.id != 824378909985341451:
-    #         return await interaction.followup.send("<:v_9:1264264656831119462> Diesen Befehl kann nur Vinc#6791 ausführen.", ephemeral=True)
+    #         return await interaction.followup.send("<:v_x:1264270921452224562> Diesen Befehl kann nur Vinc#6791 ausführen.", ephemeral=True)
     #     async with self.bot.pool.acquire() as conn:
     #         async with conn.cursor() as cursor:
     #             await cursor.execute("SELECT msgID FROM updates")
@@ -71,7 +71,7 @@ class Supserver(commands.Cog):
     #             if status == "Entfernt":
     #                 embed.description += f"\n🔴 - {inhalt}"
     #             await msg.edit(content="", embed=embed)
-    #             await interaction.followup.send("**<:v_158:1264268251916009553> Erfolreich hinzugefügt!**")
+    #             await interaction.followup.send("**<:v_checkmark:1264271011818242159> Erfolreich hinzugefügt!**")
                 
     # @tasks.loop(minutes=1)
     # async def update_message(self):

@@ -54,7 +54,7 @@ class fertig(discord.ui.Modal, title="Erstelle ein Embed"):
         
         emb = interaction.message.embeds[0]
         if emb.fields == []:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du musst zuerst ein paar Optionen festlegen.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du musst zuerst ein paar Optionen festlegen.**", ephemeral=True)
         embed = discord.Embed(title=self.children[0].value, description=self.children[1].value, color=await getcolour(self, interaction.user))
         
         if self.children[2].value:
@@ -71,11 +71,11 @@ class fertig(discord.ui.Modal, title="Erstelle ein Embed"):
             
         for field in emb.fields:
             dict[field.name] = field.value
-            await db['rr_select'].insert_one({"label": field.name, "roleID": field.value, "guildID": interaction.guild.id, "id": id})
+            await db['rr_select'].insert_one({"label": field.name, "roleID": field.value, "guildID": str(interaction.guild.id), "id": id})
                     
         await interaction.message.delete()
         await interaction.channel.send(embed=embed, view=DropdownView(dict, id))
-        await interaction.followup.send(f"**<:v_158:1264268251916009553> Setup erfolgreich beendet.**", ephemeral=True)
+        await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> Setup erfolgreich beendet.**", ephemeral=True)
 
 class select_role1(discord.ui.RoleSelect):
     def __init__(self, bot=None):
@@ -101,12 +101,12 @@ class option_hinzufügen(discord.ui.Modal, title="Füge eine Option hinzu"):
         premium_status = await haspremium_forserver(self, interaction.guild)
         
         if premium_status == False and len(embed.fields) >= 3:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du kannst keine weiteren Optionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst keine weiteren Optionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
         embed.add_field(name=self.children[0].value, value=self.roleID)
         embed.color = await getcolour(self, interaction.user)
         await interaction.message.edit(content="", embed=embed)
-        await interaction.followup.send("**<:v_158:1264268251916009553> Option wurde hinzugefügt.**", ephemeral=True)
+        await interaction.followup.send("**<:v_checkmark:1264271011818242159> Option wurde hinzugefügt.**", ephemeral=True)
                 
 class setup_select(discord.ui.View):
     def __init__(self, bot=None, user=None):
@@ -114,7 +114,7 @@ class setup_select(discord.ui.View):
         self.bot = bot
         self.user = user
 
-    @discord.ui.button(label="Fertig", style=discord.ButtonStyle.green, custom_id="iuchouflgeiuhvcwoghjdk", emoji="<:v_158:1264268251916009553>")
+    @discord.ui.button(label="Fertig", style=discord.ButtonStyle.green, custom_id="iuchouflgeiuhvcwoghjdk", emoji="<:v_checkmark:1264271011818242159>")
     async def zwei(self, interaction: discord.Interaction, button: discord.ui.Button):
         if self.user.id != interaction.user.id:
             return
@@ -124,7 +124,7 @@ class setup_select(discord.ui.View):
     async def drei(self, interaction: discord.Interaction, button: discord.ui.Button):
         if self.user.id != interaction.user.id:
             return
-        await interaction.response.edit_message(content="**<:v_9:1264264656831119462> Vorgang abbgebrochen**", view=None, embed=None)
+        await interaction.response.edit_message(content="**<:v_x:1264270921452224562> Vorgang abbgebrochen**", view=None, embed=None)
 
 
 ####################################################################################################
@@ -143,7 +143,7 @@ class setup_buttons(discord.ui.View):
         self.bot = bot
         self.user = user
 
-    @discord.ui.button(label="Fertig", style=discord.ButtonStyle.green, custom_id="wrtwrtwrgwrgw4tg", emoji="<:v_158:1264268251916009553>")
+    @discord.ui.button(label="Fertig", style=discord.ButtonStyle.green, custom_id="wrtwrtwrgwrgw4tg", emoji="<:v_checkmark:1264271011818242159>")
     async def zwei(self, interaction: discord.Interaction, button: discord.ui.Button):
         if self.user.id != interaction.user.id:
             return
@@ -153,7 +153,7 @@ class setup_buttons(discord.ui.View):
     async def drei(self, interaction: discord.Interaction, button: discord.ui.Button):
         if self.user.id != interaction.user.id:
             return
-        await interaction.response.edit_message(content="**<:v_9:1264264656831119462> Vorgang abbgebrochen**", view=None, embed=None)
+        await interaction.response.edit_message(content="**<:v_x:1264270921452224562> Vorgang abbgebrochen**", view=None, embed=None)
 
 class option_hinzufügen_2(discord.ui.Modal, title="Füge eine Option hinzu"):
     def __init__(self, bot=None, roleID=None):
@@ -168,12 +168,12 @@ class option_hinzufügen_2(discord.ui.Modal, title="Füge eine Option hinzu"):
         premium_status = await haspremium_forserver(self, interaction.guild)
         
         if premium_status == False and len(embed.fields) >= 3:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du kannst keine weiteren Optionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst keine weiteren Optionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
 
         embed.add_field(name=self.children[0].value, value=self.roleID)
         embed.color = await getcolour(self, interaction.user)
         await interaction.message.edit(content="", embed=embed)
-        await interaction.followup.send("**<:v_158:1264268251916009553> Option wurde hinzugefügt.**", ephemeral=True)
+        await interaction.followup.send("**<:v_checkmark:1264271011818242159> Option wurde hinzugefügt.**", ephemeral=True)
 
 class fertig2(discord.ui.Modal, title="Erstelle ein Embed"):
     def __init__(self, bot=None):
@@ -187,7 +187,7 @@ class fertig2(discord.ui.Modal, title="Erstelle ein Embed"):
     async def on_submit(self, interaction: discord.Interaction):
         emb = interaction.message.embeds[0]
         if emb.fields == []:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du musst zuerst ein paar Optionen festlegen.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du musst zuerst ein paar Optionen festlegen.**", ephemeral=True)
         embed = discord.Embed(title=self.children[0].value, description=self.children[1].value, color=await getcolour(self, interaction.user))
         
         if self.children[2].value:
@@ -206,11 +206,11 @@ class fertig2(discord.ui.Modal, title="Erstelle ein Embed"):
         for field in emb.fields:
             custom_id += 1
             view.add_item(item=CounterButton(field.name, field.value, custom_id))
-            await db['rr_buttons'].insert_one({"label": field.name, "roleID": field.value, "guildID": interaction.guild.id, "id": id, "custom_id": custom_id})
+            await db['rr_buttons'].insert_one({"label": field.name, "roleID": field.value, "guildID": str(interaction.guild.id), "id": id, "custom_id": custom_id})
                     
         await interaction.message.delete()
         await interaction.channel.send(embed=embed, view=view)
-        await interaction.followup.send(f"**<:v_158:1264268251916009553> Setup erfolgreich beendet.**", ephemeral=True)
+        await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> Setup erfolgreich beendet.**", ephemeral=True)
 
 class CounterButton(discord.ui.Button):
     def __init__(self, label, role, id):
@@ -247,25 +247,23 @@ class reactionrole(commands.Cog):
             for a in result:
                 i += 1
                 dict1 = {}
-                result2 = await db['rr_select'].find_one({"id": i})
+                result2 = await db['rr_select'].find({"id": i}).to_list(length=None)
                 if result2 == []:
                     continue
                 for eintrag in result2:
-                    dict1[eintrag[0]] = eintrag[1]
+                    dict1[eintrag['label']] = eintrag['roleID']
                 self.bot.add_view(view=DropdownView(dict1, i))
         
         result = await db["rr_buttons"].find({}).to_list(length=None)
         
         if len(result) != 0:
-            i = 0
             for a in result:
-                i += 1
                 view = view_for_buttons()
-                result2 = await db["rr_buttons"].find_one({"id": i})
+                result2 = await db["rr_buttons"].find({"id": a}).to_list(length=None)
                 if result2 == []:
                     continue
                 for eintrag in result2:
-                    view.add_item(item=CounterButton(eintrag[0], eintrag[1], eintrag[3]))
+                    view.add_item(item=CounterButton(eintrag['label'], eintrag['roleID'], eintrag['id']))
                 self.bot.add_view(view=view)
         
     @app_commands.command()

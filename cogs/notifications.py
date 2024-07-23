@@ -19,7 +19,7 @@ class nachricht(discord.ui.Modal, title="Eigene Nachricht"):
         
         await interaction.response.defer()
         
-        getMongoDataBase()["channels"].insert_one({"guildID": interaction.guild.id, "channelID": self.kanal.id, "name": self.name, "username": self.username, "format": self.children[0].value})
+        getMongoDataBase()["channels"].insert_one({"guildID": str(interaction.guild.id), "channelID": self.kanal.id, "name": self.name, "username": self.username, "format": self.children[0].value})
         embed = discord.Embed(color=await getcolour(self, interaction.user), title="Youtube Benachrichtigung", description=f"Vulpo wird nun jedes neue Video vom Youtube Kanal mit dem Usernamen `@{self.username}` im Kanal {self.kanal.mention} posten (innerhalb von 60 Sekunden nach der Veröffentlichung eines Videos).")
         
         await interaction.followup.send(embed=embed)
@@ -50,7 +50,7 @@ async def check_videos(self):
                 url = f"https://youtu.be/{video_id}"
                 await insert_video_to_database(self, youtube_channel["username"], video_id)
 
-                result = await db["channels"].find({"username": youtube_channel["username"]}).to_list()
+                result = await db["channels"].find({"username": youtube_channel["username"]}).to_list(length=None)
                 for r in result:
                     guild = await self.bot.fetch_guild(int(r[0]))
                     if guild:
@@ -84,7 +84,7 @@ async def check_tickets(self):
 #            embed = discord.Embed(title="Aktuelle Tickets", description="Hier siehst du alle Tickets und deren Status. Du kannst dich daran orientieren, wo Support gefragt ist.", color=discord.Color.orange())
 #            for result in results:
 #                autorname, autorID, ticketID, titel, status, letztes_update = result
-#                embed.add_field(name=f"#{ticketID} - {titel}", value=f"<:v_56:1264265471339925575> {autorname}\n<:v_168:1264268507193806900> {status}\n<:v_65:1264265724386480148> Letztes Update: {letztes_update}")
+#                embed.add_field(name=f"#{ticketID} - {titel}", value=f"<:v_arrow_left:1264271794936746054> {autorname}\n<:v_168:1264268507193806900> {status}\n<:v_stopwatch:1264271803774140608> Letztes Update: {letztes_update}")
 #            embed.set_footer(text="https://vulpo-bot.de/ticketsystem")
 #            if emb == None or embed != emb:
 #                await message.edit(content="", embed=embed)
@@ -122,7 +122,7 @@ class notifications(commands.Cog):
         db = getMongoDataBase()
         
         if modus == "Hinzufügen":
-                    result = await db["channels"].find_one({"guildID": interaction.guild.id, "channelID": kanal.id, "username": channelusername}) 
+                    result = await db["channels"].find_one({"guildID": str(interaction.guild.id), "channelID": str(kanal.id), "username": channelusername}) 
                     if result is None:
                         try:
                             videos = scrapetube.get_channel(channel_url=f"https://www.youtube.com/@{channelusername}", limit=5)
@@ -146,14 +146,14 @@ class notifications(commands.Cog):
                         return await interaction.followup.send(embed=embed, ephemeral=True)
                         
         if modus == "Entfernen":
-                    result = await db["channels"].find_one({"guildID": interaction.guild.id, "channelID": kanal.id, "username": channelusername})
+                    result = await db["channels"].find_one({"guildID": str(interaction.guild.id), "channelID": str(kanal.id), "username": channelusername})
                     if result is None:
                         embed = discord.Embed(color=await getcolour(self, interaction.user), title="Youtube Benachrichtigung", description=f"In diesem Kanal erhältst du keine Benachrichtigungen vom Youtube Kanal mit dem Usernamen `@{channelusername}`.")
                         
                         return await interaction.followup.send(embed=embed, ephemeral=True)
 
                     if result:
-                        await db["channels"].delete_one({"guildID": interaction.guild.id, "channelID": kanal.id, "username": channelusername})
+                        await db["channels"].delete_one({"guildID": str(interaction.guild.id), "channelID": str(kanal.id), "username": channelusername})
                         await db["videos"].delete_many({"channel_name": channelusername})
                         embed = discord.Embed(color=await getcolour(self, interaction.user), title="Youtube Benachrichtigung", description=f"Vulpo wird nun nicht mehr jedes neue Video vom Youtube Kanal mit dem Usernamen `@{channelusername}` im Kanal {kanal.mention} posten.")
                         

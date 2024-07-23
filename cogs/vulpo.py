@@ -39,7 +39,7 @@ class Dropdown(discord.ui.Select):
             anzeige = """
 > <:v_12:1264264683427336259> Spezielle Befehle und Funkt/helpionen, nur für Premium Nutzer.
 
-__<:v_56:1264265471339925575> User Befehle__
+__<:v_arrow_left:1264271794936746054> User Befehle__
 </premium embedfarbe:1091635833217486939> Ändere die Farbe aller Embeds, die dir gesendet werden von Vulpo.
 </premium rangkarte:1091635833217486939> Ändere das Bild deiner Rangkarte.
 
@@ -55,7 +55,7 @@ Alle Vorteile siehst du unter https://vulpo-bot.de/premium"""
             anzeige = """
 > <:v_12:1264264683427336259> Vulpos Stats System basiert auf Tracking von Mitgliedern, wie aktiv sie in Text- und Sprachkanälen sind.
 
-__<:v_56:1264265471339925575> User Befehle__
+__<:v_arrow_left:1264271794936746054> User Befehle__
 </stats user:1002985831713226833> Schau dir die Stats eines Users an.
 </stats server:1002985831713226833> Schau dir die Stats des Servers an.
 
@@ -69,7 +69,7 @@ __<:v_82:1264266106307215370> Team Befehle__
             anzeige = """
 > <:v_12:1264264683427336259> Dieses System ermöglicht dir automatische Handlungen gegen Nutzer, die eine bestimmte Warnanzahl erreicht haben. Warns können manuell und automatisch, über z.B.: Blacklist, verteilt werden.
 
-__<:v_56:1264265471339925575> User Befehle__
+__<:v_arrow_left:1264271794936746054> User Befehle__
 Keine User Befehle.
 
 __<:v_82:1264266106307215370> Team Befehle__
@@ -97,7 +97,7 @@ __<:v_82:1264266106307215370> Team Befehle__
             anzeige = """
 > <:v_12:1264264683427336259> Dieses Ticketsystem hat nur zwei Befehle. Cool oder? Alle Handlungen im Ticket werden durch Buttons gemanaged: öffnen, claimen, schließen, neu öffnen, löschen.
 
-__<:v_56:1264265471339925575> User Befehle__
+__<:v_arrow_left:1264271794936746054> User Befehle__
 Keine User Befehle.
 
 __<:v_82:1264266106307215370> Team Befehle__
@@ -111,7 +111,7 @@ __<:v_82:1264266106307215370> Team Befehle__
             anzeige = """
 > <:v_12:1264264683427336259> Die Kategorie Nachrichten beschreibt Befehle, mit denen du auf bestimmte Nachrichten reagieren kannst. Automatisch und manuell. z.B.: automatische Reaktionen
 
-__<:v_56:1264265471339925575> User Befehle__
+__<:v_arrow_left:1264271794936746054> User Befehle__
 Keine User Befehle.
 
 __<:v_82:1264266106307215370> Team Befehle__
@@ -140,7 +140,7 @@ Jeder Nutzer kann die Custom Befehle des Tags System nutzen. Wenn erstmal ein Ta
             anzeige = """
 > <:v_12:1264264683427336259> Hier stehen Befehle, die hauptsächlich Informationen ausgeben oder nützlich sind.
 
-__<:v_56:1264265471339925575> User Befehle__
+__<:v_arrow_left:1264271794936746054> User Befehle__
 </about:967681545307570178> Infos über Vulpo.
 </help:972109932033892352> Alle wichtigen Links und Befehle.
 </invite:967681545307570179> Link, um Vulpo einzuladen.
@@ -169,7 +169,7 @@ Keine Team Befehle."""
             anzeige = """
 > <:v_12:1264264683427336259> Diese Kategorie bietet dir Einstellungen für deinen Server wie Joinrollen und Tags. Außerdem findest du dort nützliche Befehle für dich selbst.
 
-__<:v_56:1264265471339925575> User Befehle__
+__<:v_arrow_left:1264271794936746054> User Befehle__
 </erinnerung erstellen:1002275443786911865> Erstelle dir eine Erinnerung für eine bestimmte Uhrzeit.
 </erinnerung löschen:1002275443786911865> Entfernt eine Erinnerung.
 </erinnerung anzeigen:1002275443786911865> Bekomme eine Liste von deinen Erinnerungen.
@@ -189,7 +189,7 @@ __<:v_82:1264266106307215370> Team Befehle__
             anzeige = """
 > <:v_12:1264264683427336259> Dies sind Befehle, die eigentlich jeder Bot hat. Einfache Moderation per Slash Befehle.
 
-__<:v_56:1264265471339925575> User Befehle__
+__<:v_arrow_left:1264271794936746054> User Befehle__
 Keine User Befehle.
 
 __<:v_82:1264266106307215370> Team Befehle__
@@ -209,7 +209,7 @@ __<:v_82:1264266106307215370> Team Befehle__
             anzeige = """
 > <:v_12:1264264683427336259> Das Levelsystem vonn Vulpo ist umfassend. Coole Rangnachrichten und viele Einstellungsmöglichkeiten für Moderatoren.
 
-__<:v_56:1264265471339925575> User Befehle__
+__<:v_arrow_left:1264271794936746054> User Befehle__
 </rang:1223292369718349885> Zeigt dir welches Level du bist.
 
 __<:v_82:1264266106307215370> Team Befehle__
@@ -232,7 +232,7 @@ __<:v_82:1264266106307215370> Team Befehle__
 > <:v_12:1264264683427336259> Hinter dem Giveaway System steckt mehr als du denkst. Nicht nur Starten und blacklist, bypassrollen und verwalten. Die Gewinnspiele enden sogar nicht bei Bot Neustart, sondern laufen normal bis zum Ende weiter.
 > Man kann ebenso Anforderungen einstellen. Hinter denen steckt noch die ganze Magie. Das Stats System ist mit verknüpft bei Nachrichten. Außerdem ist das Levelsystem mit vernetzt bei Levelanforderungen. Buttons gibt es auch.
 
-__<:v_56:1264265471339925575> User Befehle__
+__<:v_arrow_left:1264271794936746054> User Befehle__
 Keine User Befehle.
 
 __<:v_82:1264266106307215370> Team Befehle__
@@ -248,7 +248,7 @@ __<:v_82:1264266106307215370> Team Befehle__
             anzeige = """
 > <:v_12:1264264683427336259> Schon lange nicht mehr gelacht xD? Dann wird es mal Zeit. Denn mit diesen Befehlen wirst du zu 99% lachen!
 
-__<:v_56:1264265471339925575> User Befehle__
+__<:v_arrow_left:1264271794936746054> User Befehle__
 </ask:967681544762294293> Frage eine berühmte Person eine Frage
 </avatar:967681545013960765> Zeigt das Profilbild eines Users an
 </animal:1124745277471993957> Schicke ein zufälliges Bild eines bestimmten Tieres.
@@ -277,7 +277,7 @@ Keine Team Befehle."""
             anzeige = """
 > <:v_12:1264264683427336259> Du langweilst dich? Dann probier mal diese Spiele aus. Sie werden dir die Langeweile vertreiben!
 
-__<:v_56:1264265471339925575> User Befehle__
+__<:v_arrow_left:1264271794936746054> User Befehle__
 </speedgame profil:1052926756853661828> Zeigt deine Bestzeit
 </speedgame start:1052926756853661828> Teste deine Schnelligkeit und steige im Rang auf
 
@@ -295,7 +295,7 @@ __<:v_82:1264266106307215370> Team Befehle__
             anzeige = """
 > <:v_12:1264264683427336259> Das globale Wirtschaftssystem von Vulpo bietet viel Spaß und Strategie. Messe dich mit anderen und steige in der Berufsleiter nach oben auf!
 
-__<:v_56:1264265471339925575> User Befehle__
+__<:v_arrow_left:1264271794936746054> User Befehle__
 </cookies anzeigen:1040642429860184126> Öffne das Profil eines Users.
 </cookies abheben:1040642429860184126> Hebe Geld von der Bank ab.
 </cookies einzahlen:1040642429860184126> Überweise Geld auf die Bank.
@@ -391,7 +391,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
     async def vote(self, interaction: discord.Interaction):
         """Zeigt an, wann du wieder für Vulpo voten kannst."""
                 
-        result = getMongoDataBase()["vote"].find_one({"userid": interaction.user.id})
+        result = await getMongoDataBase()["vote"].find_one({"userID": str(interaction.user.id)})
         
         if result == None:
             embed = discord.Embed(title="Du kannst voten", url="https://top.gg/bot/925799559576322078/vote", description="""
@@ -448,7 +448,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
 <:v_168:1264268507193806900> Team: {teammember}
 
 <:v_12:1264264683427336259> Server: {len(self.bot.guilds)}
-<:v_56:1264265471339925575> User: {all_users}
+<:v_arrow_left:1264271794936746054> User: {all_users}
 ❗ Commands: {len(self.bot.tree.get_commands())}
 
 <:v_python:1037073367175544932> Python Version: {str(sys.version)[0]}{str(sys.version)[1]}{str(sys.version)[2]}{str(sys.version)[3]}{str(sys.version)[4]}{str(sys.version)[5]}

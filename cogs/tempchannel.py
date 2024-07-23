@@ -7,7 +7,7 @@ from utils.MongoDB import getMongoDataBase
 
 async def isTempChannel(self, member, channel):
     
-    result = getMongoDataBase()['tempchannel'].find_one({"guildID": member.guild.id, "channelID": channel.id})
+    result = await getMongoDataBase()['tempchannel'].find_one({"guildID": str(member.guild.id), "channelID": str(channel.id)})
     
     if result:
         return channel
@@ -16,7 +16,7 @@ async def isTempChannel(self, member, channel):
     
 async def isJoinHub(self, channel):
     
-    result = getMongoDataBase()['tempchannels'].find_one({"guildID": channel.guild.id, "channelID": channel.id})
+    result = await getMongoDataBase()['tempchannels'].find_one({"guild_id": str(channel.guild.id), "channel_id": str(channel.id)})
     
     if result:
         return channel
@@ -25,11 +25,10 @@ async def isJoinHub(self, channel):
 
 async def isOwner(self, member, channel):
     
-    result = getMongoDataBase()['tempchannel'].find_one({"guildID": member.guild.id, "channelID": channel.id, "userID": member.id})
+    result = await getMongoDataBase()['tempchannel'].find_one({"guildID": str(member.guild.id), "channelID": str(channel.id), "userID": str(member.id)})
     
     if result:
-        return member
-    
+        return member 
     else:
         return False
 
@@ -42,7 +41,7 @@ class rename(discord.ui.Modal, title="Kanalname ändern"):
         try:
             await interaction.user.voice.channel.edit(name=self.children[0].value)
         except:
-            return await interaction.followup.send(f"**<:v_9:1264264656831119462> Der Name ist zu lang.**", ephemeral=True)
+            return await interaction.followup.send(f"**<:v_x:1264270921452224562> Der Name ist zu lang.**", ephemeral=True)
         await interaction.response.defer(thinking=False, ephemeral=True)
 
 class limit(discord.ui.Modal, title="Kanallimit ändern"):
@@ -54,7 +53,7 @@ class limit(discord.ui.Modal, title="Kanallimit ändern"):
         try:
             int(self.children[0].value)
         except:
-            return await interaction.followup.send(f"**<:v_9:1264264656831119462> Das ist keine Zahl. Bitte gib eine Zahl beim nächsten Mal an.**", ephemeral=True)
+            return await interaction.followup.send(f"**<:v_x:1264270921452224562> Das ist keine Zahl. Bitte gib eine Zahl beim nächsten Mal an.**", ephemeral=True)
         await interaction.user.voice.channel.edit(name=interaction.user.voice.channel.name, user_limit=self.children[0].value)
         await interaction.response.defer(thinking=False, ephemeral=True)
 
@@ -66,15 +65,15 @@ class interface(discord.ui.View):
     @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="wefhqiwuzdlgkedf", emoji="<:v_15:1264264716679905360>")
     async def lock_channel(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.voice == None:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du bist in keinem Tempchannel.**", ephemeral=True)
 
         channel = await isTempChannel(self, interaction.user, interaction.user.voice.channel)
         owner = await isOwner(self, interaction.user, interaction.user.voice.channel)
         if channel == False:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du bist in keinem Tempchannel.**", ephemeral=True)
         
         if owner == False:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
         
         overwrites = {
             interaction.guild.default_role: discord.PermissionOverwrite(
@@ -87,15 +86,15 @@ class interface(discord.ui.View):
     @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="qvweifuqgieuzfviuw", emoji="<:v_86:1264266242345402388>")
     async def unlock_channel(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.voice == None:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du bist in keinem Tempchannel.**", ephemeral=True)
 
         channel = await isTempChannel(self, interaction.user, interaction.user.voice.channel)
         owner = await isOwner(self, interaction.user, interaction.user.voice.channel)
         if channel == False:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du bist in keinem Tempchannel.**", ephemeral=True)
         
         if owner == False:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
         
         overwrites = {
             interaction.guild.default_role: discord.PermissionOverwrite(
@@ -108,15 +107,15 @@ class interface(discord.ui.View):
     @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="ergwrgwrg", emoji="<:v_117:1264267042945761320>")
     async def hide_channel(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.voice == None:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du bist in keinem Tempchannel.**", ephemeral=True)
 
         channel = await isTempChannel(self, interaction.user, interaction.user.voice.channel)
         owner = await isOwner(self, interaction.user, interaction.user.voice.channel)
         if channel == False:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du bist in keinem Tempchannel.**", ephemeral=True)
         
         if owner == False:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
         
         overwrites = {
             interaction.guild.default_role: discord.PermissionOverwrite(
@@ -129,15 +128,15 @@ class interface(discord.ui.View):
     @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="öqhefoiuhioudgwc", emoji="<:v_104:1264266670810071202>")
     async def unhide_channel(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.voice == None:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du bist in keinem Tempchannel.**", ephemeral=True)
 
         channel = await isTempChannel(self, interaction.user, interaction.user.voice.channel)
         owner = await isOwner(self, interaction.user, interaction.user.voice.channel)
         if channel == False:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du bist in keinem Tempchannel.**", ephemeral=True)
         
         if owner == False:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
         
         overwrites = {
             interaction.guild.default_role: discord.PermissionOverwrite(
@@ -150,30 +149,30 @@ class interface(discord.ui.View):
     @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="faegvwtgethr", emoji="<:v_31:1264264994774585445>")
     async def rename_channel(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.voice == None:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du bist in keinem Tempchannel.**", ephemeral=True)
 
         channel = await isTempChannel(self, interaction.user, interaction.user.voice.channel)
         owner = await isOwner(self, interaction.user, interaction.user.voice.channel)
         if channel == False:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du bist in keinem Tempchannel.**", ephemeral=True)
         
         if owner == False:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
         
         await interaction.response.send_modal(rename())
     
     @discord.ui.button(style=discord.ButtonStyle.grey, custom_id="iuehrofgweiuzfzg", emoji="<:v_114:1264266960011526165>")
     async def limit_channel(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.voice == None:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du bist in keinem Tempchannel.**", ephemeral=True)
 
         channel = await isTempChannel(self, interaction.user, interaction.user.voice.channel)
         owner = await isOwner(self, interaction.user, interaction.user.voice.channel)
         if channel == False:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du bist in keinem Tempchannel.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du bist in keinem Tempchannel.**", ephemeral=True)
         
         if owner == False:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst das nicht tun, da du nicht der Besitzer des Kanals bist.**", ephemeral=True)
         
         await interaction.response.send_modal(limit())
 
@@ -189,12 +188,12 @@ class tempchannel(commands.Cog):
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(manage_channels=True)
-    async def voicesetup(self, interaction: discord.Interaction, interfacekanal: discord.TextChannel=None):
+    async def voicesetup(self, interaction: discord.Interaction):
         """Richt eine Kanalverbindung ein, um einen Sprachkanal beim Betreten eines anderen erstellt wird. Alias: Join-to-create"""
         
         db = getMongoDataBase()
         
-        existing_channel = await db["tempchannels"].find_one({"guildID": interaction.guild.id})
+        existing_channel = await db["tempchannels"].find_one({"guildID": str(interaction.guild.id)})
 
         new_category = await interaction.guild.create_category('Private Sprachkanäle')
         vc = await interaction.guild.create_voice_channel("Join to create", category=new_category)
@@ -207,14 +206,13 @@ class tempchannel(commands.Cog):
 
         if existing_channel:
             getMongoDataBase()["tempchannels"].update_one(
-                {"guildID": interaction.guild.id},
+                {"guildID": str(interaction.guild.id)},
                 {"$set": {"channelID": vc.id}}
             )
         else:
-            getMongoDataBase()["tempchannels"].insert_one({"channelID": vc.id, "guildID": interaction.guild.id})
+            await getMongoDataBase()["tempchannels"].insert_one({"channelID": vc.id, "guildID": str(interaction.guild.id)})
                 
-        if interfacekanal:
-            embed = discord.Embed(title="Tempchannel Interface", description=f"""
+        embed = discord.Embed(title="Tempchannel Interface", description=f"""
 <:v_25:1264264906505715752> Willkommen im Interface Menü von Vulpo.
 <:v_24:1264264867511144479> [KLICK HIER]({vc.jump_url}) um einen eigenen Talk zu erstellen.
 <:v_24:1264264867511144479> Nutze diesen Kanal um deinen Channel zu individualisieren.
@@ -230,12 +228,15 @@ class tempchannel(commands.Cog):
 > <:v_114:1264266960011526165> Limit ändern
 """, colour=discord.Color.orange())
                     
-        await interfacekanal.send(embed=embed, view=interface(self.bot))
+        await interfaceChannel.send(embed=embed, view=interface(self.bot))
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
         
         db = getMongoDataBase()
+        
+        if before.channel is not None and after.channel is not None and before.channel.id == after.channel.id:
+            return
         
         if before.channel:
             if await isTempChannel(self, member, before.channel):
@@ -252,7 +253,7 @@ class tempchannel(commands.Cog):
                 output = await after.channel.clone(name=name, reason="Ist dem Joinhub beigetreten.")
                 if output:
                     await member.move_to(output, reason="Erstellte einen Tempchannel")
-                    await db["tempchannel"].insert_one({"guildID": member.guild.id, "channelID": output.id, "userID": member.id})
+                    await db["tempchannel"].insert_one({"guildID": str(member.guild.id), "channelID": str(output.id), "userID": str(member.id)})
             else:
                 pass
 

@@ -32,14 +32,14 @@ class Reminder(commands.Cog):
         if minuten:
             zeit_als_string += f" {minuten}"
         if zeit_als_string == "":
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Du musst auch eine Zeit angeben, wann du erinnert werden möchtest ;D**", ephemeral=True)
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Du musst auch eine Zeit angeben, wann du erinnert werden möchtest ;D**", ephemeral=True)
                 
         zeit = convert(zeit_als_string)
         t1 = math.floor(datetime.datetime.now().timestamp() + zeit)
         t2 = datetime.datetime.fromtimestamp(int(t1))
         id = await db['erinnerungen'].count_documents({}) + 1
         
-        await db['erinnerungen'].insert_one({"userID": interaction.user.id, "endtime": t1, "zeit": zeit, "beschreibung": beschreibung, "id": id})
+        await db['erinnerungen'].insert_one({"userID": str(interaction.user.id), "endtime": t1, "zeit": zeit, "beschreibung": beschreibung, "id": id})
         
         embed = discord.Embed(color=await getcolour(self, interaction.user), title=f"Erinnerung gestellt (ID {id})", description=f"""
 <:v_12:1264264683427336259> Erinnerung gesetzt auf {discord_timestamp(t2, 'f')}
@@ -57,19 +57,19 @@ class Reminder(commands.Cog):
         
         db = getMongoDataBase()
         
-        result = await db['erinnerungen'].find_one({"userID": interaction.user.id, "id": id})
+        result = await db['erinnerungen'].find_one({"userID": str(interaction.user.id), "id": id})
         
         if result is None:
-            await interaction.followup.send(f"**<:v_9:1264264656831119462> Die Erinnerung mit der ID {id} von dir wurde nicht gefunden.**", ephemeral=True)
+            await interaction.followup.send(f"**<:v_x:1264270921452224562> Die Erinnerung mit der ID {id} von dir wurde nicht gefunden.**", ephemeral=True)
             return
-        await db['erinnerungen'].delete_one({"userID": interaction.user.id, "id": id})
+        await db['erinnerungen'].delete_one({"userID": str(interaction.user.id), "id": id})
         for task in asyncio.all_tasks():
             name = str(task.get_name())
             if name == f"Erinnerung - {id}":
                 task.cancel()
-                return await interaction.followup.send(f"**<:v_158:1264268251916009553> Die Erinnerung mit der ID {id} von dir wurde entfernt.**")
+                return await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> Die Erinnerung mit der ID {id} von dir wurde entfernt.**")
             
-        await interaction.followup.send(f"**<:v_9:1264264656831119462> Die Erinnerung mit der ID {id} von dir wurde nicht gefunden.**", ephemeral=True)
+        await interaction.followup.send(f"**<:v_x:1264270921452224562> Die Erinnerung mit der ID {id} von dir wurde nicht gefunden.**", ephemeral=True)
         
     @erinnerung.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
@@ -80,10 +80,10 @@ class Reminder(commands.Cog):
         
         db = getMongoDataBase()
         
-        result = await db['erinnerungen'].find({"userID": interaction.user.id}).to_list(length=None)
+        result = await db['erinnerungen'].find({"userID": str(interaction.user.id)}).to_list(length=None)
         
         if result == []:
-            return await interaction.followup.send(f"**<:v_9:1264264656831119462> Du hast keine Erninnerungen gestellt.**", ephemeral=True) 
+            return await interaction.followup.send(f"**<:v_x:1264270921452224562> Du hast keine Erninnerungen gestellt.**", ephemeral=True) 
         embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"Alle Erinnerungen von {interaction.user}.")
         embed.set_thumbnail(url=interaction.user.avatar)
         

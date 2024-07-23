@@ -20,7 +20,7 @@ class PanelbuttonView(discord.ui.View):
         
         db = getMongoDataBase()
         
-        result = await db['panels'].find_one({"guildID": interaction.guild_id, "msgID": interaction.message.id})
+        result = await db['panels'].find_one({"guildID": str(interaction.guild_id), "msgID": str(interaction.message.id)})
         
         if not result:
             return
@@ -60,34 +60,37 @@ class PanelbuttonView(discord.ui.View):
         view = ClosebuttonView(self.bot)
         panelnachricht = await new_channel.send(f"{member.mention} | {role.mention}", embed=embed, view=view)
         await panelnachricht.pin()
-        await interaction.followup.send(f"<:v_158:1264268251916009553> Ich habe ein Ticket für dich erstellt\nDu findest es dort: {new_channel.mention}", ephemeral=True)
+        await interaction.followup.send(f"<:v_checkmark:1264271011818242159> Ich habe ein Ticket für dich erstellt\nDu findest es dort: {new_channel.mention}", ephemeral=True)
         
-        await db['tickets'].insert_one({"guildID": interaction.guild_id, "channelID": new_channel.id, "userID": interaction.user.id, "panelID": interaction.message.id, "msgID": panelnachricht.id})
+        await db['tickets'].insert_one({"guildID": str(interaction.guild_id), "channelID": str(new_channel.id), "userID": str(interaction.user.id), "panelID": str(interaction.message.id), "msgID": str(panelnachricht.id)})
         
-        try:
-            await db['ticketlog'].find_one({"guildID": interaction.guild_id})
-            log = await db['ticketlog'].find_one({"guildID": interaction.guild_id})
-            ticketlog = await interaction.guild.fetch_channel(int(log['channelid']))
-            
-            embed = discord.Embed(title="Ticket erstellt", description=f"{interaction.user.mention}({interaction.user}) hat ein Ticket erstellt. \n**Ticket:** {new_channel.mention}\n**Thema:** {interaction.message.embeds[0].title}", color=discord.Color.green())
-            embed.set_author(name=interaction.user, icon_url=member.avatar)
-            
-            await ticketlog.send(embed=embed)
-        except:
-            pass
+        log = await db['ticketlog'].find_one({"guildid": str(interaction.guild_id)})
+        
+        if log is None:
+            return        
+        
+        ticketlog = await interaction.guild.fetch_channel(int(log['channelid']))
+        
+        if ticketlog is None:
+            return
+        
+        embed = discord.Embed(title="Ticket erstellt", description=f"{interaction.user.mention} ({interaction.user}) hat ein Ticket erstellt. \n**Ticket:** {new_channel.mention}\n**Thema:** {interaction.message.embeds[0].title}", color=discord.Color.green())
+        embed.set_author(name=interaction.user, icon_url=member.avatar)
+        
+        await ticketlog.send(embed=embed)
         
 class ClosebuttonView(discord.ui.View):
     def __init__(self, bot):
         super().__init__(timeout=None)
         self.bot = bot
 
-    @discord.ui.button(label="Ticket schließen", emoji="<:v_9:1264264656831119462>", custom_id="Button-CloseTicket", style=discord.ButtonStyle.red)
+    @discord.ui.button(label="Ticket schließen", emoji="<:v_x:1264270921452224562>", custom_id="Button-CloseTicket", style=discord.ButtonStyle.red)
     async def button_closeticket(self, interaction: discord.Interaction, button):
         await interaction.response.defer()
         
         db = getMongoDataBase()
         
-        result = await db['tickets'].find_one({"channelID": interaction.channel_id})
+        result = await db['tickets'].find_one({"channelID": str(interaction.channel_id)})
         
         if not result:
             return
@@ -95,7 +98,7 @@ class ClosebuttonView(discord.ui.View):
         try:
             role = interaction.guild.get_role(int(result['role']))
             if role not in interaction.user.roles:
-                return await interaction.followup.send(f"**<:v_9:1264264656831119462> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
+                return await interaction.followup.send(f"**<:v_x:1264270921452224562> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
         except:
             pass
         
@@ -110,7 +113,7 @@ class ClosebuttonView(discord.ui.View):
         if message is None:
             return
         
-        result = await db['panels'].find_one({"guildID": interaction.guild_id, "categoryID": channel.category_id})
+        result = await db['panels'].find_one({"guildID": str(interaction.guild_id), "categoryID": channel.category_id})
         
         if not result:
             return
@@ -144,16 +147,20 @@ class ClosebuttonView(discord.ui.View):
         
         await message.edit(view=self)
         
-        try:
-            log = await db['ticketlog'].find_one({"guildID": interaction.guild_id})
-            ticketlog = await interaction.guild.fetch_channel(int(log['channelid']))
-            
-            embed = discord.Embed(title="Ticket geschlossen", description=f"{interaction.user.mention}({interaction.user}) hat ein Ticket geschlossen. \n**Ticket:** {channel.mention}({channel.name})", color=discord.Color.gold())
-            embed.set_author(name=interaction.user, icon_url=member.avatar)
-            
-            await ticketlog.send(embed=embed)
-        except:
-            pass
+        log = await db['ticketlog'].find_one({"guildid": str(interaction.guild_id)})
+        
+        if log is None:
+            return
+        
+        ticketlog = await interaction.guild.fetch_channel(int(log['channelid']))
+        
+        if ticketlog is None:
+            return
+        
+        embed = discord.Embed(title="Ticket geschlossen", description=f"{interaction.user.mention} ({interaction.user}) hat ein Ticket geschlossen. \n**Ticket:** {channel.mention}({channel.name})", color=discord.Color.gold())
+        embed.set_author(name=interaction.user, icon_url=member.avatar)
+        
+        await ticketlog.send(embed=embed)
 
     @discord.ui.button(label="Ticket claimen", emoji="<:v_25:1264264906505715752>", custom_id="Button-ClaimTicket", style=discord.ButtonStyle.grey)
     async def button_claimticket(self, interaction: discord.Interaction, button):
@@ -161,19 +168,19 @@ class ClosebuttonView(discord.ui.View):
         
         db = getMongoDataBase()
         
-        result = await db['tickets'].find_one({"channelID": interaction.channel_id})
+        result = await db['tickets'].find_one({"channelID": str(interaction.channel_id)})
         
         if result is None:
             return
         
-        r = await db['panels'].find_one({"guildID": interaction.guild_id, "categoryID": interaction.channel.category_id, "msgID": result['panelID']})
+        r = await db['panels'].find_one({"guildID": str(interaction.guild_id), "categoryID": str(interaction.channel.category_id), "msgID": result['panelID']})
         
         if not r:
             return
         
         role = interaction.guild.get_role(int(r['role']))
         if role not in interaction.user.roles:
-            return await interaction.followup.send(f"**<:v_9:1264264656831119462> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
+            return await interaction.followup.send(f"**<:v_x:1264270921452224562> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
         
         channel = interaction.channel
         member = await interaction.guild.fetch_member(int(result['userID']))
@@ -222,22 +229,27 @@ class ClosebuttonView(discord.ui.View):
             
         await message.edit(content=f"{member.mention}", embed=embed, view=self)
 
-        log = getMongoDataBase()["ticketlog"].find_one({"guildID": interaction.guild_id})
-        if log:
-            ticketlog = await interaction.guild.fetch_channel(int(log['channelID']))
-            if ticketlog:
-                embed = discord.Embed(title="Ticket geclaimt", description=f"{interaction.user.mention}({interaction.user}) hat ein Ticket geclaimt. \n**Ticket:** {interaction.channel.mention}({interaction.channel.name})\n**Thema:** {Thema}", color=discord.Color.blurple())
-                embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-                    
-                await ticketlog.send(embed=embed)
+        log = await getMongoDataBase()["ticketlog"].find_one({"guildid": str(interaction.guild_id)})
+        if log is None:
+            return
+        
+        ticketlog = await interaction.guild.fetch_channel(int(log['channelid']))
+        
+        if ticketlog is None:
+            return
+        
+        embed = discord.Embed(title="Ticket geclaimt", description=f"{interaction.user.mention} ({interaction.user}) hat ein Ticket geclaimt. \n**Ticket:** {interaction.channel.mention} ({interaction.channel.name})\n**Thema:** {Thema}", color=discord.Color.blurple())
+        embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+            
+        await ticketlog.send(embed=embed)
 
-    @discord.ui.button(label="Userinfo", emoji="<:v_56:1264265471339925575>", custom_id="Button-UserInfo", style=discord.ButtonStyle.grey)
+    @discord.ui.button(label="Userinfo", emoji="<:v_arrow_left:1264271794936746054>", custom_id="Button-UserInfo", style=discord.ButtonStyle.grey)
     async def button_userinfo(self, interaction: discord.Interaction, button):
         await interaction.response.defer()
         
         db = getMongoDataBase()
         
-        result = await db['tickets'].find_one({"channelID": interaction.channel_id})
+        result = await db['tickets'].find_one({"channelID": str(interaction.channel_id)})
         
         if result is None:
             return
@@ -310,23 +322,20 @@ class ClosebuttonView(discord.ui.View):
         
         db = getMongoDataBase()
         
-        result = await db['tickets'].find_one({"channelID": interaction.channel_id})
+        result = await db['tickets'].find_one({"channelID": str(interaction.channel_id)})
         
         if result is None:
             return
         
-        try:
-            r = await db['panels'].find_one({"guildID": interaction.guild_id, "categoryID": interaction.channel.category_id, "msgID": result['panelID']})
-            
-            if not r:
-                return
-            
-            role = await interaction.guild.fetch_role(int(r['role']))
-            if role not in interaction.user.roles:
-                return await interaction.followup.send(f"**<:v_9:1264264656831119462> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
-            
-        except:
-            pass
+        r = await db['panels'].find_one({"guildID": str(interaction.guild_id), "categoryID": str(interaction.channel.category_id), "msgID": result['panelID']})
+        
+        if not r:
+            return
+        
+        role = interaction.guild.get_role(int(r['role']))
+        if role not in interaction.user.roles:
+            return await interaction.followup.send(f"**<:v_x:1264270921452224562> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
+        
         
         view = discord.ui.View(timeout=None)
         view.add_item(menu_member(self.bot))
@@ -337,60 +346,65 @@ class DeletebuttonView(discord.ui.View):
         super().__init__(timeout=None)
         self.bot = bot
 
-    @discord.ui.button(label="Ticket löschen", emoji="<:v_9:1264264656831119462>", custom_id="Button-DeleteTicket", style=discord.ButtonStyle.red)
+    @discord.ui.button(label="Ticket löschen", emoji="<:v_x:1264270921452224562>", custom_id="Button-DeleteTicket", style=discord.ButtonStyle.red)
     async def button_deleteticket(self, interaction: discord.Interaction, button):
         await interaction.response.defer()
         await interaction.channel.send(f"{interaction.user.mention} hat das Ticket gelöscht.")
         
         db = getMongoDataBase()
         
-        result = await db["tickets"].find_one({"channelID": interaction.channel_id})
+        result = await db["tickets"].find_one({"channelID": str(interaction.channel_id)})
         
         if result is None:
             return
         
-        panel = await db["panels"].find_one({"guildID": interaction.guild_id})
+        panel = await db["panels"].find_one({"guildID": str(interaction.guild_id)})
         
         if panel is None:
             return
         
         member = interaction.user       
         
-        try:
-            log = await db["ticketlog"].find_one({"guildID": interaction.guild_id})
-            if log is None:
-                pass
-            ticketlog = interaction.guild.get_channel(int(log[0]))
-            if ticketlog is None:
-                pass
-            logFile = f'{interaction.channel}.log'
-            counter = 0
-            with open(logFile, 'w', encoding='UTF-8') as f:
-                f.write(f'Nachrichten vom Kanal: {interaction.channel} am {interaction.message.created_at.strftime("%d.%m.%Y %H:%M:%S")}\n')
-                async for message in interaction.channel.history(limit=1000, oldest_first=True):
-                    try:
-                        attachment = '[File:: {}]'.format(message.attachments[0].url)
-                    except IndexError:
-                        attachment = ''
-                    f.write('{} {!s:20s}: {} {}\r\n'.format(message.created_at.strftime('%d.%m.%Y %H:%M:%S'), message.author,message.clean_content, attachment))
-                    counter += 1
-            f = discord.File(logFile)
-            os.remove(logFile)
-            async for message in interaction.channel.history(limit=1, oldest_first=True):
-                embed = discord.Embed(title=f"Ein Ticket wurde gelöscht", description=f"Das Ticket gehörte {message.content}.\nHier erhältst du wichtige Informationen über das gelöschte Ticket.", color=discord.Color.red())
-                embed.set_footer(text=message.embeds[0].title, icon_url=message.embeds[0].author.icon_url)
-                embed.add_field(name=message.embeds[0].fields[0].name, value=message.embeds[0].fields[0].value)
-                embed.add_field(name=message.embeds[0].fields[1].name, value=message.embeds[0].fields[1].value)
-                embed.add_field(name="Gelöscht von", value=f"{interaction.user}({interaction.user.mention})")
-                embed.set_author(name=interaction.user, icon_url=member.avatar)
-                await ticketlog.send(embed=embed, file=f)
-                break
-        except:
-            pass
+        log = await db["ticketlog"].find_one({"guildid": str(interaction.guild_id)})
         
-        await db["tickets"].delete_one({"channelID": interaction.channel_id})
+        if log is None:
+            return
+        
+        ticketlog = interaction.guild.get_channel(int(log["channelid"]))
+        
+        if ticketlog is None:
+            return
+        
+        logFile = f'{interaction.channel}.log'
+        counter = 0
+        with open(logFile, 'w', encoding='UTF-8') as f:
+            f.write(f'Nachrichten vom Kanal: {interaction.channel} am {interaction.message.created_at.strftime("%d.%m.%Y %H:%M:%S")}\n')
+            async for message in interaction.channel.history(limit=1000, oldest_first=True):
+                try:
+                    attachment = '[File:: {}]'.format(message.attachments[0].url)
+                except IndexError:
+                    attachment = ''
+                f.write('{} {!s:20s}: {} {}\r\n'.format(message.created_at.strftime('%d.%m.%Y %H:%M:%S'), message.author,message.clean_content, attachment))
+                counter += 1
+        f = discord.File(logFile)
+        async for message in interaction.channel.history(limit=1, oldest_first=True):
+            embed = discord.Embed(title=f"Ein Ticket wurde gelöscht", description=f"Das Ticket gehörte {message.content}.\nHier erhältst du wichtige Informationen über das gelöschte Ticket.", color=discord.Color.red())
+            embed.set_footer(text=message.embeds[0].title, icon_url=message.embeds[0].author.icon_url)
+            embed.add_field(name=message.embeds[0].fields[0].name, value=message.embeds[0].fields[0].value)
+            embed.add_field(name=message.embeds[0].fields[1].name, value=message.embeds[0].fields[1].value)
+            embed.add_field(name="Gelöscht von", value=f"{interaction.user} ({interaction.user.mention})")
+            embed.set_author(name=interaction.user, icon_url=member.avatar)
+            await ticketlog.send(embed=embed, file=f)
+            break
+        
+        await db["tickets"].delete_one({"channelID": str(interaction.channel_id)})
                 
         await interaction.channel.delete()
+        
+        try:
+            os.remove(logFile)
+        except OSError as e:
+            pass
                 
 
     @discord.ui.button(label="Ticket erneut öffnen", emoji="<:v_86:1264266242345402388>", custom_id="Button-ReopenTicket", style=discord.ButtonStyle.green)
@@ -399,21 +413,21 @@ class DeletebuttonView(discord.ui.View):
         
         db = getMongoDataBase()
         
-        result = await db["tickets"].find_one({"channelID": interaction.channel_id})
+        result = await db["tickets"].find_one({"channelID": str(interaction.channel_id)})
     
         if result is None:
             return
         try:
-            r = await db["panels"].find_one({"guildID": interaction.guild_id, "categoryID": interaction.channel.category_id, "msgID": result["panelID"]})
+            r = await db["panels"].find_one({"guildID": str(interaction.guild_id), "categoryID": str(interaction.channel.category_id), "msgID": result["panelID"]})
             role = await interaction.guild.get_role(int(r[0]))
             if role not in interaction.user.roles:
-                return await interaction.followup.send(f"**<:v_9:1264264656831119462> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
+                return await interaction.followup.send(f"**<:v_x:1264270921452224562> Du hast keine Rechte dazu. Du benötigst die Rolle {role.mention}**", ephemeral=True)
         except:
             pass
         
         member = interaction.user
         channel = interaction.channel
-        r = await db["panels"].find_one({"guildID": interaction.guild_id, "archivID": channel.category.id})
+        r = await db["panels"].find_one({"guildID": str(interaction.guild_id), "archivID": str(channel.category.id)})
         category = await interaction.guild.fetch_channel(int(r["categoryID"]))
         user = await interaction.guild.fetch_member(int(result["userID"]))
         role = interaction.guild.get_role(int(r["role"]))
@@ -436,19 +450,20 @@ class DeletebuttonView(discord.ui.View):
         button.disabled = True
         await interaction.edit_original_response(view=self)
 
-        try:
-            log = await db["ticketlog"].find_one({"guildID": interaction.guild_id})
-            if log is None:
-                return
-            ticketlog = await interaction.guild.fetch_channel(int(log["channelid"]))
-            if ticketlog is None:
-                return
-            embed = discord.Embed(title="Ticket erneut geöffnet", description=f"{interaction.user.mention}({interaction.user}) hat ein Ticket erneut geöffnet. \n**Ticket:** {interaction.channel.mention}({interaction.channel.name})", color=discord.Color.gold())
-            embed.set_author(name=interaction.user, icon_url=member.avatar)
-            
-            await ticketlog.send(embed=embed)
-        except:
-            pass
+        log = await db["ticketlog"].find_one({"guildid": str(interaction.guild_id)})
+        
+        if log is None:
+            return
+        
+        ticketlog = await interaction.guild.fetch_channel(int(log["channelid"]))
+        
+        if ticketlog is None:
+            return
+        
+        embed = discord.Embed(title="Ticket erneut geöffnet", description=f"{interaction.user.mention} ({interaction.user}) hat ein Ticket erneut geöffnet. \n**Ticket:** {interaction.channel.mention} ({interaction.channel.name})", color=discord.Color.gold())
+        embed.set_author(name=interaction.user, icon_url=member.avatar)
+        
+        await ticketlog.send(embed=embed)
                 
     
 class menu_member(discord.ui.UserSelect):
@@ -466,7 +481,7 @@ class menu_member(discord.ui.UserSelect):
                     read_messages=True,
                     send_messages=True,
                 )
-                endtext += f"\n<:v_158:1264268251916009553> **{member.mention} wurde von {interaction.user.mention} zum Ticket hinzugefügt.**"
+                endtext += f"\n<:v_checkmark:1264271011818242159> **{member.mention} wurde von {interaction.user.mention} zum Ticket hinzugefügt.**"
             
             if member in interaction.channel.members:
                 try:
@@ -476,7 +491,7 @@ class menu_member(discord.ui.UserSelect):
                         read_messages=False,
                         send_messages=False,
                     )
-                endtext += f"\n<:v_9:1264264656831119462> **{member.mention} wurde von {interaction.user.mention} vom Ticket entfernt.**"
+                endtext += f"\n<:v_x:1264270921452224562> **{member.mention} wurde von {interaction.user.mention} vom Ticket entfernt.**"
         
         await interaction.channel.edit(overwrites=overwrites)
         await interaction.followup.send(endtext)
@@ -519,7 +534,7 @@ class Ticketsystem(commands.Cog):
         
         panel = await kanal.send(embed=embed, view=PanelbuttonView(self.bot))
 
-        await db["panels"].insert_one({"guildID": interaction.guild.id, "msgID": panel.id, "role": supportrolle.id, "categoryID": kategorie.id, "archivID": archiv.id})                    
+        await db["panels"].insert_one({"guildID": str(interaction.guild.id), "msgID": str(panel.id), "role": str(supportrolle.id), "categoryID": str(kategorie.id), "archivID": str(archiv.id)})                    
             
 async def setup(bot):
     await bot.add_cog(Ticketsystem(bot))

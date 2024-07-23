@@ -108,7 +108,7 @@ class bilder(commands.Cog):
 
             await interaction.followup.send(embed=embed)
         except:
-            return await interaction.followup.send("**<:v_9:1264264656831119462> Fehler beim Laden es Bildes. Versuche es später erneut!**", ephemeral=True)
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Fehler beim Laden es Bildes. Versuche es später erneut!**", ephemeral=True)
           
     @app_commands.command()
     @app_commands.guild_only()
@@ -130,7 +130,7 @@ class bilder(commands.Cog):
 
                 embed = discord.Embed(colour=await getcolour(self, interaction.user), title=title, url=url)
                 embed.set_image(url=image)
-                embed.set_footer(text=f"🔺 {ups} | 🔻 {downs} | 💬 {comments} ")
+                embed.set_footer(text=f"🔺 {ups} | 🔻 {downs} | <:v_chat:1264270959121010728> {comments} ")
                 await interaction.followup.send(embed=embed, content=None)
 
 async def setup(bot):

@@ -21,27 +21,27 @@ class starboard(commands.Cog):
                 db = getMongoDataBase()
         
                 if argument == "Ausschalten":
-                    result = await db['starboard'].find_one({"guildID": interaction.guild.id})
+                    result = await db['starboard'].find_one({"guildID": str(interaction.guild.id)})
                     if result == None:
-                        return await interaction.followup.send("**<:v_9:1264264656831119462> Auf diesem Server ist kein Starboard eingerichtet.**", ephemeral=True)
-                    await db["starboard"].delete_one({"guildID": interaction.guild.id})
-                    return await interaction.followup.send("**<:v_158:1264268251916009553> Das Starboard wurde ausgeschaltet.**")
+                        return await interaction.followup.send("**<:v_x:1264270921452224562> Auf diesem Server ist kein Starboard eingerichtet.**", ephemeral=True)
+                    await db["starboard"].delete_one({"guildID": str(interaction.guild.id)})
+                    return await interaction.followup.send("**<:v_checkmark:1264271011818242159> Das Starboard wurde ausgeschaltet.**")
                 if argument == "Einrichten (Kanal muss mit angegeben werden)":
                     if kanal == None:
-                        return await interaction.followup.send("**<:v_9:1264264656831119462> Beim Einrichten ist auch eine Kanal-Angabe erforderlich.**", ephemeral=True)
+                        return await interaction.followup.send("**<:v_x:1264270921452224562> Beim Einrichten ist auch eine Kanal-Angabe erforderlich.**", ephemeral=True)
 
-                    result = await db['starboard'].find_one({"guildID": interaction.guild.id})
+                    result = await db['starboard'].find_one({"guildID": str(interaction.guild.id)})
                     if result:
-                        await db["starboard"].update_one({"guildID": interaction.guild.id}, {"$set": {"channelID": kanal.id}})
+                        await db["starboard"].update_one({"guildID": str(interaction.guild.id)}, {"$set": {"channelID": str(kanal.id)}})
                     else:
-                        await db["starboard"].insert_one({"guildID": interaction.guild.id, "channelID": kanal.id})
-                    await interaction.followup.send(f"**<:v_158:1264268251916009553> Das Starboard ist nun aktiv in {kanal.mention}.**")
+                        await db["starboard"].insert_one({"guildID": str(interaction.guild.id), "channelID": str(kanal.id)})
+                    await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> Das Starboard ist nun aktiv in {kanal.mention}.**")
                 if argument == "Anzeigen":
-                    result = await db['starboard'].find_one({"guildID": interaction.guild.id})
+                    result = await db['starboard'].find_one({"guildID": str(interaction.guild.id)})
                     try:
                         channel = await interaction.guild.fetch_channel(int(result["channelID"]))
                     except:
-                        return await interaction.followup.send("**<:v_9:1264264656831119462> Der Kanal des Starboards existiert nicht mehr. Bitte deaktiviere das Starboard und richte ihn erneut ein.**", ephemeral=True)
+                        return await interaction.followup.send("**<:v_x:1264270921452224562> Der Kanal des Starboards existiert nicht mehr. Bitte deaktiviere das Starboard und richte ihn erneut ein.**", ephemeral=True)
 
                     embed = discord.Embed(title="Starboard", description=f"Das aktuelle Starboard ist aktiv in {channel.mention}", color=discord.Color.orange())
                     
@@ -82,7 +82,19 @@ class starboard(commands.Cog):
                                 embed.set_image(url=attachment.url)
                             msg = await channel.send(embed=embed)
                             
-                            await db['starboard_msg'].insert_one({"guildID": reaction.message.guild.id, "channelID": channel.id, "msgID": reaction.message.id, "starboardID": msg.id})
+                            await db['starboard_msg'].insert_one({"guildID": reaction.message.guild.id, "channelID": str(channel.id), "msgID": reaction.message.id, "starboardID": msg.id})
+                            
+    @commands.Cog.listener()
+    async def on_message(self, message: discord.Message):
+        if message.author.bot:
+            return
+        
+        result = await getMongoDataBase()['starboard'].find_one({"channelID": str(message.channel.id)})
+        
+        if result is None:
+            return
+        
+        await message.add_reaction("⭐")
 
 async def setup(bot):
     await bot.add_cog(starboard(bot))

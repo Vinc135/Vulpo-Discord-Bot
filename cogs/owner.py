@@ -38,10 +38,10 @@ class owner(commands.Cog):
             dm.add_field(name=f"Nachricht", value=f"{message}", inline=False)
             dm.set_footer(text=f"Keine Antwort möglich!")
             await user.send(embed=dm)
-            await ctx.send("**<:v_158:1264268251916009553> Die Nachricht wurde versendet.**")
+            await ctx.send("**<:v_checkmark:1264271011818242159> Die Nachricht wurde versendet.**")
             return
         except:
-            embed2 = discord.Embed(description=f"<:v_9:1264264656831119462> Die Nachricht konnte nicht an {user} zugestellt werden. Dies geschieht in der Regel, weil der Bot keinen gemeinsamen Server mit dem Empfänger hat, Direktnachrichten auf diesem Server deaktiviert sind oder der Empfänger nur Direktnachrichten von Freunden annimmt. ",
+            embed2 = discord.Embed(description=f"<:v_x:1264270921452224562> Die Nachricht konnte nicht an {user} zugestellt werden. Dies geschieht in der Regel, weil der Bot keinen gemeinsamen Server mit dem Empfänger hat, Direktnachrichten auf diesem Server deaktiviert sind oder der Empfänger nur Direktnachrichten von Freunden annimmt. ",
                                   color=discord.Color.red())
             embed2.set_author(name=ctx.author, icon_url=ctx.author.avatar)
             await ctx.send(embed=embed2)
@@ -59,15 +59,15 @@ class owner(commands.Cog):
                 color=discord.Color.orange())
             embed.set_author(name=ctx.author, icon_url=ctx.me.avatar)
             message = await ctx.send(embed=embed)
-            await message.add_reaction('<:v_158:1264268251916009553>')
-            await message.add_reaction('<:v_9:1264264656831119462>')
+            await message.add_reaction('<:v_checkmark:1264271011818242159>')
+            await message.add_reaction('<:v_x:1264270921452224562>')
 
             def check(reaction, user):
-                return str(reaction.emoji) in ['<:v_158:1264268251916009553>', '<:v_9:1264264656831119462>'] and user == ctx.message.author
+                return str(reaction.emoji) in ['<:v_checkmark:1264271011818242159>', '<:v_x:1264270921452224562>'] and user == ctx.message.author
 
             try:
                 reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=10)
-                if str(reaction.emoji) == '<:v_158:1264268251916009553>':
+                if str(reaction.emoji) == '<:v_checkmark:1264271011818242159>':
                     await message.clear_reactions()
                     embed1 = discord.Embed(description=f"Ich habe den Server {guild.name} verlassen.",
                                             color=discord.Color.orange())
@@ -76,7 +76,7 @@ class owner(commands.Cog):
                     await guild.leave()
                     await message.edit(embed=embed1)
 
-                if str(reaction.emoji) == '<:v_9:1264264656831119462>':
+                if str(reaction.emoji) == '<:v_x:1264270921452224562>':
                     await message.clear_reactions()
                     embed2 = discord.Embed(description=f"Ich habe den Server {guild.name} nicht verlassen.",
                                             color=discord.Color.orange())
@@ -117,7 +117,7 @@ class owner(commands.Cog):
     @commands.command(usage="[command]", aliases=["disabled"])
     @commands.is_owner()
     @commands.guild_only()
-    async def disable(self, ctx, *, command: str=None):
+    async def disable(self, ctx, *, command=None):
         """Deaktiviere einen Command oder lass dir über alle eine Liste senden."""
         if command is None:
             liste = "Alle deaktivierten Commands:"
@@ -133,7 +133,7 @@ class owner(commands.Cog):
 
         elif ctx.command == command:
             command = self.bot.get_command(command)
-            embed = discord.Embed(colour=discord.Colour.red(), title="<:v_9:1264264656831119462> Wrong argument",
+            embed = discord.Embed(colour=discord.Colour.red(), title="<:v_x:1264270921452224562> Wrong argument",
                                     description=f"Ich konnte den Command **{command}** nicht deaktivieren.")
             embed.set_author(name=ctx.author, icon_url=ctx.author.avatar)
             await ctx.send(embed=embed)
