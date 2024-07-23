@@ -180,10 +180,11 @@ async def get_server_stats(bot, guild_id):
                         alle_user_tages[user_id] = channel_count
                     
                 # Top-Kanal der letzten 7 Tage
-                if channel_id in alle_channel_letzte_7tage:
-                    alle_channel_letzte_7tage[channel_id] += int(channel_count)
-                else:
-                    alle_channel_letzte_7tage[channel_id] = int(channel_count)
+                if i <= 6:
+                    if channel_id in alle_channel_letzte_7tage:
+                        alle_channel_letzte_7tage[channel_id] += int(channel_count)
+                    else:
+                        alle_channel_letzte_7tage[channel_id] = int(channel_count)
         #VOICE
     
         result = await db['voice'].find({"guildID": str(guild_id), "zeit": tag_voice}).to_list(length=None)
@@ -441,7 +442,7 @@ class Stats(commands.Cog):
                     
                 await db["voicedata"].delete_one({"userID": str(member.id)})
                 if(time_in_minutes <= 1):
-                    return
+                    return print("h")
                 
                 result = await db["voice"].find_one({"userID": str(member.id), "guildID": str(member.guild.id), "zeit": str(discord.utils.utcnow().__format__('%d.%m.%Y')), "channelID": str(before.channel.id)})
                 
@@ -449,13 +450,13 @@ class Stats(commands.Cog):
                     await db["voice"].insert_one({"userID": str(member.id), "guildID": str(member.guild.id), "zeit": str(discord.utils.utcnow().__format__('%d.%m.%Y')), "anzahl": time_in_minutes, "channelID": str(before.channel.id)})
                 else:
                     await db["voice"].update_one({"userID": str(member.id), "guildID": str(member.guild.id), "zeit": str(discord.utils.utcnow().__format__('%d.%m.%Y')), "channelID": str(before.channel.id)}, {"$set": {"anzahl": result["anzahl"] + time_in_minutes}})
-                    
+                print(0)
                 await voicetime_to_xp(self, member, time_in_minutes, before)
+                print(1)
                 
                 try:
-                    result2 = await db["gewinnspiele"].find({"guildID": str(member.guild.id), "status": "Aktiv"}).to_list()
-                    
-                    if result2 == ():
+                    result2 = await db["gewinnspiele"].find({"guildID": str(member.guild.id), "status": "Aktiv"}).to_list(length=None)
+                    if result2 == None:
                         return
                     for gewinnspiel in result2:
                         result = await db["gw_voice"].find_one({"userID": str(member.id), "guildID": str(member.guild.id), "gwID": gewinnspiel["msgID"]})
