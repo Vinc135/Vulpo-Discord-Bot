@@ -233,7 +233,7 @@ class Vulpo(commands.AutoShardedBot):
                 if rolle in member.roles:
                     embed.description += f"\n<:v_stopwatch:1264271803774140608> Du wirst in 12 Stunden erinnert, wieder zu voten."
                 else:
-                    embed.description += f"\n<:v_stopwatch:1264271803774140608> Deine Vote Erinnerungen sind aus. Du kannst sie in <#926224205639467108> aktivieren."
+                    embed.description += f"\n<:v_stopwatch:1264271803774140608> Deine Vote Erinnerungen sind aus. Du kannst sie in **Kanäle und Rollen** aktivieren."
             if member == None:
                 embed.set_footer(text="Durch einen Vote erhältst du 300 Cookies", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508227117289472/herz.png")
             await channel.send(embed=embed, view=voteView())
