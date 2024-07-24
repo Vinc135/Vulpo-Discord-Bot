@@ -26,7 +26,7 @@ class voteView(discord.ui.View):
 
         votebutton = discord.ui.Button(label="Auch voten", style=discord.ButtonStyle.grey, url="https://top.gg/bot/925799559576322078/vote")
         self.add_item(votebutton)
-    
+     
 class reportmsg(discord.ui.View):
     def __init__(self, message=None, bot=None):
         super().__init__(timeout=None)
