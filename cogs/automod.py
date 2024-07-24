@@ -86,7 +86,7 @@ class Automod(commands.Cog):
         
         result = await db['automod'].find({"guildID": guild_id}).to_list(length=None)
         
-        if not result:
+        if len(result) == 0:
             await interaction.followup.send("**<:v_x:1264270921452224562> Hier wurden keine Aktionen gefunden. Füge eine Aktion mit `/automod addaction <warnanzahl> <aktion>` hinzu**", ephemeral=True)
             return
         

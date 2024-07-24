@@ -166,6 +166,9 @@ class fun(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def password(self, interaction: discord.Interaction, länge: int = 0):
         """Generiert ein zufälliges Passwort für dich!"""
+        
+        await interaction.response.defer()
+        
         user = interaction.user
         
         characters = string.ascii_letters + string.digits + string.punctuation
@@ -173,7 +176,7 @@ class fun(commands.Cog):
         if länge == 0:
             länge = 20
         
-        password = "".join(random.random(characters) for i in range(länge))
+        password = "".join(random.sample(characters, länge))
         
         result = f"||{password}||"
 
