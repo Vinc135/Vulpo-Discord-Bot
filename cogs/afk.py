@@ -22,7 +22,7 @@ class afk(commands.Cog):
         afk_nachrichten_collection = db['afk_nachrichten']
         
         results = await afk_collection.find({"guildID": str(msg.guild.id)}).to_list(length=None)
-        if not results:
+        if len(results) == 0:
             return
         
         for r in results:
@@ -43,7 +43,7 @@ class afk(commands.Cog):
                 embed = discord.Embed(title=f"<:v_afk:1119577204712542301> **{member.name}, willkommen zurück**", color=await getcolour(self, msg.author), description=f"""
 Ich habe deinen AFK-Status entfernt. AFK gegangen {discord_timestamp(t2, 'R')}.""")
                 
-                if not result2:
+                if len(result2) == 0:
                     embed.description += f"\n<:v_chat:1264270959121010728> Während du AFK warst wurdest du hier nicht gepingt."
                     await msg.reply(embed=embed)
                 else:
@@ -134,7 +134,7 @@ Wenn du wiederkommst, zeige ich dir alle Nachrichten, in denen du gepingt wurdes
             embed = discord.Embed(title=f"<:v_afk:1119577204712542301> **{interaction.user.name}, willkommen zurück**", color=await getcolour(self, interaction.user), description=f"""
 Ich habe deinen AFK-Status entfernt. AFK gegangen {discord_timestamp(t2, 'R')}.""")
             
-            if not result2:
+            if len(result2) == 0:
                 embed.description += f"\n<:v_chat:1264270959121010728> Während du AFK warst wurdest du hier nicht gepingt."
                 await interaction.followup.send(embed=embed)
             else:

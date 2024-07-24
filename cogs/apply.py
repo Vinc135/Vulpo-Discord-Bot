@@ -133,7 +133,7 @@ class modal(commands.Cog):
             dict1 = {}
             id = result['id']
             result2 = await db['modals'].find({"id": id}).to_list(length=None)
-            if not result2:
+            if len(result2) == 0:
                 continue
             for entry in result2:
                 dict1[entry['label']] = entry['beschreibung']

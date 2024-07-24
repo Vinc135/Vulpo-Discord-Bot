@@ -198,7 +198,7 @@ class levelsystem(commands.Cog):
         result = await db['levelroles'].find({"guild_id": str(interaction.guild.id)}).sort([("level", 1)]).to_list(length=None)
         embed = discord.Embed(title="Alle Levelrollen", description="Hier kannst du alle Levelrollen auf diesem Server sehen.", color=await getcolour(self, interaction.user))
 
-        if not result:
+        if len(result) == 0:
             return await interaction.followup.send("<:v_x:1264270921452224562> Ich habe auf diesem Server keine Levelrolle gefunden.", ephemeral=True)
 
         for levelRole in result:
