@@ -41,7 +41,7 @@ class reportmsg(discord.ui.View):
         
         await interaction.response.send_message("**<:v_checkmark:1264271011818242159> Nutzer wurde verwarnt.**", ephemeral=True)
         await addwarn(self, user, interaction, grund)
-
+ 
 class MyTree(CommandTree):
     async def interaction_check(self, interaction: discord.Interaction):
         try:
