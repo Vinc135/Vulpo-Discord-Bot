@@ -93,7 +93,7 @@ class frage_hinzufügen(discord.ui.Modal, title="Füge eine Frage hinzu"):
             await interaction.message.edit(content="", embed=embed)
             await interaction.response.send_message("**<:v_checkmark:1264271011818242159> Frage wurde hinzugefügt.**", ephemeral=True)
         except:
-            await interaction.response.send_message("❌ Dein angegebener Text ist zu lang.")
+            await interaction.response.send_message("<:v_x:1264270921452224562> Dein angegebener Text ist zu lang.")
                 
 class setup_select(discord.ui.View):
     def __init__(self, bot=None, user=None, kanal=None):
