@@ -36,7 +36,7 @@ class buttons(discord.ui.View):
         embed.set_footer(text=f"Das letzte Quiz wurde übersprungen von {interaction.user}.", icon_url=interaction.user.avatar)
         m2 = await interaction.channel.send(embed=embed, view=buttons(self.bot))
         await db["eqcurrent"].delete_one({"guildID": str(interaction.guild.id)})
-        await db["eqcurrent"].insert_one({"guildID": str(interaction.guild.id), "lösung": result[0]['lösung'], "msgID": m2.id})
+        await db["eqcurrent"].insert_one({"guildID": str(interaction.guild.id), "lösung": result[0]['lösung'], "msgID": str(m2.id)})
     
     @discord.ui.button(label='Anfangsbuchstabe', style=discord.ButtonStyle.grey, custom_id="dvekzlfdigqwjvliz", emoji="💡")
     async def letter(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -94,9 +94,10 @@ async def answer_correct(self, msg):
     embed.add_field(name="❗️ Tipp", value=f"||{result[0]['tipp']}||")
     embed.set_footer(text=f"Das letzte Quiz wurde gelöst von {msg.author}.", icon_url=msg.author.avatar)
     m2 = await msg.channel.send(embed=embed, view=buttons(self.bot))
-    
-    
-    await db["eqcurrent"].insert_one({"guildID": msg.guild.id, "lösung": result[0]['lösung'], "msgID": m2.id})
+    try:
+        await db["eqcurrent"].insert_one({"guildID": str(msg.guild.id), "lösung": result[0]['lösung'], "msgID": str(m2.id)})
+    except Exception as e:
+        await msg.channel.send(e)
     await updateLeaderbord(self.bot, msg.author.id)
 
 
