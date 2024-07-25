@@ -102,7 +102,7 @@ class Gewinnspiel_Teilnehmen(discord.ui.View):
         
         if result5 != None:
             await db['gewinnspiel_teilnehmer'].delete_one({"guildID": str(interaction.guild.id), "channelID": str(interaction.channel.id), "msgID": str(interaction.message.id), "userID": str(interaction.user.id)})
-            return await teilnahme_abgelehnt(self, interaction, "`❌` Du warst bereits ein Teilnehmer, hast jedoch nochmal den Button gedrückt. Nun bist du kein Teilnehmer mehr.", result)
+            return await teilnahme_abgelehnt(self, interaction, "`<:v_x:1264270921452224562>` Du warst bereits ein Teilnehmer, hast jedoch nochmal den Button gedrückt. Nun bist du kein Teilnehmer mehr.", result)
 
         blacklist = await db['gewinnspiel_blacklist'].find({"guildID": str(interaction.guild.id)}).to_list(length=None)
 
@@ -110,9 +110,9 @@ class Gewinnspiel_Teilnehmen(discord.ui.View):
             rolle = interaction.guild.get_role(int(id["id"]))
             if rolle != None:
                 if rolle in member.roles:
-                    return await teilnahme_abgelehnt(self, interaction, "`❌` Du stehst auf der Gewinnspiel Blacklist und bist deshalb von jeglichen Gewinnspielen dieses Servers ausgeschlossen.", result)
+                    return await teilnahme_abgelehnt(self, interaction, "`<:v_x:1264270921452224562>` Du stehst auf der Gewinnspiel Blacklist und bist deshalb von jeglichen Gewinnspielen dieses Servers ausgeschlossen.", result)
             if int(id[0]) == interaction.user.id:
-                return await teilnahme_abgelehnt(self, interaction, "`❌` Du stehst auf der Gewinnspiel Blacklist und bist deshalb von jeglichen Gewinnspielen dieses Servers ausgeschlossen.", result)
+                return await teilnahme_abgelehnt(self, interaction, "`<:v_x:1264270921452224562>` Du stehst auf der Gewinnspiel Blacklist und bist deshalb von jeglichen Gewinnspielen dieses Servers ausgeschlossen.", result)
                     
         bypassrollen = await db['gewinnspiele_bypassrolle'].find({"guildID": str(interaction.guild.id)}).to_list(length=None)
         
@@ -126,7 +126,7 @@ class Gewinnspiel_Teilnehmen(discord.ui.View):
                 
                 if result4 != None:
                     await db['gewinnspiel_teilnehmer'].delete_one({"guildID": str(interaction.guild.id), "channelID": str(interaction.channel.id), "msgID": str(interaction.message.id), "userID": str(interaction.user.id)})
-                    return await teilnahme_abgelehnt(self, interaction, "`❌` Du warst bereits ein Teilnehmer, hast jedoch nochmal den Button gedrückt. Nun bist du kein Teilnehmer mehr.", result)
+                    return await teilnahme_abgelehnt(self, interaction, "`<:v_x:1264270921452224562>` Du warst bereits ein Teilnehmer, hast jedoch nochmal den Button gedrückt. Nun bist du kein Teilnehmer mehr.", result)
 
 
                 await db['gewinnspiel_teilnehmer'].insert_one({"guildID": str(interaction.guild.id), "channelID": str(interaction.channel.id), "msgID": str(interaction.message.id), "userID": str(interaction.user.id)})
@@ -140,48 +140,48 @@ class Gewinnspiel_Teilnehmen(discord.ui.View):
             print(result2)
             
             if result2 is None:
-                gründe += f"\n`❌` Du hast bisher 0 Nachrichten geschrieben, benötigst jedoch {result['nachrichten']} Nachrichten um am Gewinnspiel teilzunehmen."
+                gründe += f"\n`<:v_x:1264270921452224562>` Du hast bisher 0 Nachrichten geschrieben, benötigst jedoch {result['nachrichten']} Nachrichten um am Gewinnspiel teilzunehmen."
             else:
                 nachrichten = result2["anzahl"]
                 if nachrichten < int(result["nachrichten"]):
-                    gründe += f"\n`❌` Du hast bisher {nachrichten} Nachrichten geschrieben, benötigst jedoch {result['nachrichten']} Nachrichten um am Gewinnspiel teilzunehmen."
+                    gründe += f"\n`<:v_x:1264270921452224562>` Du hast bisher {nachrichten} Nachrichten geschrieben, benötigst jedoch {result['nachrichten']} Nachrichten um am Gewinnspiel teilzunehmen."
                 if result["rollenID"] != None:
                     rolle2 = interaction.guild.get_role(int(result["rollenID"]))
                     if rolle2 != None:
                         if rolle2 not in member.roles:
-                            gründe += f"\n`❌` Du benötigst die Rolle {rolle2.name} um am Gewinnspiel teilzunehmen."
+                            gründe += f"\n`<:v_x:1264270921452224562>` Du benötigst die Rolle {rolle2.name} um am Gewinnspiel teilzunehmen."
         
         if result["voicezeit"] != None and result["voicezeit"] != "":
             result2 = await db['gw_voice'].find_one({"guildID": str(interaction.guild.id), "gwID": str(interaction.message.id), "userID": str(interaction.user.id)})
             if result2 == None:
-                gründe += f"\n`❌` Du hast bisher 0 Minuten in einem Sprachkanal verbracht, benötigst jedoch {result['voicezeit']} Minuten um am Gewinnspiel teilzunehmen."
+                gründe += f"\n`<:v_x:1264270921452224562>` Du hast bisher 0 Minuten in einem Sprachkanal verbracht, benötigst jedoch {result['voicezeit']} Minuten um am Gewinnspiel teilzunehmen."
             else:
                 minuten = int(result2["anzahl"])
                 if minuten < int(result["voicezeit"]):
-                    gründe += f"\n`❌` Du hast bisher {minuten} Minuten in einem Sprachkanal verbracht, benötigst jedoch {result['voicezeit']} Minuten um am Gewinnspiel teilzunehmen."
+                    gründe += f"\n`<:v_x:1264270921452224562>` Du hast bisher {minuten} Minuten in einem Sprachkanal verbracht, benötigst jedoch {result['voicezeit']} Minuten um am Gewinnspiel teilzunehmen."
         
         if result["custom_status"] != None:
             try:
                 member = interaction.guild.get_member(interaction.user.id)
                 if str(result["custom_status"]) not in str(member.activity.name):
-                    gründe += f"\n`❌` Du musst {result['custom_status']} im Status haben."
+                    gründe += f"\n`<:v_x:1264270921452224562>` Du musst {result['custom_status']} im Status haben."
             except:
-                gründe += f"\n`❌` Du musst {result['custom_status']} im Status haben."
+                gründe += f"\n`<:v_x:1264270921452224562>` Du musst {result['custom_status']} im Status haben."
 
         if result["jointime"] != None:
             join_date = interaction.user.joined_at.replace(tzinfo=pytz.UTC)
             check_date = datetime.datetime.strptime(result["jointime"], '%d.%m.%Y').replace(tzinfo=pytz.UTC)
             if join_date > check_date:
-                gründe += f"\n`❌` Du musst vor dem {result['jointime']} gejoint sein, bist aber am {join_date} gejoint."
+                gründe += f"\n`<:v_x:1264270921452224562>` Du musst vor dem {result['jointime']} gejoint sein, bist aber am {join_date} gejoint."
 
         if result["level"] != None:
             r = await db['levelsystem'].find_one({"client_id": str(interaction.user.id), "guild_id": str(interaction.guild.id)})
             
             if r is None:
-                gründe += f"\n`❌` Du bist hier Level 0, benötigst jedoch Level {result['level']} um am Gewinnspiel teilzunehmen."
+                gründe += f"\n`<:v_x:1264270921452224562>` Du bist hier Level 0, benötigst jedoch Level {result['level']} um am Gewinnspiel teilzunehmen."
             else:
                 if int(r["user_level"]) < int(result["level"]):
-                    gründe += f"\n`❌` Du bist hier Level {r['user_level']}, benötigst jedoch Level {result['level']} um am Gewinnspiel teilzunehmen."
+                    gründe += f"\n`<:v_x:1264270921452224562>` Du bist hier Level {r['user_level']}, benötigst jedoch Level {result['level']} um am Gewinnspiel teilzunehmen."
         if gründe != "":
             return await teilnahme_abgelehnt(self, interaction, gründe, result)
         
