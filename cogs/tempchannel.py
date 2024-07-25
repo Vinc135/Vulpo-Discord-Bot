@@ -199,7 +199,7 @@ class tempchannel(commands.Cog):
         vc = await interaction.guild.create_voice_channel("Join to create", category=new_category)
         interfaceChannel = await interaction.guild.create_text_channel("Interface", category=new_category)
 
-        embed = discord.Embed(colour=await getcolour(interaction.user),
+        embed = discord.Embed(colour=await getcolour(self, interaction.user),
                               description=f"Die Einrichtung des JoinToCreate Kanals war erfolgreich.\n{vc.mention}")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         await interaction.followup.send(embed=embed)
