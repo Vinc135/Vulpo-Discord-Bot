@@ -442,7 +442,7 @@ class Stats(commands.Cog):
                     
                 await db["voicedata"].delete_one({"userID": str(member.id)})
                 if(time_in_minutes <= 1):
-                    return print("h")
+                    return
                 
                 result = await db["voice"].find_one({"userID": str(member.id), "guildID": str(member.guild.id), "zeit": str(discord.utils.utcnow().__format__('%d.%m.%Y')), "channelID": str(before.channel.id)})
                 
