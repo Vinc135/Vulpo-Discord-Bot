@@ -142,13 +142,13 @@ class Vulpo(commands.AutoShardedBot):
         userid = int(data["user"])
         guild = await bot.fetch_guild(925729625580113951)
         channel = await guild.fetch_channel(934036224413417472)
-        result = await db['topgg'].find_one({"userID": userid})
+        result = await db['topgg'].find_one({"userID": str(userid)})
         if result is None or result is False:
-            await db['topgg'].insert_one({"userID": userid, "votes": 1})
+            await db['topgg'].insert_one({"userID": str(userid), "votes": 1})
             
             times = 1
         else:
-            await db['topgg'].update_one({"userID": userid}, {"$set": {"votes": int(result["votes"]) + 1}})
+            await db['topgg'].update_one({"userID": str(userid)}, {"$set": {"votes": int(result["votes"]) + 1}})
             
             times = int(result["votes"]) + 1
 
@@ -219,7 +219,7 @@ class Vulpo(commands.AutoShardedBot):
 
         guild = await bot.fetch_guild(925729625580113951)
         channel = await guild.fetch_channel(934036224413417472)
-        result = await db['topgg'].find_one({"userID": userid})
+        result = await db['topgg'].find_one({"userID": str(userid)})
         times = result["votes"]
 
         rolle = guild.get_role(1041046601394815127)
