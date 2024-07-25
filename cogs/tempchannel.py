@@ -190,10 +190,10 @@ class tempchannel(commands.Cog):
     @app_commands.checks.has_permissions(manage_channels=True)
     async def voicesetup(self, interaction: discord.Interaction):
         """Richt eine Kanalverbindung ein, um einen Sprachkanal beim Betreten eines anderen erstellt wird. Alias: Join-to-create"""
-        
+        await interaction.response.defer()
         db = getMongoDataBase()
         
-        existing_channel = await db["tempchannels"].find_one({"guildID": str(interaction.guild.id)})
+        existing_channel = await db["tempchannels"].find_one({"guild_id": str(interaction.guild.id)})
 
         new_category = await interaction.guild.create_category('Private Sprachkanäle')
         vc = await interaction.guild.create_voice_channel("Join to create", category=new_category)
@@ -206,11 +206,11 @@ class tempchannel(commands.Cog):
 
         if existing_channel:
             getMongoDataBase()["tempchannels"].update_one(
-                {"guildID": str(interaction.guild.id)},
-                {"$set": {"channelID": vc.id}}
+                {"guild_id": str(interaction.guild.id)},
+                {"$set": {"channel_id": str(vc.id)}}
             )
         else:
-            await getMongoDataBase()["tempchannels"].insert_one({"channelID": vc.id, "guildID": str(interaction.guild.id)})
+            await getMongoDataBase()["tempchannels"].insert_one({"channel_id": str(vc.id), "guild_id": str(interaction.guild.id)})
                 
         embed = discord.Embed(title="Tempchannel Interface", description=f"""
 <:v_25:1264264906505715752> Willkommen im Interface Menü von Vulpo.
@@ -243,7 +243,7 @@ class tempchannel(commands.Cog):
                 bchan = before.channel
                 if len(bchan.members) == 0:
                     await bchan.delete(reason="Kein User im Tempchannel.")
-                    await db["tempchannel"].delete_one({"channelID": bchan.id})
+                    await db["tempchannel"].delete_one({"channelID": str(bchan.id)})
                     return
             else:
                 pass
