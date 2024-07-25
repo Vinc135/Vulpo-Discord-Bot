@@ -450,9 +450,7 @@ class Stats(commands.Cog):
                     await db["voice"].insert_one({"userID": str(member.id), "guildID": str(member.guild.id), "zeit": str(discord.utils.utcnow().__format__('%d.%m.%Y')), "anzahl": time_in_minutes, "channelID": str(before.channel.id)})
                 else:
                     await db["voice"].update_one({"userID": str(member.id), "guildID": str(member.guild.id), "zeit": str(discord.utils.utcnow().__format__('%d.%m.%Y')), "channelID": str(before.channel.id)}, {"$set": {"anzahl": result["anzahl"] + time_in_minutes}})
-                print(0)
                 await voicetime_to_xp(self, member, time_in_minutes, before)
-                print(1)
                 
                 try:
                     result2 = await db["gewinnspiele"].find({"guildID": str(member.guild.id), "status": "Aktiv"}).to_list(length=None)

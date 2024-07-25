@@ -112,7 +112,7 @@ async def answer_correct(self, msg):
     embed.set_footer(text=f"Das letzte Flaggenquiz wurde gelöst von {msg.author}.", icon_url=msg.author.avatar)
     m2 = await msg.channel.send(embed=embed, file=file, view=buttons(self.bot))
     
-    await fqcurrent.insert_one({"guildID": msg.guild.id, "lösung": db_entry["lösung"], "msgID": str(m2.id)})
+    await fqcurrent.insert_one({"guildID": str(msg.guild.id), "lösung": db_entry["lösung"], "msgID": str(m2.id)})
     await updateLeaderbord(self.bot, msg.author.id)
 
 async def answer_incorrect(self, msg):

@@ -14,9 +14,11 @@ import aiomysql
 from googletrans import Translator
 from utils.utils import discord_timestamp
 import time
-#from credentials import token
 from utils.MongoDB import getMongoDataBase
 from cogs.economy import update_account
+from dotenv import load_dotenv
+
+load_dotenv()
 
 dbl_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjkyNTc5OTU1OTU3NjMyMjA3OCIsImJvdCI6dHJ1ZSwiaWF0IjoxNjQyODc4ODc1fQ.PJVIOEUe25WxuUbD1E68UF7bXpRZR_k4XXwr8ukue-c"
 
@@ -471,4 +473,4 @@ Der User {interaction.user.mention} hat eine Nachricht von {message.author.menti
         return await interaction.followup.send("**<:v_x:1264270921452224562> Der Kanal des Reportlogs existiert nicht mehr. Bitte melde dies dem lokalen Serverteam.**", ephemeral=True)
 
 
-bot.run("OTM4NTAxODA3NzA4MTkyODQ5.GNd5eH.puo8MwQQ1W6owkdu2y8XafqfHw6qz1oKtU_JrU", reconnect=True)
+bot.run(os.getenv("token"), reconnect=True)
