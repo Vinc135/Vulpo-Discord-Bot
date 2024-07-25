@@ -20,13 +20,13 @@ class buttons(discord.ui.View):
         
         db = getMongoDataBase()
         
-        result = db["embedfarben"].find_one({"userID": interaction.user.id})
+        result = db["embedfarben"].find_one({"userID": str(interaction.user.id)})
         
         if result == None:
-            db["embedfarben"].insert_one({"userID": interaction.user.id, "farbe": self.farbe})
+            await db["embedfarben"].insert_one({"userID": str(interaction.user.id), "farbe": self.farbe})
             return await interaction.response.send_message(f"**✅ Alles klar, die Farbe wurde geändert zu {self.farbe}. Du kannst jederzeit diesen Befehl erneut ausführen, um die Farbe aller Embeds zu ändern.**", ephemeral=True)
         
-        db["embedfarben"].update_one({"userID": interaction.user.id}, {"$set": {"farbe": self.farbe}})
+        await db["embedfarben"].update_one({"userID": str(interaction.user.id)}, {"$set": {"farbe": self.farbe}})
         await interaction.response.edit_message(embed=None, view=None, content=f"**✅ Alles klar, die Farbe wurde geändert zu {self.farbe}. Du kannst jederzeit diesen Befehl erneut ausführen, um die Farbe aller Embeds zu ändern.**")
 
     @discord.ui.button(label='Nein', style=discord.ButtonStyle.red, custom_id="wehrfuzgweofouhb", emoji="<:v_x:1264270921452224562>")
@@ -38,14 +38,14 @@ async def remove_expired_users(self):
     
     db = getMongoDataBase()
     
-    result = db["premium"].find()
+    result = db["premium"].find().to_list(lenght=None)
     
     for user in result:
         if user["endtime"] == None:
             continue
         
         if user["endtime"] < current_timestamp:
-            db["premium"].delete_one({"userID": user["userID"]})
+            await db["premium"].delete_one({"userID": str(user["userID"])})
 
 class premium(commands.Cog):
     def __init__(self, bot):
@@ -71,7 +71,7 @@ class premium(commands.Cog):
         
         db = getMongoDataBase()
         
-        status = db["premium"].find_one({"userID": interaction.user.id})
+        status = await db["premium"].find_one({"userID": str(interaction.user.id)})
         
         if status == None:
             return await interaction.response.send_message("<:v_x:1264270921452224562> **Du hast kein Premium. Premium ist heiß begehrt. Du kannst es bekommen, indem du ein Abonnement wirst: https://vulpo-bot.de/premium.**", ephemeral=True)
@@ -107,7 +107,7 @@ class premium(commands.Cog):
         
         db = getMongoDataBase()
         
-        status = db["premium"].find_one({"userID": interaction.user.id})
+        status = await db["premium"].find_one({"userID": interaction.user.id})
         
         if status == None:
             return await interaction.response.send_message("<:v_x:1264270921452224562> **Du hast kein Premium. Premium ist heiß begehrt. Du kannst es bekommen, indem du ein Abonnement wirst: https://vulpo-bot.de/premium.**", ephemeral=True)
