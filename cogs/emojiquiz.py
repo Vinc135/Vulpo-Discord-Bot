@@ -46,7 +46,7 @@ class buttons(discord.ui.View):
         result = await getMongoDataBase()["eqcurrent"].find_one({"guildID": str(interaction.guild.id)})
         if result is not None:
             return await interaction.followup.send(f"💡 Der erste Buchstabe des gesuchten Wortes ist __**{result['lösung'][0]}**__. Mehr Tipps gebe ich aber nicht.", ephemeral=True)
-        await interaction.followup.send(f"❌ Es gibt aktuell keine Lösung. Das Emojiquiz wurde wahrscheinlich auf diesem Sevrer ausgeschalten.", ephemeral=True)
+        await interaction.followup.send(f"<:v_x:1264270921452224562> Es gibt aktuell keine Lösung. Das Emojiquiz wurde wahrscheinlich auf diesem Sevrer ausgeschalten.", ephemeral=True)
 
 async def updateLeaderbord(bot, userid):
     db = getMongoDataBase()

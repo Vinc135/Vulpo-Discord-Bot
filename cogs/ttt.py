@@ -47,7 +47,7 @@ class TicTacToeButton2(discord.ui.Button):
             if self.playertwo.id != interaction.user.id:
                 return await interaction.response.defer(thinking=False)
             self.style = discord.ButtonStyle.danger
-            self.label = '❌'
+            self.label = '<:v_x:1264270921452224562>'
             self.disabled = True
             view.board[self.y][self.x] = view.X
             view.current_player = view.O
@@ -200,7 +200,7 @@ class TicTacToeButton(discord.ui.Button):
             if self.playertwo.id != interaction.user.id:
                 return await interaction.response.defer(thinking=False)
             self.style = discord.ButtonStyle.danger
-            self.label = '❌'
+            self.label = '<:v_x:1264270921452224562>'
             self.disabled = True
             view.board[self.y][self.x] = view.X
             view.current_player = view.O
@@ -331,7 +331,7 @@ class Ttt(commands.Cog):
         
         if modus == "Klassisch":
             if spieler2 == interaction.user:
-                return await interaction.followup.send("**❌ Du kannst nicht gegen dich selbst spielen.**", ephemeral=True)
+                return await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst nicht gegen dich selbst spielen.**", ephemeral=True)
             
             playerone = await db["ttt"].find_one({"userID": str(interaction.user.id)})
             
@@ -352,7 +352,7 @@ class Ttt(commands.Cog):
                 await interaction.edit_original_response(content=f"**Tik-Tak-Toe**\n{spieler2.mention}, du wurdest von {interaction.user.mention} herausgefordert. Jedoch ist die Zeit abgelaufen, dem Match beizutreten.", view=None)
         if modus == "BIG":
             if spieler2 == interaction.user:
-                return await interaction.followup.send("**❌ Du kannst nicht gegen dich selbst spielen.**", ephemeral=True)
+                return await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst nicht gegen dich selbst spielen.**", ephemeral=True)
             
             playerone = await db["ttt"].find_one({"userID": str(interaction.user.id)})
             
@@ -388,12 +388,12 @@ class Ttt(commands.Cog):
         
         if result == None:
             if member == interaction.user:
-                return await interaction.followup.send("**❌ Du hast noch kein Match gespielt. Aufgrund dessen hast du auch keine Punkte. Du musst zuerst ein Match spielen.**", ephemeral=True)
-            return await interaction.followup.send(f"**❌ {member.mention} hat noch kein Match gespielt. Aufgrund dessen hat er/sie auch keine Punkte. Er/Sie muss zuerst ein Match spielen.**", ephemeral=True)
+                return await interaction.followup.send("**<:v_x:1264270921452224562> Du hast noch kein Match gespielt. Aufgrund dessen hast du auch keine Punkte. Du musst zuerst ein Match spielen.**", ephemeral=True)
+            return await interaction.followup.send(f"**<:v_x:1264270921452224562> {member.mention} hat noch kein Match gespielt. Aufgrund dessen hat er/sie auch keine Punkte. Er/Sie muss zuerst ein Match spielen.**", ephemeral=True)
         
         rating = (result["wins"] * 3) + (result["loses"] * -1) + (result["ties"] * 2)
         total_plays = result["wins"] + result["loses"] + result["ties"]
-        embed = discord.Embed(color=await getcolour(self, interaction.user), title="❌ **| __TicTacToe Stats__ |** ⭕", description=f"""
+        embed = discord.Embed(color=await getcolour(self, interaction.user), title="<:v_x:1264270921452224562> **| __TicTacToe Stats__ |** ⭕", description=f"""
 Aktuelle Stats von {member.mention}
 **Rating: `{rating}`**
 
