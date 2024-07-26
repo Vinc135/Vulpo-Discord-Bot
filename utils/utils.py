@@ -412,3 +412,6 @@ async def get_lang(bot, guild):
     lang = await db["sprachen"].find_one({"guildID": str(guild.id)})
     
     return lang or "de"
+
+async def fetch_role(guild, role_id):
+    return discord.utils.get(guild.roles, id=int(role_id))

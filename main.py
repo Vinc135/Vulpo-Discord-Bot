@@ -12,7 +12,7 @@ from discord.app_commands import AppCommandError, CommandTree
 from discord import app_commands
 import aiomysql
 from googletrans import Translator
-from utils.utils import discord_timestamp
+from utils.utils import discord_timestamp, fetch_role
 import time
 from utils.MongoDB import getMongoDataBase
 from cogs.economy import update_account
@@ -158,7 +158,7 @@ class Vulpo(commands.AutoShardedBot):
         await db['vote'].insert_one({"userid": userid, "endtime": time_to_convert})
 
         user = await bot.fetch_user(userid)
-        rolle = guild.get_role(1041046601394815127)
+        rolle = fetch_role(guild, 1041046601394815127)
         member = await guild.fetch_member(int(userid))
         if user:
             embed = discord.Embed(title=f"Danke vielmals {user.name}!", description=f"{user.mention} hat insgesammt {times} Mal gevotet.", colour=discord.Colour.orange())
@@ -191,22 +191,22 @@ class Vulpo(commands.AutoShardedBot):
         try:
             m = guild.get_member(userid)
             if m is not None:
-                voter = guild.get_role(962753309997932554)
+                voter = fetch_role(guild, 962753309997932554)
                 await m.add_roles(voter)
                 if int(times) >= 200:
-                    votemeister = guild.get_role(962753328679358515)
+                    votemeister = fetch_role(guild, 962753328679358515)
                     await m.add_roles(votemeister)
                     return
                 if int(times) >= 100:
-                    megavoter = guild.get_role(962753332139663390)
+                    megavoter = fetch_role(guild, 962753332139663390)
                     await m.add_roles(megavoter)
                     return
                 if int(times) >= 50:
-                    ehrenhaftervoter = guild.get_role(962753335507701780)
+                    ehrenhaftervoter = fetch_role(guild, 962753335507701780)
                     await m.add_roles(ehrenhaftervoter)
                     return
                 if int(times) >= 20:
-                    aktivervoter = guild.get_role(962753338666008607)
+                    aktivervoter = fetch_role(guild, 962753338666008607)
                     await m.add_roles(aktivervoter)
                     return
         except:
@@ -222,7 +222,7 @@ class Vulpo(commands.AutoShardedBot):
         result = await db['topgg'].find_one({"userID": str(userid)})
         times = result["votes"]
 
-        rolle = guild.get_role(1041046601394815127)
+        rolle = fetch_role(guild, 1041046601394815127)
         member = await guild.fetch_member(int(userid))
 
         user = await bot.fetch_user(userid)
