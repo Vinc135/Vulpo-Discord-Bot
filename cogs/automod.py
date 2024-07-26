@@ -130,7 +130,7 @@ class Automod(commands.Cog):
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(kick_members=True)
-    async def unwarn(self, interaction: discord.Interaction, user: discord.User, warnid: str):
+    async def unwarn(self, interaction: discord.Interaction, user: discord.User, warnid: int):
         """Entwarnt eine Warnung."""
         
         await interaction.response.defer()
