@@ -38,7 +38,7 @@ async def remove_expired_users(self):
     
     db = getMongoDataBase()
     
-    result = db["premium"].find().to_list(lenght=None)
+    result = db["premium"].find().to_list(length=None)
     
     for user in result:
         if user["endtime"] == None:
