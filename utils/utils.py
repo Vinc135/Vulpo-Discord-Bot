@@ -114,12 +114,10 @@ async def voicetime_to_xp(self, member, time, before):
         return
     
     db = getMongoDataBase()
-    
     if await getLevelSystemEnabled(self, member.guild) == False:
         return
     
     blocked_roles = await db["lb_rollen"].find({"guild_id": str(member.guild.id)}).to_list(length=None)
-    
     for r_id in blocked_roles:
         rolle = member.guild.get_role(int(r_id["role"]))
         if rolle:
@@ -146,7 +144,45 @@ async def voicetime_to_xp(self, member, time, before):
         return
             
     await db["levelsystem"].update_one({"client_id": str(member.id), "guild_id": str(member.guild.id)}, {"$set": {"xp": userdata["xp"] + newxp}})
+    ###
+    userdata2 = await db['levelsystem'].find_one({"client_id": str(member.id), "guild_id": str(member.guild.id)})
+    
+    xp_start = int(userdata2["user_xp"])
+    lvl_start = int(userdata2["user_level"])
+    xp_end = 5 * (math.pow(lvl_start , 2)) + (50 * lvl_start) + 100
+    newxp = random.randint(15, 30)
+    #################################################################################################### XP BOOST
+    await db['levelsystem'].update_one({"client_id": str(member.id), "guild_id": str(member.id)}, {"$set": {"user_xp": xp_start + newxp}})
+    
+    if xp_end < (xp_start + newxp):
+        await db['levelsystem'].update_one({"client_id": str(member.id), "guild_id": str(member.guild.id)}, {"$set": {"user_level": lvl_start + 1}})
+        await db['levelsystem'].update_one({"client_id": str(member.id), "guild_id": str(member.guild.id)}, {"$set": {"user_xp": 1}})
+        result = await db["levelup"].find_one({"guild_id": str(member.guild.id)})
+
+        nachricht = ""
+        neue_levelrolle = await levelup_role_check(self.bot, member.guild, member, int(lvl_start) + 1)
+        if 'message' in result and result['message'] != "":
+            nachricht = result["message"].replace("%member", str(member.mention)).replace("%level", str(int(lvl_start) + 1))
+        else:
+            if neue_levelrolle == None:
+                nachricht = f"🎉 Glückwunsch {member.mention}! Du hast Level {int (lvl_start) + 1} erreicht."
+            else:
+                nachricht = f"🎉 Glückwunsch {member.mention}! Du hast Level {int (lvl_start) + 1} erreicht.\nViel Spaß mit deiner neuen Levelrolle **{neue_levelrolle.name}**."
+        
+        if result["channel_id"] == "Privat":
+            return await member.send(nachricht)
+        
+        if result["channel_id"] != None or result["channel_id"] != "Normal":
+            kanal = await member.guild.fetch_channel(int(result["channel_id"]))
+            
+            if kanal == None:
+                return
                 
+        await kanal.send(nachricht)
+
+
+
+
 def limit_characters(string: str, limit: int):
     if len(string) > limit:
         return string[:limit-3] + "..."
