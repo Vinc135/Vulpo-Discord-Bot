@@ -143,14 +143,11 @@ async def voicetime_to_xp(self, member, time, before):
         await db["levelsystem"].insert_one({"client_id": str(member.id), "user_xp": newxp, "user_level": 0, "guild_id": str(member.guild.id)})
         return
             
-    await db["levelsystem"].update_one({"client_id": str(member.id), "guild_id": str(member.guild.id)}, {"$set": {"xp": userdata["xp"] + newxp}})
+    await db["levelsystem"].update_one({"client_id": str(member.id), "guild_id": str(member.guild.id)}, {"$set": {"user_xp": userdata["user_xp"] + newxp}})
     ###
-    userdata2 = await db['levelsystem'].find_one({"client_id": str(member.id), "guild_id": str(member.guild.id)})
-    
-    xp_start = int(userdata2["user_xp"])
-    lvl_start = int(userdata2["user_level"])
+    xp_start = int(userdata["user_xp"])
+    lvl_start = int(userdata["user_level"])
     xp_end = 5 * (math.pow(lvl_start , 2)) + (50 * lvl_start) + 100
-    newxp = random.randint(15, 30)
     #################################################################################################### XP BOOST
     await db['levelsystem'].update_one({"client_id": str(member.id), "guild_id": str(member.id)}, {"$set": {"user_xp": xp_start + newxp}})
     
