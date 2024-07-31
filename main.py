@@ -155,11 +155,11 @@ class Vulpo(commands.AutoShardedBot):
         time_to_convert = math.floor(datetime.datetime.now().timestamp() + 43200)
         time_converted = datetime.datetime.fromtimestamp(int(time_to_convert))
         asyncio.create_task(vote_reminder(time_converted, bot, userid))
-        await db['vote'].insert_one({"userid": userid, "endtime": time_to_convert})
+        await db['vote'].insert_one({"userid": str(userid), "endtime": time_to_convert})
 
         user = await bot.fetch_user(userid)
-        rolle = fetch_role(guild, 1041046601394815127)
-        member = await guild.fetch_member(int(userid))
+        rolle = await fetch_role(guild, 1041046601394815127)
+        member = await guild.fetch_member(userid)
         if user:
             embed = discord.Embed(title=f"Danke vielmals {user.name}!", description=f"{user.mention} hat insgesammt {times} Mal gevotet.", colour=discord.Colour.orange())
             embed.set_thumbnail(url=user.avatar)
@@ -176,8 +176,9 @@ class Vulpo(commands.AutoShardedBot):
             embed = discord.Embed(title=f"Danke vielmals {userid}!", description=f"{userid} hat insgesamt {times} Mal gevotet.", colour=discord.Colour.orange())
             embed.set_footer(text="Durch einen Vote erhältst du 300 Cookies", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508227117289472/herz.png")
             await channel.send(embed=embed, view=voteView())
-            
-        await update_account(self, userid, "rucksack", 300, 0)       
+        
+
+        await update_account(self, user, "rucksack", 300, 0)       
 
         dblpy = topgg.DBLClient(bot, dbl_token, autopost_interval=0)
         votedata = await dblpy.get_bot_info()
@@ -191,22 +192,22 @@ class Vulpo(commands.AutoShardedBot):
         try:
             m = guild.get_member(userid)
             if m is not None:
-                voter = fetch_role(guild, 962753309997932554)
+                voter = await fetch_role(guild, 962753309997932554)
                 await m.add_roles(voter)
                 if int(times) >= 200:
-                    votemeister = fetch_role(guild, 962753328679358515)
+                    votemeister = await fetch_role(guild, 962753328679358515)
                     await m.add_roles(votemeister)
                     return
                 if int(times) >= 100:
-                    megavoter = fetch_role(guild, 962753332139663390)
+                    megavoter = await fetch_role(guild, 962753332139663390)
                     await m.add_roles(megavoter)
                     return
                 if int(times) >= 50:
-                    ehrenhaftervoter = fetch_role(guild, 962753335507701780)
+                    ehrenhaftervoter = await fetch_role(guild, 962753335507701780)
                     await m.add_roles(ehrenhaftervoter)
                     return
                 if int(times) >= 20:
-                    aktivervoter = fetch_role(guild, 962753338666008607)
+                    aktivervoter = await fetch_role(guild, 962753338666008607)
                     await m.add_roles(aktivervoter)
                     return
         except:
