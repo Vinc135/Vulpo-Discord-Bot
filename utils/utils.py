@@ -269,18 +269,16 @@ async def vote_reminder(when: datetime.datetime, bot, user_id):
     member = await guild.fetch_member(int(user_id))
     voter = guild.get_role(962753309997932554)
     
-    db["vote"].delete_many({"userid": user_id})
+    await db["vote"].delete_many({"userid": str(user_id)})
     
     if not member:
         return
     
-    return
-    
     embed = discord.Embed(title="Du kannst voten", url="https://top.gg/bot/925799559576322078/vote", description="""
-<:v_stopwatch:1264271803774140608> Der Vote-Cooldown von 12 Stunden ist abgelaufen. Es wäre sehr schön, wenn du wieder für mich votest.
-<:herz:941398727501955113> Als Belohnung für einen weiteren Vote bekommst du **300 🍪 im Economy System** und eine besondere **Rolle in [Vulpos Wald](https://discord.gg/49jD3VXksp)**
+<:v_clock:1264270994730909726> Der Vote-Cooldown von 12 Stunden ist abgelaufen. Es wäre sehr schön, wenn du wieder für mich votest.
+<:v_heart:1265212622735671406> Als Belohnung für einen weiteren Vote bekommst du **300 🍪 im Economy System** und eine besondere **Rolle in [Vulpos Wald](https://discord.gg/49jD3VXksp)**
 
-<:v_12:1264264683427336259> Du kannst Vote Erinnerungen in <#926224205639467108> ausschalten.""", colour=discord.Colour.green())
+<:v_12:1264264683427336259> Du kannst Vote Erinnerungen in **Vulpos Wald** ausschalten.""", colour=discord.Colour.green())
     
     embed.set_footer(text="Danke für deine Unterstützung", icon_url="https://media.discordapp.net/attachments/965302660871884840/965315155816767548/Vulpo_neu.png?width=1572&height=1572")      
     await member.remove_roles(voter)

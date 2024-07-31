@@ -63,9 +63,9 @@ class logging(commands.Cog):
         db = getMongoDataBase()
         
         if modus == "An":
-            result = await db["messagelog"].find_one({"guildID": str(interaction.guild.id)})
+            result = await db["messagelog"].find_one({"guilid": str(interaction.guild.id)})
             if result is None:
-                await db["messagelog"].insert_one({"guildID": str(interaction.guild.id), "channelID": str(kanal.id)})                
+                await db["messagelog"].insert_one({"guilid": str(interaction.guild.id), "channelid": str(kanal.id)})                
 
                 embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Nachrichtenlog", description=f"Der Nachrichtenlog ist nun aktiv in {kanal.mention}.")
                 embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
@@ -73,7 +73,7 @@ class logging(commands.Cog):
                 await interaction.followup.send(embed=embed)
                 return
             if result != None:
-                await db["messagelog"].update_one({"guildID": str(interaction.guild.id)}, {"$set": {"channelID": str(kanal.id)}})
+                await db["messagelog"].update_one({"guilid": str(interaction.guild.id)}, {"$set": {"channelid": str(kanal.id)}})
                         
                 embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Nachrichtenlog", description=f"Der Nachrichtenlog ist nun aktiv in {kanal.mention}.")
                         
@@ -82,7 +82,7 @@ class logging(commands.Cog):
                 return
             
         if modus == "Aus":
-            result = await db["messagelog"].find_one({"guildID": str(interaction.guild.id)})
+            result = await db["messagelog"].find_one({"guilid": str(interaction.guild.id)})
             if result is None:
                 embed = discord.Embed(colour=discord.Colour.orange(), title="Messagelog", description=f"Der Nachrichtenlog ist nicht aktiviert auf diesem Server.")
                 embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
@@ -90,7 +90,7 @@ class logging(commands.Cog):
                 await interaction.followup.send(embed=embed)
                 return
             if result != None:
-                await db["messagelog"].delete_one({"guildID": str(interaction.guild.id)})                        
+                await db["messagelog"].delete_one({"guilid": str(interaction.guild.id)})                        
 
                 embed = discord.Embed(colour=discord.Colour.orange(), title="Messagelog deaktiviert", description=f"Der Nachrichtenlog ist nun deaktiviert auf diesem Server.")
                 embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
@@ -104,7 +104,7 @@ class logging(commands.Cog):
             return
         
         try:
-            result = await getMongoDataBase()["messagelog"].find_one({"guildid": message.guild.id})
+            result = await getMongoDataBase()["messagelog"].find_one({"guilid": str(message.guild.id)})
             if result is None:
                 return
             if result != None:
@@ -126,7 +126,7 @@ class logging(commands.Cog):
         
         db = getMongoDataBase()
         
-        result = await db["messagelog"].find_one({"guildid": messages[0].guild.id})
+        result = await db["messagelog"].find_one({"guildid": str(messages[0].guild.id)})
         if result is None:
             return
         if result != None:
@@ -146,7 +146,7 @@ class logging(commands.Cog):
         db = getMongoDataBase()
         
         try:
-            result = await db["messagelog"].find_one({"guildid": after.guild.id})
+            result = await db["messagelog"].find_one({"guildid": str(after.guild.id)})
             if result is None:
                 return
             if result != None:
@@ -279,7 +279,7 @@ class logging(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_channel_create(self, channel):
         try:
-            result = await getMongoDataBase()["modlog"].find_one({"guildid": channel.guild.id})
+            result = await getMongoDataBase()["modlog"].find_one({"guildid": str(channel.guild.id)})
             if result is None:
                 return
             if result != None:
@@ -301,11 +301,11 @@ class logging(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_channel_update(self, before, after):
         try:
-            result = await getMongoDataBase()["modlog"].find_one({"guildid": after.guild.id})
+            result = await getMongoDataBase()["modlog"].find_one({"guildid": str(after.guild.id)})
             if result is None:
                 return
             if result != None:
-                chan = await after.guild.fetch_channel(int(result["channelID"]))
+                chan = await after.guild.fetch_channel(int(result["channelid"]))
                 if chan is None:
                     return
                 else:
@@ -332,11 +332,11 @@ class logging(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, channel):
         try:
-            result = await getMongoDataBase()["modlog"].find_one({"guildid": channel.guild.id})
+            result = await getMongoDataBase()["modlog"].find_one({"guildid": str(channel.guild.id)})
             if result is None:
                 return
             if result != None:
-                chan = await channel.guild.fetch_channel(int(result["channelID"]))
+                chan = await channel.guild.fetch_channel(int(result["channelid"]))
                 if chan is None:
                     return
                 else:
@@ -352,11 +352,11 @@ class logging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_role_create(self, role):
-        result = await getMongoDataBase()["modlog"].find_one({"guildid": role.guild.id})
+        result = await getMongoDataBase()["modlog"].find_one({"guildid": str(role.guild.id)})
         if result is None:
             return
         if result != None:
-            chan = await role.guild.fetch_channel(int(result["channelID"]))
+            chan = await role.guild.fetch_channel(int(result["channelid"]))
             if chan is None:
                 return
             else:
@@ -370,11 +370,11 @@ class logging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_role_delete(self, role):
-        result = await getMongoDataBase()["modlog"].find_one({"guildid": role.guild.id})
+        result = await getMongoDataBase()["modlog"].find_one({"guildid": str(role.guild.id)})
         if result is None:
             return
         if result != None:
-            chan = await role.guild.fetch_channel(int(result["channelID"]))
+            chan = await role.guild.fetch_channel(int(result["channelid"]))
             if chan is None:
                 return
             else:
@@ -394,11 +394,11 @@ class logging(commands.Cog):
         try:
             if before.bot:
                 return
-            result = await db["modlog"].find_one({"guildid": after.guild.id})
+            result = await db["modlog"].find_one({"guildid": str(after.guild.id)})
             if result is None:
                 return
             if result != None:
-                chan = await before.guild.fetch_channel(int(result["channelID"]))
+                chan = await before.guild.fetch_channel(int(result["channelid"]))
                 if chan is None:
                     return
                 if len(before.roles) > len(after.roles):
