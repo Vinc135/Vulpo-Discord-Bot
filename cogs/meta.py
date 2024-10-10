@@ -9,12 +9,8 @@ import re
 import random
 from googletrans import Translator
 from utils.utils import discord_timestamp
-from openai.api_resources.chat_completion import ChatCompletion
-import openai
 from utils.utils import getcolour, getLevelSystemEnabled
 from utils.MongoDB import getMongoDataBase
-
-openai.api_key = "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"
 
 # with open("training_data.csv", "rb") as file:
 #     response = openai.Dataset.create(
@@ -22,19 +18,6 @@ openai.api_key = "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"
 #         name="my_training_data",
 #         description="A dataset of training data for my GPT-3 model",
 #     )
-    
-async def generate_response(msg):
-    completion = ChatCompletion.create(
-        model="gpt-3.5-turbo", 
-        messages=[{"role": "user", "content": msg.content}],
-        instruction = f"Mein Name ist {msg.author.name}."
-    )
-    blacklist = ["<@&","<@","@everyone","@here"]
-    for word in blacklist:
-        if word in str(completion.choices[0].message["content"]):
-            return await msg.reply("Ich werde sicherlich niemanden hier pingen.")
-    await msg.reply(completion.choices[0].message["content"])
-
 class EmbedMaker(discord.ui.Modal, title="Embed-Maker"):
     def __init__(self, farbe: str, titel: str):
         super().__init__(custom_id="133Xhh91RXHXhP9hRXP9XR")
@@ -800,12 +783,6 @@ class meta(commands.Cog):
                     return
 
             await interaction.followup.send(embed=embed)
-
-    @commands.Cog.listener()
-    async def on_message(self, msg: discord.Message):
-        if msg.channel.id == 1086941554654056531 and msg.author.bot == False:
-            async with msg.channel.typing():
-                await generate_response(msg)
 
 async def setup(bot):
     await bot.add_cog(meta(bot))
