@@ -135,7 +135,7 @@ async def voicetime_to_xp(self, member, time, before):
     xpboost = await db["xpboost"].find_one({"guildID": str(member.guild.id)})
     
     if xpboost != None and xpboost["status"]:
-            newxp += newxp * 2
+        newxp += newxp * 2
             
     userdata = await db["levelsystem"].find_one({"client_id": str(member.id), "guild_id": str(member.guild.id)})
     
@@ -158,7 +158,8 @@ async def voicetime_to_xp(self, member, time, before):
 
         nachricht = ""
         neue_levelrolle = await levelup_role_check(self.bot, member.guild, member, int(lvl_start) + 1)
-        if 'message' in result and result['message'] != "":
+
+        if result and "message" in result:
             nachricht = result["message"].replace("%member", str(member.mention)).replace("%level", str(int(lvl_start) + 1))
         else:
             if neue_levelrolle == None:
@@ -166,14 +167,15 @@ async def voicetime_to_xp(self, member, time, before):
             else:
                 nachricht = f"🎉 Glückwunsch {member.mention}! Du hast Level {int (lvl_start) + 1} erreicht.\nViel Spaß mit deiner neuen Levelrolle **{neue_levelrolle.name}**."
         
-        if result["channel_id"] == "Privat":
-            return await member.send(nachricht)
+        if result and "channel_id" in result:
+            if result["channel_id"] == "Privat":
+                return await member.send(nachricht)
         
-        if result["channel_id"] != None or result["channel_id"] != "Normal":
-            kanal = await member.guild.fetch_channel(int(result["channel_id"]))
-            
-            if kanal == None:
-                return
+            if result["channel_id"] != None or result["channel_id"] != "Normal":
+                kanal = await member.guild.fetch_channel(int(result["channel_id"]))
+                
+                if kanal == None:
+                    return
                 
         await kanal.send(nachricht)
 

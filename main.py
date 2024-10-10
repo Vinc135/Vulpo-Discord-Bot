@@ -20,8 +20,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-dbl_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjkyNTc5OTU1OTU3NjMyMjA3OCIsImJvdCI6dHJ1ZSwiaWF0IjoxNjQyODc4ODc1fQ.PJVIOEUe25WxuUbD1E68UF7bXpRZR_k4XXwr8ukue-c"
-
 class voteView(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
@@ -180,7 +178,7 @@ class Vulpo(commands.AutoShardedBot):
 
         await update_account(self, user, "rucksack", 300, 0)       
 
-        dblpy = topgg.DBLClient(bot, dbl_token, autopost_interval=0)
+        dblpy = topgg.DBLClient(bot, os.getenv("dbl_token"), autopost_interval=0)
         votedata = await dblpy.get_bot_info()
         votes = int(votedata["monthly_points"])
         guild = await bot.fetch_guild(925729625580113951)
@@ -190,25 +188,24 @@ class Vulpo(commands.AutoShardedBot):
         translation = translator.translate(f'Month {mydate.strftime("%B")}' , dest="de")
         await votechannel.edit(name=f"Votes {translation.text}: {votes}")
         try:
-            m = guild.get_member(userid)
-            if m is not None:
+            if member is not None:
                 voter = await fetch_role(guild, 962753309997932554)
-                await m.add_roles(voter)
+                await member.add_roles(voter)
                 if int(times) >= 200:
                     votemeister = await fetch_role(guild, 962753328679358515)
-                    await m.add_roles(votemeister)
+                    await member.add_roles(votemeister)
                     return
                 if int(times) >= 100:
                     megavoter = await fetch_role(guild, 962753332139663390)
-                    await m.add_roles(megavoter)
+                    await member.add_roles(megavoter)
                     return
                 if int(times) >= 50:
                     ehrenhaftervoter = await fetch_role(guild, 962753335507701780)
-                    await m.add_roles(ehrenhaftervoter)
+                    await member.add_roles(ehrenhaftervoter)
                     return
                 if int(times) >= 20:
                     aktivervoter = await fetch_role(guild, 962753338666008607)
-                    await m.add_roles(aktivervoter)
+                    await member.add_roles(aktivervoter)
                     return
         except:
             pass

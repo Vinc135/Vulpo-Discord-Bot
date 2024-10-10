@@ -1,9 +1,12 @@
 import json
 import os
 import subprocess
+from dotenv import load_dotenv
 
-# MongoDB-Verbindungs-URI mit explizitem Authentifizierungsmechanismus
-mongo_uri = "mongodb://Vulpo:wTi6sj6GW9kaabcqDBSCe28z7xnUEB@5.180.255.5:27017/VulpoDB?authSource=admin&authMechanism=SCRAM-SHA-1"
+load_dotenv()
+
+# MongoDB-Verbindungs-URI mit der richtigen Datenbank
+mongo_uri = os.getenv("mongodb_uri")
 
 # Lade die JSON-Datei
 with open('database.json') as json_file:
@@ -26,7 +29,7 @@ for table_name, table_data in database_dict.items():
         text=True
     )
     
-    # Ausgabe von Fehlern während der MongoDB-Import
+    # Ausgabe von Fehlern während des MongoDB-Imports
     if result.returncode != 0:
         print(f"Error importing {table_name}: {result.stderr}")
     else:

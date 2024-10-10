@@ -85,12 +85,7 @@ class levelsystem(commands.Cog):
             nachricht = ""
             neue_levelrolle = await levelup_role_check(self.bot, msg.guild, msg.author, int(lvl_start) + 1)
             
-            if result["channel_id"] == None or result["channel_id"] == "":
-                if neue_levelrolle == None:
-                    return await msg.channel.send(f"🎉 Glückwunsch {msg.author.mention}! Du hast Level {int (lvl_start) + 1} erreicht.")
-                return await msg.channel.send(f"🎉 Glückwunsch {msg.author.mention}! Du hast Level {int (lvl_start) + 1} erreicht.\nViel Spaß mit deiner neuen Levelrolle **{neue_levelrolle.name}**")
-            
-            if 'message' in result and result['message'] != "":
+            if result and "message" in result:
                 nachricht = result["message"].replace("%member", str(msg.author.mention)).replace("%level", str(int(lvl_start) + 1))
             else:
                 if neue_levelrolle == None:
@@ -98,16 +93,17 @@ class levelsystem(commands.Cog):
                 else:
                     nachricht = f"🎉 Glückwunsch {msg.author.mention}! Du hast Level {int (lvl_start) + 1} erreicht.\nViel Spaß mit deiner neuen Levelrolle **{neue_levelrolle.name}**."
             
-            if result["channel_id"] == "Privat":
-                return await msg.author.send(nachricht)
-            
-            if result["channel_id"] == None or result["channel_id"] == "Normal":
-                kanal = msg.channel
-            else:
-                kanal = await msg.guild.fetch_channel(int(result["channel_id"]))
-                
-                if kanal == None:
+            if result and "channel_id" in result:
+                if result["channel_id"] == "Privat":
+                    return await msg.author.send(nachricht)
+
+                if result["channel_id"] == None or result["channel_id"] == "Normal":
                     kanal = msg.channel
+                else:
+                    kanal = await msg.guild.fetch_channel(int(result["channel_id"]))
+                    
+                    if kanal == None:
+                        kanal = msg.channel
                     
             await kanal.send(nachricht)
 
