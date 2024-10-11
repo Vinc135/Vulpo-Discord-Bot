@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # MongoDB-Verbindungs-URI mit der richtigen Datenbank
-mongo_uri = os.getenv("mongodb_uri")
+mongo_uri = os.getenv("mongo_uri")
 
 # Lade die JSON-Datei
 with open('database.json') as json_file:
