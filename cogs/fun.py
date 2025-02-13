@@ -144,6 +144,7 @@ class fun(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def games(self, interaction: discord.Interaction):
         """Zeigt alle Spiele an, die auf dem aktuellen Server gespielt werden."""
+        await interaction.response.defer(thinking=True)
         description = ""
         for member in interaction.guild.members:
             if member.bot == False:

@@ -44,20 +44,21 @@ class reportmsg(discord.ui.View):
  
 class MyTree(CommandTree):
     async def interaction_check(self, interaction: discord.Interaction):
-        try:
-            user = interaction.user
-            result = await getMongoDataBase()["banned"].find_one({"userID": str(user.id)})
-            if result is not None:
-                    embed = discord.Embed(title="<:v_168:1264268507193806900> Du bist gebannt", description=f"""
-    > <:v_12:1264264683427336259> Mit einem Bann hast du keinen Zugang mehr zu Vulpo's Befehlen. Außerdem hast du keinen Zutritt zum Supportserver "Vulpo's Wald".
-    <:v_24:1264264867511144479> Grund: {result["reason"]}
-    <:v_17:1264264737810550814> Falls du denkst, dass du dich geändert hast, oder du zu unrecht bestraft wurdest, kannst du einen [Entbannungsantrag](https://forms.gle/NH1Jb1gVNEPuTLA58) stellen.
-    """, colour=0xac0000)
-                    await interaction.followup.send(embed=embed, ephemeral=True)
-                    return False
-            return True
-        except:
-            pass
+        return True
+    #     try:
+    #         user = interaction.user
+    #         result = await getMongoDataBase()["banned"].find_one({"userID": str(user.id)})
+    #         if result is not None:
+    #                 embed = discord.Embed(title="<:v_168:1264268507193806900> Du bist gebannt", description=f"""
+    # > <:v_12:1264264683427336259> Mit einem Bann hast du keinen Zugang mehr zu Vulpo's Befehlen. Außerdem hast du keinen Zutritt zum Supportserver "Vulpo's Wald".
+    # <:v_24:1264264867511144479> Grund: {result["reason"]}
+    # <:v_17:1264264737810550814> Falls du denkst, dass du dich geändert hast, oder du zu unrecht bestraft wurdest, kannst du einen [Entbannungsantrag](https://forms.gle/NH1Jb1gVNEPuTLA58) stellen.
+    # """, colour=0xac0000)
+    #                 await interaction.followup.send(embed=embed, ephemeral=True)
+    #                 return False
+    #         return True
+    #     except:
+    #         pass
         
 
 class Vulpo(commands.AutoShardedBot):
@@ -246,7 +247,7 @@ class Vulpo(commands.AutoShardedBot):
     async def setup_hook(self):
         try:
             topgg_webhook = topgg.WebhookManager(bot).dbl_webhook("/dblwebhook", "Vulpo123321")
-            await topgg_webhook.run(5000)
+            await topgg_webhook.run(8000)
             print("✅ Verbunden mit der topgg api")
         except:
             print("❌ Verbindung zur topgg api fehlgeschlagen")

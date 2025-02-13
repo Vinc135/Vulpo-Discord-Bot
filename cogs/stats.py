@@ -561,11 +561,6 @@ class Stats(commands.Cog):
         """Setze Kanäle auf die Blacklist für Nachrichten."""
         
         await interaction.response.defer()
-        
-        #status = await haspremium_forserver(self, interaction.guild)
-        #if status == False:
-        #    return await interaction.followup.send("**<:v_x:1264270921452224562> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
-        
         db = getMongoDataBase()
         
         result = await db["stats_blacklist"].insert_one({"guildID": str(interaction.guild.id), "channelID": str(kanal.id)})
@@ -584,10 +579,6 @@ class Stats(commands.Cog):
         """Setze alle Stats auf 0 zurück."""
         
         await interaction.response.defer()
-        
-        #status = await haspremium_forserver(self, interaction.guild)
-        #if status == False:
-        #    return await interaction.followup.send("**<:v_x:1264270921452224562> Der Serverowner dieses Servers hat kein Premiumabo. Aus diesem Grund sind alle Befehle des Stats-Systems hier deaktiviert.**")
         
         getMongoDataBase()["nachrichten"].delete_many({"guildID": str(interaction.guild.id)})
         

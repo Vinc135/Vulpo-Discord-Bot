@@ -11,5 +11,5 @@ def getMongoDataBase():
 
 def getMongoClient():
     # Füge Authentifizierung zum Connection String hinzu
-    connection_string = f'mongodb://{os.getenv("username")}:{os.getenv("password")}@localhost:27017/?authSource={os.getenv("auth_source")}'
+    connection_string = os.getenv("mongo_uri")
     return AsyncIOMotorClient(connection_string)

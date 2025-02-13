@@ -126,13 +126,7 @@ class levelsystem(commands.Cog):
         if await checkstatus(self, interaction.guild) == False:
             await interaction.followup.send("**<:v_x:1264270921452224562> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
             return
-        
-        premium_status = await haspremium_forserver(self, interaction.guild)
-        
-        
-        if not premium_status and existing >= 5:
-            return await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst keine weiteren Levelrollen erstellen, da du das Limit erreicht hast**")
-        
+
         if not int(level) > 0 or not int(level) < 101:
             await interaction.followup.send("**<:v_x:1264270921452224562> Die Stufe muss eine Zahl zwischen 1 und 100 sein.**", ephemeral=True)
             return
@@ -577,11 +571,6 @@ class levelsystem(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def xpboost(self, interaction: discord.Interaction, status: typing.Literal["Anschalten (2x)", "Ausschalten (1x)"]):
         """Starte einen XP Boost auf deinem Server."""
-        
-        premium_status = await haspremium_forserver(self, interaction.guild)
-        if premium_status == False:
-            return await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst keinen XP Boost verwalten, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
-
         if await checkstatus(self, interaction.guild) == False:
             await interaction.followup.send("**<:v_x:1264270921452224562> Das Levelsystem ist auf diesem Server deaktiviert.**", ephemeral=True)
             return

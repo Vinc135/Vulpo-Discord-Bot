@@ -55,11 +55,6 @@ class Autoreact(commands.Cog):
                 if existingEmoji["emoji"] == str(emoj):
                     return await interaction.followup.send("**<:v_x:1264270921452224562> Dieses Emoji wurde bereits hinzugefügt.**", ephemeral=True)
             
-            premium = await haspremium_forserver(self, interaction.guild)
-            
-            if not premium and len(existing) >= 2:
-                return await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst keine weiteren Reaktionen für diesen Kanal erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
-
             await db["autoreact"].insert_one({"guildID": str(str(interaction.guild.id)), "channelID": str(kanal.id), "emoji": str(emoj)})
             await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> Eintrag erstellt. Jede Nachricht aus dem Kanal {kanal.mention} erhält das Emoji {emoj}.**")
         except discord.errors.NotFound as e:
