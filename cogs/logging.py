@@ -448,14 +448,7 @@ class logging(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def ticketlog(self, interaction: discord.Interaction,  modus: typing.Literal["An","Aus"], kanal: discord.TextChannel):
         """Setze den Ticketlog."""
-        
         await interaction.response.defer()
-        
-        premium = await haspremium_forserver(self, interaction.guild)
-        
-        if premium == False:
-            return await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst dies nicht tun, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
-
         db = getMongoDataBase()
 
         if modus == "An":

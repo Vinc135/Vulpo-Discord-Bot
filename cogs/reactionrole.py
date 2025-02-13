@@ -97,12 +97,6 @@ class option_hinzufügen(discord.ui.Modal, title="Füge eine Option hinzu"):
         await interaction.response.defer()
         
         embed = interaction.message.embeds[0]
-        
-        premium_status = await haspremium_forserver(self, interaction.guild)
-        
-        if premium_status == False and len(embed.fields) >= 3:
-            return await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst keine weiteren Optionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
-
         embed.add_field(name=self.children[0].value, value=self.roleID)
         embed.color = await getcolour(self, interaction.user)
         await interaction.message.edit(content="", embed=embed)
@@ -164,12 +158,6 @@ class option_hinzufügen_2(discord.ui.Modal, title="Füge eine Option hinzu"):
 
     async def on_submit(self, interaction: discord.Interaction):
         embed = interaction.message.embeds[0]
-        
-        premium_status = await haspremium_forserver(self, interaction.guild)
-        
-        if premium_status == False and len(embed.fields) >= 3:
-            return await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst keine weiteren Optionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
-
         embed.add_field(name=self.children[0].value, value=self.roleID)
         embed.color = await getcolour(self, interaction.user)
         await interaction.message.edit(content="", embed=embed)

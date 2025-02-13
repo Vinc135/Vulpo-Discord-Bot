@@ -25,10 +25,6 @@ class Automod(commands.Cog):
         
         existing_actions = await db['automod'].find({"guildID": guild_id}).to_list(length=None)
         
-        premium_status = await haspremium_forserver(self, interaction.guild)
-        if not premium_status and len(existing_actions) >= 3:
-            return await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst keine weiteren Aktionen erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
-        
         existing_action = await db['automod'].find_one({"guildID": guild_id, "warnanzahl": warnanzahl})
         if existing_action is not None:
             await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst für eine Warnanzahl nur eine Aktion hinzufügen. Bitte wähle eine andere Warnanzahl oder entferne diese Aktion mit `/automod removeaction <warnanzahl>`.**", ephemeral=True)
@@ -219,11 +215,6 @@ class Automod(commands.Cog):
         
         existing_words = await db['blacklist'].find({"guildID": str(interaction.guild.id)}).to_list(length=None)
         
-        premium = await haspremium_forserver(self, interaction.guild)
-        
-        if not premium and len(existing_words) >= 15:
-            return await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst keine weiteren Wörter hinzufügen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**", ephemeral=True)
-
         await db['blacklist'].insert_one({"guildID": str(interaction.guild.id), "word": wort})
         await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> Das Wort `{wort}` ist nun auf der Blacklist.**")
 

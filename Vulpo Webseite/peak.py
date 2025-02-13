@@ -1,9 +1,5 @@
 import os
 from flask import Flask, redirect, request, render_template, session
-from requests_oauthlib import OAuth2Session
-import asyncio
-import paypalrestsdk
-import requests
 
 #—————————————————————————————————————————————#
 #Flask Webserver App erstellen.
@@ -54,10 +50,10 @@ def agb():
     """Umleitung zur AGB Seite."""
     return render_template('agb.html')
 
-@app.errorhandler(404)
+@app.errorhandler()
 def page_not_found(error):
     """Diese Seite kommt, wenn eine Seite nicht gefunden wird."""
-    return render_template('404.html'), 404
+    return render_template('404.html')
 
 #—————————————————————————————————————————————#
 #Backend, das abläuft, wenn bestimmte Routen eingegeben werden.

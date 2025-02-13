@@ -8,6 +8,7 @@ from easy_pil import Editor, load_image_async, Font
 from utils.utils import getcolour
 from utils.MongoDB import getMongoDataBase
 
+
 class Willkommensnachricht(discord.ui.Modal, title="Willkommensnachricht"):
     def __init__(self, kanal: discord.TextChannel=None, bot=None, alte_nachricht: str=None):
         super().__init__(custom_id="wWk766We676e6Wwe274kwW")
@@ -92,16 +93,15 @@ async def sendWelcomeMessage(self, member):
         profile = await load_image_async(str(member.avatar))
         profile = Editor(profile).resize((415, 415)).circle_image()
         background.paste(profile.image, (112, 252))
-        poppins_small = Font.poppins("bold", size=75)
-        background.text((1100, 475), str(member), font=poppins_small, color="#ffffff")
+        background.text((1100, 475), str(member), color="#ffffff")
         current_datetime = datetime.datetime.now()
         account_created_at = member.created_at.replace(tzinfo=None)
         time_difference = current_datetime - account_created_at
         days_difference = time_difference.days
         output_message = f"Account vor {days_difference} Tagen erstellt."
-        background.text((1100, 570), output_message, font=poppins_small, color="#ffffff")
-        background.text((1550, 800), str(member.guild.member_count), font=poppins_small, color="#ffffff")
-        background.text((2150, 850), str(member.guild.name), font=poppins_small, color="#ffffff")
+        background.text((1100, 570), output_message, color="#ffffff")
+        background.text((1550, 800), str(member.guild.member_count), color="#ffffff")
+        background.text((2150, 850), str(member.guild.name), color="#ffffff")
         file = discord.File(fp=background.image_bytes, filename="willkommen.png")
         embed.set_image(url="attachment://willkommen.png")
         await ch.send(embed=embed, file=file)

@@ -61,11 +61,6 @@ class joinrole(commands.Cog):
             
             existing = await db['joinroles'].find({"guild_id": str(interaction.guild.id)}).to_list(length=None)
             
-            premium = await haspremium_forserver(self, interaction.guild)
-            
-            if not premium and len(existing) >= 3:
-                return await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst keine weiteren Joinrollen für Mitglieder erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")
-
             result = await db['joinroles'].find({"role_id": rolle.id}).to_list(length=None)
 
             if result:
@@ -126,11 +121,6 @@ class joinrole(commands.Cog):
                 return
             
             existing = await db['botroles'].find({"guild_id": str(interaction.guild.id)}).to_list(length=None)
-            
-            premium = await haspremium_forserver(self, interaction.guild)
-            
-            if not premium and len(existing) >= 3:
-                return await interaction.followup.send("**<:v_x:1264270921452224562> Du kannst keine weiteren Joinrollen für Bots erstellen, da der Serverowner kein Premium besitzt. [Premium auschecken](https://vulpo-bot.de/premium)**")               
 
             result = await db['botroles'].find({"role_id": rolle.id}).to_list(length=None)
 

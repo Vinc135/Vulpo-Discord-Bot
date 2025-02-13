@@ -51,34 +51,12 @@ class premium(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    def cog_load(self):
-        self.check.start()
-
-    def cog_unload(self):
-        self.check.cancel()
-
-
-    @tasks.loop(seconds=60)
-    async def check(self):
-        await remove_expired_users(self)
-
-    premium = app_commands.Group(name='premium', description='Verwalte dein Premium Abo.', guild_only=True)
+    premium = app_commands.Group(name='custom', description='Verwalte deine Spezifikationen.', guild_only=True)
 
     @premium.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def embedfarbe(self, interaction: discord.Interaction, neuefarbe: str=None):
         """Ändere die Farbe aller Embeds, die dir gesendet werden von Vulpo."""
-        
-        db = getMongoDataBase()
-        
-        status = await db["premium"].find_one({"userID": str(interaction.user.id)})
-        
-        if status == None:
-            return await interaction.response.send_message("<:v_x:1264270921452224562> **Du hast kein Premium. Premium ist heiß begehrt. Du kannst es bekommen, indem du ein Abonnement wirst: https://vulpo-bot.de/premium.**", ephemeral=True)
-        
-        if status["status"] == 0:
-            return await interaction.response.send_message("<:v_x:1264270921452224562> **Du hast kein Premium. Premium ist heiß begehrt. Du kannst es bekommen, indem du ein Abonnement wirst: https://vulpo-bot.de/premium.**", ephemeral=True)
-        
         if neuefarbe is None:
             embed = discord.Embed(title="Farbe", description="Dies ist deine aktuelle Farbe, sie wird bei allen Embeds, die für dich bestimmt sind, verwendet.", color=await getcolour(self, interaction.user))
             return await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -104,16 +82,6 @@ class premium(commands.Cog):
             return await interaction.response.send_message("<:v_x:1264270921452224562> **Das Bild muss die Maße 1000x250 haben.**", ephemeral=True)
         if image.format != "PNG":
             return await interaction.response.send_message("<:v_x:1264270921452224562> **Das Bild muss im PNG-Format vorliegen.**", ephemeral=True)
-        
-        db = getMongoDataBase()
-        
-        status = await db["premium"].find_one({"userID": interaction.user.id})
-        
-        if status == None:
-            return await interaction.response.send_message("<:v_x:1264270921452224562> **Du hast kein Premium. Premium ist heiß begehrt. Du kannst es bekommen, indem du ein Abonnement wirst: https://vulpo-bot.de/premium.**", ephemeral=True)
-        
-        if status["status"] == 0:
-            return await interaction.response.send_message("<:v_x:1264270921452224562> **Du hast kein Premium. Premium ist heiß begehrt. Du kannst es bekommen, indem du ein Abonnement wirst: https://vulpo-bot.de/premium.**", ephemeral=True)
         
         bild.save(f"Rank_Bilder/{interaction.user.id}.png")
         fullpath = os.path.join("Rank_Bilder/", f"{interaction.user.id}.png")
