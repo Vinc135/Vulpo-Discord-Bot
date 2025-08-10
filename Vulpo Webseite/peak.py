@@ -46,7 +46,7 @@ def formulare():
     return render_template('formulare.html')
 
 @app.route('/agb')
-def agb():
+def agb(): 
     """Umleitung zur AGB Seite."""
     return render_template('agb.html')
 
