@@ -20,6 +20,6 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd /pfad/zu/deinem/projekt
+            cd Vulpo-Discord-Bot
             git pull origin main
             # Hier kannst du weitere Befehle ergänzen, z.B. Build starten, Server neustarten usw.
