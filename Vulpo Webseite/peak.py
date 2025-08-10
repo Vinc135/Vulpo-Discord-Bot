@@ -51,7 +51,7 @@ def agb():
     return render_template('agb.html')
 
 @app.errorhandler()
-def page_not_found(error):
+def page_not_found(error): 
     """Diese Seite kommt, wenn eine Seite nicht gefunden wird."""
     return render_template('404.html')
 
