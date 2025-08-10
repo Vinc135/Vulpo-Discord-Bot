@@ -6,8 +6,8 @@ from utils.MongoDB import getMongoDataBase
 ##########
 
 async def isTempChannel(self, member, channel):
-    
-    result = await getMongoDataBase()['tempchannel'].find_one({"guildID": str(member.guild.id), "channelID": str(channel.id)})
+    db = getMongoDataBase()
+    result = await db['tempchannel'].find_one({"guildID": str(member.guild.id), "channelID": str(channel.id)})
     
     if result:
         return channel
@@ -15,8 +15,8 @@ async def isTempChannel(self, member, channel):
         return False
     
 async def isJoinHub(self, channel):
-    
-    result = await getMongoDataBase()['tempchannels'].find_one({"guild_id": str(channel.guild.id), "channel_id": str(channel.id)})
+    db = getMongoDataBase()
+    result = await db['tempchannels'].find_one({"guild_id": str(channel.guild.id), "channel_id": str(channel.id)})
     
     if result:
         return channel
@@ -24,8 +24,8 @@ async def isJoinHub(self, channel):
         return False
 
 async def isOwner(self, member, channel):
-    
-    result = await getMongoDataBase()['tempchannel'].find_one({"guildID": str(member.guild.id), "channelID": str(channel.id), "userID": str(member.id)})
+    db = getMongoDataBase()
+    result = await db['tempchannel'].find_one({"guildID": str(member.guild.id), "channelID": str(channel.id), "userID": str(member.id)})
     
     if result:
         return member 

@@ -3,8 +3,6 @@ from discord.ext import commands, tasks
 import discord
 import random
 from discord import app_commands
-import datetime
-import typing
 from utils.utils import getcolour
 from utils.MongoDB import getMongoDataBase
 

@@ -15,6 +15,31 @@ import json
 import math
 import numpy
 
+class StatsKanal(discord.ui.Modal, title="Stats Kanal"):
+    def __init__(self, bot, kanal=None):
+        super().__init__(custom_id="ndfhoiuehdhvgweiuzghj")
+        self.kanal = kanal
+        self.bot = bot
+        self.add_item(discord.ui.TextInput(label="Nachricht", style=discord.TextStyle.paragraph, required=True, placeholder="%usercount | %notoffline | %membercount | %botcount | %online | %dnd | %idle | %offline"))
+    
+    async def on_submit(self, interaction: discord.Interaction):
+        db = getMongoDataBase()
+        if self.kanal is None:
+            new_channel = await interaction.guild.create_voice_channel(name="[erstellen] circa 10 Minuten")
+            await db["upstats"].insert_one({
+                "guildID": str(interaction.guild.id),
+                "channelID": str(new_channel.id),
+                "text": self.children[0].value
+            })
+            return await interaction.response.send_message("**<:v_haken:1048677657040134195> Der Stats Kanal wird nun erstellt. Es dauert bis zu 10 Minuten, bis der Kanal zum ersten Male geupdated wird.**")
+        
+        await db["upstats"].update_one(
+            {"guildID": str(interaction.guild.id), "channelID": str(self.kanal.id)},
+            {"$set": {"text": self.children[0].value}},
+            upsert=True
+        )
+        return await interaction.response.send_message("**<:v_haken:1048677657040134195> Der Stats Kanal wird nun bearbeitet. Es dauert bis zu 10 Minuten, bis der Kanal zum ersten Male geupdated wird.**")
+    
 async def generateStatsImage(xWerte, yWerteMSG, yWerteTALK):
     plt.figure(figsize=(7.5, 3.5))
     plt.style.use("./stats.mplstyle")
@@ -135,6 +160,7 @@ async def bild_server_stats(bot, guild_id):
     for entry in all_messages.values():
         stats.append(entry)     
     statsvoice = statsvoice[::-1]
+    daten = daten[::-1]
     return daten, stats, statsvoice
 
 async def get_server_stats(bot, guild_id):
@@ -382,7 +408,7 @@ async def update_all(self):
     result = await getMongoDataBase()["upstats"].find().to_list(length=None)
     for ergebnis in result:
         try:
-            guild = await self.bot.fetch_guild(int(ergebnis["guildID"]))
+            guild = self.bot.get_guild(int(ergebnis["guildID"]))
             if guild:
                 kanal = guild.get_channel(int(ergebnis["channelID"]))
                 if kanal:
@@ -402,10 +428,10 @@ async def update_all(self):
                             offline += 1
                         if user.bot:
                             bots += 1
-                    finaltext = ergebnis[2].replace("%usercount", str(guild.member_count)).replace("%notoffline", str(int(guild.member_count) - offline)).replace("%membercount", str(int(guild.member_count) - bots)).replace("%botcount", str(bots)).replace("%online", str(online)).replace("%dnd", str(dnd)).replace("%idle", str(idle)).replace("%offline", str(offline))
+                    finaltext = ergebnis["text"].replace("%usercount", str(guild.member_count)).replace("%notoffline", str(int(guild.member_count) - offline)).replace("%membercount", str(int(guild.member_count) - bots)).replace("%botcount", str(bots)).replace("%online", str(online)).replace("%dnd", str(dnd)).replace("%idle", str(idle)).replace("%offline", str(offline))
                     await kanal.edit(name=finaltext)
-        except discord.errors.NotFound:
-            continue
+        except Exception as e:
+            print(e)
 
 
 class Stats(commands.Cog):
@@ -583,6 +609,47 @@ class Stats(commands.Cog):
         getMongoDataBase()["nachrichten"].delete_many({"guildID": str(interaction.guild.id)})
         
         await interaction.followup.send("**<:v_checkmark:1264271011818242159> Alle Stats dieses Servers wurden gelöscht.**")
+
+    @app_commands.command()
+    @app_commands.guild_only()
+    @app_commands.checks.has_permissions(administrator=True)
+    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
+    async def statschannel(self, interaction: discord.Interaction, argument: typing.Literal["Einrichten", "Anzeigen", "Ausschalten"], kanal: discord.abc.GuildChannel = None):
+        """Richte einen Stats Kanal ein."""
+        db = getMongoDataBase()
+
+        if argument == "Ausschalten":
+            result = await db["upstats"].find_one({"guildID": str(interaction.guild.id)})
+            if result is None:
+                return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Auf diesem Server ist kein Stats-Kanal eingerichtet.**", ephemeral=True)
+            
+            await db["upstats"].delete_one({"guildID": str(interaction.guild.id)})
+            return await interaction.response.send_message("**<:v_haken:1048677657040134195> Die Stats-Kanäle wurden ausgeschaltet.**")
+
+        if argument == "Einrichten":
+            if kanal:
+                existing_channel = await db["upstats"].find_one({"guildID": str(interaction.guild.id), "channelID": str(kanal.id)})
+                if existing_channel:
+                    return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Der Kanal ist bereits ein Stats-Kanal.**", ephemeral=True)
+
+            await interaction.response.send_modal(StatsKanal(self.bot, kanal))
+
+        if argument == "Anzeigen":
+            # Abrufen aller Stats-Kanäle für den Server
+            stats_channels = await db["upstats"].find({"guildID": str(interaction.guild.id)}).to_list(length=None)
+            if not stats_channels:
+                return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Auf diesem Server ist kein Stats-Kanal eingerichtet.**", ephemeral=True)
+
+            embed = discord.Embed(title="Stats Kanäle", description="Die aktuellen Stats Kanäle:", color=discord.Color.orange())
+            for stat in stats_channels:
+                g = self.bot.get_guild(int(stat['guildID']))
+                if g is None:
+                    return
+                k = g.get_channel(int(stat['channelID']))
+                if k is None:
+                    return
+                embed.add_field(name=stat['text'] if len(stat['text']) > 7 else f"{str(stat['text'])[:7]}...", value=k.mention, inline=False)
+            await interaction.response.send_message(embed=embed)
     
 #     @stats.command()
 #     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
