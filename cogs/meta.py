@@ -207,6 +207,7 @@ class meta(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def kanal(self, interaction: discord.Interaction, textkanal: discord.TextChannel=None, sprachkanal: discord.VoiceChannel=None):
         """Zeigt viele Informationen von einem Kanal an."""
+        await interaction.response.defer()
         if textkanal != None and sprachkanal == None:
             channel = textkanal
             t1 = math.floor(channel.created_at.timestamp())
@@ -250,6 +251,7 @@ class meta(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def member(self, interaction: discord.Interaction, member: discord.Member=None):
         """Zeigt viele Informationen von einem Benutzer an."""
+        await interaction.response.defer()
         if member == None:
             member = interaction.user
         t1 = math.floor(member.created_at.timestamp())
@@ -312,6 +314,7 @@ class meta(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def server(self, interaction: discord.Interaction):
         """Zeigt viele Informationen von einem Server an."""
+        await interaction.response.defer()
         t1 = math.floor(interaction.guild.created_at.timestamp())
         t2 = datetime.datetime.fromtimestamp(int(t1))
         embed = discord.Embed(colour=await getcolour(self, interaction.user), description=f"Der Server wurde {discord_timestamp(t2, 'R')} erstellt.")
@@ -435,6 +438,7 @@ class meta(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def rolle(self, interaction: discord.Interaction, rolle: discord.Role):
         """Sendet eine Rolleninfo."""
+        await interaction.response.defer()
         guild = interaction.guild
         t1 = math.floor(rolle.created_at.timestamp())
         t2 = datetime.datetime.fromtimestamp(int(t1))
@@ -454,6 +458,7 @@ class meta(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def servericon(self, interaction: discord.Interaction):
         """Zeigt das Profilbild vom Server an."""
+        await interaction.response.defer()
         guild = interaction.user.guild
         embed = discord.Embed(colour=await getcolour(self, interaction.user), description=f"Serverbild von {guild.name}")
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
@@ -466,6 +471,7 @@ class meta(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def wetter(self, interaction: discord.Interaction, stadt: str=None):
         """Zeigt das Wetter einer Stadt an."""
+        await interaction.response.defer()
         try:
             async with aiohttp.ClientSession() as cs:
                 async with cs.get(
@@ -534,6 +540,7 @@ class meta(commands.Cog):
     async def emojiurl(self, interaction: discord.Interaction, emoji: str):
         """Gibt den Link für ein Emoji."""
         try:
+            await interaction.response.defer()
             emoj = discord.PartialEmoji.from_str(emoji)
             if emoj is None:
                 return await interaction.followup.send("**<:v_x:1264270921452224562> Der Emoji wurde nicht gefunden. Stelle sicher dass dieses Emoji auf einem Server ist, auf dem ich auch in und dass du das Format eingehalten hast:\n`Für normale filename: name:id oder für Animierte: a:name:id`**", ephemeral=True)
@@ -575,6 +582,7 @@ class meta(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def random(self, interaction: discord.Interaction, erstezahl: int, zweitezahl: int):
         """Erhalte eine random Zahl von deinen ausgewählten Zahlen."""
+        await interaction.response.defer()
         drittezahl = random.randint(erstezahl, zweitezahl)
         await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> Deine zufällige Zahl zwischen `{erstezahl}` und `{zweitezahl}` ist `{drittezahl}`.**")
         
@@ -583,6 +591,7 @@ class meta(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def translate(self, interaction: discord.Interaction, sprache: typing.Literal["Arabisch", "Chinesisch", "Deutsch", "Englisch", "Französisch", "Hindi", "Italienisch", "Japanisch", "Portugiesisch", "Russisch", "Spanisch", "Türkisch"], text: str):
         """Übersetze einen Text in mehrere Sprachen."""
+        await interaction.response.defer()
         lang = ""
         if sprache == "Deutsch":
             lang += "de"

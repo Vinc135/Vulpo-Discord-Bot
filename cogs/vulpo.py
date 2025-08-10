@@ -14,7 +14,7 @@ from utils.MongoDB import getMongoDataBase
 class Dropdown(discord.ui.Select):
     def __init__(self, user, farbe, bot):
         selectOptions = [
-            discord.SelectOption(label="Premium", emoji="<:v_23:1264264851522457602>"),
+            discord.SelectOption(label="Custom", emoji="<:v_23:1264264851522457602>"),
             discord.SelectOption(label="Information", emoji="<:v_12:1264264683427336259>"),
             discord.SelectOption(label="Settings & Setup", emoji="<:v_82:1264266106307215370>"),
             discord.SelectOption(label="Basic Moderation", emoji="<:v_168:1264268507193806900>"),
@@ -35,17 +35,13 @@ class Dropdown(discord.ui.Select):
     async def callback(self, interaction: discord.Interaction):
         await interaction.response.defer()
         
-        if self.values[0] == "Premium":
+        if self.values[0] == "Custom":
             anzeige = """
-> <:v_12:1264264683427336259> Spezielle Befehle und Funkt/helpionen, nur für Premium Nutzer.
+> <:v_12:1264264683427336259> Spezielle Befehle und Funktionen, nur für alle Nutzer.
 
 __<:v_arrow_left:1264271794936746054> User Befehle__
-</premium embedfarbe:1091635833217486939> Ändere die Farbe aller Embeds, die dir gesendet werden von Vulpo.
-</premium rangkarte:1091635833217486939> Ändere das Bild deiner Rangkarte.
-
-__<:v_23:1264264851522457602> Premium erhalten__
-Mit premium kannst du viele für normale Nutzer beschränkte Funktionen erhalten und unterstützt gleichzeitig die Entwicklung von Vulpo. 
-Alle Vorteile siehst du unter https://vulpo-bot.de/premium"""
+</custom embedfarbe:1091635833217486939> Ändere die Farbe aller Embeds, die dir gesendet werden von Vulpo.
+</custom rangkarte:1091635833217486939> Ändere das Bild deiner Rangkarte."""
 
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")
@@ -60,7 +56,8 @@ __<:v_arrow_left:1264271794936746054> User Befehle__
 </stats server:1002985831713226833> Schau dir die Stats des Servers an.
 
 __<:v_82:1264266106307215370> Team Befehle__
-</stats reset:1002985831713226833> Setze alle Stats auf 0 zurück."""
+</stats reset:1002985831713226833> Setze alle Stats auf 0 zurück.
+/statschannel Erstelle einen Stats Kanal mit aktualisierenden Statistiken zum Server."""
             embed = discord.Embed(colour=self.farbe, description=anzeige)
             
             embed.set_author(name=f"Command Menü | {self.values[0]}", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508257022672936/Vulpo_neu.png?width=1549&height=1549")

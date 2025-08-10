@@ -90,7 +90,7 @@ async def sendWelcomeMessage(self, member):
         embed = discord.Embed(color=await getcolour(self, member), description=finalmsg)
         
         background = Editor("willkommen.png")
-        font = Font.poppins(size=50)
+        font = Font.poppins(size=70)
         profile = await load_image_async(str(member.avatar))
         profile = Editor(profile).resize((415, 415)).circle_image()
         background.paste(profile.image, (112, 252))
