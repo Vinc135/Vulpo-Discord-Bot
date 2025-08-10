@@ -90,18 +90,19 @@ async def sendWelcomeMessage(self, member):
         embed = discord.Embed(color=await getcolour(self, member), description=finalmsg)
         
         background = Editor("willkommen.png")
+        font = Font.poppins(size=50)
         profile = await load_image_async(str(member.avatar))
         profile = Editor(profile).resize((415, 415)).circle_image()
         background.paste(profile.image, (112, 252))
-        background.text((1100, 475), str(member), color="#ffffff")
+        background.text((1100, 475), str(member), color="#ffffff", font=font)
         current_datetime = datetime.datetime.now()
         account_created_at = member.created_at.replace(tzinfo=None)
         time_difference = current_datetime - account_created_at
         days_difference = time_difference.days
         output_message = f"Account vor {days_difference} Tagen erstellt."
-        background.text((1100, 570), output_message, color="#ffffff")
-        background.text((1550, 800), str(member.guild.member_count), color="#ffffff")
-        background.text((2150, 850), str(member.guild.name), color="#ffffff")
+        background.text((1100, 570), output_message, color="#ffffff", font=font)
+        background.text((1550, 800), str(member.guild.member_count), color="#ffffff", font=font)
+        background.text((2150, 850), str(member.guild.name), color="#ffffff", font=font)
         file = discord.File(fp=background.image_bytes, filename="willkommen.png")
         embed.set_image(url="attachment://willkommen.png")
         await ch.send(embed=embed, file=file)
