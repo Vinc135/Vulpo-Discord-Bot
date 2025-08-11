@@ -33,7 +33,7 @@ class StatsKanal(discord.ui.Modal, title="Stats Kanal"):
                 "text": self.children[0].value
             })
             return await interaction.response.send_message("**<:v_haken:1048677657040134195> Der Stats Kanal wird nun erstellt. Es dauert bis zu 10 Minuten, bis der Kanal zum ersten Male geupdated wird.**")
-        
+         
         await db["upstats"].update_one(
             {"guildID": str(interaction.guild.id), "channelID": str(self.kanal.id)},
             {"$set": {"text": self.children[0].value}},
