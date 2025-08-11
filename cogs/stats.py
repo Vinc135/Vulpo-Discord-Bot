@@ -6,14 +6,15 @@ import typing
 from googletrans import Translator
 from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
+import matplotlib
 import os
 from utils.utils import getcolour, haspremium_forserver
 from utils.MongoDB import getMongoDataBase
-import time
 import mplcyberpunk
 import json
 import math
 import numpy
+matplotlib.use('Agg')
 
 class StatsKanal(discord.ui.Modal, title="Stats Kanal"):
     def __init__(self, bot, kanal=None):
