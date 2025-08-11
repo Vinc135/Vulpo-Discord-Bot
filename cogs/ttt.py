@@ -7,7 +7,7 @@ from utils.utils import random_color, discord_timestamp, getcolour
 import math
 import datetime
 from utils.MongoDB import getMongoDataBase
-
+ 
 class tictactoeherausforderung2(discord.ui.View):
     def __init__(self, member: discord.Member=None, membertwo: discord.Member=None, bot=None):
         super().__init__(timeout=None)
