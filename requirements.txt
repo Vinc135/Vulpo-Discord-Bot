@@ -27,7 +27,6 @@ h2==3.2.0
 hpack==3.0.0
 hstspreload==2024.10.1
 httpcore==0.9.1
-httpx==0.13.3
 hyperframe==5.2.0
 idna==2.10
 import_expression==1.1.5
@@ -35,11 +34,10 @@ jishaku==2.5.2
 jiter==0.6.1
 kiwisolver==1.4.7
 matplotlib==3.9.2
-motor==3.6.0
 mplcyberpunk==0.7.1
+motor==3.6.0
 multidict==6.1.0
 numpy==2.1.2
-openai==1.51.2
 packaging==24.1
 pillow==10.4.0
 propcache==0.2.0
