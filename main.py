@@ -33,6 +33,7 @@ class reportmsg(discord.ui.View):
         self.message = message
         self.bot = bot
 
+
     @discord.ui.button(label='Gemeldeten Nutzer verwarnen', style=discord.ButtonStyle.red, custom_id="fbiuwerzgfiuwzevfizuk", emoji="🔨")
     async def warn(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.message.edit(content=f"**🔒 Dieser Nutzer wurde von {interaction.user.mention} verwarnt.**", embed=interaction.message.embeds[0], view=None)
