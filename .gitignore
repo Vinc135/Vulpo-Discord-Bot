@@ -1,3 +1,4 @@
 .env
 Backups
 __pyache__
+database.json
