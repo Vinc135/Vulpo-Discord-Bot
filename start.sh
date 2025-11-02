@@ -7,4 +7,4 @@ while true; do
 		screen -dmS Vulpo bash -c "python3 main.py; screen -XS $STY quit"
 	fi
 	sleep 1
-done
+done 
