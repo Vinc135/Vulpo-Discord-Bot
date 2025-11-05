@@ -492,7 +492,10 @@ class Stats(commands.Cog):
                 except:
                     pass
         if after.channel:
+<<<<<<< HEAD
             await db["voicedata"].delete_one({"userID": str(member.id)})
+=======
+>>>>>>> 9adf45aa0cb23a425396d1b3b3da39117427e75a
             new_voice_join_time = datetime.now().time().strftime('%H:%M:%S')
             await db["voicedata"].insert_one({"time": new_voice_join_time, "userID": str(member.id)})
 
