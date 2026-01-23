@@ -60,7 +60,7 @@ class bilder(commands.Cog):
             pfp = Image.open(data)
             pfp = pfp.resize((640,640))
             loop = asyncio.get_event_loop()
-            await loop.run_in_executor(None, wanted.paste, pfp, (335, 565))
+            await loop.run_in_executor(None, wanted.paste, pfp, (335, 565)) 
             with BytesIO() as image_binary:
                 wanted.save(image_binary, 'JPEG')
                 image_binary.seek(0)
