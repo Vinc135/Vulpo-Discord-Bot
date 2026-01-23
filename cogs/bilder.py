@@ -109,29 +109,52 @@ class bilder(commands.Cog):
             await interaction.followup.send(embed=embed)
         except:
             return await interaction.followup.send("**<:v_x:1264270921452224562> Fehler beim Laden es Bildes. Versuche es später erneut!**", ephemeral=True)
-          
+        
+
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
-    async def meme(self, interaction):
+    async def meme(self, interaction: discord.Interaction):
         """Sendet ein Meme."""
         await interaction.response.defer()
-        async with aiohttp.ClientSession() as cs:
-            async with cs.get('https://www.reddit.com/r/memes/random/.json') as r:
-                res = await r.json()
 
-                image = res[0]['data']['children'][0]['data']['url']
-                permalink = res[0]['data']['children'][0]['data']['permalink']
-                url = f'https://reddit.com{permalink}'
-                title = res[0]['data']['children'][0]['data']['title']
-                ups = res[0]['data']['children'][0]['data']['ups']
-                downs = res[0]['data']['children'][0]['data']['downs']
-                comments = res[0]['data']['children'][0]['data']['num_comments']
+        headers = {
+            "User-Agent": "DiscordBot"
+        }
 
-                embed = discord.Embed(colour=await getcolour(self, interaction.user), title=title, url=url)
-                embed.set_image(url=image)
-                embed.set_footer(text=f"🔺 {ups} | 🔻 {downs} | <:v_chat:1264270959121010728> {comments} ")
-                await interaction.followup.send(embed=embed, content=None)
+        url = "https://www.reddit.com/r/memes/hot.json?limit=50"
+
+        async with aiohttp.ClientSession(headers=headers) as cs:
+            async with cs.get(url) as r:
+                if r.status != 200:
+                    return await interaction.followup.send("Reddit API Fehler.")
+
+                data = await r.json()
+
+        posts = [
+            p["data"] for p in data["data"]["children"]
+            if not p["data"]["stickied"]
+            and p["data"].get("post_hint") == "image"
+        ]
+
+        if not posts:
+            return await interaction.followup.send("Kein Meme gefunden.")
+
+        post = random.choice(posts)
+
+        embed = discord.Embed(
+            title=post["title"],
+            url=f"https://reddit.com{post['permalink']}",
+            colour=await getcolour(self, interaction.user)
+        )
+
+        embed.set_image(url=post["url"])
+        embed.set_footer(
+            text=f"⬆ {post['ups']} | 💬 {post['num_comments']} | r/{post['subreddit']} | u/{post['author']}"
+        )
+
+        await interaction.followup.send(embed=embed)
+
 
 async def setup(bot):
     await bot.add_cog(bilder(bot))
