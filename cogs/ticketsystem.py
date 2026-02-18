@@ -107,7 +107,13 @@ class ClosebuttonView(discord.ui.View):
         except Exception as e:
             return
         
-        user = await interaction.guild.fetch_member(int(result['userID']))
+        user_left_server = False
+        try:
+            user = await interaction.guild.fetch_member(int(result['userID']))
+            if user is None:
+                user_left_server = True
+        except:
+            user_left_server = True
         
         member = interaction.user
         channel = interaction.channel
@@ -120,23 +126,36 @@ class ClosebuttonView(discord.ui.View):
         archiv = await interaction.guild.fetch_channel(int(panel['archivID']))
         
         role = interaction.guild.get_role(int(panel['role']))
+        if user_left_server == False:
+            overwrites = {
+                interaction.guild.default_role: discord.PermissionOverwrite(
+                    read_messages=False,
+                    send_messages=False,
+                ),
+                user: discord.PermissionOverwrite(
+                    read_messages=False,
+                    send_messages=False, 
+                ),
+                role: discord.PermissionOverwrite(
+                    read_messages=True,
+                    send_messages=True, 
+                )
+            }
+            await channel.edit(category=archiv, overwrites=overwrites)
+
+        else:
+            overwrites = {
+                interaction.guild.default_role: discord.PermissionOverwrite(
+                    read_messages=False,
+                    send_messages=False,
+                ),
+                role: discord.PermissionOverwrite(
+                    read_messages=True,
+                    send_messages=True, 
+                )
+            }
         
-        overwrites = {
-            interaction.guild.default_role: discord.PermissionOverwrite(
-                read_messages=False,
-                send_messages=False,
-            ),
-            user: discord.PermissionOverwrite(
-                read_messages=False,
-                send_messages=False, 
-            ),
-            role: discord.PermissionOverwrite(
-                read_messages=True,
-                send_messages=True, 
-            )
-        }
-        
-        await channel.edit(category=archiv, overwrites=overwrites)
+            await channel.edit(category=archiv, overwrites=overwrites)
         
         view = DeletebuttonView(self.bot)
         
