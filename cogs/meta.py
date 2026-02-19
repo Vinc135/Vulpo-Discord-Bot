@@ -81,7 +81,7 @@ class meta(commands.Cog):
             if invite.inviter == member:
                 totalInvites += invite.uses
         
-        embed=discord.Embed(description=f"Das Mitglied {member.mention} hat insgesammt __**{totalInvites} Mitglied{'er' if totalInvites >= 2 else ''}**__ zum Server eingeladen!", color=await getcolour(self, interaction.user))
+        embed=discord.Embed(description=f"Das Mitglied {member.mention} hat insgesamt __**{totalInvites} Mitglied{'er' if totalInvites >= 2 else ''}**__ zum Server eingeladen!", color=await getcolour(self, interaction.user))
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         embed.set_footer(text="Diese Zahl basiert auf allen Invites, seitdem du auf dem Server bist.", icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
 

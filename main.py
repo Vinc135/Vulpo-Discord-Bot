@@ -160,7 +160,7 @@ class Vulpo(commands.AutoShardedBot):
         rolle = await fetch_role(guild, 1041046601394815127)
         member = await guild.fetch_member(userid)
         if user:
-            embed = discord.Embed(title=f"Danke vielmals {user.name}!", description=f"{user.mention} hat insgesammt {times} Mal gevotet.", colour=discord.Colour.orange())
+            embed = discord.Embed(title=f"Danke vielmals {user.name}!", description=f"{user.mention} hat insgesamt {times} Mal gevotet.", colour=discord.Colour.orange())
             embed.set_thumbnail(url=user.avatar)
             if member:
                 embed.set_footer(text="Durch einen Vote erhältst du 300 Cookies und die Voter Rolle", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508227117289472/herz.png")
@@ -226,7 +226,7 @@ class Vulpo(commands.AutoShardedBot):
 
         user = await bot.fetch_user(userid)
         if user:
-            embed = discord.Embed(title=f"Danke vielmals {user}!", description=f"{user.mention} hat insgesammt {times} Mal gevotet.", colour=discord.Colour.yellow())
+            embed = discord.Embed(title=f"Danke vielmals {user}!", description=f"{user.mention} hat insgesamt {times} Mal gevotet.", colour=discord.Colour.yellow())
             embed.set_thumbnail(url=user.avatar)
             embed.set_author(name="Testvote erfolgreich", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1037064093124788284/v_info.png")
             if member:
@@ -239,7 +239,7 @@ class Vulpo(commands.AutoShardedBot):
                 embed.set_footer(text="Durch einen Vote erhältst du 300 Cookies", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508227117289472/herz.png")
             await channel.send(embed=embed, view=voteView())
         else:
-            embed = discord.Embed(title=f"Danke vielmals {userid}!", description=f"{userid} hat insgesammt {times} Mal gevotet.", colour=discord.Colour.yellow())
+            embed = discord.Embed(title=f"Danke vielmals {userid}!", description=f"{userid} hat insgesamt {times} Mal gevotet.", colour=discord.Colour.yellow())
             embed.set_footer(text="Durch einen Vote erhältst du 300 Cookies", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1023508227117289472/herz.png")
             embed.set_author(name="Testvote erfolgreich", icon_url="https://media.discordapp.net/attachments/1023508002453594122/1037064093124788284/v_info.png")
             await channel.send(embed=embed, view=voteView())
