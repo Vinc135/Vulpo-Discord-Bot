@@ -92,17 +92,18 @@ class meta(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def avatar(self, interaction: discord.Interaction, member: discord.Member = None):
         """Zeigt das Profilbild eines Benutzers an."""
+        await interaction.response.defer()
         if member is None:
             member = interaction.user
         embed = discord.Embed(colour=await getcolour(self, interaction.user), description=f"Profilbild und Banner (wenn existent) von {member.mention}")
-        embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+        embed.set_author(name=interaction.user, icon_url=interaction.user.avatar or None)
         
         user = await self.bot.fetch_user(member.id)
         if user.banner:
             embed.set_image(url=user.banner)
-            embed.set_thumbnail(url=member.avatar)
+            embed.set_thumbnail(url=member.avatar or None)
         else:
-            embed.set_image(url=member.avatar)
+            embed.set_image(url=member.avatar or None)
         
                 
         await interaction.followup.send(embed=embed)
@@ -112,6 +113,7 @@ class meta(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def umfrage(self, interaction: discord.Interaction, frage: str, antworten: str):
         """Beispiel: /umfrage Testfrage <Antwort Nummer 1> <Hier die zweite Antwort>. Maximale Antworten: 9"""
+        await interaction.response.defer()
         a = 0
         desc = ""
         pattern = "<.*?>"
