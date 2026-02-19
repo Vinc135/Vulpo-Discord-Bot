@@ -32,6 +32,7 @@ class fun(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def iq(self, interaction: discord.Interaction, member: discord.Member=None):
         """Finde heraus, wie hoch der IQ von dir oder einem Benutzer ist."""
+        await interaction.response.defer()
         if member is None:
             member = interaction.user
         x = random.randint(14, 230)
@@ -55,6 +56,7 @@ class fun(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def ask(self, interaction: discord.Interaction, frage: str):
         """Lass bekannte Leute deine Frage beantworten."""
+        await interaction.response.defer()
         all_gifs = ['https://tenor.com/view/shrek-of-course-sarcasm-sarcastic-really-gif-14499396',
                     'https://tenor.com/view/timon-lion-king-nope-no-shake-gif-3834543',
                     'https://tenor.com/view/yes-nod-old-spice-oh-yes-commercial-gif-15384634',
@@ -87,7 +89,7 @@ class fun(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def love(self, interaction: discord.Interaction, member: discord.Member, user: discord.Member):
         """Finde heraus, wie verliebt 2 Benutzer oder du und ein anderer Benutzer sind!"""
-        await interaction.followup.send("**Mal sehen ob ihr verliebt seid 👀**")
+        await interaction.response.send_message("**Mal sehen ob ihr verliebt seid 👀**")
         love_per = random.randint(1, 100)
 
         # erstes Einbetten
@@ -113,6 +115,7 @@ class fun(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def los(self, interaction: discord.Interaction):
         """Ziehe ein Ticket und reibe es auf, indem du auf die schwarzen Blöcke tippst."""
+        await interaction.response.defer()
         choices1 = ["||⚪||", "||🔵||", "||⚪||", "||⚪||"]
         choices2 = ["||⚪||", "||🔵||", "||⚪||", "||⚪||"]
         choices3 = ["||⚪||", "||🔵||", "||⚪||", "||⚪||"]

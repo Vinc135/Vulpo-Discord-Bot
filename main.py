@@ -344,6 +344,7 @@ class Vulpo(commands.AutoShardedBot):
         print("✅ Alle System sind nun bereit.")
 
 bot = Vulpo()
+errorcode_since_restart = 0
 
 @bot.event
 async def on_error(ctx, error):
@@ -405,14 +406,15 @@ async def on_app_command_error(interaction: discord.Interaction, error: AppComma
         await send_error("Nicht gefunden", "<:v_x:1264270921452224562> Die ausgewählte Person o.Ä. konnte nicht gefunden werden.", interaction)
         return
     else:
-        await send_error("Unbekannt", "<:v_x:1264270921452224562> Ein unbekannter Fehler ist aufgetreten.\nBitte öffne ein Ticket im [Supportserver](https://discord.gg/49jD3VXksp)", interaction)
+        errorcode_since_restart += 1
+        await send_error("Unbekannt", f"<:v_x:1264270921452224562> Ein unbekannter Fehler ist aufgetreten.\nBitte öffne ein Ticket im [Supportserver](https://discord.gg/49jD3VXksp) mit deinem persönlichen Fehler-Erkennungscode: {errorcode_since_restart}", interaction)
         guilds = await bot.fetch_guild(925729625580113951)
         channels = await guilds.fetch_channel(925732898634600458)
 
         traceback_string = traceback.format_exception(type(error), error, error.__traceback__)
 
         embed = discord.Embed(colour=discord.Colour.red(), title="Error (Application Command)", description=f"""
-<:v_12:1264264683427336259> **Informationen**
+<:v_12:1264264683427336259> **Informationen, persönlicher Fehlercode: {errorcode_since_restart}**
 <:v_arrow_left:1264271794936746054> {interaction.user.mention}
 <:v_168:1264268507193806900> `{interaction.guild.name}` | {str(interaction.guild.id)} ({interaction.guild.member_count})
 <:v_104:1264266670810071202> {interaction.channel.mention}
