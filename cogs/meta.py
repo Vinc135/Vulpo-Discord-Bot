@@ -74,6 +74,7 @@ class meta(commands.Cog):
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def invites(self, interaction: discord.Interaction, member: discord.Member=None):
         """Finde heraus wieveiele Leute du schon eingeladen hast."""
+        await interaction.response.defer()
         if member == None:
             member = interaction.user
         totalInvites = 0
