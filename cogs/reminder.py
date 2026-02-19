@@ -83,7 +83,7 @@ class Reminder(commands.Cog):
         result = await db['erinnerungen'].find({"userID": str(interaction.user.id)}).to_list(length=None)
         
         if result == []:
-            return await interaction.followup.send(f"**<:v_x:1264270921452224562> Du hast keine Erninnerungen gestellt.**", ephemeral=True) 
+            return await interaction.followup.send(f"**<:v_x:1264270921452224562> Du hast keine Erinnerungen gestellt.**", ephemeral=True) 
         embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"Alle Erinnerungen von {interaction.user}.")
         embed.set_thumbnail(url=interaction.user.avatar)
         
