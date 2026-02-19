@@ -98,7 +98,7 @@ class bilder(commands.Cog):
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
-    async def animal(self, interaction, tier: typing.Literal["Hund", "Katze", "Pferd", "Vogel", "Kaninchen", "Meerschweinchen", "Hamster", "Fisch", "Schildkröte", "Wellensittich", "Hase", "Schlange", "Frettchen", "Maus", "Kanarienvogel"]):
+    async def animal(self, interaction, tier: typing.Literal["Fuchs", "Hund", "Katze", "Pferd", "Vogel", "Kaninchen", "Meerschweinchen", "Hamster", "Fisch", "Schildkröte", "Wellensittich", "Hase", "Schlange", "Frettchen", "Maus", "Kanarienvogel"]):
         """Ein zufälliges Bild eines Tieres."""
         await interaction.response.defer()
         try:
