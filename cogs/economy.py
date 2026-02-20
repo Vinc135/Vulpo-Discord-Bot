@@ -18,7 +18,6 @@ class joblist(discord.ui.View):
 
     @discord.ui.button(label='Zurück', style=discord.ButtonStyle.red, custom_id="grth676zetwerf43e", emoji="⬅️")
     async def zurück(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await interaction.response.defer()
         if(self.author != interaction.user):
             embed = discord.Embed(color=await getcolour(self, interaction.user), title="<:v_x:1264270921452224562> Das ist nicht dein Button")
             
