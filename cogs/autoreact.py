@@ -35,11 +35,7 @@ class Autoreact(commands.Cog):
     @app_commands.checks.has_permissions(manage_channels=True)
     @app_commands.describe(emoji="Für normale emojis: name:id oder für Animierte: a:name:id")
     async def add(self, interaction: discord.Interaction, kanal: discord.TextChannel, emoji: str):
-<<<<<<< HEAD
         """Füge ein Emoji für einem Kanal hinzu."""
-=======
-        """Füge ein Emoji für ein Kanal hinzu."""
->>>>>>> 9adf45aa0cb23a425396d1b3b3da39117427e75a
         
         await interaction.response.defer()
         
