@@ -158,8 +158,8 @@ async def bild_server_stats(bot, guild_id):
             anzahl += minuten["anzahl"]
         statsvoice.append(anzahl)
         
-    for entry in all_messages.values():
-        stats.append(entry)     
+    for key in sorted(all_messages.keys()):
+        stats.append(all_messages[key])
     statsvoice = statsvoice[::-1]
     daten = daten[::-1]
     return daten, stats, statsvoice
@@ -286,7 +286,7 @@ async def bild_user_stats(bot, guild_id, user_id):
 
     for i in range(14):
         tag = (datetime.now() - timedelta(days=13-i)).strftime('%Y-%m-%d')
-        tag_voice = (datetime.now() - timedelta(days=i)).strftime('%d.%m.%Y')
+        tag_voice = (datetime.now() - timedelta(days=13-i)).strftime('%d.%m.%Y')
 
         tag_format = (datetime.now() - timedelta(days=13-i)).strftime('%d.%m')
         daten.append(tag_format)
@@ -454,12 +454,11 @@ class Stats(commands.Cog):
         db = getMongoDataBase()
         result = await db["voicedata"].find_one({"userID": str(member.id)})
         if before.channel:
-            voice_leave_time = datetime.now().time().strftime('%H:%M:%S')
-            voice_join_time = result["time"]
+            voice_leave_time = datetime.now()
+            voice_join_time = datetime.strptime(result["time"], '%Y-%m-%d %H:%M:%S')
 
-            calculate_time = (
-                    datetime.strptime(voice_leave_time, '%H:%M:%S') - datetime.strptime(voice_join_time, '%H:%M:%S'))
-            
+            calculate_time = voice_leave_time - voice_join_time
+
             string = f"{str(calculate_time)[0]}h {str(calculate_time)[2]}{str(calculate_time)[3]}m {str(calculate_time)[5]}{str(calculate_time)[6]}s"
             time_in_seconds = convert(string)
             if time_in_seconds == None:
@@ -492,7 +491,7 @@ class Stats(commands.Cog):
                 pass
         if after.channel:
             await db["voicedata"].delete_one({"userID": str(member.id)})
-            new_voice_join_time = datetime.now().time().strftime('%H:%M:%S')
+            new_voice_join_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             await db["voicedata"].insert_one({"time": new_voice_join_time, "userID": str(member.id)})
 
     #Nachrichten Stats#
@@ -509,17 +508,21 @@ class Stats(commands.Cog):
         result = await db["nachrichten"].find_one({"guildID": str(msg.guild.id), "datum": str(current_datetime)})
                 
         if result is None:
-            initial_data = {
+            existing_json = {
                 str(msg.author.id): {
                     str(msg.channel.id): 1,
                 }
             }
-            json_data = json.dumps(initial_data)
-            await db["nachrichten"].insert_one({"guildID": str(msg.guild.id), "datum": str(current_datetime), "daten": json_data})
+            await db["nachrichten"].insert_one({
+                "guildID": str(msg.guild.id),
+                "datum": str(current_datetime),
+                "daten": json.dumps(existing_json)
+            })
         else:
             existing_json = json.loads(result["daten"])
             user_id = str(msg.author.id)
             channel_id = str(msg.channel.id)
+
             if user_id in existing_json:
                 if channel_id in existing_json[user_id]:
                     existing_json[user_id][channel_id] += 1
@@ -527,11 +530,11 @@ class Stats(commands.Cog):
                     existing_json[user_id][channel_id] = 1
             else:
                 existing_json[user_id] = {channel_id: 1}
-            
-            updated_json = json.dumps(existing_json)
-                    
-        await db["nachrichten"].update_one({"guildID": str(msg.guild.id), "datum": str(current_datetime)}, {"$set": {"daten": updated_json}})
-        
+
+            await db["nachrichten"].update_one(
+                {"guildID": str(msg.guild.id), "datum": str(current_datetime)},
+                {"$set": {"daten": json.dumps(existing_json)}}
+            )
     stats = app_commands.Group(name='stats', description='Verwalte Stats.', guild_only=True)
     
     @stats.command()
