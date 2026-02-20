@@ -154,7 +154,7 @@ jobs = [
     {"name": "Finanzmogul", "req": 4000, "amt": [1750, 2000]},
     {"name": "Chief Visionary Officer", "req": 5000, "amt": [2000, 3000]}
 ]
-
+# 59 Jobs
 ##########
 
 async def job_autocomplete(interaction: discord.Interaction, current: str,) -> typing.List[app_commands.Choice[str]]:
@@ -337,7 +337,7 @@ async def job_list(self, interaction, page):
     amt = 5
     index = page * amt
     joblist = ""
-    for job in jobs[index: index + 7]:
+    for job in jobs[index: index + 11]:
         if await has_job_req(self, interaction, jobs.index(job)):
             emoji = '🔓'
         else:
