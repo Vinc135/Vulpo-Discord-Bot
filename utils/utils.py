@@ -119,7 +119,7 @@ async def voicetime_to_xp(self, member, time, before):
     
     blocked_roles = await db["lb_rollen"].find({"guild_id": str(member.guild.id)}).to_list(length=None)
     for r_id in blocked_roles:
-        rolle = member.guild.get_role(int(r_id["role"]))
+        rolle = member.guild.get_role(int(r_id["role_id"]))
         if rolle:
             if rolle in member.roles:
                 return
@@ -127,7 +127,7 @@ async def voicetime_to_xp(self, member, time, before):
     blocked_channel = await db["lb_channel"].find({"guild_id": str(member.guild.id)}).to_list(length=None)
     
     for c_id in blocked_channel:
-        if int(c_id["channel"]) == int(before.channel.id):
+        if int(c_id["channel_id"]) == int(before.channel.id):
             return
         
     newxp = random.randint(15, 30) * time
