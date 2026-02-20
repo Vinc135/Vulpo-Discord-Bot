@@ -16,6 +16,30 @@ import math
 import numpy
 matplotlib.use('Agg')
 
+
+def format_minutes(minuten: int):
+    try:
+        minuten = int(minuten)
+    except:
+        return "0 Minuten"
+
+    tage = minuten // 1440
+    rest = minuten % 1440
+    stunden = rest // 60
+    mins = rest % 60
+
+    teile = []
+
+    if tage > 0:
+        teile.append(f"{tage} {'Tag' if tage == 1 else 'Tage'}")
+    if stunden > 0:
+        teile.append(f"{stunden} {'Stunde' if stunden == 1 else 'Stunden'}")
+    if mins > 0 or len(teile) == 0:
+        teile.append(f"{mins} {'Minute' if mins == 1 else 'Minuten'}")
+
+    return " und ".join(teile)
+
+
 class StatsKanal(discord.ui.Modal, title="Stats Kanal"):
     def __init__(self, bot, kanal=None):
         super().__init__(custom_id="ndfhoiuehdhvgweiuzghj")
@@ -90,20 +114,14 @@ async def generateServerStatsImage(xWerte, yWerteMSG, yWerteTALK):
     plt.close()
 
 
-    
 async def get_user_data(bot, user_id):
     user_data = {}
 
-    # Aktuelles Datum und Zeit
     current_datetime = datetime.now()
-
-    # Letzte 14 Tage
     last_14_days = current_datetime - timedelta(days=14)
     
     db = getMongoDataBase()
 
-    # Anzahl der Nachrichten des Benutzers in den letzten 14 Tagen abrufen
-    
     message_count_last_14_days = await db['nachrichten'].count_documents({"userID": str(user_id), "datum": {"$gte": last_14_days}})
     
     user_data['message_count_last_14_days'] = message_count_last_14_days
@@ -148,8 +166,6 @@ async def bild_server_stats(bot, guild_id):
                 for channel_count in user_data.values():
                     total_messages += channel_count
             all_messages[tag] = total_messages
-            
-        #VOICE
 
         result = await db['voice'].find({"guildID": str(guild_id), "zeit": tag_voice}).to_list(length=None)
         anzahl = 0
@@ -165,9 +181,8 @@ async def bild_server_stats(bot, guild_id):
     daten = daten[::-1]
     return daten, stats, statsvoice
 
+
 async def get_server_stats(bot, guild_id):
-    #TEXT
-    
     db = getMongoDataBase()
     
     stats = {}
@@ -201,20 +216,17 @@ async def get_server_stats(bot, guild_id):
                     anzahl_letzte_7tage += channel_count
                 anzahl_letzte_30tage += channel_count
                 if tag == heute:
-                    # Aktivster Nutzer des Tages
                     if user_id in alle_user_tages:
                         alle_user_tages[user_id] += channel_count
                     else:
                         alle_user_tages[user_id] = channel_count
                     
-                # Top-Kanal der letzten 7 Tage
                 if i <= 6:
                     if channel_id in alle_channel_letzte_7tage:
                         alle_channel_letzte_7tage[channel_id] += int(channel_count)
                     else:
                         alle_channel_letzte_7tage[channel_id] = int(channel_count)
-        #VOICE
-    
+
         result = await db['voice'].find({"guildID": str(guild_id), "zeit": tag_voice}).to_list(length=None)
 
         for tagv in result:
@@ -230,13 +242,8 @@ async def get_server_stats(bot, guild_id):
                 else:
                     alle_user_tages_voice[user] = anzahl
 
-    
-    #MESSAGES
-                    
     stats["<:v_31:1264264994774585445> Nachrichten (7 Tage)"] = anzahl_letzte_7tage
     stats["<:v_31:1264264994774585445> Nachrichten (30 Tage)"] = anzahl_letzte_30tage
-    
-    #CHANNEL
     
     msgs_channel = 0
     
@@ -248,11 +255,9 @@ async def get_server_stats(bot, guild_id):
     else:
         stats["<:v_32:1264265009475747841> Top Channel (7 Tage)"] = f"{aktivster_channel} - {msgs_channel} Nachrichten"
 
-    stats["<:v_32:1264265009475747841> Voice Minuten (7 Tage)"] = f"{voice7} Minuten"
-    stats["<:v_32:1264265009475747841> Voice Minuten (30 Tage)"] = f"{voice30} Minuten"
+    stats["<:v_32:1264265009475747841> Voice Minuten (7 Tage)"] = format_minutes(voice7)
+    stats["<:v_32:1264265009475747841> Voice Minuten (30 Tage)"] = format_minutes(voice30)
 
-    #USER
-    
     msgs_user = 0
     talk_user = 0
     talk_msgs_user = 0
@@ -265,17 +270,18 @@ async def get_server_stats(bot, guild_id):
     if aktivster_nutzer != "Es gibt keinen Nutzer mit den meisten Nachrichten heute":
         aktivster_nutzer_str = f"<@{aktivster_nutzer}>"
         msgs_user = alle_user_tages[aktivster_nutzer]
-        talk_msgs_user = alle_user_tages_voice[aktivster_nutzer] if aktivster_nutzer in alle_user_tages_voice else "0"
+        talk_msgs_user = alle_user_tages_voice[aktivster_nutzer] if aktivster_nutzer in alle_user_tages_voice else 0
     if aktivster_nutzer_voice != "Es gibt keinen aktivsten Voice Nutzer":
         aktivster_nutzer_voice_str = f"<@{aktivster_nutzer_voice}>"
         talk_user = alle_user_tages_voice[aktivster_nutzer_voice]
     
     if(aktivster_nutzer_str != aktivster_nutzer_voice_str):
-        stats["<:v_arrow_left:1264271794936746054> Aktivste Nutzer des Tages"] = f"{aktivster_nutzer_str} - {msgs_user} Nachrichten \n{aktivster_nutzer_voice_str} - {talk_user} Minuten"
+        stats["<:v_arrow_left:1264271794936746054> Aktivste Nutzer des Tages"] = f"{aktivster_nutzer_str} - {msgs_user} Nachrichten \n{aktivster_nutzer_voice_str} - {format_minutes(talk_user)}"
     else:
-        stats["<:v_arrow_left:1264271794936746054> Aktivste Nutzer des Tages"] = f"{aktivster_nutzer_str} - {msgs_user} Nachrichten, {talk_msgs_user} Minuten"
+        stats["<:v_arrow_left:1264271794936746054> Aktivste Nutzer des Tages"] = f"{aktivster_nutzer_str} - {msgs_user} Nachrichten, {format_minutes(talk_msgs_user)}"
     
     return stats
+
 
 async def bild_user_stats(bot, guild_id, user_id):
     stats = []
@@ -306,7 +312,6 @@ async def bild_user_stats(bot, guild_id, user_id):
                         total_messages += int(channel_count)
             all_messages[tag] = total_messages
             
-        #VOICE
         result = await db["voice"].find_one({"guildID": str(guild_id), "zeit": str(tag_voice), "userID": str(user_id)})
         if result is None:
             anzahl = 0
@@ -317,14 +322,10 @@ async def bild_user_stats(bot, guild_id, user_id):
     
     stats = list(all_messages.values())
 
-    stats = stats[::-1]
-    statsvoice = statsvoice[::-1]
-
     return daten, stats, statsvoice
 
 
 async def get_user_stats(bot, user_id, guild_id):
-    #TEXT
     stats = {}
     voice7 = 0
     voice30 = 0
@@ -358,9 +359,6 @@ async def get_user_stats(bot, user_id, guild_id):
                 else:
                     all_users_msgs[id] = channel_count
                 
-                        
-        #VOICE
-    
         result = await db['voice'].find({"guildID": str(guild_id), "zeit": str(tag_voice)}).to_list(length=None)
 
         for user in result:
@@ -375,16 +373,11 @@ async def get_user_stats(bot, user_id, guild_id):
             else:
                 all_users_talk[id] = user['anzahl']
             
-    
-    #MESSAGES
-                    
     stats["<:v_31:1264264994774585445> Nachrichten (7 Tage)"] = anzahl_letzte_7tage
     stats["<:v_31:1264264994774585445> Nachrichten (30 Tage)"] = anzahl_letzte_30tage
 
-    stats["<:v_32:1264265009475747841> Voice Minuten (7 Tage)"] = f"{voice7} Minuten"
-    stats["<:v_32:1264265009475747841> Voice Minuten (30 Tage)"] = f"{voice30} Minuten"
-    
-    #RANK
+    stats["<:v_32:1264265009475747841> Voice Minuten (7 Tage)"] = format_minutes(voice7)
+    stats["<:v_32:1264265009475747841> Voice Minuten (30 Tage)"] = format_minutes(voice30)
     
     rank_msg = ""
     
@@ -508,8 +501,6 @@ class Stats(commands.Cog):
                 "time": now.strftime('%Y-%m-%d %H:%M:%S')
             })
 
-    #Nachrichten Stats#
-
     @commands.Cog.listener()
     async def on_message(self, msg):
         if msg.guild is None or msg.author.bot:
@@ -554,8 +545,6 @@ class Stats(commands.Cog):
     @stats.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def server(self, interaction: discord.Interaction):
-        """Schau dir die Stats des Servers an."""
-        
         await interaction.response.defer()
         
         server_stats = await get_server_stats(self.bot, str(interaction.guild.id))
@@ -578,7 +567,6 @@ class Stats(commands.Cog):
     @stats.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def user(self, interaction: discord.Interaction, user: discord.Member = None):
-        """Schau dir die Stats eines Users an."""
         await interaction.response.defer()
         
         member = user
@@ -602,14 +590,12 @@ class Stats(commands.Cog):
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def blacklist(self, interaction: discord.Interaction, kanal: discord.TextChannel):
-        """Setze Kanäle auf die Blacklist für Nachrichten."""
-        
         await interaction.response.defer()
         db = getMongoDataBase()
         
-        result = await db["stats_blacklist"].insert_one({"guildID": str(interaction.guild.id), "channelID": str(kanal.id)})
+        existing = await db["stats_blacklist"].find_one({"guildID": str(interaction.guild.id), "channelID": str(kanal.id)})
         
-        if result == None:
+        if existing is None:
             await db["stats_blacklist"].insert_one({"guildID": str(interaction.guild.id), "channelID": str(kanal.id)})
             return await interaction.followup.send(f"**<:v_checkmark:1264271011818242159> {kanal.mention} ist nun auf der Blacklist.**")
         
@@ -620,8 +606,6 @@ class Stats(commands.Cog):
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def reset(self, interaction: discord.Interaction, bestätigung: typing.Literal["Ich verstehe dass diese Aktion unumkehrbar ist und dadurch alle Stats dieses Server gelöscht werden."]):
-        """Setze alle Stats auf 0 zurück."""
-        
         await interaction.response.defer()
         
         getMongoDataBase()["nachrichten"].delete_many({"guildID": str(interaction.guild.id)})
@@ -633,7 +617,6 @@ class Stats(commands.Cog):
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def statschannel(self, interaction: discord.Interaction, argument: typing.Literal["Einrichten", "Anzeigen", "Ausschalten"], kanal: discord.abc.GuildChannel = None):
-        """Richte einen Stats Kanal ein."""
         db = getMongoDataBase()
 
         if argument == "Ausschalten":
@@ -653,7 +636,6 @@ class Stats(commands.Cog):
             await interaction.response.send_modal(StatsKanal(self.bot, kanal))
 
         if argument == "Anzeigen":
-            # Abrufen aller Stats-Kanäle für den Server
             stats_channels = await db["upstats"].find({"guildID": str(interaction.guild.id)}).to_list(length=None)
             if not stats_channels:
                 return await interaction.response.send_message("**<:v_kreuz:1049388811353858069> Auf diesem Server ist kein Stats-Kanal eingerichtet.**", ephemeral=True)
