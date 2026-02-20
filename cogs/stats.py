@@ -448,51 +448,64 @@ class Stats(commands.Cog):
     @tasks.loop(minutes=10)
     async def channel_update(self):
         await update_all(self)
-            
+
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
         db = getMongoDataBase()
-        result = await db["voicedata"].find_one({"userID": str(member.id)})
-        if before.channel:
-            voice_leave_time = datetime.now()
-            voice_join_time = datetime.strptime(result["time"], '%Y-%m-%d %H:%M:%S')
+        now = datetime.utcnow()
 
-            calculate_time = voice_leave_time - voice_join_time
+        if before.channel and (after.channel is None or before.channel.id != after.channel.id):
+            result = await db["voicedata"].find_one({"userID": str(member.id)})
+            
+            if result is not None:
+                join_time = datetime.strptime(result["time"], '%Y-%m-%d %H:%M:%S')
+                delta = now - join_time
 
-            string = f"{str(calculate_time)[0]}h {str(calculate_time)[2]}{str(calculate_time)[3]}m {str(calculate_time)[5]}{str(calculate_time)[6]}s"
-            time_in_seconds = convert(string)
-            if time_in_seconds == None:
-                return
-            time_in_minutes = round(time_in_seconds / 60)
-                
-            await db["voicedata"].delete_one({"userID": str(member.id)})
-            if(time_in_minutes <= 1):
-                return 
-            
-            result = await db["voice"].find_one({"userID": str(member.id), "guildID": str(member.guild.id), "zeit": str(discord.utils.utcnow().__format__('%d.%m.%Y')), "channelID": str(before.channel.id)})
-            
-            if result is None:
-                await db["voice"].insert_one({"userID": str(member.id), "guildID": str(member.guild.id), "zeit": str(discord.utils.utcnow().__format__('%d.%m.%Y')), "anzahl": time_in_minutes, "channelID": str(before.channel.id)})
-            else:
-                await db["voice"].update_one({"userID": str(member.id), "guildID": str(member.guild.id), "zeit": str(discord.utils.utcnow().__format__('%d.%m.%Y')), "channelID": str(before.channel.id)}, {"$set": {"anzahl": result["anzahl"] + time_in_minutes}})
-            await voicetime_to_xp(self, member, time_in_minutes, before)
-            
-            try:
-                result2 = await db["gewinnspiele"].find({"guildID": str(member.guild.id), "status": "Aktiv"}).to_list(length=None)
-                if result2 == None:
-                    return
-                for gewinnspiel in result2:
-                    result = await db["gw_voice"].find_one({"userID": str(member.id), "guildID": str(member.guild.id), "gwID": gewinnspiel["msgID"]})
-                    if result == None:
-                        await db["gw_voice"].insert_one({"userID": str(member.id), "guildID": str(member.guild.id), "gwID": gewinnspiel["msgID"], "anzahl": time_in_minutes})
+                total_seconds = int(delta.total_seconds())
+                total_minutes = total_seconds // 60
+
+                await db["voicedata"].delete_one({"userID": str(member.id)})
+
+                if total_minutes > 0:
+                    date_string = now.strftime('%d.%m.%Y')
+
+                    existing = await db["voice"].find_one({
+                        "userID": str(member.id),
+                        "guildID": str(member.guild.id),
+                        "zeit": date_string,
+                        "channelID": str(before.channel.id)
+                    })
+
+                    if existing is None:
+                        await db["voice"].insert_one({
+                            "userID": str(member.id),
+                            "guildID": str(member.guild.id),
+                            "zeit": date_string,
+                            "anzahl": total_minutes,
+                            "channelID": str(before.channel.id)
+                        })
                     else:
-                        await db["gw_voice"].update_one({"userID": str(member.id), "guildID": str(member.guild.id), "gwID": gewinnspiel["msgID"]}, {"$set": {"anzahl": result["anzahl"] + time_in_minutes}})
-            except:
-                pass
-        if after.channel:
+                        await db["voice"].update_one(
+                            {
+                                "userID": str(member.id),
+                                "guildID": str(member.guild.id),
+                                "zeit": date_string,
+                                "channelID": str(before.channel.id)
+                            },
+                            {
+                                "$inc": {"anzahl": total_minutes}
+                            }
+                        )
+
+                    await voicetime_to_xp(self, member, total_minutes, before)
+
+        if after.channel and (before.channel is None or before.channel.id != after.channel.id):
             await db["voicedata"].delete_one({"userID": str(member.id)})
-            new_voice_join_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            await db["voicedata"].insert_one({"time": new_voice_join_time, "userID": str(member.id)})
+
+            await db["voicedata"].insert_one({
+                "userID": str(member.id),
+                "time": now.strftime('%Y-%m-%d %H:%M:%S')
+            })
 
     #Nachrichten Stats#
 
