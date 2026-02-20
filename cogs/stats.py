@@ -442,17 +442,26 @@ class Stats(commands.Cog):
     @tasks.loop(minutes=10)
     async def channel_update(self):
         await update_all(self)
-
+            
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
         db = getMongoDataBase()
         now = datetime.utcnow()
 
+        # Nutzer hat den Voice Channel verlassen oder gewechselt
         if before.channel and (after.channel is None or before.channel.id != after.channel.id):
             result = await db["voicedata"].find_one({"userID": str(member.id)})
-            
+
             if result is not None:
-                join_time = datetime.strptime(result["time"], '%Y-%m-%d %H:%M:%S')
+                join_time_str = result["time"]
+
+                # Versuch, Datum + Zeit zu parsen
+                try:
+                    join_time = datetime.strptime(join_time_str, '%Y-%m-%d %H:%M:%S')
+                except ValueError:
+                    # Wenn nur Uhrzeit gespeichert wurde, nehme heutiges Datum
+                    join_time = datetime.strptime(datetime.utcnow().strftime('%Y-%m-%d') + " " + join_time_str, '%Y-%m-%d %H:%M:%S')
+
                 delta = now - join_time
 
                 total_seconds = int(delta.total_seconds())
@@ -486,13 +495,12 @@ class Stats(commands.Cog):
                                 "zeit": date_string,
                                 "channelID": str(before.channel.id)
                             },
-                            {
-                                "$inc": {"anzahl": total_minutes}
-                            }
+                            {"$inc": {"anzahl": total_minutes}}
                         )
 
                     await voicetime_to_xp(self, member, total_minutes, before)
 
+        # Nutzer betritt einen neuen Voice Channel
         if after.channel and (before.channel is None or before.channel.id != after.channel.id):
             await db["voicedata"].delete_one({"userID": str(member.id)})
 
@@ -500,6 +508,7 @@ class Stats(commands.Cog):
                 "userID": str(member.id),
                 "time": now.strftime('%Y-%m-%d %H:%M:%S')
             })
+
 
     @commands.Cog.listener()
     async def on_message(self, msg):
