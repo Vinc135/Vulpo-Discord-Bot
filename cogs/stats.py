@@ -160,6 +160,7 @@ async def bild_server_stats(bot, guild_id):
         
     for key in sorted(all_messages.keys()):
         stats.append(all_messages[key])
+        
     statsvoice = statsvoice[::-1]
     daten = daten[::-1]
     return daten, stats, statsvoice
@@ -314,11 +315,11 @@ async def bild_user_stats(bot, guild_id, user_id):
             
         statsvoice.append(anzahl)
     
-    for entry in all_messages.values():
-        stats.append(entry)
-        
+    stats = list(all_messages.values())
+
+    stats = stats[::-1]
     statsvoice = statsvoice[::-1]
-    
+
     return daten, stats, statsvoice
 
 

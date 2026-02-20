@@ -347,8 +347,11 @@ bot = Vulpo()
 errorcode_since_restart = 0
 
 @bot.event
-async def on_error(ctx, error):
-    return 
+async def on_error(self, event_method):
+    server = self.bot.get_guild(991751333919076453)
+    channel = server.get_channel(1474509477356109875)
+
+    await channel.send(event_method)
 
 @bot.tree.error
 async def on_app_command_error(interaction: discord.Interaction, error: AppCommandError):    
