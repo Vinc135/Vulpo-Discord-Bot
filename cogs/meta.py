@@ -632,7 +632,7 @@ class meta(commands.Cog):
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 10, key=lambda i: (i.guild_id, i.user.id))
-    async def bestenliste(self, interaction: discord.Interaction, system: typing.Literal["Economy", "Emojiquiz", "Flaggenquiz", "Levelsystem", "TicTacToe", "Speedgame", "Votes"]):
+    async def bestenliste(self, interaction: discord.Interaction, system: typing.Literal["Economy", "Emojiquiz", "Flaggenquiz", "Levelsystem", "TicTacToe", "Speedgame", "Votes", "Economy Streak"]):
         """Bekomme Bestenlisten verschiedenster Funktionen."""
         
         await interaction.response.defer()
@@ -790,6 +790,25 @@ class meta(commands.Cog):
                     if name is None:
                         name = f"Nicht gefunden ({userID})"
                 embed.add_field(name=f"{i}. {name}", value=f"{votes} Votes", inline=False)
+                if i == 10:
+                    await interaction.followup.send(embed=embed)
+                    return
+
+            await interaction.followup.send(embed=embed)
+
+        if system == "Economy Streak":
+            leaderboard = await db["economy_streak"].find().sort([("streak", -1)]).to_list(length=10)
+            embed = discord.Embed(title="Bestenliste (Streak)", description=" ", color=await getcolour(self, interaction.user))
+            
+            for i, pos in enumerate(leaderboard, start=1):
+                streak = pos["streak"]
+                userID = pos["userID"]
+                name = self.bot.get_user(int(userID))
+                if name is None:
+                    name = await self.bot.fetch_user(int(userID))
+                    if name is None:
+                        name = f"Nicht gefunden ({userID})"
+                embed.add_field(name=f"{i}. {name}", value=f"{streak} Tage in Folge", inline=False)
                 if i == 10:
                     await interaction.followup.send(embed=embed)
                     return

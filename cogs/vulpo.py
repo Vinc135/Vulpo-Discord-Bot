@@ -371,7 +371,6 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
 > <:v_74:1264265910232023123> Minispiele
 
 **Letzte Updates**
-<:v_12:1264264683427336259> Erhalte Support hier: https://vulpo-bot.de/ticketsystem
 <:v_12:1264264683427336259> Benachrichtigungen von Youtube: `/benachrichtigung youtube`
 
 **Links**
@@ -476,7 +475,7 @@ Für mehr Hilfe, joine bitte unserem [Support-Server ➚](https://discord.gg/49j
         
         await interaction.response.defer()
         
-        embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"Bekomme Hilfe", description=f"Wenn du Hilfe benötigst, kannst du meinem Supportserver über [diesen Link](https://discord.gg/49jD3VXksp) beitreten.\nFalls du ein Ticket eröffnen möchtest kannst du das [auf dieser Webseite](https://vulpo-bot.de/ticketsystem) tun.")
+        embed = discord.Embed(colour=await getcolour(self, interaction.user), title=f"Bekomme Hilfe", description=f"Wenn du Hilfe benötigst, kannst du meinem Supportserver über [diesen Link](https://discord.gg/49jD3VXksp) beitreten.")
         
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         await interaction.followup.send(embed=embed)
