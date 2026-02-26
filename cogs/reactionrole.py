@@ -2,7 +2,7 @@ import typing
 import discord
 from discord.ext import commands
 from discord import app_commands
-from utils.utils import getcolour, haspremium_forserver
+from utils.utils import getcolour
 from utils.MongoDB import getMongoDataBase
 #########
 

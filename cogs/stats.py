@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 import matplotlib
 import os
-from utils.utils import getcolour, haspremium_forserver
+from utils.utils import getcolour
 from utils.MongoDB import getMongoDataBase
 import mplcyberpunk
 import json

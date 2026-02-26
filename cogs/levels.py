@@ -9,7 +9,7 @@ import math
 from discord import app_commands
 import typing
 from easy_pil import Editor, Canvas, load_image_async, Font
-from utils.utils import getcolour, haspremium_forserver, haspremium
+from utils.utils import getcolour
 from utils.MongoDB import getMongoDataBase
 
 async def checkstatus(self, guild):
@@ -385,13 +385,46 @@ class levelsystem(commands.Cog):
 
 
         user = await interaction.guild.fetch_member(member.id)
-        
-        status = await haspremium(self, user)
-                    
-        if not status:
-            user = await interaction.guild.fetch_member(member.id)
+        if os.path.exists(f"Medien/Rank_Bilder/{member.id}.png"):
+            background = Editor(f"Medien/Rank_Bilder/{member.id}.png")
+            profile = await load_image_async(str(member.avatar))
+
+            profile = Editor(profile).resize((125, 125)).circle_image()
+            square = Canvas((300, 300), "#FFFFFF")
+            square = Editor(square)
+            square.rotate(30, expand=True)
+            background.paste(profile.image, (32, 43))
+
+            # Progress-Bar Parameter
+            xp_progress = xp_start
+            xp_needed = xp_end
+            progress_bar_width = 800
+            progress_bar_height = 40
+            progress_bar_x = 100
+            progress_bar_y = 190
+
+            farbe = None
+            
+            farbe = f"#{getcolour(self, user)}"
+            progress_bar_fill_width = int(progress_bar_width * xp_progress / xp_needed)
+            background.rectangle(position=(progress_bar_x, progress_bar_y), outline="white", width=progress_bar_width, height=progress_bar_height)
+            background.rectangle(position=(progress_bar_x, progress_bar_y), fill=farbe, outline=None, width=progress_bar_fill_width, height=40)
+
+            poppins = Font.poppins("bold", size=40)
+            poppins_small = Font.poppins("bold", size=30)
+
+            # Texte
+            background.text((165, 65), limit_characters(str(member), 13), color="white", font=poppins)
+            background.text((750, 61), f"Level {lvl_start}", color="white", font=poppins_small)
+            background.text((180, 123), f"Rang {rang}", color="white", font=poppins)
+            background.text((750, 95), f"{xp_start}/{xp_end}", color="white", font=poppins_small)
+
+            file = File(fp=background.image_bytes, filename="rang.png")
+            return await interaction.followup.send(file=file)
+        else:
+            user = interaction.guild.get_member(member.id)
             ## Rank card
-            if prozent >= 0:
+            if prozent > 0:
                 background = Editor("Medien/Rank_Bilder/Rank_Image_Entwurf_0%.png")
             if prozent > 10:
                 background = Editor("Medien/Rank_Bilder/Rank_Image_Entwurf_10%.png")
@@ -428,83 +461,6 @@ class levelsystem(commands.Cog):
             background.text((300, 123), f"{rang}", color="white", font=poppins)
             file = File(fp=background.image_bytes, filename="rang.png")
             return await interaction.followup.send(file=file)
-        else:
-            if os.path.exists(f"Rank_Bilder/{member.id}.png"):
-                background = Editor(f"Rank_Bilder/{member.id}.png")
-                profile = await load_image_async(str(member.avatar))
-
-                profile = Editor(profile).resize((125, 125)).circle_image()
-                square = Canvas((300, 300), "#FFFFFF")
-                square = Editor(square)
-                square.rotate(30, expand=True)
-                background.paste(profile.image, (32, 43))
-
-                # Progress-Bar Parameter
-                xp_progress = xp_start
-                xp_needed = xp_end
-                progress_bar_width = 800
-                progress_bar_height = 40
-                progress_bar_x = 100
-                progress_bar_y = 190
-
-                farbe = None
-                
-                farbe = f"#{getcolour(self, user)}"
-                progress_bar_fill_width = int(progress_bar_width * xp_progress / xp_needed)
-                background.rectangle(position=(progress_bar_x, progress_bar_y), outline="white", width=progress_bar_width, height=progress_bar_height)
-                background.rectangle(position=(progress_bar_x, progress_bar_y), fill=farbe, outline=None, width=progress_bar_fill_width, height=40)
-
-                poppins = Font.poppins("bold", size=40)
-                poppins_small = Font.poppins("bold", size=30)
-
-                # Texte
-                background.text((165, 65), limit_characters(str(member), 13), color="white", font=poppins)
-                background.text((750, 61), f"Level {lvl_start}", color="white", font=poppins_small)
-                background.text((180, 123), f"Rang {rang}", color="white", font=poppins)
-                background.text((750, 95), f"{xp_start}/{xp_end}", color="white", font=poppins_small)
-
-                file = File(fp=background.image_bytes, filename="rang.png")
-                return await interaction.followup.send(file=file)
-            else:
-                user = interaction.guild.get_member(member.id)
-                ## Rank card
-                if prozent > 0:
-                    background = Editor("Medien/Rank_Bilder/Rank_Image_Entwurf_0%.png")
-                if prozent > 10:
-                    background = Editor("Medien/Rank_Bilder/Rank_Image_Entwurf_10%.png")
-                if prozent > 20:
-                    background = Editor("Medien/Rank_Bilder/Rank_Image_Entwurf_20%.png")
-                if prozent > 30:
-                    background = Editor("Medien/Rank_Bilder/Rank_Image_Entwurf_30%.png")
-                if prozent > 40:
-                    background = Editor("Medien/Rank_Bilder/Rank_Image_Entwurf_40%.png")
-                if prozent > 50:
-                    background = Editor("Medien/Rank_Bilder/Rank_Image_Entwurf_50%.png")
-                if prozent > 60:
-                    background = Editor("Medien/Rank_Bilder/Rank_Image_Entwurf_60%.png")
-                if prozent > 70:
-                    background = Editor("Medien/Rank_Bilder/Rank_Image_Entwurf_70%.png")
-                if prozent > 80:
-                    background = Editor("Medien/Rank_Bilder/Rank_Image_Entwurf_80%.png")
-                if prozent > 90:
-                    background = Editor("Medien/Rank_Bilder/Rank_Image_Entwurf_90%.png")
-                if prozent >= 100:
-                    background = Editor("Medien/Rank_Bilder/Rank_Image_Entwurf_100%.png")
-                profile = await load_image_async(str(member.avatar))
-
-                profile = Editor(profile).resize((125, 125)).circle_image()
-                square = Canvas((300, 300), "#06FFBF")
-                square = Editor(square)
-                square.rotate(30, expand=True)
-                background.paste(profile.image, (32, 43))
-                poppins = Font.poppins("bold", size=40)
-                poppins_small = Font.poppins("bold", size=30)
-                background.text((165, 65), limit_characters(str(member), 13), color="white", font=poppins)
-                background.text((770, 195), f"{xp_start}/{round(xp_end)}", color="white", font=poppins_small)
-                background.text((830, 61), f"{lvl_start}", color="white", font=poppins_small)
-                background.text((300, 123), f"{rang}", color="white", font=poppins)
-                file = File(fp=background.image_bytes, filename="rang.png")
-                return await interaction.followup.send(file=file)
         
     @levelsystem.command()
     @app_commands.checks.has_permissions(administrator=True)

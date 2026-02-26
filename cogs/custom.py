@@ -33,20 +33,6 @@ class buttons(discord.ui.View):
     async def nein(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.edit_message(embed=None, view=None, content="**<:v_x:1264270921452224562> Alles klar, die Farbe wurde nicht geändert. Du kannst jederzeit diesen Befehl erneut ausführen, um die Farbe aller Embeds zu ändern.**")
 
-async def remove_expired_users(self):
-    current_timestamp = datetime.datetime.now().timestamp()
-    
-    db = getMongoDataBase()
-    
-    result = db["premium"].find().to_list(length=None)
-    
-    for user in result:
-        if user["endtime"] == None:
-            continue
-        
-        if user["endtime"] < current_timestamp:
-            await db["premium"].delete_one({"userID": str(user["userID"])})
-
 class premium(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -84,7 +70,7 @@ class premium(commands.Cog):
             return await interaction.response.send_message("<:v_x:1264270921452224562> **Das Bild muss im PNG-Format vorliegen.**", ephemeral=True)
         
         bild.save(f"Rank_Bilder/{interaction.user.id}.png")
-        fullpath = os.path.join("Rank_Bilder/", f"{interaction.user.id}.png")
+        fullpath = os.path.join("Medien/Rank_Bilder/", f"{interaction.user.id}.png")
         image.save(fullpath)
         await interaction.response.send_message("✅ **Das Bild wurde gesetzt. Teste es doch gleich mal mit `/rang`.**", ephemeral=True)
 
