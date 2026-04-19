@@ -8,6 +8,7 @@ from discord import app_commands
 from utils.utils import getcolour
 from utils.MongoDB import getMongoDataBase
 
+
 class joblist(discord.ui.View):
     def __init__(self, interaction=None, bot=None, s=None, author=None):
         super().__init__(timeout=None)
@@ -500,347 +501,382 @@ class economy(commands.Cog):
     async def anzeigen(self, interaction: discord.Interaction, user: discord.User=None):
         """Verwalte deine Cookies."""
         
-        await interaction.response.defer()
-        member = user or interaction.user  
-        
-        acc = await open_acc(self, member)
-        embed = discord.Embed(
-            title=f"{member.name}'s supertolles Konto", 
-            color=await getcolour(self, member), 
-            description="> Dein Rucksack hat viel Platz. Dort findest du deine Items und deine Cookies."
-        )
-        embed.add_field(name="Rucksack", value=f"{acc['rucksack']} 🍪")
-        embed.add_field(name="Bank", value=f"{acc['bank']} 🍪")
-        embed.add_field(name='Beruf', value=f"{acc['job']}, :stopwatch: {acc['stunden']} Stunden")
-        
-        items = await getuseritems(self, member)
-        
-        if items:
-            string = ""
-            wert = 0
-            for item in items:
-                wert += int(item["preis"])
-                if string == "":
-                    string += f"{item['titel']} ({item['preis']}🍪)"
-                else:
-                    string += f", {item['titel']} ({item['preis']}🍪)"
-            string += f"\n\n**Items Wert: {wert}.** Mit Glück bekommst du mehr Cookies beim Verkauf als du ausgegeben hast."
-            embed.add_field(name="Items", value=string)
-        
-        embed.set_thumbnail(url=member.avatar.url)
-        embed.set_footer(
-            text="Interesse an einem täglich steigenden Cookie Bonus? Befehl: /daily", 
-            icon_url="https://cdn.discordapp.com/filename/814202875387183145.png"
-        )
-        await interaction.followup.send(embed=embed)
+        try:
+            await interaction.response.defer()
+            member = user or interaction.user  
+            
+            acc = await open_acc(self, member)
+            embed = discord.Embed(
+                title=f"{member.name}'s supertolles Konto", 
+                color=await getcolour(self, member), 
+                description="> Dein Rucksack hat viel Platz. Dort findest du deine Items und deine Cookies."
+            )
+            embed.add_field(name="Rucksack", value=f"{acc['rucksack']} 🍪")
+            embed.add_field(name="Bank", value=f"{acc['bank']} 🍪")
+            embed.add_field(name='Beruf', value=f"{acc['job']}, :stopwatch: {acc['stunden']} Stunden")
+            
+            items = await getuseritems(self, member)
+            
+            if items:
+                string = ""
+                wert = 0
+                for item in items:
+                    wert += int(item["preis"])
+                    if string == "":
+                        string += f"{item['titel']} ({item['preis']}🍪)"
+                    else:
+                        string += f", {item['titel']} ({item['preis']}🍪)"
+                string += f"\n\n**Items Wert: {wert}.** Mit Glück bekommst du mehr Cookies beim Verkauf als du ausgegeben hast."
+                embed.add_field(name="Items", value=string)
+            
+            embed.set_thumbnail(url=member.avatar.url)
+            embed.set_footer(
+                text="Interesse an einem täglich steigenden Cookie Bonus? Befehl: /daily", 
+                icon_url="https://cdn.discordapp.com/filename/814202875387183145.png"
+            )
+            await interaction.followup.send(embed=embed)
+        except:
+            app_commands.Cooldown.reset()
 
     @cookies.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def abheben(self, interaction: discord.Interaction, betrag: int):
         """Bekomme Cookies von der Bank."""
-        await interaction.response.defer()
-        acc = await open_acc(self, interaction.user)
-        rucksack = int(acc["rucksack"])
-        bank = int(acc["bank"])
-        if betrag > int(bank):
-            await interaction.followup.send(f"<:v_x:1264270921452224562> Du hast nicht **{betrag} 🍪** auf deiner Bank. Es fehlen dir **{betrag - bank} 🍪**.", ephemeral=True)
-            return
-        if betrag < 0:
-            await interaction.followup.send(f"<:v_x:1264270921452224562> Der Betrag muss eine positive Zahl sein.", ephemeral=True)
-            return
 
-        await update_account(self, interaction.user, "bank", 0, betrag)
-        await update_account(self, interaction.user, "rucksack", betrag, 0)
+        try:
+            await interaction.response.defer()
+            acc = await open_acc(self, interaction.user)
+            rucksack = int(acc["rucksack"])
+            bank = int(acc["bank"])
+            if betrag > int(bank):
+                await interaction.followup.send(f"<:v_x:1264270921452224562> Du hast nicht **{betrag} 🍪** auf deiner Bank. Es fehlen dir **{betrag - bank} 🍪**.", ephemeral=True)
+                return
+            if betrag < 0:
+                await interaction.followup.send(f"<:v_x:1264270921452224562> Der Betrag muss eine positive Zahl sein.", ephemeral=True)
+                return
 
-        await interaction.followup.send(f"<:v_checkmark:1264271011818242159> Ich habe **{betrag} 🍪** von deiner Bank abgehoben. Du hast nun **{rucksack + betrag} 🍪** in deinem Rucksack und **{bank - betrag} 🍪** auf deiner Bank.")
+            await update_account(self, interaction.user, "bank", 0, betrag)
+            await update_account(self, interaction.user, "rucksack", betrag, 0)
+
+            await interaction.followup.send(f"<:v_checkmark:1264271011818242159> Ich habe **{betrag} 🍪** von deiner Bank abgehoben. Du hast nun **{rucksack + betrag} 🍪** in deinem Rucksack und **{bank - betrag} 🍪** auf deiner Bank.")
+        except:
+            app_commands.Cooldown.reset()
     
     @cookies.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def einzahlen(self, interaction: discord.Interaction, betrag: int):
         """Überweise Cookies auf deine Bank."""
-        await interaction.response.defer()
-        acc = await open_acc(self, interaction.user)
-        rucksack = int(acc["rucksack"])
-        bank = int(acc["bank"])
-        if betrag > int(rucksack):
-            await interaction.followup.send(f"<:v_x:1264270921452224562> Du hast nicht **{betrag} 🍪** auf deiner Bank. Es fehlen dir **{betrag - rucksack} 🍪**.", ephemeral=True)
-            return
-        if betrag < 0:
-            await interaction.followup.send(f"<:v_x:1264270921452224562> Der Betrag muss eine positive Zahl sein.", ephemeral=True)
-            return
 
-        await update_account(self, interaction.user, "rucksack", 0, betrag)
-        await update_account(self, interaction.user, "bank", betrag, 0)
+        try:
+            await interaction.response.defer()
+            acc = await open_acc(self, interaction.user)
+            rucksack = int(acc["rucksack"])
+            bank = int(acc["bank"])
+            if betrag > int(rucksack):
+                await interaction.followup.send(f"<:v_x:1264270921452224562> Du hast nicht **{betrag} 🍪** auf deiner Bank. Es fehlen dir **{betrag - rucksack} 🍪**.", ephemeral=True)
+                return
+            if betrag < 0:
+                await interaction.followup.send(f"<:v_x:1264270921452224562> Der Betrag muss eine positive Zahl sein.", ephemeral=True)
+                return
 
-        await interaction.followup.send(f"<:v_checkmark:1264271011818242159> Ich habe **{betrag} 🍪** auf deine Bank überwiesen. Du hast nun **{rucksack - betrag} 🍪** in deinem Rucksack und **{bank + betrag} 🍪** auf deiner Bank.")
+            await update_account(self, interaction.user, "rucksack", 0, betrag)
+            await update_account(self, interaction.user, "bank", betrag, 0)
+
+            await interaction.followup.send(f"<:v_checkmark:1264271011818242159> Ich habe **{betrag} 🍪** auf deine Bank überwiesen. Du hast nun **{rucksack - betrag} 🍪** in deinem Rucksack und **{bank + betrag} 🍪** auf deiner Bank.")
+        except:
+            app_commands.Cooldown.reset()
 
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3600, key=lambda i: (i.user.id))
     async def beg(self, interaction: discord.Interaction):
         """Bettle für Cookies."""
-        await interaction.response.defer()
-        x = random.randint(0, 1000)
-        if int(x) <= 400:
-            earnings = random.randint(30, 50)
-            em = discord.Embed(title=f"Bettel command", description=f"Ein alter Mann hat dir **{earnings}** 🍪 gegeben.", color=await getcolour(self, interaction.user))
-            em.set_footer(text="Du kannst mit dem Command work schneller Geld verdienen.",
-                          icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
-            em.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-            await update_account(self, interaction.user, "rucksack", earnings, 0)
-            await interaction.followup.send(embed=em)
-            return
-        if int(x) <= 900:
-            earnings = random.randint(1, 30)
-            em = discord.Embed(title=f"Bettel command",
-                               description=f"Jemand gab dir **{earnings}** 🍪.",
-                               color=await getcolour(self, interaction.user))
-            em.set_footer(text="Du kannst mit dem Command work schneller Geld verdienen.",
-                          icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
-            em.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-            await update_account(self, interaction.user, "rucksack", earnings, 0)
-            await interaction.followup.send(embed=em)
-            return
-        if int(x) <= 999:
-            em = discord.Embed(title=f"Bettel command",
-                               description=f"Du hast nichts bekommen",
-                               color=await getcolour(self, interaction.user))
-            em.set_footer(text="Du kannst mit dem Command work schneller Geld verdienen.",
-                          icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
-            em.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-            await interaction.followup.send(embed=em)
-            return
-        if int(x) == 1000:
-            earnings = random.randint(1000, 10000)
-            em = discord.Embed(title=f"Bettel command",
-                               description=f"Du hast so viel Glück!!!\nDie Chance, dies zu bekommen, ist 1 zu 1000\nDu hast {earnings} 🍪 erhalten.",
-                               color=await getcolour(self, interaction.user))
-            em.set_footer(text="Du kannst mit dem Command work schneller Geld verdienen.",
-                          icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
-            em.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-            await update_account(self, interaction.user, "rucksack", earnings, 0)
-            await interaction.followup.send(embed=em)
-            return
+
+        try:
+            await interaction.response.defer()
+            x = random.randint(0, 1000)
+            if int(x) <= 400:
+                earnings = random.randint(30, 50)
+                em = discord.Embed(title=f"Bettel command", description=f"Ein alter Mann hat dir **{earnings}** 🍪 gegeben.", color=await getcolour(self, interaction.user))
+                em.set_footer(text="Du kannst mit dem Command work schneller Geld verdienen.",
+                            icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
+                em.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                await update_account(self, interaction.user, "rucksack", earnings, 0)
+                await interaction.followup.send(embed=em)
+                return
+            if int(x) <= 900:
+                earnings = random.randint(1, 30)
+                em = discord.Embed(title=f"Bettel command",
+                                description=f"Jemand gab dir **{earnings}** 🍪.",
+                                color=await getcolour(self, interaction.user))
+                em.set_footer(text="Du kannst mit dem Command work schneller Geld verdienen.",
+                            icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
+                em.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                await update_account(self, interaction.user, "rucksack", earnings, 0)
+                await interaction.followup.send(embed=em)
+                return
+            if int(x) <= 999:
+                em = discord.Embed(title=f"Bettel command",
+                                description=f"Du hast nichts bekommen",
+                                color=await getcolour(self, interaction.user))
+                em.set_footer(text="Du kannst mit dem Command work schneller Geld verdienen.",
+                            icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
+                em.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                await interaction.followup.send(embed=em)
+                return
+            if int(x) == 1000:
+                earnings = random.randint(1000, 10000)
+                em = discord.Embed(title=f"Bettel command",
+                                description=f"Du hast so viel Glück!!!\nDie Chance, dies zu bekommen, ist 1 zu 1000\nDu hast {earnings} 🍪 erhalten.",
+                                color=await getcolour(self, interaction.user))
+                em.set_footer(text="Du kannst mit dem Command work schneller Geld verdienen.",
+                            icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
+                em.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                await update_account(self, interaction.user, "rucksack", earnings, 0)
+                await interaction.followup.send(embed=em)
+                return
+        except:
+            app_commands.Cooldown.reset()
 
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 86400 , key=lambda i: (i.user.id))
     async def daily(self, interaction: discord.Interaction):
         """Sammle deinen täglichen Cookie-Bonus ein."""
-        await interaction.response.defer()
-        db = getMongoDataBase()
-        
-        result = await db["economy_streak"].find_one({"userID": str(interaction.user.id)})
-        now = datetime.now()
-        if result is not None:
-            streak = result["streak"]
-            last_claim_stamp = result["timestamp"]
-            last_claim = datetime.fromtimestamp(float(last_claim_stamp))
-            delta = now - last_claim
-            if delta > timedelta(hours=48):
-                await db["economy_streak"].update_one({"userID": str(interaction.user.id)}, {"$set": {"streak": 1}})
-                await db["economy_streak"].update_one({"userID": str(interaction.user.id)}, {"$set": {"timestamp": str(now.timestamp())}})
+
+        try:
+            await interaction.response.defer()
+            db = getMongoDataBase()
+            
+            result = await db["economy_streak"].find_one({"userID": str(interaction.user.id)})
+            now = datetime.now()
+            if result is not None:
+                streak = result["streak"]
+                last_claim_stamp = result["timestamp"]
+                last_claim = datetime.fromtimestamp(float(last_claim_stamp))
+                delta = now - last_claim
+                if delta > timedelta(hours=48):
+                    await db["economy_streak"].update_one({"userID": str(interaction.user.id)}, {"$set": {"streak": 1}})
+                    await db["economy_streak"].update_one({"userID": str(interaction.user.id)}, {"$set": {"timestamp": str(now.timestamp())}})
+                    earnings = 50
+                    await update_account(self, interaction.user, "rucksack", earnings, 0)
+                    embed = discord.Embed(title="Täglicher Bonus", description=f"Du hast deinen täglichen Bonus eingefordert und dafür **{earnings} 🍪** bekommen. Leider warst du zu spät und dein Daily Streak von **{streak}🔥** wurde auf **1** zurückgesetzt.", color=await getcolour(self, interaction.user))
+                    
+                    await interaction.followup.send(embed=embed)
+                    return
+                else:
+                    await db["economy_streak"].update_one({"userID": str(interaction.user.id)}, {"$set": {"streak": int(streak) + 1}})
+                    await db["economy_streak"].update_one({"userID": str(interaction.user.id)}, {"$set": {"timestamp": str(now.timestamp())}})
+                    earnings = 50 + ((streak + 1) * 5)
+                    await update_account(self, interaction.user, "rucksack", earnings, 0)
+                    embed = discord.Embed(title="Täglicher Bonus", description=f"Du hast deinen täglichen Bonus eingefordert und dafür **{earnings} 🍪** bekommen. Du kamst rechtzeitig und hast deinen Streak erhöht.", color=await getcolour(self, interaction.user))
+                    embed.set_footer(text=f"Er liegt nun bei {streak + 1}🔥", icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
+                    await interaction.followup.send(embed=embed)
+                    return
+            if result is None:
+                await db["economy_streak"].insert_one({"streak": 1, "timestamp": str(now.timestamp()), "userID": str(interaction.user.id)})
                 earnings = 50
                 await update_account(self, interaction.user, "rucksack", earnings, 0)
-                embed = discord.Embed(title="Täglicher Bonus", description=f"Du hast deinen täglichen Bonus eingefordert und dafür **{earnings} 🍪** bekommen. Leider warst du zu spät und dein Daily Streak von **{streak}🔥** wurde auf **1** zurückgesetzt.", color=await getcolour(self, interaction.user))
-                
+                embed = discord.Embed(title="Täglicher Bonus", description=f"Du hast deinen täglichen Bonus eingefordert und dafür **{earnings} 🍪** bekommen. Oh, du bist neu 🔎! Wenn du innerhalb von 48 Stunden diesen Befehl erneut ausführst, bekommst du immer mehr Cookies.", color=await getcolour(self, interaction.user))
+                embed.set_footer(text=f"Er liegt nun bei 1🔥", icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
                 await interaction.followup.send(embed=embed)
-                return
-            else:
-                await db["economy_streak"].update_one({"userID": str(interaction.user.id)}, {"$set": {"streak": int(streak) + 1}})
-                await db["economy_streak"].update_one({"userID": str(interaction.user.id)}, {"$set": {"timestamp": str(now.timestamp())}})
-                earnings = 50 + ((streak + 1) * 5)
-                await update_account(self, interaction.user, "rucksack", earnings, 0)
-                embed = discord.Embed(title="Täglicher Bonus", description=f"Du hast deinen täglichen Bonus eingefordert und dafür **{earnings} 🍪** bekommen. Du kamst rechtzeitig und hast deinen Streak erhöht.", color=await getcolour(self, interaction.user))
-                embed.set_footer(text=f"Er liegt nun bei {streak + 1}🔥", icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
-                await interaction.followup.send(embed=embed)
-                return
-        if result is None:
-            await db["economy_streak"].insert_one({"streak": 1, "timestamp": str(now.timestamp()), "userID": str(interaction.user.id)})
-            earnings = 50
-            await update_account(self, interaction.user, "rucksack", earnings, 0)
-            embed = discord.Embed(title="Täglicher Bonus", description=f"Du hast deinen täglichen Bonus eingefordert und dafür **{earnings} 🍪** bekommen. Oh, du bist neu 🔎! Wenn du innerhalb von 48 Stunden diesen Befehl erneut ausführst, bekommst du immer mehr Cookies.", color=await getcolour(self, interaction.user))
-            embed.set_footer(text=f"Er liegt nun bei 1🔥", icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
-            await interaction.followup.send(embed=embed)
+        except:
+            app_commands.Cooldown.reset()
 
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3600, key=lambda i: (i.user.id))
     async def work(self, interaction: discord.Interaction):
         """Gehe zur Arbeit mit deinem aktuellen Job."""
-        await interaction.response.defer()
+
         try:
-            if await get_job(self, interaction.user) != "Kein Job":
-                beruf = await get_job(self, interaction.user)
-                for job in jobs:
-                    if job["name"] == str(beruf):
-                        earnings = int(random.randint(job["amt"][0], job["amt"][1]))
-                        await work(self, interaction.user)
-                        text = [f"Du hast als **{beruf}** gearbeitet und hast dafür **{earnings} 🍪** bekommen!", f"Eine erfolgreiche Arbeitsstunde als **{beruf}** hat dir **{earnings} 🍪** gebracht!", f"Nach einer harten Arbeitsstunde als **{beruf}** hat dich dein Chef mit **{earnings} 🍪** bezahlt!"]
-                        endtext = random.choice(text)
-                        await update_account(self, interaction.user, "bank", earnings, 0)
-                        embed = discord.Embed(title="Du hast gearbeitet", description=endtext, color=await getcolour(self, interaction.user))
-                        acc = await open_acc(self, interaction.user)
-                        embed.set_footer(text=f"Deine Arbeitsstunden: {acc['stunden']}", icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
-                        await interaction.followup.send(embed=embed)
-            else:
-                await interaction.followup.send(f"<:v_x:1264270921452224562> Du musst dich zuerst für einen Job bewerben!\nAlle Jobs siehst du mit dem Befehl `/job list`\nNutze `/job apply <job>` um dich für einen Job zu bewerben.", ephemeral=True)
-        except Exception as e:
-            print("work: " + e.with_traceback())
+            await interaction.response.defer()
+            try:
+                if await get_job(self, interaction.user) != "Kein Job":
+                    beruf = await get_job(self, interaction.user)
+                    for job in jobs:
+                        if job["name"] == str(beruf):
+                            earnings = int(random.randint(job["amt"][0], job["amt"][1]))
+                            await work(self, interaction.user)
+                            text = [f"Du hast als **{beruf}** gearbeitet und hast dafür **{earnings} 🍪** bekommen!", f"Eine erfolgreiche Arbeitsstunde als **{beruf}** hat dir **{earnings} 🍪** gebracht!", f"Nach einer harten Arbeitsstunde als **{beruf}** hat dich dein Chef mit **{earnings} 🍪** bezahlt!"]
+                            endtext = random.choice(text)
+                            await update_account(self, interaction.user, "bank", earnings, 0)
+                            embed = discord.Embed(title="Du hast gearbeitet", description=endtext, color=await getcolour(self, interaction.user))
+                            acc = await open_acc(self, interaction.user)
+                            embed.set_footer(text=f"Deine Arbeitsstunden: {acc['stunden']}", icon_url="https://cdn.discordapp.com/filename/814202875387183145.png")
+                            await interaction.followup.send(embed=embed)
+                else:
+                    await interaction.followup.send(f"<:v_x:1264270921452224562> Du musst dich zuerst für einen Job bewerben!\nAlle Jobs siehst du mit dem Befehl `/job list`\nNutze `/job apply <job>` um dich für einen Job zu bewerben.", ephemeral=True)
+            except Exception as e:
+                print("work: " + e.with_traceback())
+        except:
+            app_commands.Cooldown.reset()
         
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def send(self, interaction: discord.Interaction, user: discord.User, betrag: int):
         """Sende Cookies zu einem anderen User."""
-        await interaction.response.defer()
-        if user == interaction.user:
-            await interaction.followup.send("<:v_x:1264270921452224562> Du kannst dir keine Cookies selber senden.", ephemeral=True)
-            return
-        acc = await open_acc(self, interaction.user)
-        rucksack = int(acc["rucksack"])
-        if betrag > int(rucksack):
-            await interaction.followup.send(f"<:v_x:1264270921452224562> Du hast nicht so viele Cookies in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
-            return
-        if betrag < 0:
-            await interaction.followup.send(f"<:v_x:1264270921452224562> Der Betrag muss eine positive Zahl sein. Beispiel: `/send @Vinc {betrag*-1}`", ephemeral=True)
-            return
 
-        await update_account(self, interaction.user, "rucksack", 0, betrag)
-        await update_account(self, user, "rucksack", betrag, 0)
-        await interaction.followup.send(f"<:v_checkmark:1264271011818242159> {user.mention} hat **{betrag} 🍪** von dir erhalten. Du hast nun **{rucksack - betrag} 🍪** in deinem Rucksack.")
+        try:
+            await interaction.response.defer()
+            if user == interaction.user:
+                await interaction.followup.send("<:v_x:1264270921452224562> Du kannst dir keine Cookies selber senden.", ephemeral=True)
+                return
+            acc = await open_acc(self, interaction.user)
+            rucksack = int(acc["rucksack"])
+            if betrag > int(rucksack):
+                await interaction.followup.send(f"<:v_x:1264270921452224562> Du hast nicht so viele Cookies in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
+                return
+            if betrag < 0:
+                await interaction.followup.send(f"<:v_x:1264270921452224562> Der Betrag muss eine positive Zahl sein. Beispiel: `/send @Vinc {betrag*-1}`", ephemeral=True)
+                return
+
+            await update_account(self, interaction.user, "rucksack", 0, betrag)
+            await update_account(self, user, "rucksack", betrag, 0)
+            await interaction.followup.send(f"<:v_checkmark:1264271011818242159> {user.mention} hat **{betrag} 🍪** von dir erhalten. Du hast nun **{rucksack - betrag} 🍪** in deinem Rucksack.")
+        except:
+            app_commands.Cooldown.reset()
 
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3500, key=lambda i: (i.user.id))
     async def rob(self, interaction: discord.Interaction, user: discord.User):
         """Raube einen User aus."""
-        await interaction.response.defer()
-        if user == interaction.user:
-            await interaction.followup.send("<:v_x:1264270921452224562> Du kannst dir selber keine Cookies klauen.", ephemeral=True)
-            return
-        
-        acc = await open_acc(self, user)
-        rucksack = int(acc["rucksack"])
-        if rucksack < 50:
-            await interaction.followup.send(f"<:v_x:1264270921452224562> {user} hat nicht viele Cookies. Versuche jemand anderen auszurauben.", ephemeral=True)
-            return
-        
-        if rucksack > 50:
-            x = random.randint(1, 100)
-            if x < 25:
-                strafe = random.randint(50, rucksack)
-                embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Guter Versuch!",
-                                        description=f"Du wurdest beim Ausrauben von {user} erwischt! Du musst **{strafe} 🍪** als Strafe zahlen.")
-                embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-                
-                await update_account(self, interaction.user, "rucksack", 0, strafe)
-                await interaction.followup.send(embed=embed)
-                return
 
-            if x > 25:
-                earnings = random.randint(50, rucksack)
-                embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Glück gehabt!",
-                                        description=f"Du hast {user} erfolgreich ausgeraubt und **{earnings} 🍪** bekommen.")
-                embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-                
-                await update_account(self, interaction.user, "rucksack", earnings, 0)
-                await update_account(self, user, "rucksack", 0, earnings)
-                await interaction.followup.send(embed=embed)
+        try:
+            await interaction.response.defer()
+            if user == interaction.user:
+                await interaction.followup.send("<:v_x:1264270921452224562> Du kannst dir selber keine Cookies klauen.", ephemeral=True)
                 return
+            
+            acc = await open_acc(self, user)
+            rucksack = int(acc["rucksack"])
+            if rucksack < 50:
+                await interaction.followup.send(f"<:v_x:1264270921452224562> {user} hat nicht viele Cookies. Versuche jemand anderen auszurauben.", ephemeral=True)
+                return
+            
+            if rucksack > 50:
+                x = random.randint(1, 100)
+                if x < 25:
+                    strafe = random.randint(50, rucksack)
+                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Guter Versuch!",
+                                            description=f"Du wurdest beim Ausrauben von {user} erwischt! Du musst **{strafe} 🍪** als Strafe zahlen.")
+                    embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                    
+                    await update_account(self, interaction.user, "rucksack", 0, strafe)
+                    await interaction.followup.send(embed=embed)
+                    return
+
+                if x > 25:
+                    earnings = random.randint(50, rucksack)
+                    embed = discord.Embed(colour=await getcolour(self, interaction.user), title="Glück gehabt!",
+                                            description=f"Du hast {user} erfolgreich ausgeraubt und **{earnings} 🍪** bekommen.")
+                    embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                    
+                    await update_account(self, interaction.user, "rucksack", earnings, 0)
+                    await update_account(self, user, "rucksack", 0, earnings)
+                    await interaction.followup.send(embed=embed)
+                    return
+        except:
+            app_commands.Cooldown.reset()
 
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def slot(self, interaction: discord.Interaction, betrag: int):
         """Teste dein Glück."""
-        # überprüfen ob er geld hat
-        
-        await interaction.response.defer()
-        
-        acc = await open_acc(self, interaction.user)
-        rucksack = int(acc["rucksack"])
 
-        if betrag < 0:
-            await interaction.followup.send(f"<:v_x:1264270921452224562> Der Betrag muss eine positive Zahl sein. Beispiel: `/slot {betrag*-1}`", ephemeral=True)
-            return
-        if betrag > rucksack:
-            await interaction.followup.send(f"<:v_x:1264270921452224562> Du hast nicht so viele Cookies in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
-            return
-        # results
-        choices = ["🍇", "🍋", "🍒", "🍓", "🍊"]
-        e1 = random.choice(choices)
-        e2 = random.choice(choices)
-        e3 = random.choice(choices)
-
-        # embed1
-        embed1 = discord.Embed(colour=await getcolour(self, interaction.user),
-                               description="🎰 Slots")
-        embed1.add_field(name=f"Slots:",
-                         value=f"[<a:slot:1037066744105291918> <a:slot:1037066744105291918> <a:slot:1037066744105291918>]",
-                         inline=False)
-        embed1.add_field(name="💰 Einsatz", value=f"{betrag} 🍪", inline=False)
-        embed1.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-        
-
-        # embed2
-        embed2 = discord.Embed(colour=await getcolour(self, interaction.user),
-                               description="🎰 Slots")
-        embed2.add_field(name=f"Slots", value=f"[{e1} <a:slot:1037066744105291918> <a:slot:1037066744105291918>]",
-                         inline=False)
-        embed2.add_field(name="💰 Einsatz", value=f"{betrag} 🍪", inline=False)
-        embed2.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-        
-
-        # embed3
-        embed3 = discord.Embed(colour=await getcolour(self, interaction.user),
-                               description="🎰 Slots")
-        embed3.add_field(name=f"Slots", value=f"[{e1} {e2} <a:slot:1037066744105291918>]", inline=False)
-        embed3.add_field(name="💰 Einsatz", value=f"{betrag} 🍪", inline=False)
-        embed3.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-        
-        # ergebnisse überprüfen
-        # embedchanges
-        await interaction.followup.send(embed=embed1)
-        await asyncio.sleep(1.5)
-        await interaction.edit_original_response(embed=embed2)
-        await asyncio.sleep(1.5)
-        await interaction.edit_original_response(embed=embed3)
-        if e1 == e2 == e3:
-            await asyncio.sleep(1.5)
-            embed4 = discord.Embed(colour=await getcolour(self, interaction.user),
-                                    description="🎰 Slots")
+        try:
+            # überprüfen ob er geld hat
             
-            embed4.add_field(name=f"Slots", value=f"[{e1} {e2} {e3}]", inline=False)
-            embed4.add_field(name="🏆 Gewinn", value=f"Du gewinnst {betrag * 3} 🍪",
-                                inline=False)
-            embed4.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-            await update_account(self, interaction.user, "rucksack", 6 * betrag, 0)
-            await interaction.edit_original_response(embed=embed4)
-            return
-        if e1 == e3 != e2 or e1 == e2 != e3 or e2 == e1 != e3 or e2 == e3 != e1 or e3 == e1 != e2 or e3 == e2 != e1:
-            await asyncio.sleep(1.5)
-            embed4 = discord.Embed(colour=await getcolour(self, interaction.user),
-                                    description="🎰 Slots")
-            embed4.add_field(name=f"Slots", value=f"[{e1} {e2} {e3}]", inline=False)
-            embed4.add_field(name="💰 Unentschieden", value=f"Du behältst {betrag} 🍪",
-                                inline=False)
-            embed4.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+            await interaction.response.defer()
             
-            await interaction.edit_original_response(embed=embed4)
-            return
-        else:
-            await asyncio.sleep(1.5)
-            embed4 = discord.Embed(colour=await getcolour(self, interaction.user),
-                                    description="🎰 Slots")
-            embed4.add_field(name=f"Slots", value=f"[{e1} {e2} {e3}]", inline=False)
-            embed4.add_field(name="💰 Verloren", value=f"Du verlierst {betrag} 🍪",
-                                inline=False)
-            embed4.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+            acc = await open_acc(self, interaction.user)
+            rucksack = int(acc["rucksack"])
+
+            if betrag < 0:
+                await interaction.followup.send(f"<:v_x:1264270921452224562> Der Betrag muss eine positive Zahl sein. Beispiel: `/slot {betrag*-1}`", ephemeral=True)
+                return
+            if betrag > rucksack:
+                await interaction.followup.send(f"<:v_x:1264270921452224562> Du hast nicht so viele Cookies in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
+                return
+            # results
+            choices = ["🍇", "🍋", "🍒", "🍓", "🍊"]
+            e1 = random.choice(choices)
+            e2 = random.choice(choices)
+            e3 = random.choice(choices)
+
+            # embed1
+            embed1 = discord.Embed(colour=await getcolour(self, interaction.user),
+                                description="🎰 Slots")
+            embed1.add_field(name=f"Slots:",
+                            value=f"[<a:slot:1037066744105291918> <a:slot:1037066744105291918> <a:slot:1037066744105291918>]",
+                            inline=False)
+            embed1.add_field(name="💰 Einsatz", value=f"{betrag} 🍪", inline=False)
+            embed1.set_author(name=interaction.user, icon_url=interaction.user.avatar)
             
-            await update_account(self, interaction.user, "rucksack", 0, betrag)
-            await interaction.edit_original_response(embed=embed4)
-            return
+
+            # embed2
+            embed2 = discord.Embed(colour=await getcolour(self, interaction.user),
+                                description="🎰 Slots")
+            embed2.add_field(name=f"Slots", value=f"[{e1} <a:slot:1037066744105291918> <a:slot:1037066744105291918>]",
+                            inline=False)
+            embed2.add_field(name="💰 Einsatz", value=f"{betrag} 🍪", inline=False)
+            embed2.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+            
+
+            # embed3
+            embed3 = discord.Embed(colour=await getcolour(self, interaction.user),
+                                description="🎰 Slots")
+            embed3.add_field(name=f"Slots", value=f"[{e1} {e2} <a:slot:1037066744105291918>]", inline=False)
+            embed3.add_field(name="💰 Einsatz", value=f"{betrag} 🍪", inline=False)
+            embed3.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+            
+            # ergebnisse überprüfen
+            # embedchanges
+            await interaction.followup.send(embed=embed1)
+            await asyncio.sleep(1.5)
+            await interaction.edit_original_response(embed=embed2)
+            await asyncio.sleep(1.5)
+            await interaction.edit_original_response(embed=embed3)
+            if e1 == e2 == e3:
+                await asyncio.sleep(1.5)
+                embed4 = discord.Embed(colour=await getcolour(self, interaction.user),
+                                        description="🎰 Slots")
+                
+                embed4.add_field(name=f"Slots", value=f"[{e1} {e2} {e3}]", inline=False)
+                embed4.add_field(name="🏆 Gewinn", value=f"Du gewinnst {betrag * 3} 🍪",
+                                    inline=False)
+                embed4.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                await update_account(self, interaction.user, "rucksack", 6 * betrag, 0)
+                await interaction.edit_original_response(embed=embed4)
+                return
+            if e1 == e3 != e2 or e1 == e2 != e3 or e2 == e1 != e3 or e2 == e3 != e1 or e3 == e1 != e2 or e3 == e2 != e1:
+                await asyncio.sleep(1.5)
+                embed4 = discord.Embed(colour=await getcolour(self, interaction.user),
+                                        description="🎰 Slots")
+                embed4.add_field(name=f"Slots", value=f"[{e1} {e2} {e3}]", inline=False)
+                embed4.add_field(name="💰 Unentschieden", value=f"Du behältst {betrag} 🍪",
+                                    inline=False)
+                embed4.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                
+                await interaction.edit_original_response(embed=embed4)
+                return
+            else:
+                await asyncio.sleep(1.5)
+                embed4 = discord.Embed(colour=await getcolour(self, interaction.user),
+                                        description="🎰 Slots")
+                embed4.add_field(name=f"Slots", value=f"[{e1} {e2} {e3}]", inline=False)
+                embed4.add_field(name="💰 Verloren", value=f"Du verlierst {betrag} 🍪",
+                                    inline=False)
+                embed4.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+                
+                await update_account(self, interaction.user, "rucksack", 0, betrag)
+                await interaction.edit_original_response(embed=embed4)
+                return
+        except:
+            app_commands.Cooldown.reset()
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -849,69 +885,78 @@ class economy(commands.Cog):
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
+    
     async def rps(self, interaction: discord.Interaction, betrag: int):
         """Game, Schere Stein Papier. Deine Reaktion ist deine Entscheidung."""
-        return await interaction.followup.send("**<:v_x:1264270921452224562> Der Befehl ist zurzeit nicht verfügbar.**", ephemeral=True)
-        # überprüfen ob er geld hat
-        acc = await open_acc(self, interaction.user)
-        rucksack = int(acc[0])
-        if betrag < 0:
-            await interaction.followup.send(f"<:v_x:1264270921452224562> Der Betrag muss eine positive Zahl sein.", ephemeral=True)
-            return
-        if betrag > rucksack:
-            await interaction.followup.send(f"<:v_x:1264270921452224562> Du hast nicht so viel Geld in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
-            return
-        embed = discord.Embed(
-            color=await getcolour(self, interaction.user),
-            description=f"✊ Schere, Stein oder Papier?\nEinsatz: {betrag} 🍪",
-            timestamp=datetime.now()
-        )
-        
-        embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-        filename = ["✌️", "✊", "✋"]
-        choice = random.choice(filename)
-        await interaction.followup.send(embed=embed, view=rps(choice, betrag, interaction.user, self.bot, interaction))
 
-    job = app_commands.Group(name='job', description='Bewirb dich für Jobs, kündige diese oder lass sie dir alle anzeigen.', guild_only=True)
+        try:
+            return await interaction.followup.send("**<:v_x:1264270921452224562> Der Befehl ist zurzeit nicht verfügbar.**", ephemeral=True)
+            # überprüfen ob er geld hat
+            acc = await open_acc(self, interaction.user)
+            rucksack = int(acc[0])
+            if betrag < 0:
+                await interaction.followup.send(f"<:v_x:1264270921452224562> Der Betrag muss eine positive Zahl sein.", ephemeral=True)
+                return
+            if betrag > rucksack:
+                await interaction.followup.send(f"<:v_x:1264270921452224562> Du hast nicht so viel Geld in deinem Rucksack. Dir fehlen **{betrag - rucksack} 🍪**.", ephemeral=True)
+                return
+            embed = discord.Embed(
+                color=await getcolour(self, interaction.user),
+                description=f"✊ Schere, Stein oder Papier?\nEinsatz: {betrag} 🍪",
+                timestamp=datetime.now()
+            )
+            
+            embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+            filename = ["✌️", "✊", "✋"]
+            choice = random.choice(filename)
+            await interaction.followup.send(embed=embed, view=rps(choice, betrag, interaction.user, self.bot, interaction))
+
+            job = app_commands.Group(name='job', description='Bewirb dich für Jobs, kündige diese oder lass sie dir alle anzeigen.', guild_only=True)
+        except:
+            app_commands.Cooldown.reset()
     
     @job.command()
     @app_commands.autocomplete(beruf=job_autocomplete)
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def apply(self, interaction: discord.Interaction, beruf: str):
         """Bewirb dich für einen Job."""
-        await interaction.response.defer()
-        acc = await open_acc(self, interaction.user)
-        job = acc["job"]
-        user_hours = acc['stunden']
-        a = 0
-        if await get_job(self, interaction.user) == "Kein Job":
-            for job in jobs:
-                a += 1
-                if job["name"] == beruf:
-                    if int(user_hours) >= job["req"]:
-                        await set_job(self, interaction.user, beruf)
-                        success_embed = discord.Embed(description=f'Herzlichen Glückwunsch! Deine Bewerbung als **{beruf}** wurde angenommen.',
-                                                        colour=await getcolour(self, interaction.user))
-                        await interaction.followup.send(embed=success_embed)
-                        return
-                    else:
-                        not_enough_hours_error_embed = discord.Embed(description=f'Um sich als {beruf} zu bewerben, musst du mindestens **{job["req"]}** Stunden gearbeitet haben.',
-                                                                        color=await getcolour(self, interaction.user))
-                        await interaction.followup.send(embed=not_enough_hours_error_embed)
-                        return
-            if a >= 53:
-                not_a_job_error_embed = discord.Embed(description=f"Der Job **{beruf}** existiert nicht. Schau dir alle Jobs mit dem Command `/job list` an.",
-                                                    colour=await getcolour(self, interaction.user))
 
-                await interaction.followup.send(embed=not_a_job_error_embed)
+        try:
+            await interaction.response.defer()
+            acc = await open_acc(self, interaction.user)
+            job = acc["job"]
+            user_hours = acc['stunden']
+            a = 0
+            if await get_job(self, interaction.user) == "Kein Job":
+                for job in jobs:
+                    a += 1
+                    if job["name"] == beruf:
+                        if int(user_hours) >= job["req"]:
+                            await set_job(self, interaction.user, beruf)
+                            success_embed = discord.Embed(description=f'Herzlichen Glückwunsch! Deine Bewerbung als **{beruf}** wurde angenommen.',
+                                                            colour=await getcolour(self, interaction.user))
+                            await interaction.followup.send(embed=success_embed)
+                            return
+                        else:
+                            not_enough_hours_error_embed = discord.Embed(description=f'Um sich als {beruf} zu bewerben, musst du mindestens **{job["req"]}** Stunden gearbeitet haben.',
+                                                                            color=await getcolour(self, interaction.user))
+                            await interaction.followup.send(embed=not_enough_hours_error_embed)
+                            return
+                if a >= 53:
+                    not_a_job_error_embed = discord.Embed(description=f"Der Job **{beruf}** existiert nicht. Schau dir alle Jobs mit dem Command `/job list` an.",
+                                                        colour=await getcolour(self, interaction.user))
+
+                    await interaction.followup.send(embed=not_a_job_error_embed)
+                    return
+            else:
+                active_job = await get_job(self, interaction.user)
+                active_job_error_embed = discord.Embed(description=f'Du bist derzeit noch als **{active_job}** angestellt!\n'
+                                                                    f'Beende deinen Job als **{active_job}** mit `/job quit`',
+                                                        colour=await getcolour(self, interaction.user))
+                await interaction.followup.send(embed=active_job_error_embed)
                 return
-        else:
-            active_job = await get_job(self, interaction.user)
-            active_job_error_embed = discord.Embed(description=f'Du bist derzeit noch als **{active_job}** angestellt!\n'
-                                                                f'Beende deinen Job als **{active_job}** mit `/job quit`',
-                                                    colour=await getcolour(self, interaction.user))
-            await interaction.followup.send(embed=active_job_error_embed)
-            return
+        except:
+            app_commands.Cooldown.reset()
 
     @job.command()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
