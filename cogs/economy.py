@@ -885,7 +885,6 @@ class economy(commands.Cog):
     @app_commands.command()
     @app_commands.guild_only()
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
-    
     async def rps(self, interaction: discord.Interaction, betrag: int):
         """Game, Schere Stein Papier. Deine Reaktion ist deine Entscheidung."""
 
@@ -914,6 +913,8 @@ class economy(commands.Cog):
             job = app_commands.Group(name='job', description='Bewirb dich für Jobs, kündige diese oder lass sie dir alle anzeigen.', guild_only=True)
         except:
             app_commands.Cooldown.reset()
+    
+    job = app_commands.Group(name='job', description='Bewirb dich für Jobs, kündige diese oder lass sie dir alle anzeigen.', guild_only=True)
     
     @job.command()
     @app_commands.autocomplete(beruf=job_autocomplete)
