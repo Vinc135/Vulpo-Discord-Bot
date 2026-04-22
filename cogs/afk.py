@@ -115,7 +115,7 @@ AFK gegangen {discord_timestamp(t2, 'R')}.""")
             except:
                 pass
             
-            embed = discord.Embed(title=f"<:v_afk:1119577204712542301> **{interaction.user.name}, du bist jetzt AFK**", color=await getcolour(self, interaction.user), description=f"""
+            embed = discord.Embed(title=f"<:v_stopwatch:1264271803774140608> **{interaction.user.name}, du bist jetzt AFK**", color=await getcolour(self, interaction.user), description=f"""
 *Grund: {grund}* 
 AFK gegangen {discord_timestamp(t2, 'R')}.
 Wenn du wiederkommst, zeige ich dir alle Nachrichten, in denen du gepingt wurdest.""")
@@ -131,7 +131,7 @@ Wenn du wiederkommst, zeige ich dir alle Nachrichten, in denen du gepingt wurdes
                 pass
             result2 = await afk_nachrichten_collection.find({"userID": str(interaction.user.id), "guildID": str(str(interaction.guild.id))}).to_list(length=None)
             
-            embed = discord.Embed(title=f"<:v_afk:1119577204712542301> **{interaction.user.name}, willkommen zurück**", color=await getcolour(self, interaction.user), description=f"""
+            embed = discord.Embed(title=f"<:v_stopwatch:1264271803774140608> **{interaction.user.name}, willkommen zurück**", color=await getcolour(self, interaction.user), description=f"""
 Ich habe deinen AFK-Status entfernt. AFK gegangen {discord_timestamp(t2, 'R')}.""")
             
             if len(result2) == 0:
