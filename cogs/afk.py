@@ -40,7 +40,7 @@ class afk(commands.Cog):
                     pass
                 result2 = await afk_nachrichten_collection.find({"userID": str(member.id), "guildID": str(msg.guild.id)}).to_list(length=None)
                 
-                embed = discord.Embed(title=f"<:v_afk:1119577204712542301> **{member.name}, willkommen zurück**", color=await getcolour(self, msg.author), description=f"""
+                embed = discord.Embed(title=f"<:v_stopwatch:1264271803774140608> **{member.name}, willkommen zurück**", color=await getcolour(self, msg.author), description=f"""
 Ich habe deinen AFK-Status entfernt. AFK gegangen {discord_timestamp(t2, 'R')}.""")
                 
                 if len(result2) == 0:
@@ -84,7 +84,7 @@ Ich habe deinen AFK-Status entfernt. AFK gegangen {discord_timestamp(t2, 'R')}."
                             "channelID": str(msg.channel.id), 
                             "time": t1
                         })
-                        embed = discord.Embed(title=f"<:v_afk:1119577204712542301> **{mention.name}, ist AFK**", color=await getcolour(self, msg.author), description=f"""
+                        embed = discord.Embed(title=f"<:v_stopwatch:1264271803774140608> **{mention.name}, ist AFK**", color=await getcolour(self, msg.author), description=f"""
 *Grund: {r['grund']}*
 AFK gegangen {discord_timestamp(t2, 'R')}.""")
                                                       
