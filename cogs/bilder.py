@@ -102,6 +102,8 @@ class bilder(commands.Cog):
         """Ein zufälliges Bild eines Tieres."""
         await interaction.response.defer()
         try:
+            if tier == "fuchs":
+                tier = "fox"
             url = get_pic_from_pixabay(tier, "animals")
             embed = discord.Embed(title=" ", description=f"**{tier}**", colour=await getcolour(self, interaction.user))
             embed.set_image(url=url)
