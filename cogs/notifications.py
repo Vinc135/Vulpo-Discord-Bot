@@ -118,6 +118,7 @@ class notifications(commands.Cog):
     @app_commands.checks.has_permissions(kick_members=True)
     async def youtube(self, interaction: discord.Interaction, modus: typing.Literal["Hinzufügen", "Entfernen"], kanal: discord.TextChannel, channelusername: str, channelname: str):
         """Füge hinzu / entferne Youtube Benachrichtigungen."""
+        await interaction.response.defer()
         
         db = getMongoDataBase()
         
