@@ -5,9 +5,22 @@ from discord import app_commands
 from utils.utils import getcolour
 from utils.MongoDB import getMongoDataBase
 import scrapetube
+import asyncio
 
+
+# ------------------ ASYNC WRAPPER ------------------
+async def get_videos(channel_username, limit=5):
+    return await asyncio.to_thread(
+        lambda: list(scrapetube.get_channel(
+            channel_url=f"https://www.youtube.com/@{channel_username}",
+            limit=limit
+        ))
+    )
+
+
+# ------------------ MODAL ------------------
 class nachricht(discord.ui.Modal, title="Eigene Nachricht"):
-    def __init__(self, kanal: discord.TextChannel=None, name=None, username=None, bot=None):
+    def __init__(self, kanal=None, name=None, username=None, bot=None):
         super().__init__(custom_id="fwrgfe45gfe5gfew5")
         self.kanal = kanal
         self.bot = bot
@@ -41,7 +54,8 @@ class nachricht(discord.ui.Modal, title="Eigene Nachricht"):
         await interaction.followup.send(embed=embed)
 
 
-async def fetch_videos_from_database(self, channel_name):
+# ------------------ DB HELPERS ------------------
+async def fetch_videos_from_database(channel_name):
     docs = await getMongoDataBase()["videos"].find({
         "channel_name": channel_name
     }).to_list(length=None)
@@ -49,13 +63,14 @@ async def fetch_videos_from_database(self, channel_name):
     return [doc["video_id"] for doc in docs]
 
 
-async def insert_video_to_database(self, channel_name, video_id):
+async def insert_video_to_database(channel_name, video_id):
     await getMongoDataBase()["videos"].insert_one({
         "channel_name": channel_name,
         "video_id": video_id
     })
 
 
+# ------------------ CHECK ------------------
 async def check_videos(self):
     try:
         db = getMongoDataBase()
@@ -63,21 +78,21 @@ async def check_videos(self):
 
         for youtube_channel in youtube_channels:
             try:
-                videos = list(scrapetube.get_channel(
-                    channel_url=f"https://www.youtube.com/@{youtube_channel['username']}",
-                    limit=5
-                ))
+                videos = await asyncio.wait_for(
+                    get_videos(youtube_channel["username"], limit=5),
+                    timeout=20
+                )
             except Exception as e:
                 print("scrapetube error:", e)
                 continue
 
             video_ids = [video["videoId"] for video in videos]
-            saved_videos = await fetch_videos_from_database(self, youtube_channel["username"])
+            saved_videos = await fetch_videos_from_database(youtube_channel["username"])
 
             for video_id in video_ids:
                 if video_id not in saved_videos:
                     url = f"https://youtu.be/{video_id}"
-                    await insert_video_to_database(self, youtube_channel["username"], video_id)
+                    await insert_video_to_database(youtube_channel["username"], video_id)
 
                     result = await db["channels"].find({
                         "username": youtube_channel["username"]
@@ -94,6 +109,7 @@ async def check_videos(self):
                                 .replace("%link", url)
 
                             await channel.send(msg)
+
                         except Exception as e:
                             print("send error:", e)
                             continue
@@ -102,6 +118,7 @@ async def check_videos(self):
         print("GLOBAL ERROR:", e)
 
 
+# ------------------ COG ------------------
 class notifications(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -112,7 +129,8 @@ class notifications(commands.Cog):
     def cog_unload(self):
         self.check.cancel()
 
-    @tasks.loop(seconds=60)
+    # langsamer = stabiler
+    @tasks.loop(minutes=5)
     async def check(self):
         await check_videos(self)
 
@@ -136,7 +154,7 @@ class notifications(commands.Cog):
         await interaction.response.defer()
         db = getMongoDataBase()
 
-        # ================= ADD =================
+        # ---------- ADD ----------
         if modus == "Hinzufügen":
             result = await db["channels"].find_one({
                 "guildID": str(interaction.guild.id),
@@ -151,10 +169,10 @@ class notifications(commands.Cog):
                 )
 
             try:
-                videos = list(scrapetube.get_channel(
-                    channel_url=f"https://www.youtube.com/@{channelusername}",
-                    limit=1
-                ))
+                videos = await asyncio.wait_for(
+                    get_videos(channelusername, limit=1),
+                    timeout=20
+                )
 
                 if not videos:
                     raise Exception("No videos")
@@ -166,19 +184,18 @@ class notifications(commands.Cog):
                     ephemeral=True
                 )
 
-            # initial speichern
             video_ids = [video["videoId"] for video in videos]
-            saved_videos = await fetch_videos_from_database(self, channelusername)
+            saved_videos = await fetch_videos_from_database(channelusername)
 
             if not saved_videos:
                 for vid in video_ids:
-                    await insert_video_to_database(self, channelusername, vid)
+                    await insert_video_to_database(channelusername, vid)
 
             return await interaction.response.send_modal(
                 nachricht(kanal, channelname, channelusername, self.bot)
             )
 
-        # ================= REMOVE =================
+        # ---------- REMOVE ----------
         if modus == "Entfernen":
             result = await db["channels"].find_one({
                 "guildID": str(interaction.guild.id),
@@ -207,5 +224,6 @@ class notifications(commands.Cog):
             )
 
 
+# ------------------ SETUP ------------------
 async def setup(bot):
     await bot.add_cog(notifications(bot))
